@@ -1,0 +1,26 @@
+sudo: required
+language: php
+dist: xenial
+
+php:
+- 7.2
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install sqlite3
+
+install:
+  - travis_retry composer install --no-interaction
+
+before_script:
+  - touch database/physistrong.sqlite
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./vendor/laravel/dusk/bin/chromedriver-linux &
+  - cp .env.testing .env
+  - php artisan serve &
+
+script:
+    - phpunit tests/Unit
+    - phpunit tests/Feature
+    - php artisan dusk
