@@ -15,8 +15,6 @@ install:
 before_script:
   - touch database/physistrong.sqlite
   - cp .env.testing .env
-  - php artisan serve &
 
 script:
-    - phpunit tests/Unit
-    - phpunit tests/Feature
+    - vendor\bin\phpunit
