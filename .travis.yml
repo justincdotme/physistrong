@@ -14,13 +14,7 @@ install:
 
 before_script:
   - touch database/physistrong.sqlite
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - ./vendor/laravel/dusk/bin/chromedriver-linux &
   - cp .env.testing .env
-  - php artisan serve &
 
 script:
-    - phpunit tests/Unit
-    - phpunit tests/Feature
-    - php artisan dusk
+    - vendor/bin/phpunit
