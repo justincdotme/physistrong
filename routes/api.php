@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
-        Route::resource('workouts', 'WorkoutController')->except(['create', 'edit']);
-        Route::resource('users', 'UserController')->except(['create', 'store']);
+        Route::resource('workouts', 'WorkoutController')->only(['index', 'store', 'show']);
+        Route::resource('users', 'UserController')->only(['show']);
     });
 });
