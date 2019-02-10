@@ -3,38 +3,50 @@
 namespace Tests\Unit;
 
 use App\Core\User;
-use App\Core\Workout;
-use App\Http\Resources\WorkoutResource;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
+use App\Core\Workout;
+use Illuminate\Support\Carbon;
+use App\Http\Resources\WorkoutResource;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class WorkoutResourceTest extends TestCase
 {
     use DatabaseMigrations;
+
+    protected $user;
+    protected $workout;
+    protected $resource;
+    protected $responseArray;
+    protected $date;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->date = Carbon::now()->toDateTimeString();
+        $this->user = factory(User::class)->create([
+            'id' => 1
+        ]);
+        $this->workout = factory(Workout::class)->make([
+            'id' => 1,
+            'user_id' => $this->user->id,
+            'created_at' => $this->date
+        ]);
+        $this->resource = new WorkoutResource($this->workout);
+        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+    }
 
     /**
      * @test
      */
     public function it_returns_correct_structure()
     {
-        $user = factory(User::class)->create([
-            'id' => 1
-        ]);
-        $workout = factory(Workout::class)->make([
-            'user_id' => $user->id
-        ]);
-        $resource = new WorkoutResource($workout);
-
-        $responseArray = json_decode($resource->response()->getContent(), true);
-
-        $this->assertArrayHasKey('type', $responseArray['data']);
-        $this->assertArrayHasKey('id', $responseArray['data']);
-        $this->assertArrayHasKey('attributes', $responseArray['data']);
-        $this->assertArrayHasKey('relationships', $responseArray['data']);
-        $this->assertArrayHasKey('links', $responseArray['data']);
+        $this->assertArrayHasKey('type', $this->responseArray['data']);
+        $this->assertArrayHasKey('id', $this->responseArray['data']);
+        $this->assertArrayHasKey('attributes', $this->responseArray['data']);
+        $this->assertArrayHasKey('relationships', $this->responseArray['data']);
+        $this->assertArrayHasKey('links', $this->responseArray['data']);
     }
 
     /**
@@ -42,17 +54,7 @@ class WorkoutResourceTest extends TestCase
      */
     public function it_has_type_workout()
     {
-        $user = factory(User::class)->create([
-            'id' => 1
-        ]);
-        $workout = factory(Workout::class)->make([
-            'user_id' => $user->id
-        ]);
-        $resource = new WorkoutResource($workout);
-
-        $responseArray = json_decode($resource->response()->getContent(), true);
-
-        $this->assertEquals('workout', $responseArray['data']['type']);
+        $this->assertEquals('workout', $this->responseArray['data']['type']);
     }
 
     /**
@@ -60,18 +62,7 @@ class WorkoutResourceTest extends TestCase
      */
     public function it_has_correct_id()
     {
-        $user = factory(User::class)->create([
-            'id' => 1
-        ]);
-        $workout = factory(Workout::class)->make([
-            'id' => 1,
-            'user_id' => 1
-        ]);
-        $resource = new WorkoutResource($workout);
-
-        $responseArray = json_decode($resource->response()->getContent(), true);
-
-        $this->assertEquals('1', $responseArray['data']['id']);
+        $this->assertEquals('1', $this->responseArray['data']['id']);
     }
 
     /**
@@ -79,18 +70,7 @@ class WorkoutResourceTest extends TestCase
      */
     public function it_has_correct_date()
     {
-        $user = factory(User::class)->create([
-            'id' => 1
-        ]);
-        $workout = factory(Workout::class)->make([
-            'user_id' => $user->id,
-            'created_at' => Carbon::now()->toDateTimeString()
-        ]);
-        $resource = new WorkoutResource($workout);
-
-        $responseArray = json_decode($resource->response()->getContent(), true);
-
-        $this->assertEquals(Carbon::now()->toDateTimeString(), $responseArray['data']['attributes']['date']);
+        $this->assertEquals($this->date, $this->responseArray['data']['attributes']['date']);
     }
 
     /**
@@ -98,20 +78,22 @@ class WorkoutResourceTest extends TestCase
      */
     public function it_has_relationship_to_user()
     {
-        $user = factory(User::class)->create([
-            'id' => 1
-        ]);
-        $workout = factory(Workout::class)->make([
-            'user_id' => $user->id
-        ]);
-        $resource = new WorkoutResource($workout);
-
-        $responseArray = json_decode($resource->response()->getContent(), true);
-
-        $this->assertArrayHasKey('user', $responseArray['data']['relationships']);
+        $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
         $this->assertEquals(
             route('users.show', ['user' => 1]),
-            $responseArray['data']['relationships']['user']['links']['self']
+            $this->responseArray['data']['relationships']['user']['links']['self']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_relationship_to_sets()
+    {
+        $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
+        $this->assertEquals(
+            route('workouts.set.index', ['workout' => $this->workout->id]),
+            $this->responseArray['data']['relationships']['sets']['links']['self']
         );
     }
 }

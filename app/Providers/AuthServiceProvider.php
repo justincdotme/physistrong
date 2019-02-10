@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Core\Set;
 use App\Core\User;
 use App\Core\Workout;
+use App\Policies\SetPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\WorkoutPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -18,7 +20,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Workout::class => WorkoutPolicy::class,
-        User::class => UserPolicy::class
+        User::class => UserPolicy::class,
+        Set::class => SetPolicy::class
     ];
 
     /**
