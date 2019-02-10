@@ -2,13 +2,14 @@
 
 namespace App\Exceptions;
 
-use App\Exceptions\Errors\JsonApi;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\Errors\JsonApi;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -70,6 +71,17 @@ class Handler extends ExceptionHandler
                     $code = 403;
                     $detail = 'This action is unauthorized';
                     break;
+                case ($exception instanceof ValidationException):
+                    return response()->json(
+                        JsonApi::formatValidationErrors(
+                            422,
+                            $exception->validator->errors()->getMessages()
+                        ), 422
+                    );
+                    break;
+                default:
+                    $code = 520;
+                    $detail = 'Something bad happened, we\'re looking into it';
             }
             return response()->json(
                 JsonApi::formatError($code, $request->decodedPath(), $detail),

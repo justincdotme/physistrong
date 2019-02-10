@@ -3,13 +3,15 @@
 namespace Tests;
 
 use App\Core\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    protected $response;
 
     /**
      * @var User
@@ -50,5 +52,33 @@ abstract class TestCase extends BaseTestCase
         $server['HTTP_ACCEPT'] = 'application/json';
 
         return parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
+    }
+
+    /**
+     * Helper method to test that a specific field has a validation error.
+     *
+     * @param $field
+     */
+    protected function assertFieldHasValidationError($field)
+    {
+        $this->response->assertStatus(422);
+        $responseArray = collect($this->response->decodeResponseJson());
+        $this->assertArrayHasKey('errors', $responseArray);
+
+        foreach ($responseArray['errors'] as $error) {
+            $this->assertEquals('422',$error['status']);
+            $hasField = false;
+            if (array_key_exists('source', $error) && array_key_exists('pointer', $error['source'])) {
+                $pointerParts = explode('/', $error['source']['pointer']);
+                $errorField = end($pointerParts);
+                if ($field === $errorField) {
+                    $hasField = true;
+                    break;
+                }
+            }
+        }
+        if (!$hasField) {
+            $this->fail('There is no errors array');
+        }
     }
 }
