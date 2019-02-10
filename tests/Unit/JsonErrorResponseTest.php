@@ -35,4 +35,38 @@ class JsonErrorResponseTest extends TestCase
         $this->assertEquals($pointer, $formattedError['errors']['source']['pointer']);
         $this->assertEquals($message, $formattedError['errors']['detail']);
     }
+
+    /**
+     * @test
+     */
+    public function it_properly_formats_validation_errors()
+    {
+        $status = 422;
+        $errors = [
+            'name' => [
+                'name error one',
+                'name error two'
+            ],
+            'email' => [
+                'email error one'
+            ]
+        ];
+
+
+        $formattedErrors = JsonApi::formatValidationErrors($status, $errors);
+
+        $this->assertArrayHasKey('errors', $formattedErrors);
+        $this->assertCount(3, $formattedErrors['errors']);
+        foreach ($formattedErrors['errors'] as $error) {
+            $this->assertArrayHasKey('status', $error);
+            $this->assertEquals('422', $error['status']);
+            $this->assertArrayHasKey('source', $error);
+            $this->assertIsArray($error['source']);
+            $this->assertArrayHasKey('pointer', $error['source']);
+            $pointerParts = explode('/', $error['source']['pointer']);
+            $field = end($pointerParts);
+            $this->assertTrue(in_array($field, array_keys($errors)));
+            $this->assertArrayHasKey('detail', $error);
+        }
+    }
 }

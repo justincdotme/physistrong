@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use App\Core\User;
-use App\Core\Workout;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
+use App\Core\Workout;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ViewWorkoutTest extends TestCase
 {
@@ -66,7 +66,6 @@ class ViewWorkoutTest extends TestCase
         $response = $this->actingAs($user)->json("GET", route('workouts.index'));
 
         $responseArray = $response->decodeResponseJson();
-        //dd($responseArray);
         $response->assertStatus(200);
         $this->assertNotEmpty($responseArray['data']);
         $this->assertCount(5, $responseArray['data']);
