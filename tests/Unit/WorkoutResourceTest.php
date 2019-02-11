@@ -93,6 +93,7 @@ class WorkoutResourceTest extends TestCase
         $this->assertEquals(
             route('workouts.show', ['workout' => $this->workout->id]),
             $this->responseArray['data']['links']['self']
+
         );
     }
 }
