@@ -20,6 +20,5 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('/workouts/{workout}/set', 'WorkoutSetController', [
             'as' => 'workouts'
         ])->only(['store', 'show', 'index']);
-
     });
 });

@@ -48,9 +48,9 @@ class ViewWorkoutTest extends TestCase
         $response->assertStatus(403);
         $responseArray = $response->decodeResponseJson();
         $this->assertArrayHasKey('errors', $responseArray);
-        $this->assertEquals('403',$responseArray['errors']['status']);
+        $this->assertEquals('403', $responseArray['errors']['status']);
         $this->assertEquals(route('workouts.show', ['workout' => $workout->id], false), $responseArray['errors']['source']['pointer']);
-        $this->assertEquals('This action is unauthorized',$responseArray['errors']['detail']);
+        $this->assertEquals('This action is unauthorized', $responseArray['errors']['detail']);
     }
 
     /**
@@ -92,8 +92,8 @@ class ViewWorkoutTest extends TestCase
         $response->assertStatus(401);
         $responseArray = $response->decodeResponseJson();
         $this->assertArrayHasKey('errors', $responseArray);
-        $this->assertEquals('401',$responseArray['errors']['status']);
+        $this->assertEquals('401', $responseArray['errors']['status']);
         $this->assertEquals(route('workouts.index', [], false), $responseArray['errors']['source']['pointer']);
-        $this->assertEquals('Missing token',$responseArray['errors']['detail']);
+        $this->assertEquals('Missing token', $responseArray['errors']['detail']);
     }
 }
