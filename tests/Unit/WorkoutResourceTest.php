@@ -92,7 +92,7 @@ class WorkoutResourceTest extends TestCase
     {
         $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
         $this->assertEquals(
-            route('workouts.set.index', ['workout' => $this->workout->id]),
+            route('workouts.sets.index', ['workout' => $this->workout->id]),
             $this->responseArray['data']['relationships']['sets']['links']['self']
         );
     }
