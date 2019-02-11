@@ -17,4 +17,5 @@ before_script:
   - cp .env.testing .env
 
 script:
+    - vendor/bin/phpcs
     - vendor/bin/phpunit
