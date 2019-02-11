@@ -17,8 +17,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::resource('workouts', 'WorkoutController')->only(['index', 'store', 'show']);
         Route::resource('users', 'UserController')->only(['show']);
-        Route::resource('/workouts/{workout}/set', 'WorkoutSetController', [
+        Route::resource('/workouts/{workout}/sets', 'WorkoutSetController', [
             'as' => 'workouts'
         ])->only(['store', 'show', 'index']);
+        Route::resource('exercises', 'ExerciseController')->only(['show']);
     });
 });

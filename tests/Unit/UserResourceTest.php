@@ -3,12 +3,12 @@
 namespace Tests\Unit;
 
 use App\Core\User;
+use Tests\TestCase;
 use App\Core\Workout;
 use App\Http\Resources\UserResource;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserResourceTest extends TestCase
 {

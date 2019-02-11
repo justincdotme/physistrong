@@ -55,7 +55,7 @@ class addExerciseSetTest extends TestCase
      */
     public function unauthenticated_user_cannot_add_exercise_to_workout()
     {
-        $this->response = $this->json("POST", route('workouts.set.store', [
+        $this->response = $this->json("POST", route('workouts.sets.store', [
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
             'weight' => 120,
@@ -209,6 +209,6 @@ class addExerciseSetTest extends TestCase
      */
     protected function addExerciseSet($params)
     {
-        return $this->actingAs($this->testUser)->json("POST", route('workouts.set.store', $params));
+        return $this->actingAs($this->testUser)->json("POST", route('workouts.sets.store', $params));
     }
 }

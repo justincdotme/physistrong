@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Core\Workout;
-use App\Http\Resources\WorkoutResource;
 use Illuminate\Http\Request;
+use App\Http\Resources\WorkoutResource;
 
 class WorkoutController extends Controller
 {

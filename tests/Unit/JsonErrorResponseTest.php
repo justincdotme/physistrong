@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Exceptions\Errors\JsonApi;
 use Tests\TestCase;
+use App\Exceptions\Errors\JsonApi;
 
 class JsonErrorResponseTest extends TestCase
 {

@@ -27,4 +27,16 @@ class Workout extends Model
     {
         return $this->hasMany(Set::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getSets()
+    {
+        return $this->sets()
+            ->orderBy('exercise_id')
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->groupBy('exercise_id');
+    }
 }
