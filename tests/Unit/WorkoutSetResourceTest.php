@@ -2,24 +2,28 @@
 
 namespace Tests\Unit;
 
+use App\Core\Set;
 use App\Core\User;
 use Tests\TestCase;
 use App\Core\Workout;
+use App\Core\Exercise;
 use Illuminate\Support\Carbon;
-use App\Http\Resources\WorkoutResource;
+use App\Http\Resources\WorkoutSetResource;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class WorkoutResourceTest extends TestCase
+class WorkoutSetResourceTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected $testUser;
-    protected $workout;
-    protected $resource;
-    protected $responseArray;
+    protected $set;
     protected $date;
+    protected $workout;
+    protected $testUser;
+    protected $resource;
+    protected $exercise;
+    protected $responseArray;
 
     public function setUp()
     {
@@ -28,12 +32,21 @@ class WorkoutResourceTest extends TestCase
         $this->testUser = factory(User::class)->create([
             'id' => 1
         ]);
-        $this->workout = factory(Workout::class)->make([
+        $this->workout = factory(Workout::class)->create([
             'id' => 1,
             'user_id' => $this->testUser->id,
             'created_at' => $this->date
         ]);
-        $this->resource = new WorkoutResource($this->workout);
+        $this->exercise = factory(Exercise::class)->create([
+            'name' => 'squat'
+        ]);
+        $this->set = factory(Set::class)->create([
+            'workout_id' => $this->workout->id,
+            'exercise_id' => $this->exercise->id,
+            'weight' => 100,
+            'count' => 10,
+        ]);
+        $this->resource = new WorkoutSetResource($this->set);
         $this->responseArray = json_decode($this->resource->response()->getContent(), true);
     }
 
@@ -52,9 +65,9 @@ class WorkoutResourceTest extends TestCase
     /**
      * @test
      */
-    public function it_has_type_workout()
+    public function it_has_type_set()
     {
-        $this->assertEquals('workout', $this->responseArray['data']['type']);
+        $this->assertEquals('set', $this->responseArray['data']['type']);
     }
 
     /**
@@ -62,7 +75,7 @@ class WorkoutResourceTest extends TestCase
      */
     public function it_has_correct_id()
     {
-        $this->assertEquals('1', $this->responseArray['data']['id']);
+        $this->assertEquals("{$this->set->id}", $this->responseArray['data']['id']);
     }
 
     /**
@@ -76,22 +89,10 @@ class WorkoutResourceTest extends TestCase
     /**
      * @test
      */
-    public function it_has_relationship_to_user()
-    {
-        $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
-        $this->assertEquals(
-            route('users.show', ['user' => 1]),
-            $this->responseArray['data']['relationships']['user']['links']['self']
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_relationship_to_sets()
+    public function it_has_link_to_self()
     {
         $this->assertEquals(
-            route('workouts.show', ['workout' => $this->workout->id]),
+            route('workouts.sets.show', ['workout' => $this->workout->id, 'set' => $this->set->id]),
             $this->responseArray['data']['links']['self']
         );
     }
