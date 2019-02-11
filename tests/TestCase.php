@@ -66,7 +66,7 @@ abstract class TestCase extends BaseTestCase
         $this->assertArrayHasKey('errors', $responseArray);
 
         foreach ($responseArray['errors'] as $error) {
-            $this->assertEquals('422',$error['status']);
+            $this->assertEquals('422', $error['status']);
             $hasField = false;
             if (array_key_exists('source', $error) && array_key_exists('pointer', $error['source'])) {
                 $pointerParts = explode('/', $error['source']['pointer']);

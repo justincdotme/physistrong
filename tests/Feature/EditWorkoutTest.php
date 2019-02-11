@@ -199,7 +199,6 @@ class addExerciseSetTest extends TestCase
         $set2 = Set::forWorkout($this->workout, $this->exercise, $weight, $count);
 
         $this->assertCount(2, $this->workout->sets()->get());
-
     }
 
     /**

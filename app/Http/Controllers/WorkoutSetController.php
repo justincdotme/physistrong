@@ -23,11 +23,14 @@ class WorkoutSetController extends Controller
     public function store(Workout $workout, Request $request)
     {
         $this->authorize('create', [Set::class, $workout]);
-        $this->validate(request(), [
-            'exercise' => 'required|integer',
-            'weight' => 'required|integer',
-            'count' => 'required|integer|min:1'
-        ]);
+        $this->validate(
+            request(),
+            [
+                'exercise' => 'required|integer',
+                'weight' => 'required|integer',
+                'count' => 'required|integer|min:1'
+            ]
+        );
 
         $set = Set::forWorkout(
             $workout,

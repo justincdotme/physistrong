@@ -76,7 +76,8 @@ class Handler extends ExceptionHandler
                         JsonApi::formatValidationErrors(
                             422,
                             $exception->validator->errors()->getMessages()
-                        ), 422
+                        ),
+                        422
                     );
                     break;
                 default:

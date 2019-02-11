@@ -37,8 +37,8 @@ class JsonApi
     {
         $errors = collect($errors);
 
-        $output = $errors->flatMap(function ($item, $field) use($code) {
-            return collect($item)->map(function ($message, $intKey) use($field, $code) {
+        $output = $errors->flatMap(function ($item, $field) use ($code) {
+            return collect($item)->map(function ($message, $intKey) use ($field, $code) {
                 return [
                     'status' => "{$code}",
                     'source' => [
@@ -46,7 +46,6 @@ class JsonApi
                     ],
                     'detail' => "{$message}"
                 ];
-
             });
         });
 

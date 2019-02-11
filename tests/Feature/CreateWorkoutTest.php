@@ -38,8 +38,8 @@ class CreateWorkoutTest extends TestCase
         $response->assertStatus(401);
         $responseArray = $response->decodeResponseJson();
         $this->assertArrayHasKey('errors', $responseArray);
-        $this->assertEquals('401',$responseArray['errors']['status']);
+        $this->assertEquals('401', $responseArray['errors']['status']);
         $this->assertEquals(route('workouts.store', [], false), $responseArray['errors']['source']['pointer']);
-        $this->assertEquals('Missing token',$responseArray['errors']['detail']);
+        $this->assertEquals('Missing token', $responseArray['errors']['detail']);
     }
 }
