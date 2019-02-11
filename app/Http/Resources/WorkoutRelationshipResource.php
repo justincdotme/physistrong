@@ -23,7 +23,7 @@ class WorkoutRelationshipResource extends JsonResource
             ],
             'sets' => [
                 'links' => [
-                    'self' => route('workouts.set.index', ['workout' => $this->id])
+                    'self' => route('workouts.sets.index', ['workout' => $this->id])
                 ],
                 'data' => new UserResource($this->user)
             ],
