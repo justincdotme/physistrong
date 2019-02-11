@@ -7,9 +7,22 @@ use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Http\Request;
 use App\Http\Resources\WorkoutResource;
+use App\Http\Resources\WorkoutSetResource;
+use App\Http\Resources\WorkoutSetCollectionResource;
 
 class WorkoutSetController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Workout $workout
+     * @return WorkoutSetCollectionResource
+     */
+    public function index(Workout $workout)
+    {
+        return new WorkoutSetCollectionResource($workout->getSets());
+    }
+
     /**
      * Store a newly created resource in storage.
      *
