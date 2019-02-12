@@ -52,7 +52,7 @@ class WorkoutSetController extends Controller
             request('count')
         );
 
-        return (new WorkoutResource($set->workout))
+        return (new WorkoutSetResource($set))
             ->response()
             ->setStatusCode(201);
     }
