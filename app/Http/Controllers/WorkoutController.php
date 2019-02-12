@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Workout;
 use Illuminate\Http\Request;
-use App\Http\Resources\WorkoutResource;
+use App\Http\Resources\Workout as WorkoutResource;
 
 class WorkoutController extends Controller
 {

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class WorkoutSetRelationshipResource extends JsonResource
+class WorkoutSetRelationship extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,13 +19,13 @@ class WorkoutSetRelationshipResource extends JsonResource
                 'links' => [
                     'self' => route('workouts.show', ['workout' => $this->workout->id])
                 ],
-                'data' => new WorkoutResource($this->workout)
+                'data' => new Workout($this->workout)
             ],
             'exercise' => [
                 'links' => [
                     'self' => route('exercises.show', ['exercise' => $this->exercise->id])
                 ],
-                'data' => new ExerciseResource($this->exercise)
+                'data' => new Exercise($this->exercise)
             ],
         ];
     }

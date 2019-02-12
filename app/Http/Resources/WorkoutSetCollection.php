@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class WorkoutSetCollectionResource extends ResourceCollection
+class WorkoutSetCollection extends ResourceCollection
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,7 @@ class WorkoutSetCollectionResource extends ResourceCollection
     {
         return $this->collection->map(function ($outerItem, $key) {
             return collect($outerItem)->map(function ($item, $innerKey) {
-                return new WorkoutSetResource($item);
+                return new WorkoutSet($item);
             });
         });
     }

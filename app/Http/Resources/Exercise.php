@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserRelationshipResource extends JsonResource
+class Exercise extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +14,6 @@ class UserRelationshipResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'workouts' => [
-                'links' => [
-                    'related' => route('workouts.index'),
-                ]
-            ]
-        ];
+        return parent::toArray($request);
     }
 }
