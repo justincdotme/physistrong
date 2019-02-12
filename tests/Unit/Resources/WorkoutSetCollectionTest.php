@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Resources;
 
 use App\Core\Set;
 use App\Core\User;
@@ -8,12 +8,10 @@ use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Support\Carbon;
-use App\Http\Resources\WorkoutSetResource;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use App\Http\Resources\WorkoutSet as WorkoutSetResource;
 
-class WorkoutSetResourceTest extends TestCase
+class WorkoutSetCollectionTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -60,40 +58,5 @@ class WorkoutSetResourceTest extends TestCase
         $this->assertArrayHasKey('attributes', $this->responseArray['data']);
         $this->assertArrayHasKey('relationships', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_type_set()
-    {
-        $this->assertEquals('set', $this->responseArray['data']['type']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_id()
-    {
-        $this->assertEquals("{$this->set->id}", $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_date()
-    {
-        $this->assertEquals($this->date, $this->responseArray['data']['attributes']['date']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_link_to_self()
-    {
-        $this->assertEquals(
-            route('workouts.sets.show', ['workout' => $this->workout->id, 'set' => $this->set->id]),
-            $this->responseArray['data']['links']['self']
-        );
     }
 }

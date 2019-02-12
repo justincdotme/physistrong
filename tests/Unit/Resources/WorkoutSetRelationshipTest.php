@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Resources;
 
 use App\Core\Set;
 use App\Core\User;
@@ -8,12 +8,10 @@ use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Support\Carbon;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use App\Http\Resources\WorkoutSetRelationshipResource;
+use App\Http\Resources\WorkoutSetRelationship as WorkoutSetRelationshipResource;
 
-class WorkoutSetRelationshipResourceTest extends TestCase
+class WorkoutSetRelationshipTest extends TestCase
 {
     use DatabaseMigrations;
 

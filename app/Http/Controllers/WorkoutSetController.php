@@ -6,9 +6,8 @@ use App\Core\Set;
 use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Http\Request;
-use App\Http\Resources\WorkoutResource;
-use App\Http\Resources\WorkoutSetResource;
-use App\Http\Resources\WorkoutSetCollectionResource;
+use App\Http\Resources\WorkoutSet;
+use App\Http\Resources\WorkoutSetCollection;
 
 class WorkoutSetController extends Controller
 {
@@ -16,11 +15,11 @@ class WorkoutSetController extends Controller
      * Display a listing of the resource.
      *
      * @param Workout $workout
-     * @return WorkoutSetCollectionResource
+     * @return WorkoutSetCollection
      */
     public function index(Workout $workout)
     {
-        return new WorkoutSetCollectionResource($workout->getSets());
+        return new WorkoutSetCollection($workout->getSets());
     }
 
     /**
@@ -52,7 +51,7 @@ class WorkoutSetController extends Controller
             request('count')
         );
 
-        return (new WorkoutSetResource($set))
+        return (new WorkoutSet($set))
             ->response()
             ->setStatusCode(201);
     }
