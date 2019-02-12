@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class addExerciseSetTest extends TestCase
+class AddWorkoutSetTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -46,8 +46,8 @@ class addExerciseSetTest extends TestCase
 
         $responseArray = $this->response->decodeResponseJson();
         $this->response->assertStatus(201);
-        $this->assertEquals('workout', $responseArray['data']['type']);
-        $this->assertEquals($this->testUser->id, $responseArray['data']['relationships']['user']['data']['id']);
+        $this->assertEquals('set', $responseArray['data']['type']);
+        $this->assertEquals($this->workout->id, $responseArray['data']['relationships']['workout']['data']['id']);
     }
 
     /**
