@@ -4,8 +4,7 @@ namespace Tests\Feature;
 
 use App\Core\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Resources\User as UserResource;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ViewUserTest extends TestCase
@@ -20,11 +19,10 @@ class ViewUserTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->json("GET", route('users.show', ['user' => $user->id]));
+        $resource = new UserResource($user);
 
         $response->assertStatus(200);
-        $responseArray = $response->decodeResponseJson();
-        $this->assertEquals('user', $responseArray['data']['type']);
-        $this->assertEquals($user->id, $responseArray['data']['id']);
+        $response->assertResource($resource);
     }
 
     /**

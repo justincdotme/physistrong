@@ -7,11 +7,10 @@ use App\Core\User;
 use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Resources\ExerciseSet;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class AddWorkoutSetTest extends TestCase
+class AddExerciseSetTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -35,19 +34,18 @@ class AddWorkoutSetTest extends TestCase
      */
     public function authenticated_user_can_add_set_to_their_own_workout()
     {
-        $this->withoutExceptionHandling();
-
         $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
             'weight' => 120,
-            'count' => 10
+            'count' => 10,
+            'set_order' => 1
         ]);
 
-        $responseArray = $this->response->decodeResponseJson();
+        $resource = new ExerciseSet(Set::firstOrFail());
+
+        $this->response->assertResource($resource);
         $this->response->assertStatus(201);
-        $this->assertEquals('set', $responseArray['data']['type']);
-        $this->assertEquals($this->workout->id, $responseArray['data']['relationships']['workout']['data']['id']);
     }
 
     /**
@@ -55,7 +53,7 @@ class AddWorkoutSetTest extends TestCase
      */
     public function unauthenticated_user_cannot_add_exercise_to_workout()
     {
-        $this->response = $this->json("POST", route('workouts.sets.store', [
+        $this->response = $this->json("POST", route('workouts.exercises.sets.store', [
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
             'weight' => 120,
@@ -89,6 +87,20 @@ class AddWorkoutSetTest extends TestCase
     /**
      * @test
      */
+    public function workout_is_required_for_adding_a_set()
+    {
+        $this->response = $this->addExerciseSet([
+            'exercise' => $this->exercise->id,
+            'weight' => 120,
+            'count' => 10
+        ]);
+
+        $this->response->assertStatus(404);
+    }
+
+    /**
+     * @test
+     */
     public function exercise_is_required_for_adding_a_set()
     {
         $this->response = $this->addExerciseSet([
@@ -97,36 +109,54 @@ class AddWorkoutSetTest extends TestCase
             'count' => 10
         ]);
 
-        $this->assertFieldHasValidationError('exercise');
+        $this->response->assertStatus(404);
     }
 
     /**
      * @test
      */
-    public function exercise_must_be_an_integer()
-    {
-        $this->response = $this->addExerciseSet([
-            'workout' => $this->workout->id,
-            'exercise' => 'banana',
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->assertFieldHasValidationError('exercise');
-    }
-
-    /**
-     * @test
-     */
-    public function weight_is_required_for_adding_a_set()
+    public function set_order_is_required_for_adding_a_set()
     {
         $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
+            'weight' => 120,
             'count' => 10
         ]);
 
-        $this->assertFieldHasValidationError('weight');
+        $this->assertFieldHasValidationError('set_order');
+    }
+
+    /**
+     * @test
+     */
+    public function set_order_must_be_an_integer()
+    {
+        $this->response = $this->addExerciseSet([
+            'workout' => $this->workout->id,
+            'exercise' => $this->exercise->id,
+            'weight' => 120,
+            'count' => 10,
+            'set_order' => 'apple'
+        ]);
+
+        $this->assertFieldHasValidationError('set_order');
+    }
+
+    /**
+     * @test
+     */
+    public function set_order_must_be_greater_than_0()
+    {
+        $this->response = $this->addExerciseSet([
+            'workout' => $this->workout->id,
+            'exercise' => $this->exercise->id,
+            'weight' => 120,
+            'count' => 10,
+            'set_order' => 0
+        ]);
+
+        $this->assertFieldHasValidationError('set_order');
     }
 
     /**
@@ -142,20 +172,6 @@ class AddWorkoutSetTest extends TestCase
         ]);
 
         $this->assertFieldHasValidationError('weight');
-    }
-
-    /**
-     * @test
-     */
-    public function count_is_required_for_adding_a_set()
-    {
-        $this->response = $this->addExerciseSet([
-            'workout' => $this->workout->id,
-            'exercise' => $this->exercise->id,
-            'weight' => 120
-        ]);
-
-        $this->assertFieldHasValidationError('count');
     }
 
     /**
@@ -189,19 +205,6 @@ class AddWorkoutSetTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function user_can_add_multiple_sets_of_same_exercise()
-    {
-        $weight = 120;
-        $count = 10;
-        $set1 = Set::forWorkout($this->workout, $this->exercise, $weight, $count);
-        $set2 = Set::forWorkout($this->workout, $this->exercise, $weight, $count);
-
-        $this->assertCount(2, $this->workout->sets()->get());
-    }
-
-    /**
      * Helper method for creating exercis set via HTTP request.
      *
      * @param $params
@@ -209,6 +212,6 @@ class AddWorkoutSetTest extends TestCase
      */
     protected function addExerciseSet($params)
     {
-        return $this->actingAs($this->testUser)->json("POST", route('workouts.sets.store', $params));
+        return $this->actingAs($this->testUser)->json("POST", route('workouts.exercises.sets.store', $params));
     }
 }

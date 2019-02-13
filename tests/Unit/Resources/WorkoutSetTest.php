@@ -43,6 +43,7 @@ class WorkoutSetTest extends TestCase
             'exercise_id' => $this->exercise->id,
             'weight' => 100,
             'count' => 10,
+            'set_order' => 1
         ]);
         $this->resource = new WorkoutSetResource($this->set);
         $this->responseArray = json_decode($this->resource->response()->getContent(), true);

@@ -40,13 +40,15 @@ class WorkoutSetController extends Controller
             [
                 'exercise' => 'required|integer',
                 'weight' => 'required|integer',
-                'count' => 'required|integer|min:1'
+                'count' => 'required|integer|min:1',
+                'set_order' => 'required|integer|min:1'
             ]
         );
 
         $set = Set::forWorkout(
             $workout,
             Exercise::findOrFail(request('exercise')),
+            request('set_order'),
             request('weight'),
             request('count')
         );

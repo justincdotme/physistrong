@@ -21,6 +21,7 @@ class CreateSetsTable extends Migration
             $table->foreign('exercise_id')->references('id')->on('exercises');
             $table->integer('weight');
             $table->integer('count');
+            $table->integer('set_order');
             $table->timestamps();
         });
     }

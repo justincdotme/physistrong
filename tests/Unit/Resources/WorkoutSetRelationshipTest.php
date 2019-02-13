@@ -43,6 +43,7 @@ class WorkoutSetRelationshipTest extends TestCase
             'exercise_id' => $this->exercise->id,
             'weight' => 100,
             'count' => 10,
+            'set_order' => 1
         ]);
 
         $this->resource = new WorkoutSetRelationshipResource($this->workout->sets()->first());

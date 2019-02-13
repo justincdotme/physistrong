@@ -35,7 +35,7 @@ class Workout extends Model
     {
         return $this->sets()
             ->orderBy('exercise_id')
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('set_order', 'ASC')
             ->get()
             ->groupBy('exercise_id');
     }
