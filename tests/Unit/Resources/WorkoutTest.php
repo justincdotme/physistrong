@@ -32,7 +32,7 @@ class WorkoutTest extends TestCase
             'created_at' => $this->date
         ]);
         $this->resource = new WorkoutResource($this->workout);
-        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+        $this->responseArray = $this->resource->response()->getData(true);
     }
 
     /**
@@ -61,14 +61,6 @@ class WorkoutTest extends TestCase
     public function it_has_correct_id()
     {
         $this->assertEquals('1', $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_date()
-    {
-        $this->assertEquals($this->date, $this->responseArray['data']['attributes']['date']);
     }
 
     /**

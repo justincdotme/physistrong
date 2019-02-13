@@ -16,13 +16,14 @@ class Set extends Model
      * @param $count
      * @return mixed
      */
-    public static function forWorkout(Workout $workout, Exercise $exercise, $weight, $count)
+    public static function forWorkout(Workout $workout, Exercise $exercise, $setOrder, $weight, $count)
     {
         return self::create([
             'workout_id' => $workout->id,
             'exercise_id' => $exercise->id,
             'weight' => $weight,
             'count' => $count,
+            'set_order' => $setOrder
         ]);
     }
 

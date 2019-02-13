@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Core\User;
+use App\Core\Workout;
+use App\Http\Resources\Workout as WorkoutResource;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CreateWorkoutTest extends TestCase
@@ -20,12 +20,10 @@ class CreateWorkoutTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->json("POST", route('workouts.store'));
-
-        $responseArray = $response->decodeResponseJson();
+        $resource = new WorkoutResource(Workout::firstOrFail());
 
         $response->assertStatus(201);
-        $this->assertEquals('workout', $responseArray['data']['type']);
-        $this->assertEquals($user->id, $responseArray['data']['relationships']['user']['data']['id']);
+        $response->assertResource($resource);
     }
 
     /**
@@ -39,7 +37,7 @@ class CreateWorkoutTest extends TestCase
         $responseArray = $response->decodeResponseJson();
         $this->assertArrayHasKey('errors', $responseArray);
         $this->assertEquals('401', $responseArray['errors']['status']);
-        $this->assertEquals(route('workouts.store', [], false), $responseArray['errors']['source']['pointer']);
         $this->assertEquals('Missing token', $responseArray['errors']['detail']);
+        $this->assertEquals(route('workouts.store', [], false), $responseArray['errors']['source']['pointer']);
     }
 }
