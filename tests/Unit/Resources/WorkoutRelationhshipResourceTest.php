@@ -42,13 +42,15 @@ class WorkoutRelationhshipResourceTest extends TestCase
     {
         $this->assertArrayHasKey('user', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']['user']);
-        $this->assertArrayHasKey('data', $this->responseArray['data']['user']);
         $this->assertArrayHasKey('self', $this->responseArray['data']['user']['links']);
 
         $this->assertArrayHasKey('sets', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']['sets']);
-        $this->assertArrayHasKey('data', $this->responseArray['data']['sets']);
         $this->assertArrayHasKey('self', $this->responseArray['data']['sets']['links']);
+
+        $this->assertArrayHasKey('exercises', $this->responseArray['data']);
+        $this->assertArrayHasKey('links', $this->responseArray['data']['exercises']);
+        $this->assertArrayHasKey('self', $this->responseArray['data']['exercises']['links']);
     }
 
     /**
@@ -63,6 +65,10 @@ class WorkoutRelationhshipResourceTest extends TestCase
         $this->assertEquals(
             route('workouts.sets.index', ['workout' => $this->workout->id]),
             $this->responseArray['data']['sets']['links']['self']
+        );
+        $this->assertEquals(
+            route('workouts.exercises.index', ['workout' => $this->workout->id]),
+            $this->responseArray['data']['exercises']['links']['self']
         );
     }
 }
