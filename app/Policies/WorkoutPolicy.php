@@ -54,30 +54,6 @@ class WorkoutPolicy
      */
     public function delete(User $user, Workout $workout)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the workout.
-     *
-     * @param  \App\Core\User  $user
-     * @param  \App\Core\Workout  $workout
-     * @return mixed
-     */
-    public function restore(User $user, Workout $workout)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the workout.
-     *
-     * @param  \App\Core\User  $user
-     * @param  \App\Core\Workout  $workout
-     * @return mixed
-     */
-    public function forceDelete(User $user, Workout $workout)
-    {
-        //
+        return ($user->id == $workout->user_id);
     }
 }

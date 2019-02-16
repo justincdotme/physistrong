@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\Core\Exercise;
 use App\Core\Set;
 use App\Core\User;
+use Exception;
+use Illuminate\Database\QueryException;
 use Tests\TestCase;
 use App\Core\Workout;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -126,5 +128,31 @@ class WorkoutTest extends TestCase
 
         $this->assertEquals(3, $workoutSets->last()->set_order);
         $this->assertEquals(3, $workoutSets->last()->exercise_id);
+    }
+
+    /**
+     * @test
+     */
+    public function duplicate_exercises_are_not_allowed_on_a_workout()
+    {
+        try {
+            $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 1]);
+            $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 2]);
+        } catch (Exception $e) {
+            $this->assertInstanceOf(QueryException::class, $e);
+            return;
+        }
+        $this->fail('Duplicate exercises were added to a workout');
+    }
+
+    /**
+     * @test
+     */
+    public function multiple_unique_exercises_are_allowed_on_a_workout()
+    {
+        $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 1]);
+        $this->exercise2->workouts()->save($this->workout, ['exercise_order' => 2]);
+
+        $this->assertCount(2, $this->workout->exercises()->get());
     }
 }
