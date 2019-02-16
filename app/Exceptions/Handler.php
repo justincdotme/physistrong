@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -79,6 +80,10 @@ class Handler extends ExceptionHandler
                         ),
                         422
                     );
+                    break;
+                case ($exception instanceof ModelNotFoundException):
+                    $code = 404;
+                    $detail = 'Not found';
                     break;
                 default:
                     $code = 520;
