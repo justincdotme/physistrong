@@ -15,6 +15,7 @@ class WorkoutRelationhshipResourceTest extends TestCase
     protected $workout;
     protected $testUser;
     protected $exercise;
+    protected $resource;
     protected $responseArray;
 
     public function setUp()
@@ -30,7 +31,7 @@ class WorkoutRelationhshipResourceTest extends TestCase
 
         $this->resource = new WorkoutRelationshipResource($this->workout);
 
-        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+        $this->responseArray = $this->resource->response()->getData(true);
     }
 
     /**
