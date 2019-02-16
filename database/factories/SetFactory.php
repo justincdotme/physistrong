@@ -14,5 +14,11 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Core\Set::class, function (Faker $faker) {
-    return [];
+    return [
+        'workout_id' => 1,
+        'exercise_id' => 1,
+        'count' => 10,
+        'weight' => 63,
+        'set_order' => 1
+    ];
 });

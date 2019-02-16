@@ -8,10 +8,13 @@ class Set extends Model
 {
     protected $guarded = [];
     protected $with = ['exercise'];
+    protected $dates = ['created_at', 'updated_at'];
+
 
     /**
      * @param Workout $workout
      * @param Exercise $exercise
+     * @param $setOrder
      * @param $weight
      * @param $count
      * @return mixed
@@ -41,5 +44,14 @@ class Set extends Model
     public function exercise()
     {
         return $this->belongsTo(Exercise::class);
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @return mixed
+     */
+    public function scopeOfExercise($query, Exercise $exercise)
+    {
+        return $query->where('exercise_id', $exercise->id);
     }
 }
