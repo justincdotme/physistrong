@@ -17,7 +17,9 @@ class Workout extends JsonResource
         return [
             'type' => 'workout',
             'id' => (string)$this->id,
-            'attributes' => [],
+            'attributes' => [
+                'name' => $this->name
+            ],
             'relationships' => new WorkoutRelationship($this),
             'links' => [
                 'self' => route('workouts.show', ['workout' => $this->id])

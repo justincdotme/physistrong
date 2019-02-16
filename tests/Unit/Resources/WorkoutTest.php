@@ -28,6 +28,7 @@ class WorkoutTest extends TestCase
         ]);
         $this->workout = factory(Workout::class)->make([
             'id' => 1,
+            'name' => 'Test Workout',
             'user_id' => $this->testUser->id,
             'created_at' => $this->date
         ]);
@@ -45,6 +46,14 @@ class WorkoutTest extends TestCase
         $this->assertArrayHasKey('attributes', $this->responseArray['data']);
         $this->assertArrayHasKey('relationships', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_correct_name()
+    {
+        $this->assertEquals($this->workout->name, $this->responseArray['data']['attributes']['name']);
     }
 
     /**

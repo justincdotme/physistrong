@@ -29,6 +29,7 @@ class ViewWorkoutTest extends TestCase
         ]);
         $this->workout = factory(Workout::class)->create([
             'user_id' => $this->testUser1,
+            'name' => 'test workout',
             'created_at' => "2019-02-15 00:00:01",
             'updated_at' => "2019-02-15 00:00:01"
         ]);
@@ -68,7 +69,8 @@ class ViewWorkoutTest extends TestCase
     public function authenticated_user_can_view_all_of_their_own_workouts()
     {
         factory(Workout::class, 5)->create([
-            'user_id' => $this->testUser2->id
+            'user_id' => $this->testUser2->id,
+            'name' => 'test workout'
         ]);
         $resource = WorkoutResource::collection(
             $this->testUser2->workouts()->paginate()

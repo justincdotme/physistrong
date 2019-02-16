@@ -12,18 +12,36 @@ class CreateWorkoutTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $testUser;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->testUser = factory(User::class)->create();
+    }
+
     /**
      * @test
      */
     public function authenticated_user_can_create_their_own_workout()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user)->json("POST", route('workouts.store'));
+        $response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), [
+            'name' => 'Test Workout'
+        ]);
         $resource = new WorkoutResource(Workout::firstOrFail());
 
         $response->assertStatus(201);
         $response->assertResource($resource);
+    }
+
+    /**
+     * @test
+     */
+    public function name_is_required_to_create_workout()
+    {
+        $this->response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), []);
+
+        $this->assertFieldHasValidationError('name');
     }
 
     /**
