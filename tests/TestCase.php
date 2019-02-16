@@ -17,6 +17,7 @@ abstract class TestCase extends BaseTestCase
      * @var User
      */
     protected $user;
+
     /**
      * Set the currently logged in user for the application.
      *
