@@ -72,6 +72,10 @@ class Handler extends ExceptionHandler
                     $code = 403;
                     $detail = 'This action is unauthorized';
                     break;
+                case ($exception instanceof UndeletableException):
+                    $code = 409;
+                    $detail = 'The resource could not be deleted due to dependency conflict.';
+                    break;
                 case ($exception instanceof ValidationException):
                     return response()->json(
                         JsonApi::formatValidationErrors(

@@ -17,10 +17,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::resource('workouts', 'WorkoutController')->except(['destroy', 'edit', 'create']);
         Route::resource('users', 'UserController')->only(['show']);
-        Route::get('workouts/{workout}/exercises', 'WorkoutExerciseController@index')
-            ->name('workouts.exercises.index');
         Route::post('workouts/{workout}/exercises/{exercise}', 'WorkoutExerciseController@store')
             ->name('workouts.exercises.store');
+        Route::resource('workouts/{workout}/exercises', 'WorkoutExerciseController', [
+            'as' => 'workouts'
+        ])->only(['index', 'destroy']);
         Route::resource('workouts/{workout}/exercises/{exercise}/sets', 'ExerciseSetController', [
             'as' => 'workouts.exercises'
         ])->only(['store', 'index']);
