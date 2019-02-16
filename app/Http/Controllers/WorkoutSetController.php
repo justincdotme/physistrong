@@ -12,6 +12,7 @@ class WorkoutSetController extends Controller
     {
         $this->authorizeResource(Workout::class, 'workout');
     }
+
     /**
      * Display a listing of the resource.
      *

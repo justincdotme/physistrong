@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Core\Exercise;
 use App\Core\Set;
 use App\Core\User;
 use Tests\TestCase;
 use App\Core\Workout;
-use App\Core\ExerciseWorkout;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class WorkoutTest extends TestCase
@@ -14,6 +14,8 @@ class WorkoutTest extends TestCase
     use DatabaseMigrations;
 
     protected $workout;
+    protected $exercise1;
+    protected $exercise2;
 
     public function setUp()
     {
@@ -45,7 +47,13 @@ class WorkoutTest extends TestCase
                 'exercise_id' => 3,
                 'set_order' => 2
             ]),
+        ]);
 
+        $this->exercise1 = factory(Exercise::class)->create([
+            'id' => 1
+        ]);
+        $this->exercise2 = factory(Exercise::class)->create([
+            'id' => 2
         ]);
 
         $this->workout->sets()->saveMany($sets);
@@ -54,16 +62,28 @@ class WorkoutTest extends TestCase
     /**
      * @test
      */
-    public function it_has_relationship_to_exercise_workout()
+    public function it_has_relationship_to_exercises()
     {
-        $exerciseWorkout = factory(ExerciseWorkout::class)->make([
-            'exercise_id' => 1,
-            'exercise_order' => 1
-        ]);
+        $this->workout->exercises()->save($this->exercise1, ['exercise_order' => 2]);
+        $this->workout->exercises()->save($this->exercise2, ['exercise_order' => 1]);
 
-        $this->workout->exerciseWorkout()->save($exerciseWorkout);
+        $this->assertCount(2, $this->workout->exercises);
+    }
 
-        $this->assertInstanceOf(ExerciseWorkout::class, $this->workout->exerciseWorkout()->first());
+
+
+    /**
+     * @test
+     */
+    public function exercises_are_ordered_by_exercise_order()
+    {
+        $this->workout->exercises()->save($this->exercise1, ['exercise_order' => 2]);
+        $this->workout->exercises()->save($this->exercise2, ['exercise_order' => 1]);
+
+        $this->assertEquals(1, $this->workout->exercises->first()->pivot->exercise_order);
+        $this->assertEquals(2, $this->workout->exercises->first()->id);
+        $this->assertEquals(2, $this->workout->exercises->last()->pivot->exercise_order);
+        $this->assertEquals(1, $this->workout->exercises->last()->id);
     }
 
     /**

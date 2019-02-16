@@ -13,12 +13,13 @@ class CreateExerciseWorkoutsTable extends Migration
      */
     public function up()
     {
-        Schema::create('exercise_workouts', function (Blueprint $table) {
+        Schema::create('exercise_workout', function (Blueprint $table) {
             $table->integer('workout_id')->unsigned()->index();
             $table->foreign('workout_id')->references('id')->on('workouts');
             $table->integer('exercise_id')->unsigned()->index();
             $table->foreign('exercise_id')->references('id')->on('exercises');
-            $table->integer('exercise_order');
+            $table->unique(['exercise_id', 'workout_id']);
+            $table->integer('exercise_order')->unique();
             $table->timestamps();
         });
     }

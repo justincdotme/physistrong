@@ -14,6 +14,15 @@ class Exercise extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'type' => 'exercise',
+            'id' => (string)$this->id,
+            'attributes' => [
+                'name' => $this->name
+            ],
+            'links' => [
+                'self' => route('exercises.show', ['exercise' => $this->id])
+            ]
+        ];
     }
 }

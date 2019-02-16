@@ -28,10 +28,10 @@ class Workout extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function exerciseWorkout()
+    public function exercises()
     {
-        return $this->hasMany(ExerciseWorkout::class);
+        return $this->belongsToMany(Exercise::class)->withPivot('exercise_order')->orderBy('exercise_order');
     }
 }
