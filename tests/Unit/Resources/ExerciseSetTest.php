@@ -9,9 +9,9 @@ use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use App\Http\Resources\WorkoutSet as WorkoutSetResource;
+use App\Http\Resources\ExerciseSet as WorkoutSetResource;
 
-class WorkoutSetTest extends TestCase
+class ExerciseSetTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -46,7 +46,7 @@ class WorkoutSetTest extends TestCase
             'set_order' => 1
         ]);
         $this->resource = new WorkoutSetResource($this->set);
-        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+        $this->responseArray = $this->resource->response()->getData(true);
     }
 
     /**
@@ -80,9 +80,33 @@ class WorkoutSetTest extends TestCase
     /**
      * @test
      */
-    public function it_has_correct_date()
+    public function it_has_correct_set_order()
     {
-        $this->assertEquals($this->date, $this->responseArray['data']['attributes']['date']);
+        $this->assertEquals($this->set->set_order, $this->responseArray['data']['attributes']['set_order']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_correct_exercise_id()
+    {
+        $this->assertEquals($this->set->exercise_id, $this->responseArray['data']['attributes']['exercise_id']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_correct_weight()
+    {
+        $this->assertEquals($this->set->weight, $this->responseArray['data']['attributes']['weight']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_correct_count()
+    {
+        $this->assertEquals($this->set->count, $this->responseArray['data']['attributes']['count']);
     }
 
     /**

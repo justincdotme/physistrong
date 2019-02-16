@@ -48,7 +48,7 @@ class WorkoutSetRelationshipTest extends TestCase
 
         $this->resource = new WorkoutSetRelationshipResource($this->workout->sets()->first());
 
-        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+        $this->responseArray = $this->resource->response()->getData(true);
     }
 
     /**

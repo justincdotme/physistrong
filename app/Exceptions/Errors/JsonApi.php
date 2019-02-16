@@ -35,9 +35,7 @@ class JsonApi
      */
     public static function formatValidationErrors($code, $errors)
     {
-        $errors = collect($errors);
-
-        $output = $errors->flatMap(function ($item, $field) use ($code) {
+        $output = collect($errors)->flatMap(function ($item, $field) use ($code) {
             return collect($item)->map(function ($message, $intKey) use ($field, $code) {
                 return [
                     'status' => "{$code}",
