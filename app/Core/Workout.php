@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Workout extends Model
 {
     public $guarded = [];
-
     protected $dates = ['created_at', 'updated_at'];
-
-    protected $with = ['sets'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -25,18 +22,16 @@ class Workout extends Model
      */
     public function sets()
     {
-        return $this->hasMany(Set::class);
+        return $this->hasMany(Set::class)
+            ->orderBy('exercise_id', 'ASC')
+            ->orderBy('set_order', 'ASC');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getSets()
+    public function exerciseWorkout()
     {
-        return $this->sets()
-            ->orderBy('exercise_id')
-            ->orderBy('set_order', 'ASC')
-            ->get()
-            ->groupBy('exercise_id');
+        return $this->hasMany(ExerciseWorkout::class);
     }
 }
