@@ -4,57 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Core\Set;
 use App\Core\Workout;
-use App\Core\Exercise;
-use Illuminate\Http\Request;
-use App\Http\Resources\WorkoutSet;
-use App\Http\Resources\WorkoutSetCollection;
+use App\Http\Resources\ExerciseSet;
 
 class WorkoutSetController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Workout::class, 'workout');
+    }
     /**
      * Display a listing of the resource.
      *
      * @param Workout $workout
-     * @return WorkoutSetCollection
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Workout $workout)
     {
-        return new WorkoutSetCollection($workout->getSets());
+        return ExerciseSet::collection($workout->sets()->get());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
      *
      * @param Workout $workout
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @param Set $set
+     * @return ExerciseSet
      */
-    public function store(Workout $workout, Request $request)
+    public function show(Workout $workout, Set $set)
     {
-        $this->authorize('create', [Set::class, $workout]);
-        $this->validate(
-            request(),
-            [
-                'exercise' => 'required|integer',
-                'weight' => 'required|integer',
-                'count' => 'required|integer|min:1',
-                'set_order' => 'required|integer|min:1'
-            ]
-        );
-
-        $set = Set::forWorkout(
-            $workout,
-            Exercise::findOrFail(request('exercise')),
-            request('set_order'),
-            request('weight'),
-            request('count')
-        );
-
-        return (new WorkoutSet($set))
-            ->response()
-            ->setStatusCode(201);
+        return new ExerciseSet($set);
     }
 }
