@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
-        Route::resource('workouts', 'WorkoutController')->only(['index', 'store', 'show']);
+        Route::resource('workouts', 'WorkoutController')->except(['destroy', 'edit', 'create']);
         Route::resource('users', 'UserController')->only(['show']);
         Route::resource('/workouts/{workout}/exercises/{exercise}/sets', 'ExerciseSetController', [
             'as' => 'workouts.exercises'

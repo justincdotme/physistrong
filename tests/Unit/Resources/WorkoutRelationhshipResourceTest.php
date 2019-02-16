@@ -25,7 +25,8 @@ class WorkoutRelationhshipResourceTest extends TestCase
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->make([
-            'id' => 1
+            'id' => 1,
+            'name' => 'test workout'
         ]);
         $this->testUser->workouts()->save($this->workout);
 

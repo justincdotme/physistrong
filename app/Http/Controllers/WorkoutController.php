@@ -34,13 +34,38 @@ class WorkoutController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return WorkoutResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
+        $this->validate(
+            request(),
+            [
+                'name' => 'required'
+            ]
+        );
+
         $workout = Workout::create([
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'name' => request('name')
+        ]);
+
+        return new WorkoutResource($workout);
+    }
+
+    public function update(Workout $workout)
+    {
+        $this->validate(
+            request(),
+            [
+                'name' => 'required'
+            ]
+        );
+
+        $workout->update([
+            'name' => request('name')
         ]);
 
         return new WorkoutResource($workout);

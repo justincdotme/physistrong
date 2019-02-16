@@ -32,6 +32,7 @@ class WorkoutSetRelationshipTest extends TestCase
         ]);
         $this->workout = factory(Workout::class)->create([
             'id' => 1,
+            'name' => 'test workout',
             'user_id' => $this->testUser->id,
             'created_at' => $this->date
         ]);
