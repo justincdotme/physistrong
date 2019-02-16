@@ -52,12 +52,72 @@ class ViewExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function index_route_returns_correct_format()
+    public function authenticated_user_can_view_their_own_exercise_sets()
     {
         $resource = ExerciseSet::collection($this->workout->sets()->ofExercise($this->exercise)->get());
 
         $response = $this->actingAs($this->testUser)->json("GET", route('workouts.exercises.sets.index', ['workout' => $this->workout->id, 'exercise' => $this->exercise->id]));
 
+        $response->assertStatus(200);
         $response->assertResource($resource);
+    }
+
+    /**
+     * @test
+     */
+    public function authenticated_user_can_view_their_own_exercise_set()
+    {
+        $resource = new ExerciseSet($this->workout->sets()->first());
+
+        $response = $this->actingAs($this->testUser)->json("GET", route(
+                'workouts.exercises.sets.show', [
+                'workout' => $this->workout->id,
+                'exercise' => $this->exercise->id,
+                'set' => $this->workout->sets()->first()->id
+            ])
+        );
+
+        $response->assertStatus(200);
+        $response->assertResource($resource);
+    }
+
+    /**
+     * @test
+     */
+    public function authenticated_user_cannot_view_another_users_set()
+    {
+        $user2 = factory(User::Class)->create();
+        $response = $this->actingAs($user2)->json("GET", route(
+                'workouts.exercises.sets.show', [
+                'workout' => $this->workout->id,
+                'exercise' => $this->exercise->id,
+                'set' => $this->workout->sets()->first()->id
+            ])
+        );
+
+        $response->assertStatus(403);
+        $responseArray = $response->decodeResponseJson();
+        $this->assertArrayHasKey('errors', $responseArray);
+        $this->assertEquals('403', $responseArray['errors']['status']);
+        $this->assertEquals('This action is unauthorized', $responseArray['errors']['detail']);
+    }
+
+    /**
+     * @test
+     */
+    public function unauthenticated_user_cannot_view_users_set()
+    {
+        $response = $this->json("GET", route(
+            'workouts.exercises.sets.show', [
+            'workout' => $this->workout->id,
+            'exercise' => $this->exercise->id,
+            'set' => $this->workout->sets()->first()->id
+        ]));
+
+        $response->assertStatus(401);
+        $responseArray = $response->decodeResponseJson();
+        $this->assertArrayHasKey('errors', $responseArray);
+        $this->assertEquals('401', $responseArray['errors']['status']);
+        $this->assertEquals('Missing token', $responseArray['errors']['detail']);
     }
 }

@@ -24,10 +24,10 @@ Route::group(['prefix' => 'v1'], function () {
         ])->only(['index', 'destroy']);
         Route::resource('workouts/{workout}/exercises/{exercise}/sets', 'ExerciseSetController', [
             'as' => 'workouts.exercises'
-        ])->only(['store', 'index']);
+        ])->except(['create', 'edit', 'destroy']);
         Route::resource('workouts/{workout}/sets', 'WorkoutSetController', [
             'as' => 'workouts'
-        ])->only(['index', 'show']);
+        ])->only(['index']);
         Route::resource('exercises', 'ExerciseController')->only(['show']);
     });
 });

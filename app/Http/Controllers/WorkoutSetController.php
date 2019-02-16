@@ -23,16 +23,4 @@ class WorkoutSetController extends Controller
     {
         return ExerciseSet::collection($workout->sets()->get());
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Workout $workout
-     * @param Set $set
-     * @return ExerciseSet
-     */
-    public function show(Workout $workout, Set $set)
-    {
-        return new ExerciseSet($set);
-    }
 }
