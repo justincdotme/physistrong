@@ -25,7 +25,11 @@ class ExerciseSet extends JsonResource
             ],
             'relationships' => new WorkoutSetRelationship($this),
             'links' => [
-                'self' => route('workouts.sets.show', ['workout' => $this->workout->id, 'set' => $this->id])
+                'self' => route('workouts.exercises.sets.show', [
+                    'workout' => $this->workout->id,
+                    'exercise' => $this->exercise_id,
+                    'set' => $this->id
+                ])
             ]
         ];
     }

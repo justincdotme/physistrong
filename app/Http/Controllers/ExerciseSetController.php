@@ -11,7 +11,15 @@ use App\Http\Resources\ExerciseSet;
 class ExerciseSetController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * ExerciseSetController constructor.
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Workout::class, 'workout');
+    }
+
+    /**
+     * Show a list of exercise sets for a workout.
      *
      * @param Workout $workout
      * @param Exercise $exercise
@@ -25,7 +33,20 @@ class ExerciseSetController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show an exercise set.
+     *
+     * @param Workout $workout
+     * @param Exercise $exercise
+     * @param Set $set
+     * @return ExerciseSet
+     */
+    public function show(Workout $workout, Exercise $exercise, Set $set)
+    {
+        return new ExerciseSet($set);
+    }
+
+    /**
+     * Add a new exercise set.
      *
      * @param Workout $workout
      * @param Exercise $exercise
@@ -58,5 +79,30 @@ class ExerciseSetController extends Controller
         return (new ExerciseSet($set))
             ->response()
             ->setStatusCode(201);
+    }
+
+    /**
+     * Update exercise set.
+     *
+     * @param Workout $workout
+     * @param Exercise $exercise
+     * @param Set $set
+     * @return ExerciseSet
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(Workout $workout, Exercise $exercise, Set $set)
+    {
+        $this->validate(
+            request(),
+            [
+                'weight' => 'integer',
+                'count' => 'integer|min:1',
+                'set_order' => 'required|integer|min:1'
+            ]
+        );
+
+        $set->update(request()->only(['weight', 'count', 'set_order']));
+
+        return (new ExerciseSet($set));
     }
 }

@@ -115,7 +115,11 @@ class ExerciseSetTest extends TestCase
     public function it_has_link_to_self()
     {
         $this->assertEquals(
-            route('workouts.sets.show', ['workout' => $this->workout->id, 'set' => $this->set->id]),
+            route('workouts.exercises.sets.show', [
+                'workout' => $this->workout->id,
+                'exercise' => $this->exercise,
+                'set' => $this->set->id
+            ]),
             $this->responseArray['data']['links']['self']
         );
     }
