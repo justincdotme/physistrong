@@ -19,7 +19,7 @@ class WorkoutController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -31,12 +31,11 @@ class WorkoutController extends Controller
         );
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return WorkoutResource
      */
     public function store(Request $request)
     {
@@ -51,7 +50,7 @@ class WorkoutController extends Controller
      * Display the specified resource.
      *
      * @param Workout $workout
-     * @return \Illuminate\Http\Response
+     * @return WorkoutResource
      */
     public function show(Workout $workout)
     {

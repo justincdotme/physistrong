@@ -17,9 +17,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::resource('workouts', 'WorkoutController')->only(['index', 'store', 'show']);
         Route::resource('users', 'UserController')->only(['show']);
+        Route::resource('/workouts/{workout}/exercises/{exercise}/sets', 'ExerciseSetController', [
+            'as' => 'workouts.exercises'
+        ])->only(['store', 'index']);
         Route::resource('/workouts/{workout}/sets', 'WorkoutSetController', [
             'as' => 'workouts'
-        ])->only(['store', 'show', 'index']);
+        ])->only(['index', 'show']);
         Route::resource('exercises', 'ExerciseController')->only(['show']);
     });
 });
