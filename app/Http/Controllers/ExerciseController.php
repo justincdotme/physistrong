@@ -9,6 +9,11 @@ use App\Http\Resources\Exercise as ExerciseResource;
 
 class ExerciseController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Exercise::class);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -53,5 +58,31 @@ class ExerciseController extends Controller
     public function show($id)
     {
         //
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @return ExerciseResource
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(Exercise $exercise)
+    {
+        $this->validate(
+            request(),
+            [
+                'name' => [
+                    'required',
+                    Rule::unique('exercises')->where(function ($nameQuery) {
+                        return $nameQuery->where('name', request('name'))
+                            ->where('user_id', auth()->user()->id);
+                    })
+                ]
+            ]
+        );
+        $exercise->update(
+            request()->only('name')
+        );
+
+        return new ExerciseResource($exercise);
     }
 }
