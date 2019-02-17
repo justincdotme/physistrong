@@ -4,7 +4,6 @@ namespace App\Core;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
@@ -53,5 +52,13 @@ class User extends Authenticatable implements JWTSubject
     public function workouts()
     {
         return $this->hasMany(Workout::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function exercises()
+    {
+        return $this->hasMany(Exercise::class);
     }
 }

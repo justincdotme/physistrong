@@ -28,6 +28,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('workouts/{workout}/sets', 'WorkoutSetController', [
             'as' => 'workouts'
         ])->only(['index']);
-        Route::resource('exercises', 'ExerciseController')->only(['show']);
+        Route::resource('exercises', 'ExerciseController')->only(['show', 'store']);
     });
 });

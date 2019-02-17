@@ -54,4 +54,13 @@ class Set extends Model
     {
         return $query->where('exercise_id', $exercise->id);
     }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getWeightAttribute($value)
+    {
+        return ($value > 0 ? $value : 'Body');
+    }
 }

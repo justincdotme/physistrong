@@ -9,9 +9,9 @@ use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use App\Http\Resources\WorkoutSetRelationship as WorkoutSetRelationshipResource;
+use App\Http\Resources\ExerciseSetRelationship as WorkoutSetRelationshipResource;
 
-class WorkoutSetRelationshipTest extends TestCase
+class ExerciseSetRelationshipTest extends TestCase
 {
     use DatabaseMigrations;
 
