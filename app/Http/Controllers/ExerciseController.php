@@ -52,12 +52,12 @@ class ExerciseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Exercise $exercise
+     * @return ExerciseResource
      */
-    public function show($id)
+    public function show(Exercise $exercise)
     {
-        //
+        return new ExerciseResource($exercise);
     }
 
     /**

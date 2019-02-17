@@ -19,7 +19,7 @@ class ExercisePolicy
      */
     public function view(User $user, Exercise $exercise)
     {
-        //
+        return ($user->id === $exercise->user->id);
     }
 
     /**
