@@ -82,4 +82,21 @@ abstract class TestCase extends BaseTestCase
             $this->fail('There is no errors array');
         }
     }
+
+    /**
+     * Render the contents of a mailable.
+     * Allows us to run assertions against it's contents.
+     *
+     * @param $mailable
+     * @return string
+     * @throws \Throwable
+     */
+    protected function renderMailable($mailable)
+    {
+        $mailable->build();
+        return view(
+            $mailable->view,
+            $mailable->buildViewData()
+        )->render();
+    }
 }
