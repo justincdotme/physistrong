@@ -103,6 +103,20 @@ class ExerciseSetController extends Controller
 
         $set->update(request()->only(['weight', 'count', 'set_order']));
 
-        return (new ExerciseSet($set));
+        return new ExerciseSet($set);
+    }
+
+    /**
+     * @param Workout $workout
+     * @param Exercise $exercise
+     * @param Set $set
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function destroy(Workout $workout, Exercise $exercise, Set $set)
+    {
+        $set->delete();
+
+        return response(null, 204);
     }
 }

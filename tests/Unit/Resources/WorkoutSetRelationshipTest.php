@@ -59,12 +59,10 @@ class WorkoutSetRelationshipTest extends TestCase
     {
         $this->assertArrayHasKey('workout', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']['workout']);
-        $this->assertArrayHasKey('data', $this->responseArray['data']['workout']);
         $this->assertArrayHasKey('self', $this->responseArray['data']['workout']['links']);
 
         $this->assertArrayHasKey('exercise', $this->responseArray['data']);
         $this->assertArrayHasKey('links', $this->responseArray['data']['exercise']);
-        $this->assertArrayHasKey('data', $this->responseArray['data']['exercise']);
         $this->assertArrayHasKey('self', $this->responseArray['data']['exercise']['links']);
     }
 
