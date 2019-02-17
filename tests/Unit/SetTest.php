@@ -12,7 +12,8 @@ class SetTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected $bench;
+    protected $sets;
+    protected $plank;
     protected $squat;
     protected $workout;
 
@@ -22,17 +23,19 @@ class SetTest extends TestCase
         $this->workout = factory(Workout::class)->create();
 
         $this->squat = factory(Exercise::class)->create([
-            'name' => 'Squat'
+            'name' => 'Squat',
+            'exercise_type_id' => 1,
         ]);
-        $this->bench = factory(Exercise::class)->create([
-            'name' => 'Bench Press'
+        $this->plank = factory(Exercise::class)->create([
+            'exercise_type_id' => 2,
+            'name' => 'Plank'
         ]);
 
         $this->sets = collect([
             Set::forWorkout($this->workout, $this->squat, 2, 120, 10),
             Set::forWorkout($this->workout, $this->squat, 1, 140, 8),
-            Set::forWorkout($this->workout, $this->bench, 2, 80, 10),
-            Set::forWorkout($this->workout, $this->bench, 1, 120, 6)
+            Set::forWorkout($this->workout, $this->plank, 2, 80, 10),
+            Set::forWorkout($this->workout, $this->plank, 1, 120, 6)
         ]);
     }
 
@@ -41,7 +44,7 @@ class SetTest extends TestCase
      */
     public function user_can_add_multiple_sets_of_same_exercise()
     {
-        $this->assertCount(2, $this->workout->sets()->ofExercise($this->bench)->get());
+        $this->assertCount(2, $this->workout->sets()->ofExercise($this->plank)->get());
     }
 
     /**
@@ -60,5 +63,21 @@ class SetTest extends TestCase
         $sets = $this->workout->sets()->ofExercise($this->squat)->get();
         $this->assertEquals(1, $sets->first()->set_order);
         $this->assertEquals(2, $sets->last()->set_order);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_show_formatted_weight()
+    {
+        $bodyWeightSet = factory(Set::class)->make([
+            'weight' => 0
+        ]);
+        $weightedSet = factory(Set::class)->make([
+            'weight' => 10
+        ]);
+
+        $this->assertEquals('Body', $bodyWeightSet->weight);
+        $this->assertEquals(10, $weightedSet->weight);
     }
 }
