@@ -80,7 +80,7 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('workouts', $this->responseArray['data']['relationships']);
         $this->assertEquals(
             route('workouts.index'),
-            $this->responseArray['data']['relationships']['workouts']['links']['related']
+            $this->responseArray['data']['relationships']['workouts']['links']['self']
         );
     }
 }

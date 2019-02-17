@@ -17,7 +17,7 @@ class UserRelationship extends JsonResource
         return [
             'workouts' => [
                 'links' => [
-                    'related' => route('workouts.index'),
+                    'self' => route('workouts.index'),
                 ]
             ]
         ];
