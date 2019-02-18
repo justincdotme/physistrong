@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('exercises', 'ExerciseController')->only(['show', 'store', 'update']);
     });
     Route::group(['middleware' => 'guest'], function () {
-        Route::post('user/register', 'UserRegistrationController@store')->name('user.store');
+        Route::post('user/register', 'UserController@store')->name('user.store');
+        Route::post('user/login', 'UserController@login')->name('user.login');
     });
 });
