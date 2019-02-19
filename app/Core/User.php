@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Mail\PasswordResetRequest;
+use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -60,5 +62,17 @@ class User extends Authenticatable implements JWTSubject
     public function exercises()
     {
         return $this->hasMany(Exercise::class);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        //TODO - Find a way to pass in the mailable, this is sloppy architecture.
+        Mail::to($this->email)->send(new PasswordResetRequest($token));
     }
 }
