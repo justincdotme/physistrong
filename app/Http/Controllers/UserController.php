@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Core\User;
 use App\Exceptions\Errors\JsonApi;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistrationConfirmation;
 use App\Http\Resources\User as UserResource;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
+
     /**
      * Display the specified resource.
      *
