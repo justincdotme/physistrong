@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Core\User;
-use ExerciseTypesTableSeeder;
 use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
@@ -26,9 +25,11 @@ class UserTest extends TestCase
      */
     public function it_has_relationship_to_exercises()
     {
-        $exercise = factory(Exercise::class)->make();
+        $exercises = collect([
+            factory(Exercise::class)->make()
+        ]);
 
-        $this->user->exercises()->save($exercise);
+        $this->user->setRelation('exercises', $exercises);
 
         $this->assertCount(1, $this->user->exercises);
     }
@@ -38,9 +39,11 @@ class UserTest extends TestCase
      */
     public function it_has_relationship_to_workouts()
     {
-        $workout = factory(Workout::class)->make();
+        $workouts = collect([
+            factory(Workout::class)->make()
+        ]);
 
-        $this->user->workouts()->save($workout);
+        $this->user->setRelation('workouts', $workouts);
 
         $this->assertCount(1, $this->user->workouts);
     }

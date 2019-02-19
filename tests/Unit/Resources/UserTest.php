@@ -21,7 +21,7 @@ class UserTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1,
             'first_name' => 'Justin',
             'last_name' => 'Christenson'
@@ -32,7 +32,7 @@ class UserTest extends TestCase
 
         $this->resource = new UserResource($this->testUser);
 
-        $this->responseArray = json_decode($this->resource->response()->getContent(), true);
+        $this->responseArray = $this->resource->response()->getData(true);
     }
 
     /**
@@ -50,34 +50,14 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function it_has_type_user()
+    public function it_has_correct_data()
     {
-         $this->assertEquals('user', $this->responseArray['data']['type']);
-    }
 
-    /**
-     * @test
-     */
-    public function it_has_correct_id()
-    {
         $this->assertEquals('1', $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_name()
-    {
+        $this->assertEquals('user', $this->responseArray['data']['type']);
+        $this->assertArrayHasKey('workouts', $this->responseArray['data']['relationships']);
         $this->assertEquals('Justin', $this->responseArray['data']['attributes']['first_name']);
         $this->assertEquals('Christenson', $this->responseArray['data']['attributes']['last_name']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_relationship_to_workouts()
-    {
-        $this->assertArrayHasKey('workouts', $this->responseArray['data']['relationships']);
         $this->assertEquals(
             route('workouts.index'),
             $this->responseArray['data']['relationships']['workouts']['links']['self']

@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Core\User;
+use Tests\TestCase;
 use App\Core\Workout;
 use App\Http\Resources\Workout as WorkoutResource;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CreateWorkoutTest extends TestCase

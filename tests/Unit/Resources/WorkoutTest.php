@@ -23,15 +23,15 @@ class WorkoutTest extends TestCase
     {
         parent::setUp();
         $this->date = Carbon::now()->toDateTimeString();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->make([
             'id' => 1,
             'name' => 'Test Workout',
-            'user_id' => $this->testUser->id,
             'created_at' => $this->date
         ]);
+        $this->workout->setRelation('user', $this->testUser);
         $this->resource = new WorkoutResource($this->workout);
         $this->responseArray = $this->resource->response()->getData(true);
     }
@@ -51,48 +51,20 @@ class WorkoutTest extends TestCase
     /**
      * @test
      */
-    public function it_has_correct_name()
-    {
-        $this->assertEquals($this->workout->name, $this->responseArray['data']['attributes']['name']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_type_workout()
-    {
-        $this->assertEquals('workout', $this->responseArray['data']['type']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_id()
-    {
-        $this->assertEquals('1', $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_relationship_to_user()
-    {
-        $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
-        $this->assertEquals(
-            route('users.show', ['user' => 1]),
-            $this->responseArray['data']['relationships']['user']['links']['self']
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_relationship_to_sets()
+    public function it_has_correct_data()
     {
         $this->assertEquals(
             route('workouts.show', ['workout' => $this->workout->id]),
             $this->responseArray['data']['links']['self']
 
         );
+        $this->assertEquals(
+            route('users.show', ['user' => 1]),
+            $this->responseArray['data']['relationships']['user']['links']['self']
+        );
+        $this->assertEquals('1', $this->responseArray['data']['id']);
+        $this->assertEquals('workout', $this->responseArray['data']['type']);
+        $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
+        $this->assertEquals($this->workout->name, $this->responseArray['data']['attributes']['name']);
     }
 }

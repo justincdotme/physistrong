@@ -2,12 +2,12 @@
 
 namespace Tests\Unit;
 
-use App\Core\ExerciseType;
 use App\Core\User;
-use ExerciseTypesTableSeeder;
 use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
+use App\Core\ExerciseType;
+use ExerciseTypesTableSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ExerciseTest extends TestCase
@@ -46,7 +46,7 @@ class ExerciseTest extends TestCase
         $this->seed(ExerciseTypesTableSeeder::class);
 
         $type = ExerciseType::find(1);
-        $this->exercise->type()->associate($type)->save();
+        $this->exercise->setRelation('type', $type);
 
         $this->assertEquals($type->id, $this->exercise->type->id);
         $this->assertEquals($type->name, $this->exercise->type->name);
@@ -57,9 +57,9 @@ class ExerciseTest extends TestCase
      */
     public function it_has_relationship_to_user()
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->make();
 
-        $this->exercise->user()->associate($user)->save();
+        $this->exercise->setRelation('user', $user);
 
         $this->assertEquals($user->id, $this->exercise->user->id);
         $this->assertEquals($user->name, $this->exercise->user->name);

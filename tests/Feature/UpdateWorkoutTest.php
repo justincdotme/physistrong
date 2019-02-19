@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Core\User;
+use Tests\TestCase;
 use App\Core\Workout;
 use App\Http\Resources\Workout as WorkoutResource;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UpdateWorkoutTest extends TestCase
@@ -22,8 +22,7 @@ class UpdateWorkoutTest extends TestCase
         $this->workout = factory(Workout::class)->create([
             'id' => 2,
             'user_id' => $this->testUser->id,
-            'name' => 'test workout',
-            'name' => 'workout 2',
+            'name' => 'test workout'
         ]);
     }
 
