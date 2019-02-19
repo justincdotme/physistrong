@@ -27,7 +27,7 @@ class ExerciseSetTest extends TestCase
     {
         parent::setUp();
         $this->date = Carbon::now()->toDateTimeString();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->create([
@@ -64,56 +64,14 @@ class ExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function it_has_type_set()
+    public function it_has_correct_data()
     {
         $this->assertEquals('set', $this->responseArray['data']['type']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_id()
-    {
         $this->assertEquals("{$this->set->id}", $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_set_order()
-    {
-        $this->assertEquals($this->set->set_order, $this->responseArray['data']['attributes']['set_order']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_exercise_id()
-    {
-        $this->assertEquals($this->set->exercise_id, $this->responseArray['data']['attributes']['exercise_id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_weight()
-    {
-        $this->assertEquals($this->set->weight, $this->responseArray['data']['attributes']['weight']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_count()
-    {
         $this->assertEquals($this->set->count, $this->responseArray['data']['attributes']['count']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_link_to_self()
-    {
+        $this->assertEquals($this->set->weight, $this->responseArray['data']['attributes']['weight']);
+        $this->assertEquals($this->set->set_order, $this->responseArray['data']['attributes']['set_order']);
+        $this->assertEquals($this->set->exercise_id, $this->responseArray['data']['attributes']['exercise_id']);
         $this->assertEquals(
             route('workouts.exercises.sets.show', [
                 'workout' => $this->workout->id,

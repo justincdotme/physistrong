@@ -3,9 +3,9 @@
 namespace Tests\Unit\Resources;
 
 use App\Core\User;
-use App\Http\Resources\UserRelationship;
 use Tests\TestCase;
 use App\Core\Workout;
+use App\Http\Resources\UserRelationship;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserRelationshipTest extends TestCase
@@ -21,14 +21,14 @@ class UserRelationshipTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->make([
             'id' => 1,
             'name' => 'test workout'
         ]);
-        $this->testUser->workouts()->save($this->workout);
+        $this->testUser->setRelation('workouts', collect([$this->workout]));
 
         $this->resource = new UserRelationship($this->testUser );
 

@@ -3,7 +3,6 @@
 namespace Tests\Unit\Mail;
 
 use Tests\TestCase;
-use Illuminate\Support\Str;
 use App\Mail\PasswordResetRequest;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -13,16 +12,12 @@ class PasswordResetRequestEmailTest extends TestCase
 
     protected $passwordReset;
 
-    public function setUp()
-    {
-        parent::setUp();
-    }
     /**
      * @test
      */
     public function email_contains_correct_content()
     {
-        $token = Str::random(60);
+        $token = 12345;
         $resetEndpoint = route('password.request', [
             'token' => $token
         ]);
@@ -40,7 +35,7 @@ class PasswordResetRequestEmailTest extends TestCase
      */
     public function email_has_subject()
     {
-        $email = new PasswordResetRequest(Str::random(60));
+        $email = new PasswordResetRequest(12345);
 
         $this->assertEquals('Password Reset Request', $email->build()->subject);
     }

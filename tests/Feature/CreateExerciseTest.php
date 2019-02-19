@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Core\User;
-use ExerciseTypesTableSeeder;
 use Tests\TestCase;
 use App\Core\Exercise;
+use ExerciseTypesTableSeeder;
 use App\Http\Resources\Exercise as ExerciseResource;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -18,7 +18,6 @@ class CreateExerciseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->seed(ExerciseTypesTableSeeder::class);
         $this->testUser = factory(User::class)->create();
     }
 
@@ -27,6 +26,7 @@ class CreateExerciseTest extends TestCase
      */
     public function authenticated_user_can_create_an_exercise()
     {
+        $this->seed(ExerciseTypesTableSeeder::class);
         $this->response = $this->createExercise([
             'name' => 'Close Grip Bench Press',
             'exercise_type' => 1

@@ -21,17 +21,17 @@ class WorkoutRelationhshipResourceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->make([
             'id' => 1,
             'name' => 'test workout'
         ]);
-        $this->testUser->workouts()->save($this->workout);
+
+        $this->workout->setRelation('user', $this->testUser);
 
         $this->resource = new WorkoutRelationshipResource($this->workout);
-
         $this->responseArray = $this->resource->response()->getData(true);
     }
 

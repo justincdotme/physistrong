@@ -16,9 +16,32 @@ class ViewWorkoutTest extends TestCase
     protected $testUser1;
     protected $testUser2;
 
-    public function setUp()
+    /**
+     * @test
+     */
+    public function authenticated_user_can_view_one_of_their_own_workouts()
     {
-        parent::setUp();
+        $this->testUser1 = factory(User::class)->create();
+        $this->workout = factory(Workout::class)->create([
+            'user_id' => $this->testUser1,
+            'name' => 'test workout',
+            'created_at' => "2019-02-15 00:00:01",
+            'updated_at' => "2019-02-15 00:00:01"
+        ]);
+
+        $resource = new WorkoutResource($this->workout);
+
+        $response = $this->actingAs($this->testUser1)->json("GET", route('workouts.show', ['workout' => $this->workout->id]));
+
+        $response->assertStatus(200);
+        $response->assertResource($resource);
+    }
+
+    /**
+     * @test
+     */
+    public function authenticated_user_cannot_view_another_users_workout()
+    {
         $this->testUser1 = factory(User::class)->create();
         $this->testUser2 = factory(User::class)->create([
             'first_name' => 'Justin',
@@ -33,26 +56,7 @@ class ViewWorkoutTest extends TestCase
             'created_at' => "2019-02-15 00:00:01",
             'updated_at' => "2019-02-15 00:00:01"
         ]);
-    }
 
-    /**
-     * @test
-     */
-    public function authenticated_user_can_view_one_of_their_own_workouts()
-    {
-        $resource = new WorkoutResource($this->workout);
-
-        $response = $this->actingAs($this->testUser1)->json("GET", route('workouts.show', ['workout' => $this->workout->id]));
-
-        $response->assertStatus(200);
-        $response->assertResource($resource);
-    }
-
-    /**
-     * @test
-     */
-    public function authenticated_user_cannot_view_another_users_workout()
-    {
         $response = $this->actingAs($this->testUser2)->json("GET", route('workouts.show', ['workout' => $this->workout->id]));
 
         $response->assertStatus(403);
@@ -68,6 +72,14 @@ class ViewWorkoutTest extends TestCase
      */
     public function authenticated_user_can_view_all_of_their_own_workouts()
     {
+        $this->testUser2 = factory(User::class)->create([
+            'first_name' => 'Justin',
+            'last_name' => 'Christenson',
+            'email' => 'justin@justinc.me',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
+        ]);
+
         factory(Workout::class, 5)->create([
             'user_id' => $this->testUser2->id,
             'name' => 'test workout'

@@ -27,7 +27,7 @@ class ExerciseSetRelationshipTest extends TestCase
     {
         parent::setUp();
         $this->date = Carbon::now()->toDateTimeString();
-        $this->testUser = factory(User::class)->create([
+        $this->testUser = factory(User::class)->make([
             'id' => 1
         ]);
         $this->workout = factory(Workout::class)->create([

@@ -23,7 +23,7 @@ class ExerciseTest extends TestCase
     {
         parent::setUp();
 
-        $this->exercise = factory(Exercise::class)->create([
+        $this->exercise = factory(Exercise::class)->make([
             'name' => 'squat'
         ]);
 
@@ -45,24 +45,10 @@ class ExerciseTest extends TestCase
     /**
      * @test
      */
-    public function it_has_type_set()
+    public function it_has_correct_data()
     {
         $this->assertEquals('exercise', $this->responseArray['data']['type']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_correct_id()
-    {
         $this->assertEquals("{$this->exercise->id}", $this->responseArray['data']['id']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_link_to_self()
-    {
         $this->assertEquals(
             route('exercises.show', ['exercise' => $this->exercise->id]),
             $this->responseArray['data']['links']['self']
