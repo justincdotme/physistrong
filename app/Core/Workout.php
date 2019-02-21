@@ -34,4 +34,16 @@ class Workout extends Model
     {
         return $this->belongsToMany(Exercise::class)->withPivot('exercise_order')->orderBy('exercise_order');
     }
+
+    /**
+     * Add an exercise to a workout.
+     *
+     * @param Exercise $exercise
+     * @param $order
+     * @return Model
+     */
+    public function addExercise(Exercise $exercise, $order)
+    {
+        return $this->exercises()->save($exercise, ['exercise_order' => $order]);
+    }
 }
