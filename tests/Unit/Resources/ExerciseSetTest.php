@@ -73,9 +73,7 @@ class ExerciseSetTest extends TestCase
         $this->assertEquals($this->set->set_order, $this->responseArray['data']['attributes']['set_order']);
         $this->assertEquals($this->set->exercise_id, $this->responseArray['data']['attributes']['exercise_id']);
         $this->assertEquals(
-            route('workouts.exercises.sets.show', [
-                'workout' => $this->workout->id,
-                'exercise' => $this->exercise,
+            route('sets.show', [
                 'set' => $this->set->id
             ]),
             $this->responseArray['data']['links']['self']

@@ -70,7 +70,7 @@ class ViewExerciseSetTest extends TestCase
         $resource = new ExerciseSet($this->workout->sets()->first());
 
         $response = $this->actingAs($this->testUser)->json("GET", route(
-                'workouts.exercises.sets.show', [
+                'sets.show', [
                 'workout' => $this->workout->id,
                 'exercise' => $this->exercise->id,
                 'set' => $this->workout->sets()->first()->id
@@ -88,7 +88,7 @@ class ViewExerciseSetTest extends TestCase
     {
         $user2 = factory(User::Class)->create();
         $response = $this->actingAs($user2)->json("GET", route(
-                'workouts.exercises.sets.show', [
+                'sets.show', [
                 'workout' => $this->workout->id,
                 'exercise' => $this->exercise->id,
                 'set' => $this->workout->sets()->first()->id
@@ -108,7 +108,7 @@ class ViewExerciseSetTest extends TestCase
     public function unauthenticated_user_cannot_view_users_set()
     {
         $response = $this->json("GET", route(
-            'workouts.exercises.sets.show', [
+            'sets.show', [
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
             'set' => $this->workout->sets()->first()->id
