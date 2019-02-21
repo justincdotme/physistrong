@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Exercise;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Rules\UniqueExercise;
 use App\Http\Resources\Exercise as ExerciseResource;
 
 class ExerciseController extends Controller
@@ -18,27 +18,24 @@ class ExerciseController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     * @param Exercise $exercise
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request, Exercise $exercise)
     {
         $user = auth()->user();
         $this->validate(
             request(),
             [
                 'name' => [
-                    'required',
-                    Rule::unique('exercises')->where(function ($nameQuery) use ($user) {
-                        return $nameQuery->where('name', request('name'))
-                            ->where('user_id', $user->id);
-                    })
+                    'required', new UniqueExercise($exercise, $user)
                 ],
                 'exercise_type' => 'required|integer|exists:exercise_types,id'
             ]
         );
 
-        $exercise = Exercise::create([
+        $exercise = $exercise->create([
             'name' => request('name'),
             'exercise_type_id' => request('exercise_type'),
             'user_id' =>  $user->id
@@ -71,11 +68,7 @@ class ExerciseController extends Controller
             request(),
             [
                 'name' => [
-                    'required',
-                    Rule::unique('exercises')->where(function ($nameQuery) {
-                        return $nameQuery->where('name', request('name'))
-                            ->where('user_id', auth()->user()->id);
-                    })
+                    'required', new UniqueExercise($exercise, auth()->user())
                 ]
             ]
         );
