@@ -15,27 +15,25 @@ class UniqueExerciseTest extends TestCase
     protected $testUser;
     protected $exercise;
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->testUser = factory(User::class)->create([
+            'id' => 1
+        ]);
+    }
+
     /**
      * @test
      */
     public function user_can_add_unique_exercise_name()
     {
-        $this->testUser = factory(User::class)->create([
-            'id' => 1
-        ]);
         $this->exercise = factory(Exercise::class)->create([
             'name' => 'Squat',
             'user_id' => $this->testUser->id
         ]);
 
-        $v = $this->app['validator']->make(
-            [
-                'exercise' => 'Bench Press'
-            ], [
-            'exercise' => ['required', new UniqueExercise(new Exercise, $this->testUser)]
-        ]);
-
-        $this->assertTrue($v->passes());
+        $this->assertTrue(( new UniqueExercise(new Exercise, $this->testUser))->passes('exercise', 'Bench Press'));
     }
 
     /**
@@ -43,20 +41,19 @@ class UniqueExerciseTest extends TestCase
      */
     public function user_can_not_add_duplicate_exercise_name()
     {
-        $this->testUser = factory(User::class)->create([
-            'id' => 1
-        ]);
         $this->exercise = factory(Exercise::class)->create([
             'name' => 'Bench Press',
             'user_id' => $this->testUser->id
         ]);
 
-        $v = $this->app['validator']->make([
-            'exercise' => 'Bench Press'
-        ], [
-            'exercise' => ['required', new UniqueExercise(new Exercise, $this->testUser)]
-        ]);
+        $this->assertFalse(( new UniqueExercise(new Exercise, $this->testUser))->passes('exercise', 'Bench Press'));
+    }
 
-        $this->assertTrue($v->fails());
+    /**
+     * @test
+     */
+    public function it_has_correct_message()
+    {
+        $this->assertEquals("Only 1 unique exercise name per user.", ( new UniqueExercise(new Exercise, $this->testUser))->message());
     }
 }
