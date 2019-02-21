@@ -42,8 +42,6 @@ class EditExerciseSetTest extends TestCase
     public function authenticated_user_can_update_their_own_set()
     {
         $this->response = $this->updateExerciseSet([
-            'workout' => $this->workout->id,
-            'exercise' => $this->exercise->id,
             'set' => $this->set->id,
             'weight' => 99,
             'count' => 11,
@@ -83,10 +81,14 @@ class EditExerciseSetTest extends TestCase
         $workout2 = factory(Workout::class)->create([
             'user_id' => $user2->id
         ]);
+        $set2 = factory(Set::class)->create([
+            'exercise_id' => $this->exercise->id,
+            'workout_id' => $workout2->id,
+            'weight' => 10,
+            'count' => 5
+        ]);
         $this->response = $this->updateExerciseSet([
-            'workout' =>$workout2,
-            'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
+            'set' => $set2->id,
             'weight' => 120,
             'count' => 10
         ]);
@@ -97,40 +99,9 @@ class EditExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function workout_is_required_for_updating_a_set()
-    {
-        $this->response = $this->updateExerciseSet([
-            'exercise' => $this->exercise->id,
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->response->assertStatus(404);
-    }
-
-    /**
-     * @test
-     */
-    public function exercise_is_required_for_updating_a_set()
-    {
-        $this->response = $this->updateExerciseSet([
-            'workout' => $this->workout->id,
-            'set' => $this->set->id,
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->response->assertStatus(404);
-    }
-
-    /**
-     * @test
-     */
     public function set_is_required_for_updating_a_set()
     {
         $this->response = $this->updateExerciseSet([
-            'workout' => $this->workout->id,
-            'exercise' => $this->exercise->id,
             'weight' => 120,
             'count' => 10
         ]);
@@ -244,6 +215,6 @@ class EditExerciseSetTest extends TestCase
      */
     protected function updateExerciseSet($params)
     {
-        return $this->actingAs($this->testUser)->json("PUT", route('workouts.exercises.sets.update', $params));
+        return $this->actingAs($this->testUser)->json("PUT", route('sets.update', $params));
     }
 }

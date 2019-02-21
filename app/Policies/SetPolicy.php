@@ -14,7 +14,8 @@ class SetPolicy
     /**
      * Determine whether the user can create sets.
      *
-     * @param  \App\Core\User  $user
+     * @param  \App\Core\User $user
+     * @param Workout $workout
      * @return mixed
      */
     public function create(User $user, Workout $workout)
@@ -25,11 +26,23 @@ class SetPolicy
     /**
      * Determine whether the user can update the set.
      *
-     * @param  \App\Core\User  $user
-     * @param  \App\Set  $set
+     * @param  \App\Core\User $user
+     * @param Set $set
      * @return mixed
      */
     public function update(User $user, Set $set)
+    {
+        return ($user->id === $set->workout->user->id);
+    }
+
+    /**
+     * Determine whether the user can update the set.
+     *
+     * @param  \App\Core\User $user
+     * @param Set $set
+     * @return mixed
+     */
+    public function destroy(User $user, Set $set)
     {
         return ($user->id === $set->workout->user->id);
     }

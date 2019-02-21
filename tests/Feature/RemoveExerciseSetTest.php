@@ -38,9 +38,7 @@ class RemoveExerciseSetTest extends TestCase
     public function authenticated_user_can_remove_set()
     {
         $response = $this->actingAs($this->testUser)->json("DELETE",
-            route('workouts.exercises.sets.destroy', [
-                'workout' => $this->workout->id,
-                'exercise' => $this->exercise->id,
+            route('sets.destroy', [
                 'set' => $this->set->id
             ]), [
                 'exercise_order' => 1
@@ -61,9 +59,7 @@ class RemoveExerciseSetTest extends TestCase
         $user2 = factory(User::class)->create();
 
         $response = $this->actingAs($user2)->json("DELETE",
-            route('workouts.exercises.sets.destroy', [
-                'workout' => $this->workout->id,
-                'exercise' => $this->exercise->id,
+            route('sets.destroy', [
                 'set' => $this->set->id
             ])
         );
@@ -76,9 +72,7 @@ class RemoveExerciseSetTest extends TestCase
         $this->assertArrayHasKey('errors', $responseArray);
         $this->assertEquals('403', $responseArray['errors']['status']);
         $this->assertEquals(
-            route('workouts.exercises.sets.destroy', [
-                'workout' => $this->workout->id,
-                'exercise' => $this->exercise->id,
+            route('sets.destroy', [
                 'set' => $this->set->id
             ], false),
             $responseArray['errors']['source']['pointer']
@@ -92,9 +86,7 @@ class RemoveExerciseSetTest extends TestCase
     public function unauthenticated_user_cannot_remove_set()
     {
         $response = $this->json("DELETE",
-            route('workouts.exercises.sets.destroy', [
-                'workout' => $this->workout->id,
-                'exercise' => $this->exercise->id,
+            route('sets.destroy', [
                 'set' => $this->set->id
             ])
         );
@@ -107,9 +99,7 @@ class RemoveExerciseSetTest extends TestCase
         $this->assertArrayHasKey('errors', $responseData);
         $this->assertEquals('401', $responseData['errors']['status']);
         $this->assertEquals('Missing token', $responseData['errors']['detail']);
-        $this->assertEquals(route('workouts.exercises.sets.destroy', [
-            'workout' => $this->workout->id,
-            'exercise' => $this->exercise->id,
+        $this->assertEquals(route('sets.destroy', [
             'set' => $this->set->id,
         ], false), $responseData['errors']['source']['pointer']);
     }
