@@ -49,27 +49,6 @@ class WorkoutTest extends TestCase
     /**
      * @test
      */
-    public function exercises_are_ordered_by_exercise_order()
-    {
-        $this->exercise1 = factory(Exercise::class)->create([
-            'id' => 1
-        ]);
-        $this->exercise2 = factory(Exercise::class)->create([
-            'id' => 2
-        ]);
-
-        $this->workout->exercises()->save($this->exercise1, ['exercise_order' => 2]);
-        $this->workout->exercises()->save($this->exercise2, ['exercise_order' => 1]);
-
-        $this->assertEquals(1, $this->workout->exercises->first()->pivot->exercise_order);
-        $this->assertEquals(2, $this->workout->exercises->first()->id);
-        $this->assertEquals(2, $this->workout->exercises->last()->pivot->exercise_order);
-        $this->assertEquals(1, $this->workout->exercises->last()->id);
-    }
-
-    /**
-     * @test
-     */
     public function it_has_relationship_to_user()
     {
         $user = factory(User::class)->make();
@@ -143,14 +122,35 @@ class WorkoutTest extends TestCase
     /**
      * @test
      */
+    public function exercises_are_ordered_by_exercise_order()
+    {
+        $this->exercise1 = factory(Exercise::class)->create([
+            'id' => 1
+        ]);
+        $this->exercise2 = factory(Exercise::class)->create([
+            'id' => 2
+        ]);
+
+        $this->workout->addExercise($this->exercise1, 2);
+        $this->workout->addExercise($this->exercise2, 1);
+
+        $this->assertEquals(1, $this->workout->exercises->first()->pivot->exercise_order);
+        $this->assertEquals(2, $this->workout->exercises->first()->id);
+        $this->assertEquals(2, $this->workout->exercises->last()->pivot->exercise_order);
+        $this->assertEquals(1, $this->workout->exercises->last()->id);
+    }
+
+    /**
+     * @test
+     */
     public function duplicate_exercises_are_not_allowed_on_a_workout()
     {
         $this->exercise1 = factory(Exercise::class)->create([
             'id' => 1
         ]);
         try {
-            $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 1]);
-            $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 2]);
+            $this->workout->addExercise($this->exercise1, 1);
+            $this->workout->addExercise($this->exercise1, 2);
         } catch (Exception $e) {
             $this->assertInstanceOf(QueryException::class, $e);
             return;
@@ -169,8 +169,9 @@ class WorkoutTest extends TestCase
         $this->exercise2 = factory(Exercise::class)->create([
             'id' => 2
         ]);
-        $this->exercise1->workouts()->save($this->workout, ['exercise_order' => 1]);
-        $this->exercise2->workouts()->save($this->workout, ['exercise_order' => 2]);
+
+        $this->workout->addExercise($this->exercise1, 1);
+        $this->workout->addExercise($this->exercise2, 2);
 
         $this->assertCount(2, $this->workout->exercises()->get());
     }

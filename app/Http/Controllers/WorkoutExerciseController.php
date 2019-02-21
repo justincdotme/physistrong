@@ -42,7 +42,7 @@ class WorkoutExerciseController extends Controller
             ]
         );
 
-        $workout->exercises()->save($exercise, ['exercise_order' => request('exercise_order')]);
+        $workout->addExercise($exercise, request('exercise_order'));
 
         return (new WorkoutResource($workout))
             ->response()
