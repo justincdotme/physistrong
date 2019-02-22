@@ -11,7 +11,8 @@ Route::group(['prefix' => 'v1'], function () {
         ])->only(['index', 'destroy']);
         Route::resource('workouts/{workout}/exercises/{exercise}/sets', 'ExerciseSetController', [
             'as' => 'workouts.exercises'
-        ])->except(['create', 'edit']);
+        ])->only(['index', 'store']);
+        Route::resource('sets', 'ExerciseSetController')->only(['show', 'update', 'destroy']);
         Route::resource('workouts/{workout}/sets', 'WorkoutSetController', [
             'as' => 'workouts'
         ])->only(['index']);

@@ -11,22 +11,16 @@ use App\Http\Resources\ExerciseSet;
 class ExerciseSetController extends Controller
 {
     /**
-     * ExerciseSetController constructor.
-     */
-    public function __construct()
-    {
-        $this->authorizeResource(Workout::class, 'workout');
-    }
-
-    /**
      * Show a list of exercise sets for a workout.
      *
      * @param Workout $workout
      * @param Exercise $exercise
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Workout $workout, Exercise $exercise)
     {
+        $this->authorize('view', $workout);
         return ExerciseSet::collection(
             $workout->sets()->ofExercise($exercise)->get()
         );
@@ -35,13 +29,13 @@ class ExerciseSetController extends Controller
     /**
      * Show an exercise set.
      *
-     * @param Workout $workout
-     * @param Exercise $exercise
      * @param Set $set
      * @return ExerciseSet
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(Workout $workout, Exercise $exercise, Set $set)
+    public function show(Set $set)
     {
+        $this->authorize('view', $set->workout);
         return new ExerciseSet($set);
     }
 
@@ -56,9 +50,9 @@ class ExerciseSetController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Workout $workout, Exercise $exercise, Request $request)
+    public function store(Workout $workout, Exercise $exercise, Set $set)
     {
-        $this->authorize('create', [Set::class, $workout]);
+        $this->authorize('update', $workout);
         $this->validate(
             request(),
             [
@@ -84,14 +78,14 @@ class ExerciseSetController extends Controller
     /**
      * Update exercise set.
      *
-     * @param Workout $workout
-     * @param Exercise $exercise
      * @param Set $set
      * @return ExerciseSet
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Workout $workout, Exercise $exercise, Set $set)
+    public function update(Set $set)
     {
+        $this->authorize('update', $set);
         $this->validate(
             request(),
             [
@@ -107,14 +101,15 @@ class ExerciseSetController extends Controller
     }
 
     /**
-     * @param Workout $workout
-     * @param Exercise $exercise
+     * Destroy an exercise set.
+     *
      * @param Set $set
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Workout $workout, Exercise $exercise, Set $set)
+    public function destroy(Set $set)
     {
+        $this->authorize('destroy', $set);
         $set->delete();
 
         return response(null, 204);
