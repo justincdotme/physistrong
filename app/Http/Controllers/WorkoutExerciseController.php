@@ -63,11 +63,7 @@ class WorkoutExerciseController extends Controller
     {
         $this->authorize('delete', [Workout::class, $workout]);
 
-        if ($workout->sets()->ofExercise($exercise)->count()) {
-            throw new UndeletableException();
-        }
-
-        $workout->exercises()->detach($exercise->id);
+        $workout->removeExercise($exercise);
 
         return response(null, 204);
     }
