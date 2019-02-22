@@ -9,6 +9,7 @@ use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
 use Illuminate\Database\QueryException;
+use App\Exceptions\UndeletableException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class WorkoutTest extends TestCase
@@ -174,5 +175,43 @@ class WorkoutTest extends TestCase
         $this->workout->addExercise($this->exercise2, 2);
 
         $this->assertCount(2, $this->workout->exercises()->get());
+    }
+
+    /**
+     * @test
+     */
+    public function exercises_without_sets_can_be_removed_from_workout()
+    {
+        $this->exercise1 = factory(Exercise::class)->create([
+            'id' => 1
+        ]);
+
+        $this->workout->removeExercise($this->exercise1);
+
+        $this->assertCount(0, $this->workout->exercises);
+    }
+
+    /**
+     * @test
+     */
+    public function exercises_with_sets_cannot_be_removed_from_workout()
+    {
+        $this->exercise1 = factory(Exercise::class)->create([
+            'id' => 1
+        ]);
+        $set = factory(Set::class)->create([
+            'exercise_id' => $this->exercise1->id
+        ]);
+
+        $this->workout->addExercise($this->exercise1, 1);
+        $this->workout->sets()->save($set);
+
+        try {
+            $this->workout->removeExercise($this->exercise1);
+        } catch (UndeletableException $e) {
+            $this->assertCount(1, $this->workout->exercises);
+            return;
+        }
+        $this->fail('Exercise with sets was removed from workout.');
     }
 }

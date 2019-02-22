@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\UndeletableException;
 
 class Workout extends Model
 {
@@ -45,5 +46,20 @@ class Workout extends Model
     public function addExercise(Exercise $exercise, $order)
     {
         return $this->exercises()->save($exercise, ['exercise_order' => $order]);
+    }
+
+    /**
+     * Remove an exercise from a workout.
+     *
+     * @param Exercise $exercise
+     * @throws UndeletableException
+     */
+    public function removeExercise(Exercise $exercise)
+    {
+        if ($this->sets()->ofExercise($exercise)->count()) {
+            throw new UndeletableException();
+        }
+
+        $this->exercises()->detach($exercise->id);
     }
 }
