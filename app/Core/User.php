@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Events\UserRegistered;
 use App\Mail\PasswordResetRequest;
 use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -28,6 +29,10 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password', 'remember_token',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => UserRegistered::class
     ];
 
     /**
@@ -74,5 +79,15 @@ class User extends Authenticatable implements JWTSubject
     {
         //TODO - Find a way to pass in the mailable, this is sloppy architecture.
         Mail::to($this->email)->send(new PasswordResetRequest($token));
+    }
+
+    /**
+     * Bcrypt a password before it is persisted.
+     *
+     * @param $password
+     */
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
     }
 }

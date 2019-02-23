@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Exceptions\Errors\JsonApi;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
@@ -64,9 +63,6 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
-        return response()->json(
-            JsonApi::formatError(400, $request->decodedPath(), "Bad request"),
-            400
-        );
+        return response()->jsonApiError("Bad request", 400);
     }
 }

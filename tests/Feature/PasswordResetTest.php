@@ -20,7 +20,7 @@ class PasswordResetTest extends TestCase
         parent::setUp();
         $this->registeredUser = factory(User::class)->create([
             'email' => 'test.user@physistrong.com',
-            'password' => bcrypt('testing123')
+            'password' => 'abc123'
         ]);
     }
 

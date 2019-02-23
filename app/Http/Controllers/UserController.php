@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Core\User;
-use App\Exceptions\Errors\JsonApi;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistrationConfirmation;
@@ -22,6 +21,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', [User::class, $user]);
+
         return new UserResource($user);
     }
 
@@ -41,14 +41,14 @@ class UserController extends Controller
             ]
         );
 
-        $user = User::create([
-            'email' => request('email'),
-            'first_name' => request('first_name'),
-            'last_name' => request('last_name'),
-            'password' => bcrypt(request('password'))
-        ]);
-
-        Mail::to($user->email)->send(new UserRegistrationConfirmation($user));
+        $user = User::create(
+            request()->only([
+                'email',
+                'first_name',
+                'last_name',
+                'password'
+            ])
+        );
 
         return new UserResource($user);
     }
@@ -70,16 +70,17 @@ class UserController extends Controller
         );
 
         if (! $token = JWTAuth::attempt(request(['email', 'password']))) {
-            return response()->json(
-                JsonApi::formatError(401, request()->path(), "Authorization failed."),
-                401
-            );
+            return response()->jsonApiError("Authorization failed.", 401);
         }
 
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => (auth()->factory()->getTTL() * 60)
+        return (new UserResource(
+            User::where(request()->only(['email']))->first()
+        ))->additional([
+            'meta' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => (auth()->factory()->getTTL() * 60)
+            ]
         ]);
     }
 }

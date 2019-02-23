@@ -17,7 +17,7 @@ class LoginTest extends TestCase
         parent::setUp();
         $this->existingUser = factory(User::class)->create([
             'email' => 'test.user@physistrong.com',
-            'password' => bcrypt('testing123')
+            'password' => 'testing123'
         ]);
     }
 
@@ -26,18 +26,18 @@ class LoginTest extends TestCase
      */
     public function unauthenticated_user_can_login()
     {
-        $this->withoutExceptionHandling();
         $this->response = $this->json("POST", route('user.login'), [
             'email' => 'test.user@physistrong.com',
             'password' => 'testing123'
         ]);
 
+
         $this->response->assertStatus(200);
-        $this->response->assertJsonStructure([
-            'access_token',
-            'token_type',
-            'expires_in'
-        ]);
+        $responseArray = $this->response
+            ->decodeResponseJson();
+        $this->assertArrayHasKey('access_token', $responseArray['meta']);
+        $this->assertArrayHasKey('token_type', $responseArray['meta']);
+        $this->assertArrayHasKey('expires_in', $responseArray['meta']);
     }
 
     /**

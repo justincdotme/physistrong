@@ -6,6 +6,9 @@ use App\Core\User;
 use Tests\TestCase;
 use App\Core\Workout;
 use App\Core\Exercise;
+use App\Events\UserRegistered;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserTest extends TestCase
@@ -46,5 +49,39 @@ class UserTest extends TestCase
         $this->user->setRelation('workouts', $workouts);
 
         $this->assertCount(1, $this->user->workouts);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fires_event_when_created()
+    {
+        Event::fake([UserRegistered::class]);
+
+        $user = factory(User::class)->create([
+            'email' => 'test@user.com',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'password' => 'abc123'
+        ]);
+
+        Event::assertDispatched(UserRegistered::class, function ($event) use ($user) {
+             return ($user->email === $event->user->email);
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function it_hashes_password()
+    {
+        $user = factory(User::class)->create([
+            'email' => 'test@user.com',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'password' => 'abc123'
+        ]);
+
+        $this->assertTrue(Hash::check('abc123', $user->password));
     }
 }

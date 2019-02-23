@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Exceptions\Errors\JsonApi;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
@@ -88,9 +87,6 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return response()->json(
-            JsonApi::formatError(400, $request->decodedPath(), "Bad request"),
-            400
-        );
+        return response()->jsonApiError("Bad request", 400);
     }
 }

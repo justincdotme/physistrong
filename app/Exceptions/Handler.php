@@ -77,13 +77,7 @@ class Handler extends ExceptionHandler
                     $detail = 'The resource could not be deleted due to dependency conflict.';
                     break;
                 case ($exception instanceof ValidationException):
-                    return response()->json(
-                        JsonApi::formatValidationErrors(
-                            422,
-                            $exception->validator->errors()->getMessages()
-                        ),
-                        422
-                    );
+                    return response()->jsonApiError($exception->validator->errors()->getMessages(), 422);
                     break;
                 case ($exception instanceof ModelNotFoundException):
                     $code = 404;
@@ -93,10 +87,7 @@ class Handler extends ExceptionHandler
                     $code = 520;
                     $detail = 'Something bad happened, we\'re looking into it';
             }
-            return response()->json(
-                JsonApi::formatError($code, $request->decodedPath(), $detail),
-                $code
-            );
+            return response()->jsonApiError($detail, $code);
         }
         return parent::render($request, $exception);
     }
