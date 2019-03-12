@@ -29,6 +29,7 @@ class WorkoutTest extends TestCase
         $this->workout = factory(Workout::class)->make([
             'id' => 1,
             'name' => 'Test Workout',
+            'date_scheduled' => Carbon::now()->toDateString(),
             'created_at' => $this->date
         ]);
         $this->workout->setRelation('user', $this->testUser);
@@ -56,15 +57,16 @@ class WorkoutTest extends TestCase
         $this->assertEquals(
             route('workouts.show', ['workout' => $this->workout->id]),
             $this->responseArray['data']['links']['self']
-
         );
         $this->assertEquals(
             route('users.show', ['user' => 1]),
             $this->responseArray['data']['relationships']['user']['links']['self']
         );
+
         $this->assertEquals('1', $this->responseArray['data']['id']);
         $this->assertEquals('workout', $this->responseArray['data']['type']);
         $this->assertArrayHasKey('user', $this->responseArray['data']['relationships']);
         $this->assertEquals($this->workout->name, $this->responseArray['data']['attributes']['name']);
+        $this->assertEquals(Carbon::now()->toDateString(),$this->responseArray['data']['attributes']['date_scheduled']);
     }
 }

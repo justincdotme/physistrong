@@ -77,7 +77,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function sendPasswordResetNotification($token)
     {
-        //TODO - Find a way to pass in the mailable, this is sloppy architecture.
+        //todo: resolve the mailable out of the container.
         Mail::to($this->email)->send(new PasswordResetRequest($token));
     }
 

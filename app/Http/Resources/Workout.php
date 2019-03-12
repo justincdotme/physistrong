@@ -18,7 +18,8 @@ class Workout extends JsonResource
             'type' => 'workout',
             'id' => (string)$this->id,
             'attributes' => [
-                'name' => $this->name
+                'name' => $this->name,
+                'date_scheduled' => $this->date_scheduled
             ],
             'relationships' => new WorkoutRelationship($this),
             'links' => [

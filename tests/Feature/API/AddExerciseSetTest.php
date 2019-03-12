@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\API;
 
 use App\Core\Set;
 use App\Core\User;
@@ -10,11 +10,10 @@ use App\Core\Exercise;
 use App\Http\Resources\ExerciseSet;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class EditExerciseSetTest extends TestCase
+class AddExerciseSetTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected $set;
     protected $testUser;
     protected $workout;
     protected $exercise;
@@ -29,45 +28,38 @@ class EditExerciseSetTest extends TestCase
         $this->exercise = factory(Exercise::class)->create([
             'name' => 'squat'
         ]);
-        $this->set = factory(Set::class)->create([
-            'exercise_id' => $this->exercise->id,
-            'workout_id' => $this->workout->id,
-            'weight' => 10,
-            'count' => 5
-        ]);
     }
     /**
      * @test
      */
-    public function authenticated_user_can_update_their_own_set()
+    public function authenticated_user_can_add_set_to_their_own_workout()
     {
-        $this->response = $this->updateExerciseSet([
-            'set' => $this->set->id,
-            'weight' => 99,
-            'count' => 11,
+        $this->response = $this->addExerciseSet([
+            'workout' => $this->workout->id,
+            'exercise' => $this->exercise->id,
+            'weight' => 120,
+            'count' => 10,
             'set_order' => 1
         ]);
-        $this->set = $this->set->fresh();
-        $resource = new ExerciseSet($this->set);
 
-        $this->response->assertStatus(200);
+        $resource = new ExerciseSet(Set::firstOrFail());
+
         $this->response->assertResource($resource);
-        $this->assertEquals(99, $this->set->weight);
-        $this->assertEquals(11, $this->set->count);
+        $this->response->assertStatus(201);
     }
 
     /**
      * @test
      */
-    public function unauthenticated_user_cannot_update_exercise_set()
+    public function unauthenticated_user_cannot_add_exercise_to_workout()
     {
         $this->response = $this->json("POST", route('workouts.exercises.sets.store', [
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 10
         ]));
+
 
         $this->response->assertStatus(401);
     }
@@ -75,22 +67,18 @@ class EditExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function user_cannot_update_exercises_on_another_users_workout()
+    public function user_cannot_add_exercise_to_another_users_workout()
     {
         $user2 = factory(User::class)->create();
         $workout2 = factory(Workout::class)->create([
             'user_id' => $user2->id
         ]);
-        $set2 = factory(Set::class)->create([
-            'exercise_id' => $this->exercise->id,
-            'workout_id' => $workout2->id,
-            'weight' => 10,
-            'count' => 5
-        ]);
-        $this->response = $this->updateExerciseSet([
-            'set' => $set2->id,
+        $this->response = $this->addExerciseSet([
+            'workout' =>$workout2,
+            'exercise' => $this->exercise->id,
             'weight' => 120,
-            'count' => 10
+            'count' => 10,
+            'set_order' => 1
         ]);
 
         $this->response->assertStatus(403);
@@ -99,9 +87,10 @@ class EditExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function set_is_required_for_updating_a_set()
+    public function workout_is_required_for_adding_a_set()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
+            'exercise' => $this->exercise->id,
             'weight' => 120,
             'count' => 10
         ]);
@@ -112,12 +101,25 @@ class EditExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function set_order_is_required_for_updating_a_set()
+    public function exercise_is_required_for_adding_a_set()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
+            'workout' => $this->workout->id,
+            'weight' => 120,
+            'count' => 10
+        ]);
+
+        $this->response->assertStatus(404);
+    }
+
+    /**
+     * @test
+     */
+    public function set_order_is_required_for_adding_a_set()
+    {
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 10
         ]);
@@ -130,10 +132,9 @@ class EditExerciseSetTest extends TestCase
      */
     public function set_order_must_be_an_integer()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 10,
             'set_order' => 'apple'
@@ -147,10 +148,9 @@ class EditExerciseSetTest extends TestCase
      */
     public function set_order_must_be_greater_than_0()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 10,
             'set_order' => 0
@@ -164,10 +164,9 @@ class EditExerciseSetTest extends TestCase
      */
     public function weight_must_be_an_integer()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 'banana',
             'count' => 10
         ]);
@@ -180,10 +179,9 @@ class EditExerciseSetTest extends TestCase
      */
     public function count_must_be_an_integer()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 'banana'
         ]);
@@ -196,10 +194,9 @@ class EditExerciseSetTest extends TestCase
      */
     public function count_must_be_greater_than_0()
     {
-        $this->response = $this->updateExerciseSet([
+        $this->response = $this->addExerciseSet([
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
-            'set' => $this->set->id,
             'weight' => 120,
             'count' => 0
         ]);
@@ -213,8 +210,8 @@ class EditExerciseSetTest extends TestCase
      * @param $params
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
-    protected function updateExerciseSet($params)
+    protected function addExerciseSet($params)
     {
-        return $this->actingAs($this->testUser)->json("PUT", route('sets.update', $params));
+        return $this->actingAs($this->testUser)->json("POST", route('workouts.exercises.sets.store', $params));
     }
 }

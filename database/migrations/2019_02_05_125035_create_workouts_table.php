@@ -18,6 +18,7 @@ class CreateWorkoutsTable extends Migration
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('name');
+            $table->date('date_scheduled');
             $table->timestamps();
         });
     }

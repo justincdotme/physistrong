@@ -43,13 +43,15 @@ class WorkoutController extends Controller
         $this->validate(
             request(),
             [
-                'name' => 'required'
+                'name' => 'required',
+                'date_scheduled' => ['required',  'date']
             ]
         );
 
         $workout = Workout::create([
             'user_id' => auth()->user()->id,
-            'name' => request('name')
+            'name' => request('name'),
+            'date_scheduled' => request('date_scheduled')
         ]);
 
         return new WorkoutResource($workout);
@@ -60,12 +62,14 @@ class WorkoutController extends Controller
         $this->validate(
             request(),
             [
-                'name' => 'required'
+                'name' => 'required',
+                'date_scheduled' => ['required',  'date']
             ]
         );
 
         $workout->update([
-            'name' => request('name')
+            'name' => request('name'),
+            'date_scheduled' => request('date_scheduled')
         ]);
 
         return new WorkoutResource($workout);

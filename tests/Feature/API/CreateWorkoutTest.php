@@ -1,10 +1,11 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\API;
 
 use App\Core\User;
 use Tests\TestCase;
 use App\Core\Workout;
+use Illuminate\Support\Carbon;
 use App\Http\Resources\Workout as WorkoutResource;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -26,20 +27,50 @@ class CreateWorkoutTest extends TestCase
     public function authenticated_user_can_create_their_own_workout()
     {
         $response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), [
-            'name' => 'Test Workout'
+            'name' => 'Zombie Workout',
+            'date_scheduled' => Carbon::now()->toDateString()
         ]);
-        $resource = new WorkoutResource(Workout::firstOrFail());
 
         $response->assertStatus(201);
-        $response->assertResource($resource);
+        $response->assertResource(
+            new WorkoutResource(Workout::firstOrFail())
+        );
     }
+
+    /**
+     * @test
+     */
+    public function date_is_required_to_create_workout()
+    {
+        $this->response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), [
+            'name' => 'Zombie Workout'
+        ]);
+
+        $this->assertFieldHasValidationError('date_scheduled');
+    }
+
+    /**
+     * @test
+     */
+    public function date_must_be_valid_date()
+    {
+        $this->response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), [
+            'name' => 'Zombie Workout',
+            'date_scheduled' => 'apple'
+        ]);
+
+        $this->assertFieldHasValidationError('date_scheduled');
+    }
+
 
     /**
      * @test
      */
     public function name_is_required_to_create_workout()
     {
-        $this->response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), []);
+        $this->response = $this->actingAs($this->testUser)->json("POST", route('workouts.store'), [
+            'date_scheduled' => Carbon::now()->toDateString()
+        ]);
 
         $this->assertFieldHasValidationError('name');
     }
