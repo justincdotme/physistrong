@@ -73,14 +73,26 @@ class UserController extends Controller
             return response()->jsonApiError("Authorization failed.", 401);
         }
 
-        return (new UserResource(
-            User::where(request()->only(['email']))->first()
-        ))->additional([
-            'meta' => [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => (auth()->factory()->getTTL() * 60)
-            ]
-        ]);
+        return response()
+            ->json(
+                (new UserResource(
+                    User::where(request()->only(['email']))->first()
+                ))->additional([
+                    'meta' => [
+                        'access_token' => $token,
+                        'token_type' => 'bearer',
+                        'expires_in' => (auth()->factory()->getTTL() * 60)
+                    ]
+                ])->response()->getData(true)
+            )
+            ->cookie(
+                'authentication',
+                $token,
+                (60 * 24 * 7),
+                '/',
+                parse_url(config('app.url'))['host'],
+                true,
+                true
+            );
     }
 }

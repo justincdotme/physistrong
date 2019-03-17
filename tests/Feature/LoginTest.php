@@ -31,13 +31,12 @@ class LoginTest extends TestCase
             'password' => 'testing123'
         ]);
 
-
         $this->response->assertStatus(200);
-        $responseArray = $this->response
-            ->decodeResponseJson();
-        $this->assertArrayHasKey('access_token', $responseArray['meta']);
+        $this->response->assertCookie('authentication');
+        $responseArray = $this->response->decodeResponseJson();
         $this->assertArrayHasKey('token_type', $responseArray['meta']);
         $this->assertArrayHasKey('expires_in', $responseArray['meta']);
+        $this->assertArrayHasKey('access_token', $responseArray['meta']);
     }
 
     /**
