@@ -57,7 +57,8 @@ class AddExerciseSetTest extends TestCase
             'workout' => $this->workout->id,
             'exercise' => $this->exercise->id,
             'weight' => 120,
-            'count' => 10
+            'count' => 10,
+            'set_order' => 1
         ]));
 
 

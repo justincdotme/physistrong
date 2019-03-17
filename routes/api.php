@@ -3,7 +3,10 @@
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::resource('workouts', 'WorkoutController')->except(['destroy', 'edit', 'create']);
-        Route::resource('users', 'UserController')->only(['show']);
+        Route::get('user/from-token', 'UserController@fromToken')->name('user.from-token');
+
+        Route::resource('user', 'UserController')->only(['show']);
+
         Route::post('workouts/{workout}/exercises/{exercise}', 'WorkoutExerciseController@store')
             ->name('workouts.exercises.store');
         Route::resource('workouts/{workout}/exercises', 'WorkoutExerciseController', [
@@ -20,7 +23,6 @@ Route::group(['prefix' => 'v1'], function () {
     });
     Route::group(['middleware' => 'guest'], function () {
         Route::post('user/register', 'UserController@store')->name('user.store');
-        Route::post('user/login', 'UserController@login')->name('user.login');
         Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.request');
         Route::post('password/reset/{token}', 'Auth\ResetPasswordController@reset')->name('password.reset');
     });

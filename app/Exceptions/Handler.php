@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Exceptions\Errors\JsonApi;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;

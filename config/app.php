@@ -56,6 +56,10 @@ return [
 
     'api_url' => env('API_URL', 'http://localhost'),
 
+    'api_base_url' => parse_url(env('API_URL', 'http://localhost'))['host'],
+
+    'protocol' => parse_url(env('API_URL', 'http://localhost'))['scheme'],
+
     'asset_url' => env('ASSET_URL', null),
 
     /*
@@ -176,7 +180,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        App\Providers\RouteServiceProvider::class
 
     ],
 

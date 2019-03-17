@@ -24,6 +24,16 @@ class LoginTest extends TestCase
     /**
      * @test
      */
+    public function authenticated_user_can_logout()
+    {
+        $this->response = $this->actingAs($this->existingUser)->json("POST", route('user.logout'));
+
+        $this->response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
     public function unauthenticated_user_can_login()
     {
         $this->response = $this->json("POST", route('user.login'), [
@@ -31,13 +41,12 @@ class LoginTest extends TestCase
             'password' => 'testing123'
         ]);
 
-
         $this->response->assertStatus(200);
-        $responseArray = $this->response
-            ->decodeResponseJson();
-        $this->assertArrayHasKey('access_token', $responseArray['meta']);
+        $this->response->assertCookie('authentication');
+        $responseArray = $this->response->decodeResponseJson();
         $this->assertArrayHasKey('token_type', $responseArray['meta']);
         $this->assertArrayHasKey('expires_in', $responseArray['meta']);
+        $this->assertArrayHasKey('access_token', $responseArray['meta']);
     }
 
     /**

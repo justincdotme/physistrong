@@ -17,7 +17,7 @@ class WorkoutRelationship extends JsonResource
         return [
             'user' => [
                 'links' => [
-                    'self' => route('users.show', ['user' => $this->user->id])
+                    'self' => route('user.show', ['user' => $this->user->id])
                 ]
             ],
             'sets' => [

@@ -1,14 +1,16 @@
 require('./bootstrap');
 window.Vue = require('vue');
-
-import VueRouter from 'vue-router';
-import routes from './routes';
+import router from './http/routes';
 import {store} from './store/store';
+import LoginLink from "./components/LoginLink";
+import middleware from './http/middleware';
 
-Vue.use(VueRouter);
 
 const app = new Vue({
     el: '#app',
-    router: new VueRouter(routes),
-    store
+    router,
+    store,
+    components: {
+        LoginLink
+    },
 });

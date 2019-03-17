@@ -59,7 +59,7 @@ class WorkoutTest extends TestCase
             $this->responseArray['data']['links']['self']
         );
         $this->assertEquals(
-            route('users.show', ['user' => 1]),
+            route('user.show', ['user' => 1]),
             $this->responseArray['data']['relationships']['user']['links']['self']
         );
 

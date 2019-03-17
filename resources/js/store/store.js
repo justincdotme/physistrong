@@ -1,20 +1,29 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VueCookies from 'vue-cookies';
 
-import workout from './modules/workout'
-import workoutPreview from './modules/workoutPreview'
+import {actions} from './actions';
+import {getters} from './getters';
+import {mutations} from './mutations';
+
+import workouts from './modules/workouts'
+import workoutPreview from './modules/workoutPreview';
+import user from './modules/user';
+
 
 Vue.use(Vuex);
+Vue.use(VueCookies);
 
 export const store = new Vuex.Store({
     state: {
-        value: 0
+        error: {}
     },
-    getters: {},
-    mutations: {},
-    actions: {},
+    getters,
+    mutations,
+    actions,
     modules: {
-        workout,
-        workoutPreview
+        workouts,
+        workoutPreview,
+        user
     }
 });

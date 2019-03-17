@@ -59,7 +59,7 @@ class WorkoutRelationhshipResourceTest extends TestCase
     public function it_returns_correct_data()
     {
         $this->assertEquals(
-            route('users.show', ['user' => $this->testUser->id]),
+            route('user.show', ['user' => $this->testUser->id]),
             $this->responseArray['data']['user']['links']['self']
         );
         $this->assertEquals(

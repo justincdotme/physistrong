@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Core\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\UserRegistrationConfirmation;
 use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
-
     /**
      * Display the specified resource.
      *
@@ -73,14 +70,41 @@ class UserController extends Controller
             return response()->jsonApiError("Authorization failed.", 401);
         }
 
-        return (new UserResource(
-            User::where(request()->only(['email']))->first()
-        ))->additional([
-            'meta' => [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => (auth()->factory()->getTTL() * 60)
-            ]
-        ]);
+        return response()
+            ->json(
+                (new UserResource(
+                    User::where(request()->only(['email']))->first()
+                ))->additional([
+                    'meta' => [
+                        'access_token' => $token,
+                        'token_type' => 'bearer',
+                        'expires_in' => (auth()->factory()->getTTL() * 60)
+                    ]
+                ])->response()->getData(true)
+            )->withCookie('authentication', $token, (60 * 24 * 7), '/', '.physistrong.srv');
+    }
+
+    /**
+     * @return UserResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function fromToken()
+    {
+        $user = JWTAuth::setToken($_COOKIE['authentication'])->toUser();
+
+        $this->authorize('view', [User::class, $user]);
+
+        return new UserResource($user);
+    }
+
+    /**
+     * Log the user out.
+     * Difficult to invalidate the token, but this removes the token from a device by unsetting the cookie.
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function logout()
+    {
+        return response(null, 200)->withCookie('authentication', '', -1, '/', '.physistrong.srv');
     }
 }

@@ -12,6 +12,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
+        "spatie/laravel-cors": "^1.4",
+        "tightenco/ziggy": "^0.6.9",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
@@ -56,7 +58,8 @@
             "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan ziggy:generate \"resources/js/zroutes.js\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"

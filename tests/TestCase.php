@@ -48,6 +48,7 @@ abstract class TestCase extends BaseTestCase
     {
         if ($this->user) {
             $server['HTTP_AUTHORIZATION'] = 'Bearer ' . JWTAuth::fromUser($this->user);
+            $_COOKIE['authentication'] = JWTAuth::fromUser($this->user);
         }
 
         $server['HTTP_ACCEPT'] = 'application/json';
@@ -98,5 +99,11 @@ abstract class TestCase extends BaseTestCase
             $mailable->view,
             $mailable->buildViewData()
         )->render();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        unset($_COOKIE['authentication']);
     }
 }
