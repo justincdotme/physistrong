@@ -13,21 +13,21 @@ before_install:
   - sudo apt-get install sqlite3
 
 install:
+  - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - nvm install 10.15.3
   - npm install npm@6.4.1
   - npm cache clear --force
   - npm install
-  - php artisan key:generate
 
 before_script:
   - touch database/physistrong.sqlite
   - php artisan ziggy:generate "resources/js/zroutes.js"
+  - php artisan key:generate
   - npm run development
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - ./vendor/laravel/dusk/bin/chromedriver-linux &
-  - cp .env.testing .env
   - php artisan serve &
 
 script:
