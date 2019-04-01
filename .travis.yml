@@ -12,7 +12,6 @@ before_install:
 install:
   - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
-  - php artisan jwt:secret
   - npm install
   - npm run dev
 
