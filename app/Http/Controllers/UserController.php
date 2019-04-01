@@ -81,7 +81,12 @@ class UserController extends Controller
                         'expires_in' => (auth()->factory()->getTTL() * 60)
                     ]
                 ])->response()->getData(true)
-            )->withCookie('authentication', $token, (60 * 24 * 7), '/', '.physistrong.srv');
+            )->withCookie(
+                'authentication',
+                $token,
+                (60 * 24 * 7),
+                '/',
+                ('127.0.0.1' === config('app.app_base_url') ? null : '.' . config('app.app_base_url')));
     }
 
     /**

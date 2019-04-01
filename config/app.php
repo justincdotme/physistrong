@@ -54,7 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'api_url' => env('API_URL', 'http://localhost'),
+    'app_base_url' => parse_url(env('APP_URL', 'http://localhost'))['host'],
+
+    'api_url' => env('API_URL', null),
 
     'api_base_url' => parse_url(env('API_URL', 'http://localhost'))['host'],
 

@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
         factory(User::class)->create([
             'first_name' => 'Justin',
             'last_name' => 'Christenson',
-            'email' => 'test.user@justinc.me',
+            'email' => 'info@justinc.me',
             'email_verified_at' => now(),
             'password' => 'staging',
             'remember_token' => str_random(10),
