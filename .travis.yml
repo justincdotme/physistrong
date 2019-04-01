@@ -12,7 +12,7 @@ before_install:
 install:
   - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
-  - nvm install 7.7.1
+  - nvm install 10.15.3
   - npm install npm@latest -g
   - npm install
 
