@@ -20,6 +20,7 @@ install:
 before_script:
   - touch database/physistrong.sqlite
   - cp .env.testing .env
+  - php artisan ziggy:generate "resources/js/zroutes.js"
   - npm run development
 
 script:
