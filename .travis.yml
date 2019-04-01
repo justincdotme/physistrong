@@ -24,6 +24,6 @@ before_script:
   - npm run development
 
 script:
-  - npm run test
   - vendor/bin/phpcs
   - vendor/bin/phpunit
+  - npm run test
