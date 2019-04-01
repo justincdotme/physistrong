@@ -12,12 +12,14 @@ before_install:
 install:
   - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
+  - nvm install 7.7.1
+  - npm install npm@latest -g
   - npm install
-  - npm run dev
 
 before_script:
   - touch database/physistrong.sqlite
   - cp .env.testing .env
+  - npm run production
 
 script:
   - vendor/bin/phpcs
