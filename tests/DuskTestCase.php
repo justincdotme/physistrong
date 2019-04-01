@@ -2,14 +2,23 @@
 
 namespace Tests;
 
+use DatabaseSeeder;
 use Laravel\Dusk\TestCase as BaseTestCase;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use DatabaseMigrations;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->seed(DatabaseSeeder::class);
+    }
 
     /**
      * Prepare for Dusk test execution.
