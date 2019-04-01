@@ -13,13 +13,12 @@ before_install:
   - sudo apt-get install sqlite3
 
 install:
-  - cp .env.testing .env
-  - php artisan key:generate
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - nvm install 10.15.3
   - npm install npm@6.4.1
   - npm cache clear --force
   - npm install
+  - php artisan key:generate
 
 before_script:
   - touch database/physistrong.sqlite
