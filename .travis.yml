@@ -22,8 +22,8 @@ before_script:
   - cp .env.testing .env
   - php artisan ziggy:generate "resources/js/zroutes.js"
   - npm run development
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost
-  - php artisan serve
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - php artisan serve &
 
 script:
   - php artisan dusk
