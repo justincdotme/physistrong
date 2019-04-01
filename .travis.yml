@@ -14,6 +14,7 @@ before_install:
 
 install:
   - cp .env.testing .env
+  - php artisan key:generate
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - nvm install 10.15.3
   - npm install npm@6.4.1
@@ -22,10 +23,10 @@ install:
 
 before_script:
   - touch database/physistrong.sqlite
-  - cp .env.testing .env
   - php artisan ziggy:generate "resources/js/zroutes.js"
   - npm run development
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - cp .env.testing .env
   - php artisan serve &
 
 script:
