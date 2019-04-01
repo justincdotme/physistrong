@@ -13,13 +13,14 @@ install:
   - cp .env.testing .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - nvm install 10.15.3
-  - npm install npm@latest -g
+  - npm install npm@6.4.1
+  - npm cache clear --force
   - npm install
 
 before_script:
   - touch database/physistrong.sqlite
   - cp .env.testing .env
-  - npm run production
+  - npm run development
 
 script:
   - vendor/bin/phpcs
