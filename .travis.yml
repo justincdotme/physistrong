@@ -3,19 +3,23 @@ language: php
 dist: trusty
 
 php:
-- 7.2
+- 7.3
 
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install sqlite3
 
 install:
-  - travis_retry composer install --no-interaction
+  - cp .env.testing .env
+  - travis_retry composer install --no-interaction --prefer-dist --no-suggest
+  - php artisan jwt:secret
+  - npm install
+  - npm run dev
 
 before_script:
   - touch database/physistrong.sqlite
   - cp .env.testing .env
 
 script:
-    - vendor/bin/phpcs
-    - vendor/bin/phpunit
+  - vendor/bin/phpcs
+  - vendor/bin/phpunit
