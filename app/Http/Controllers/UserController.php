@@ -81,15 +81,12 @@ class UserController extends Controller
                         'expires_in' => (auth()->factory()->getTTL() * 60)
                     ]
                 ])->response()->getData(true)
-            )
-            ->cookie(
+            )->cookie(
                 'authentication',
                 $token,
                 (60 * 24 * 7),
                 '/',
-                parse_url(config('app.url'))['host'],
-                true,
-                true
+                ('127.0.0.1' === config('app.app_base_url') ? null : '.' . config('app.app_base_url'))
             );
     }
 
@@ -114,6 +111,15 @@ class UserController extends Controller
      */
     public function logout()
     {
-        return response(null, 200)->withCookie('authentication', '', -1, '/', parse_url(config('app.url'))['host']);
+        return response(null, 200)
+            ->withCookie(
+                'authentication',
+                '',
+                -1,
+                '/',
+                (
+                '127.0.0.1' === config('app.app_base_url') ? null : '.' . config('app.app_base_url')
+                )
+            );
     }
 }
