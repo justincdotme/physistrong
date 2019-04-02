@@ -86,7 +86,8 @@ class UserController extends Controller
                 $token,
                 (60 * 24 * 7),
                 '/',
-                ('127.0.0.1' === config('app.app_base_url') ? null : '.' . config('app.app_base_url')));
+                ('127.0.0.1' === config('app.app_base_url') ? null : '.' . config('app.app_base_url'))
+            );
     }
 
     /**
