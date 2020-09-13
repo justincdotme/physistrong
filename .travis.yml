@@ -29,7 +29,7 @@ before_script:
   - php artisan serve &
 
 script:
-  - php artisan dusk
+  #- php artisan dusk
   - vendor/bin/phpcs
   - vendor/bin/phpunit
   - npm run test
