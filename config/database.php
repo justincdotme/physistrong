@@ -42,7 +42,7 @@ return [
 
         'test' => [
             'driver' => 'sqlite',
-            'database' => database_path('physistrong.sqlite'),
+            'database' => ':memory:',
             'prefix' => '',
         ],
 
