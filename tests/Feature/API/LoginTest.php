@@ -12,7 +12,7 @@ class LoginTest extends TestCase
 
     protected $existingUser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->existingUser = factory(User::class)->create([

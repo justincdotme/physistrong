@@ -14,7 +14,7 @@ abstract class DuskTestCase extends BaseTestCase
     use CreatesApplication;
     use DatabaseMigrations;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->seed(DatabaseSeeder::class);

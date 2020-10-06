@@ -19,7 +19,7 @@ class WorkoutTest extends TestCase
     protected $testUser;
     protected $responseArray;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->date = Carbon::now()->toDateTimeString();

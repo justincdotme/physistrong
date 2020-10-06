@@ -19,7 +19,7 @@ class ExerciseTest extends TestCase
     protected $exercise;
     protected $responseArray;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

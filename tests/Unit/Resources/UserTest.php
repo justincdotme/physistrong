@@ -18,7 +18,7 @@ class UserTest extends TestCase
     protected $workouts;
     protected $responseArray;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testUser = factory(User::class)->make([

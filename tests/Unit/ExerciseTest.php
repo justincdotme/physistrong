@@ -16,7 +16,7 @@ class ExerciseTest extends TestCase
 
     protected $exercise;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->exercise = factory(Exercise::class)->make([

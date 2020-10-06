@@ -20,7 +20,7 @@ class WorkoutTest extends TestCase
     protected $exercise1;
     protected $exercise2;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->workout = factory(Workout::class)->create();

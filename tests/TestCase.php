@@ -101,7 +101,7 @@ abstract class TestCase extends BaseTestCase
         )->render();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         unset($_COOKIE['authentication']);

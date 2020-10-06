@@ -18,7 +18,7 @@ class WorkoutRelationhshipResourceTest extends TestCase
     protected $resource;
     protected $responseArray;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testUser = factory(User::class)->make([

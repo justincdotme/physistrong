@@ -23,7 +23,7 @@ class ExerciseSetRelationshipTest extends TestCase
     protected $resource;
     protected $responseArray;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->date = Carbon::now()->toDateTimeString();

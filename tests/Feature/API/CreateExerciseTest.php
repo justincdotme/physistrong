@@ -15,7 +15,7 @@ class CreateExerciseTest extends TestCase
 
     protected $testUser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testUser = factory(User::class)->create();

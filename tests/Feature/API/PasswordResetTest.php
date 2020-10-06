@@ -15,7 +15,7 @@ class PasswordResetTest extends TestCase
     protected $passwordReset;
     protected $registeredUser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->registeredUser = factory(User::class)->create([
