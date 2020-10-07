@@ -46,4 +46,15 @@ class SetPolicy
     {
         return ($user->id === $set->workout->user->id);
     }
+
+    /**
+     * Determine whether the user can view the sets index.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function viewAny(User $user)
+    {
+        return in_array('view', $user->permissions);
+    }
 }
