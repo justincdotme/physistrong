@@ -55,6 +55,6 @@ class SetPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array('view', $user->permissions);
+        return auth()->user()->id == $user->id;
     }
 }

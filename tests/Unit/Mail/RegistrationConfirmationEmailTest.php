@@ -22,8 +22,8 @@ class RegistrationConfirmationEmailTest extends TestCase
             new UserRegistrationConfirmation($user)
         );
 
-        $this->assertContains($user->first_name, $rendered);
-        $this->assertContains($user->last_name, $rendered);
+        $this->assertStringContainsString($user->first_name, $rendered);
+        $this->assertStringContainsString($user->last_name, $rendered);
     }
 
     /**

@@ -23,12 +23,12 @@ class ExerciseTest extends TestCase
     {
         parent::setUp();
 
-        $this->exercise = factory(Exercise::class)->make([
+        $this->exercise = factory(Exercise::class)->create([
             'name' => 'squat'
         ]);
 
         $this->resource = new ExerciseResource($this->exercise);
-        $this->responseArray = $this->resource->response()->getData(true);
+        $this->responseArray = $this->resource->response(request([$this->exercise->id]))->getData(true);
     }
 
     /**

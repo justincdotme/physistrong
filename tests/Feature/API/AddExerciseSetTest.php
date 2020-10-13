@@ -88,34 +88,6 @@ class AddExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function workout_is_required_for_adding_a_set()
-    {
-        $this->response = $this->addExerciseSet([
-            'exercise' => $this->exercise->id,
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->response->assertStatus(404);
-    }
-
-    /**
-     * @test
-     */
-    public function exercise_is_required_for_adding_a_set()
-    {
-        $this->response = $this->addExerciseSet([
-            'workout' => $this->workout->id,
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->response->assertStatus(404);
-    }
-
-    /**
-     * @test
-     */
     public function set_order_is_required_for_adding_a_set()
     {
         $this->response = $this->addExerciseSet([

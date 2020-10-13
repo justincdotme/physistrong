@@ -99,19 +99,6 @@ class EditExerciseSetTest extends TestCase
     /**
      * @test
      */
-    public function set_is_required_for_updating_a_set()
-    {
-        $this->response = $this->updateExerciseSet([
-            'weight' => 120,
-            'count' => 10
-        ]);
-
-        $this->response->assertStatus(404);
-    }
-
-    /**
-     * @test
-     */
     public function set_order_is_required_for_updating_a_set()
     {
         $this->response = $this->updateExerciseSet([

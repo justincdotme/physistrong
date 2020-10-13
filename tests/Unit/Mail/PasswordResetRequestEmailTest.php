@@ -26,8 +26,8 @@ class PasswordResetRequestEmailTest extends TestCase
             new PasswordResetRequest($token)
         );
 
-        $this->assertContains($resetEndpoint, $rendered);
-        $this->assertContains('This link will expire in 60 minutes', $rendered);
+        $this->assertStringContainsString($resetEndpoint, $rendered);
+        $this->assertStringContainsString('This link will expire in 60 minutes', $rendered);
     }
 
     /**
