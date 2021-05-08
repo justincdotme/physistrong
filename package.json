@@ -20,7 +20,7 @@
         "jsdom": "^14.0.0",
         "jsdom-global": "^3.0.2",
         "laravel-mix": "^4.0.7",
-        "lodash": "^4.17.5",
+        "lodash": "^4.17.21",
         "mocha": "^6.0.2",
         "mocha-webpack": "^2.0.0-beta.0",
         "moxios": "^0.4.0",
