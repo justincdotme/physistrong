@@ -1,0 +1,57 @@
+/vendor/
+node_modules/
+
+# Laravel 4 specific
+bootstrap/compiled.php
+app/storage/
+
+# Laravel 5 & Lumen specific
+public/storage
+public/hot
+
+# Laravel 5 & Lumen specific with changed public path
+public_html/storage
+public_html/hot
+
+storage/*.key
+.env
+Homestead.yaml
+Homestead.json
+/.vagrant
+.phpunit.result.cache
+
+/public/build
+/storage/pail
+
+.env.backup
+.env.production
+.phpactor.json
+auth.json
+
+# Local tooling and project docs (not for the shared repo)
+/.claude
+/.superpowers
+/docs/superpowers
+/docs/project
+/CLAUDE.md
+/temp
+
+# Laravel default .gitignore (latest)
+*.log
+.DS_Store
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+Thumbs.db
+
+# Docker bind-mounted MySQL data and generated TLS certs. Keep the certs
+# directory in the repo so Docker does not root-create it on first boot.
+/docker/data
+/docker/nginx/certs/*
+!/docker/nginx/certs/.gitkeep
+
+# Linked git worktrees
+.worktrees/
