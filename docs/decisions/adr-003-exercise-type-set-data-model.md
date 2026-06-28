@@ -73,7 +73,7 @@ Exercise types have been restructured from 9 to 4 based on shared attribute patt
 ```sql
 exercises
 ├── id (PK, auto-increment)
-├── user_id (FK → users.id, indexed)
+├── user_id (FK → users.id, nullable, indexed)  -- null = system-owned (ADR-010)
 ├── equipment_type_id (FK → equipment_types.id, nullable, indexed)
 ├── name (string)
 ├── type (string, indexed, discriminator)
@@ -157,6 +157,7 @@ Each child table's `exercise_id` FK is UNIQUE (one-to-one) and cascades on delet
 - **ADR-004** (gym equipment): equipment is a type catalog referenced by exercise definitions
 - **ADR-005** (weight unit): raw numbers in user's configured unit
 - **ADR-006** (composable metrics): performance logging schema that composes with these definitions
+- **ADR-010** (system-owned exercises): amends this schema to make user_id nullable, where null marks a system-owned catalog row
 
 ---
 

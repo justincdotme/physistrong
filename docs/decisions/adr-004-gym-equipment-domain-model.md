@@ -71,7 +71,7 @@ definitions cannot be silently removed.
 equipment_types
 +----- id (PK, auto-increment)
 +----- name (string)
-+----- user_id (FK -> users.id, nullable) -- null = system-seeded
++----- user_id (FK -> users.id, nullable, ON DELETE CASCADE) -- null = system-seeded; custom types removed with their owner
 +----- is_system (boolean, default false)
 +----- created_at, updated_at
 +----- UNIQUE(name, user_id) -- prevent per-user duplicates
