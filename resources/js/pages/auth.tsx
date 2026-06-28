@@ -132,8 +132,7 @@ export function RegisterPage() {
     password: '',
     passwordConfirm: '',
   })
-  const [weightUnit, setWeightUnit] = useState<'kg' | 'lb' | null>(null)
-  const [distanceUnit, setDistanceUnit] = useState<'miles' | 'kilometers'>('miles')
+  const [measurementSystem, setMeasurementSystem] = useState<'imperial' | 'metric' | null>(null)
 
   const updateField = (key: keyof RegisterFormState) => (value: string) => {
     setForm(prev => ({ ...prev, [key]: value }))
@@ -144,7 +143,7 @@ export function RegisterPage() {
     form.email &&
     form.password &&
     form.password === form.passwordConfirm &&
-    weightUnit
+    measurementSystem
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -153,8 +152,7 @@ export function RegisterPage() {
       firstName: form.first,
       lastName: form.last,
       email: form.email,
-      weightUnit,
-      distanceUnit,
+      measurementSystem,
     })
     login()
     navigate('/workouts')
@@ -216,31 +214,19 @@ export function RegisterPage() {
 
         <div className="ps-metric p-3">
           <span className="label-caps text-text-secondary block mb-2">
-            Weight unit <span className="text-destructive">*</span>
+            Measurement system <span className="text-destructive">*</span>
           </span>
           <SegmentedControl
-            value={weightUnit || ''}
-            onChange={v => setWeightUnit(v as 'kg' | 'lb')}
+            value={measurementSystem || ''}
+            onChange={v => setMeasurementSystem(v as 'imperial' | 'metric')}
             options={[
-              { value: 'kg', label: 'Kilograms (kg)' },
-              { value: 'lb', label: 'Pounds (lb)' },
+              { value: 'imperial', label: 'Imperial (lb, mi)' },
+              { value: 'metric', label: 'Metric (kg, km)' },
             ]}
           />
           <p className="text-[12px] text-text-muted mt-2">
-            Used everywhere you log a lift. You can change it later.
+            Controls unit labels across the app. You can change it later.
           </p>
-        </div>
-
-        <div>
-          <span className="label-caps text-text-secondary block mb-2">Distance unit</span>
-          <SegmentedControl
-            value={distanceUnit}
-            onChange={v => setDistanceUnit(v as 'miles' | 'kilometers')}
-            options={[
-              { value: 'miles', label: 'Miles' },
-              { value: 'kilometers', label: 'Kilometers' },
-            ]}
-          />
         </div>
 
         <Button type="submit" full size="lg" disabled={!isValid}>

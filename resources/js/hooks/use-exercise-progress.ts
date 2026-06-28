@@ -1,5 +1,6 @@
 import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
+import { unitLabel } from '@/lib/units'
 import type { ExerciseProgressData, TimeRange } from '@/api/types'
 
 interface UseExerciseProgressResult {
@@ -118,7 +119,7 @@ export function useExerciseProgress(
       records.push({
         label: 'Heaviest',
         value: `${maxW}`,
-        unit: user.weightUnit,
+        unit: unitLabel(user.measurementSystem, 'weight'),
         sub: maxWReps ? `× ${maxWReps} reps` : null,
       })
     if (maxReps > -Infinity)
@@ -127,7 +128,7 @@ export function useExerciseProgress(
       records.push({
         label: 'Top set volume',
         value: `${maxVol.toLocaleString()}`,
-        unit: user.weightUnit,
+        unit: unitLabel(user.measurementSystem, 'weight'),
         sub: null,
       })
   } else if (ex.type === 'timed_hold') {
@@ -139,7 +140,7 @@ export function useExerciseProgress(
       records.push({
         label: 'Farthest',
         value: `${m}`,
-        unit: user.distanceUnit === 'miles' ? 'mi' : 'km',
+        unit: unitLabel(user.measurementSystem, 'distance'),
         sub: null,
       })
   } else if (ex.type === 'interval') {
