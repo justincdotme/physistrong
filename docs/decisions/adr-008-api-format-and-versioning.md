@@ -66,8 +66,8 @@ versioned prefix alongside resource routes. No separate auth namespace.
 ## Related Decisions
 
 - **ADR-001** (auth): Passport + JWT, auth endpoints under /v1/
-- **ADR-005** (weight unit): API responses include weight_unit field
-  alongside weight values
+- **ADR-013** (measurement system): API responses include measurement_system on
+  user resource
 - **ADR-006** (composable metrics): query patterns assume standard REST
   responses
 

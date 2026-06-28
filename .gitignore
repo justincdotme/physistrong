@@ -34,8 +34,10 @@ Thumbs.db
 /.superpowers
 /docs/superpowers
 /docs/project
-/CLAUDE.md
+/.claude/
 /temp
+.codex/
+AGENTS.md
 
 # Linked git worktrees
 .worktrees/

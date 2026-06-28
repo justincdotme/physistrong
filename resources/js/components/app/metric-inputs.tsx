@@ -2,6 +2,7 @@ import { Trophy, Plus, ChevronDown } from 'lucide-react'
 import type { WorkoutEntry, Exercise } from '@/api/types'
 import { useApp } from '@/lib/use-app'
 import { cn } from '@/lib/utils'
+import { unitLabel } from '@/lib/units'
 import { Badge } from '@/components/ui/badge'
 import { formatDuration } from '@/lib/formatters'
 
@@ -77,7 +78,7 @@ interface EntryMetricsProps {
 
 export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMetricsProps) {
   const { user } = useApp()
-  const unit = user.weightUnit === 'kg' ? 'kg' : 'lb'
+  const unit = unitLabel(user.measurementSystem, 'weight')
 
   if (exercise.type === 'resistance') {
     const lm = entry.loadMetric || { targetWeight: null, actualWeight: null, bodyweightOnly: false }
@@ -185,13 +186,12 @@ export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMe
     const dist = entry.distanceMetric || {
       targetDistance: null,
       actualDistance: null,
-      distanceUnit: user.distanceUnit,
+      distanceUnit: user.measurementSystem === 'imperial' ? 'miles' : 'kilometers',
       lapCount: null,
       strokeCount: null,
     }
     const dur = entry.durationMetric || { targetDurationSeconds: null, actualDurationSeconds: null }
-    const du =
-      dist.distanceUnit === 'kilometers' ? 'km' : dist.distanceUnit === 'miles' ? 'mi' : 'unit'
+    const du = unitLabel(user.measurementSystem, 'distance')
     const isPR =
       allTimeBest != null &&
       dist.actualDistance != null &&

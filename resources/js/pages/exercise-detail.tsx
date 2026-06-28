@@ -55,7 +55,7 @@ export function ExerciseDetailPage() {
     attrs.push(['Allows added weight', ex.allowsAddedWeight ? 'Yes' : 'No'])
     attrs.push(['Bilateral', ex.bilateral ? 'Yes' : 'No (single-arm/leg)'])
   } else if (ex.type === 'distance') {
-    attrs.push(['Distance unit', user.distanceUnit === 'kilometers' ? 'Kilometers' : 'Miles'])
+    attrs.push(['Distance unit', user.measurementSystem === 'metric' ? 'Kilometers' : 'Miles'])
     attrs.push(['Tracks elevation', ex.tracksElevation ? 'Yes' : 'No'])
   } else if (ex.type === 'interval') {
     attrs.push(['Default work', formatDuration(ex.defaultWorkSeconds)])

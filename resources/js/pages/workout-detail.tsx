@@ -308,8 +308,9 @@ export function WorkoutDetailPage() {
     if (!ex) return
     const ref = block.entries[0]
     if (!ref) return
+    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
     const ne: WorkoutEntry = {
-      ...freshEntry(ex, workoutId, uid, user.distanceUnit),
+      ...freshEntry(ex, workoutId, uid, distanceUnit),
       loadMetric: ref.loadMetric ? { ...ref.loadMetric, actualWeight: null } : undefined,
       repMetric: ref.repMetric
         ? { ...ref.repMetric, actualReps: null, toFailure: false, failureRep: null }
@@ -328,7 +329,8 @@ export function WorkoutDetailPage() {
   }
 
   const addExercise = (ex: Exercise) => {
-    const ne = freshEntry(ex, workoutId, uid, user.distanceUnit)
+    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
+    const ne = freshEntry(ex, workoutId, uid, distanceUnit)
     persist([
       { kind: 'exercise', id: `b-new-${ne.id}`, exerciseId: ex.id, entries: [ne] },
       ...blocks,
@@ -365,11 +367,12 @@ export function WorkoutDetailPage() {
     const chosen = blocks.filter(b => selected.includes(b.id) && b.kind === 'exercise')
     const groupEntries: WorkoutEntry[] = []
 
+    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
     for (let r = 1; r <= cfg.plannedRounds; r++) {
       chosen.forEach(b => {
         const ex = exerciseById(exercises, b.exerciseId ?? '')
         if (ex) {
-          const e = freshEntry(ex, workoutId, uid, user.distanceUnit)
+          const e = freshEntry(ex, workoutId, uid, distanceUnit)
           groupEntries.push({
             ...e,
             entryGroupId: gid,

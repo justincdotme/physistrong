@@ -1,7 +1,7 @@
 # ADR-012: Distance Unit Preference
 
 ## Status
-Accepted
+Superseded by [ADR-013](adr-013-measurement-system-preference.md)
 
 ## Date
 2026-06-28

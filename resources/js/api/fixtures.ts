@@ -5,8 +5,7 @@ export const fixtureUser: User = {
   firstName: 'Justin',
   lastName: 'Carter',
   email: 'justin@physistrong.app',
-  weightUnit: 'lb',
-  distanceUnit: 'miles',
+  measurementSystem: 'imperial',
   theme: 'light',
 }
 

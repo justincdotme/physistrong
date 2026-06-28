@@ -1,10 +1,11 @@
+import type { MeasurementSystem } from '@/lib/units'
+
 export interface User {
   id: string
   firstName: string
   lastName: string
   email: string
-  weightUnit: 'kg' | 'lb'
-  distanceUnit: 'miles' | 'kilometers'
+  measurementSystem: MeasurementSystem
   theme: 'light' | 'dark' | 'system'
 }
 

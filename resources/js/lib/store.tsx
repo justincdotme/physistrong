@@ -164,7 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             distanceMetric: {
               targetDistance: null,
               actualDistance: null,
-              distanceUnit: user.distanceUnit,
+              distanceUnit: user.measurementSystem === 'imperial' ? 'miles' : 'kilometers',
               lapCount: null,
               strokeCount: null,
             },
@@ -222,7 +222,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setWorkouts(ws => [w, ...ws])
       return w
     },
-    [templates, exercises, user.distanceUnit]
+    [templates, exercises, user.measurementSystem]
   )
 
   const updateTemplate = useCallback((id: string, patch: Partial<WorkoutTemplate>) => {

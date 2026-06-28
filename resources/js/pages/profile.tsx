@@ -93,30 +93,16 @@ export function ProfilePage() {
       <h2 className="label-caps text-text-secondary mb-2">Preferences</h2>
       <Card className="p-4 mb-6 flex flex-col gap-4">
         <div>
-          <div className="text-sm font-medium mb-2">Weight unit</div>
+          <div className="text-sm font-medium mb-2">Measurement system</div>
           <SegmentedControl
-            value={user.weightUnit}
+            value={user.measurementSystem}
             onChange={v => {
-              updateUser({ weightUnit: v as 'kg' | 'lb' })
-              toast('Unit updated.')
+              updateUser({ measurementSystem: v as 'imperial' | 'metric' })
+              toast('Measurement system updated.')
             }}
             options={[
-              { value: 'kg', label: 'Kilograms (kg)' },
-              { value: 'lb', label: 'Pounds (lb)' },
-            ]}
-          />
-        </div>
-        <div>
-          <div className="text-sm font-medium mb-2">Distance unit</div>
-          <SegmentedControl
-            value={user.distanceUnit || 'miles'}
-            onChange={v => {
-              updateUser({ distanceUnit: v as 'miles' | 'kilometers' })
-              toast('Unit updated.')
-            }}
-            options={[
-              { value: 'miles', label: 'Miles' },
-              { value: 'kilometers', label: 'Kilometers' },
+              { value: 'imperial', label: 'Imperial (lb, mi)' },
+              { value: 'metric', label: 'Metric (kg, km)' },
             ]}
           />
         </div>
