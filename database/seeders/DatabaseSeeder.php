@@ -21,5 +21,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Equipment must seed before exercises: exercises resolve equipment by FK.
+        $this->call([
+            EquipmentTypeSeeder::class,
+            ExerciseLibrarySeeder::class,
+        ]);
     }
 }
