@@ -1,14 +1,25 @@
+import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import { LogOut } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
+import { useAuth } from '@/hooks/use-auth'
 import { useApp } from '@/lib/use-app'
+import { updateProfile } from '@/api/user'
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function applyTheme(theme: string) {
+  let resolved = theme
+  if (theme === 'system') {
+    resolved = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+  document.documentElement.classList.toggle('dark', resolved === 'dark')
+}
+
+function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-3 py-3 border-b border-border last:border-0">
       <span className="text-sm text-text-secondary shrink-0">{label}</span>
@@ -18,29 +29,79 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export function ProfilePage() {
-  const navigate = useNavigate()
-  const { user, updateUser, logout, toast } = useApp()
-  const [first, setFirst] = useState(user.firstName)
-  const [last, setLast] = useState(user.lastName)
-  const [email, setEmail] = useState(user.email)
+  const { user, setUser, handleLogout } = useAuth()
+  const { toast } = useApp()
+  const [first, setFirst] = useState(user?.firstName ?? '')
+  const [last, setLast] = useState(user?.lastName ?? '')
+  const [email, setEmail] = useState(user?.email ?? '')
   const [password, setPassword] = useState({ current: '', next: '', confirm: '' })
+  const [saving, setSaving] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
+
+  if (!user) return null
 
   const isDirty = first !== user.firstName || last !== user.lastName || email !== user.email
 
-  const handleSaveInfo = () => {
-    updateUser({ firstName: first, lastName: last, email })
-    toast('Profile saved.')
+  const handleSaveInfo = async () => {
+    setSaving(true)
+    try {
+      const updated = await updateProfile({
+        first_name: first,
+        last_name: last,
+        email,
+      })
+      setUser(updated)
+      toast('Profile saved.')
+    } catch (err) {
+      if (isAxiosError(err) && err.response?.status === 422) {
+        const fieldErrors = err.response.data?.errors as Record<string, string[]> | undefined
+        const msg = fieldErrors ? Object.values(fieldErrors).flat()[0] : 'Could not save.'
+        toast(msg ?? 'Could not save.')
+      } else {
+        toast('Could not save. Try again.')
+      }
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!password.current || !password.next || password.next !== password.confirm) return
-    setPassword({ current: '', next: '', confirm: '' })
-    toast('Password changed.')
+    setPasswordError('')
+    setSaving(true)
+    try {
+      await updateProfile({
+        current_password: password.current,
+        password: password.next,
+        password_confirmation: password.confirm,
+      })
+      setPassword({ current: '', next: '', confirm: '' })
+      toast('Password changed.')
+    } catch (err) {
+      if (isAxiosError(err) && err.response?.status === 422) {
+        const fieldErrors = err.response.data?.errors as Record<string, string[]> | undefined
+        setPasswordError(
+          fieldErrors?.current_password?.[0] ??
+            fieldErrors?.password?.[0] ??
+            'Could not change password.'
+        )
+      } else {
+        setPasswordError('Could not change password. Try again.')
+      }
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
+  const handlePreferenceChange = async (field: string, value: string) => {
+    if (field === 'theme') applyTheme(value)
+    try {
+      const updated = await updateProfile({ [field]: value })
+      setUser(updated)
+      toast(field === 'theme' ? 'Theme updated.' : 'Measurement system updated.')
+    } catch {
+      toast('Could not save preference. Try again.')
+    }
   }
 
   const fullName = `${user.firstName} ${user.lastName}`
@@ -48,7 +109,7 @@ export function ProfilePage() {
 
   return (
     <>
-      <PageHeader back onBack={() => navigate('/workouts')} title="Profile" />
+      <PageHeader title="Profile" />
 
       <div className="flex items-center gap-3 mb-6">
         <Avatar name={fullName} size={56} />
@@ -83,7 +144,7 @@ export function ProfilePage() {
         </Row>
         {isDirty && (
           <div className="py-3">
-            <Button size="sm" onClick={handleSaveInfo}>
+            <Button size="sm" onClick={handleSaveInfo} disabled={saving}>
               Save Changes
             </Button>
           </div>
@@ -96,10 +157,7 @@ export function ProfilePage() {
           <div className="text-sm font-medium mb-2">Measurement system</div>
           <SegmentedControl
             value={user.measurementSystem}
-            onChange={v => {
-              updateUser({ measurementSystem: v as 'imperial' | 'metric' })
-              toast('Measurement system updated.')
-            }}
+            onChange={v => handlePreferenceChange('measurement_system', v)}
             options={[
               { value: 'imperial', label: 'Imperial (lb, mi)' },
               { value: 'metric', label: 'Metric (kg, km)' },
@@ -110,10 +168,7 @@ export function ProfilePage() {
           <div className="text-sm font-medium mb-2">Theme</div>
           <SegmentedControl
             value={user.theme}
-            onChange={v => {
-              updateUser({ theme: v as 'light' | 'dark' | 'system' })
-              toast('Theme updated.')
-            }}
+            onChange={v => handlePreferenceChange('theme', v)}
             options={[
               { value: 'light', label: 'Light' },
               { value: 'dark', label: 'Dark' },
@@ -125,6 +180,7 @@ export function ProfilePage() {
 
       <h2 className="label-caps text-text-secondary mb-2">Security</h2>
       <Card className="px-4 mb-6">
+        {passwordError && <p className="text-destructive text-xs pt-3">{passwordError}</p>}
         <Row label="Current">
           <input
             type="password"
@@ -156,7 +212,7 @@ export function ProfilePage() {
           <Button
             size="sm"
             variant="secondary"
-            disabled={!canChangePassword}
+            disabled={!canChangePassword || saving}
             onClick={handleChangePassword}
           >
             Change Password

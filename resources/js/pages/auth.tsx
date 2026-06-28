@@ -1,8 +1,10 @@
-import { type ReactNode, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { type FormEvent, type ReactNode, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
-import { useApp } from '@/lib/use-app'
+import { useAuth } from '@/hooks/use-auth'
+import { login, register, forgotPassword, resetPassword } from '@/api/auth'
 
 interface AuthLayoutProps {
   title: string
@@ -41,9 +43,18 @@ interface FieldProps {
   onChange: (value: string) => void
   placeholder?: string
   name?: string
+  error?: string
 }
 
-export function Field({ label, type = 'text', value, onChange, placeholder, name }: FieldProps) {
+export function Field({
+  label,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  name,
+  error,
+}: FieldProps) {
   return (
     <label className="block">
       <span className="label-caps text-text-secondary block mb-1.5">{label}</span>
@@ -53,22 +64,60 @@ export function Field({ label, type = 'text', value, onChange, placeholder, name
         value={value}
         placeholder={placeholder}
         onChange={e => onChange(e.target.value)}
-        className="ps-input w-full px-3 py-2.5 text-sm"
+        className={`ps-input w-full px-3 py-2.5 text-sm${error ? ' border-destructive' : ''}`}
       />
+      {error && <p className="text-destructive text-xs mt-1">{error}</p>}
     </label>
   )
 }
 
-export function LoginPage() {
-  const { login } = useApp()
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('justin@physistrong.app')
-  const [password, setPassword] = useState('password')
+function extractFieldErrors(error: unknown): Record<string, string> {
+  if (!isAxiosError(error) || error.response?.status !== 422) return {}
+  const fieldErrors = error.response.data?.errors as Record<string, string[]> | undefined
+  if (!fieldErrors) return {}
+  const result: Record<string, string> = {}
+  for (const [key, messages] of Object.entries(fieldErrors)) {
+    const first = messages[0]
+    if (first) result[key] = first
+  }
+  return result
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+function extractMessage(error: unknown): string {
+  if (isAxiosError(error) && error.response?.data?.message) {
+    return error.response.data.message as string
+  }
+  return 'Something went wrong. Try again.'
+}
+
+export function LoginPage() {
+  const { setUser } = useAuth()
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [generalError, setGeneralError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    login()
-    navigate('/workouts')
+    setErrors({})
+    setGeneralError('')
+    setSubmitting(true)
+    try {
+      const { user } = await login({ email, password })
+      setUser(user)
+      navigate('/workouts')
+    } catch (err) {
+      const fieldErrors = extractFieldErrors(err)
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors)
+      } else {
+        setGeneralError(extractMessage(err))
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -85,12 +134,14 @@ export function LoginPage() {
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {generalError && <p className="text-destructive text-sm text-center">{generalError}</p>}
         <Field
           label="Email"
           type="email"
           value={email}
           onChange={setEmail}
           placeholder="you@example.com"
+          error={errors.email}
         />
         <div>
           <Field
@@ -99,6 +150,7 @@ export function LoginPage() {
             value={password}
             onChange={setPassword}
             placeholder="••••••••"
+            error={errors.password}
           />
           <div className="text-right mt-1.5">
             <Link to="/password/reset" className="text-[13px] text-secondary font-medium">
@@ -106,8 +158,8 @@ export function LoginPage() {
             </Link>
           </div>
         </div>
-        <Button type="submit" full size="lg">
-          Log In
+        <Button type="submit" full size="lg" disabled={submitting}>
+          {submitting ? 'Logging in...' : 'Log In'}
         </Button>
       </form>
     </AuthLayout>
@@ -123,7 +175,7 @@ interface RegisterFormState {
 }
 
 export function RegisterPage() {
-  const { login, updateUser } = useApp()
+  const { setUser } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState<RegisterFormState>({
     first: '',
@@ -133,29 +185,44 @@ export function RegisterPage() {
     passwordConfirm: '',
   })
   const [measurementSystem, setMeasurementSystem] = useState<'imperial' | 'metric' | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [generalError, setGeneralError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const updateField = (key: keyof RegisterFormState) => (value: string) => {
     setForm(prev => ({ ...prev, [key]: value }))
   }
 
   const isValid =
-    form.first &&
-    form.email &&
-    form.password &&
-    form.password === form.passwordConfirm &&
-    measurementSystem
+    form.email && form.password && form.password === form.passwordConfirm && measurementSystem
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!isValid) return
-    updateUser({
-      firstName: form.first,
-      lastName: form.last,
-      email: form.email,
-      measurementSystem,
-    })
-    login()
-    navigate('/workouts')
+    setErrors({})
+    setGeneralError('')
+    setSubmitting(true)
+    try {
+      const { user } = await register({
+        email: form.email,
+        password: form.password,
+        password_confirmation: form.passwordConfirm,
+        measurement_system: measurementSystem,
+        first_name: form.first || undefined,
+        last_name: form.last || undefined,
+      })
+      setUser(user)
+      navigate('/workouts')
+    } catch (err) {
+      const fieldErrors = extractFieldErrors(err)
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors)
+      } else {
+        setGeneralError(extractMessage(err))
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -172,18 +239,21 @@ export function RegisterPage() {
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {generalError && <p className="text-destructive text-sm text-center">{generalError}</p>}
         <div className="grid grid-cols-2 gap-3">
           <Field
             label="First name"
             value={form.first}
             onChange={updateField('first')}
             placeholder="Justin"
+            error={errors.first_name}
           />
           <Field
             label="Last name"
             value={form.last}
             onChange={updateField('last')}
             placeholder="Carter"
+            error={errors.last_name}
           />
         </div>
 
@@ -193,6 +263,7 @@ export function RegisterPage() {
           value={form.email}
           onChange={updateField('email')}
           placeholder="you@example.com"
+          error={errors.email}
         />
 
         <div className="grid grid-cols-2 gap-3">
@@ -202,6 +273,7 @@ export function RegisterPage() {
             value={form.password}
             onChange={updateField('password')}
             placeholder="••••••••"
+            error={errors.password}
           />
           <Field
             label="Confirm"
@@ -224,13 +296,16 @@ export function RegisterPage() {
               { value: 'metric', label: 'Metric (kg, km)' },
             ]}
           />
+          {errors.measurement_system && (
+            <p className="text-destructive text-xs mt-1">{errors.measurement_system}</p>
+          )}
           <p className="text-[12px] text-text-muted mt-2">
             Controls unit labels across the app. You can change it later.
           </p>
         </div>
 
-        <Button type="submit" full size="lg" disabled={!isValid}>
-          Create Account
+        <Button type="submit" full size="lg" disabled={!isValid || submitting}>
+          {submitting ? 'Creating account...' : 'Create Account'}
         </Button>
       </form>
     </AuthLayout>
@@ -240,10 +315,21 @@ export function RegisterPage() {
 export function PasswordResetRequestPage() {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    setError('')
+    setSubmitting(true)
+    try {
+      await forgotPassword(email)
+      setSent(true)
+    } catch (err) {
+      setError(extractMessage(err))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -276,6 +362,7 @@ export function PasswordResetRequestPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {error && <p className="text-destructive text-sm text-center">{error}</p>}
           <Field
             label="Email"
             type="email"
@@ -283,8 +370,8 @@ export function PasswordResetRequestPage() {
             onChange={setEmail}
             placeholder="you@example.com"
           />
-          <Button type="submit" full size="lg">
-            Send Reset Link
+          <Button type="submit" full size="lg" disabled={submitting}>
+            {submitting ? 'Sending...' : 'Send Reset Link'}
           </Button>
         </form>
       )}
@@ -294,14 +381,38 @@ export function PasswordResetRequestPage() {
 
 export function PasswordResetFormPage() {
   const navigate = useNavigate()
+  const { token } = useParams<{ token: string }>()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [done, setDone] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [generalError, setGeneralError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (password && password === passwordConfirm) {
+    if (!password || password !== passwordConfirm || !token) return
+    setErrors({})
+    setGeneralError('')
+    setSubmitting(true)
+    try {
+      await resetPassword({
+        email,
+        token,
+        password,
+        password_confirmation: passwordConfirm,
+      })
       setDone(true)
+    } catch (err) {
+      const fieldErrors = extractFieldErrors(err)
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors)
+      } else {
+        setGeneralError(extractMessage(err))
+      }
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -326,12 +437,22 @@ export function PasswordResetFormPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {generalError && <p className="text-destructive text-sm text-center">{generalError}</p>}
+          <Field
+            label="Email"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            placeholder="you@example.com"
+            error={errors.email}
+          />
           <Field
             label="New password"
             type="password"
             value={password}
             onChange={setPassword}
             placeholder="••••••••"
+            error={errors.password}
           />
           <Field
             label="Confirm password"
@@ -340,8 +461,13 @@ export function PasswordResetFormPage() {
             onChange={setPasswordConfirm}
             placeholder="••••••••"
           />
-          <Button type="submit" full size="lg" disabled={!password || password !== passwordConfirm}>
-            Update Password
+          <Button
+            type="submit"
+            full
+            size="lg"
+            disabled={!email || !password || password !== passwordConfirm || submitting}
+          >
+            {submitting ? 'Updating...' : 'Update Password'}
           </Button>
         </form>
       )}
