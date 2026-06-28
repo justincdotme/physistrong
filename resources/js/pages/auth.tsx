@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 
 interface AuthLayoutProps {
   title: string

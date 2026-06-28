@@ -6,7 +6,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (

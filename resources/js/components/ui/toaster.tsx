@@ -1,4 +1,4 @@
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { Check } from 'lucide-react'
 
 export interface Toast {

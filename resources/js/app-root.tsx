@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom'
-import { AppProvider, useApp } from '@/lib/store'
+import { AppProvider } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { Shell } from '@/components/shell/shell'
 import {
   LoginPage,

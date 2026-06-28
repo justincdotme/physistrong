@@ -1,4 +1,4 @@
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
 import type { ExerciseProgressData, TimeRange } from '@/api/types'
 

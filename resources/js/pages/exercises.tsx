@@ -13,7 +13,7 @@ import { Toggle } from '@/components/ui/toggle'
 import { useExercises } from '@/hooks/use-exercises'
 import { useEquipment } from '@/hooks/use-equipment'
 import { useWorkouts } from '@/hooks/use-workouts'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { equipmentName, exerciseUsageCount, TYPE_LABELS } from '@/lib/domain'
 import type { Exercise, ExerciseType, EquipmentType } from '@/api/types'
 

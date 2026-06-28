@@ -1,4 +1,4 @@
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import type { WorkoutTemplate } from '@/api/types'
 
 interface UseTemplatesResult {

@@ -1,4 +1,4 @@
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import type { EquipmentType } from '@/api/types'
 
 interface UseEquipmentResult {

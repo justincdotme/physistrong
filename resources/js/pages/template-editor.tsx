@@ -5,7 +5,7 @@ import type { WorkoutTemplate, TemplateExercise, TemplateEntryGroup } from '@/ap
 import { useTemplate } from '@/hooks/use-templates'
 import { useExercises } from '@/hooks/use-exercises'
 import { useEquipment } from '@/hooks/use-equipment'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { exerciseById, equipmentName } from '@/lib/domain'
 import { formatDuration } from '@/lib/formatters'
 import type { Exercise } from '@/api/types'

@@ -9,7 +9,7 @@ import { Sheet } from '@/components/ui/sheet'
 import { EmptyState } from '@/components/ui/empty-state'
 import { useEquipment } from '@/hooks/use-equipment'
 import { useExercises } from '@/hooks/use-exercises'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { equipmentUsageCount } from '@/lib/domain'
 import type { EquipmentType } from '@/api/types'
 

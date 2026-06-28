@@ -5,7 +5,7 @@ import type { WorkoutEntry, EntryGroup, Exercise } from '@/api/types'
 import { useWorkout } from '@/hooks/use-workouts'
 import { useExercises } from '@/hooks/use-exercises'
 import { useEquipment } from '@/hooks/use-equipment'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
 import {
   workoutCompletion,

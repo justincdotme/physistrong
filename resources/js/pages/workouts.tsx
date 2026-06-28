@@ -4,7 +4,7 @@ import { Plus, BarChart3 } from 'lucide-react'
 import type { useWorkout } from '@/hooks/use-workouts'
 import { useWorkouts } from '@/hooks/use-workouts'
 import { useExercises } from '@/hooks/use-exercises'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { formatDate } from '@/lib/formatters'
 import { workoutCompletion, exerciseById } from '@/lib/domain'
 import {

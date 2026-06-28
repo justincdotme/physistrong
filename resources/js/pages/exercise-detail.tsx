@@ -9,7 +9,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useExercise } from '@/hooks/use-exercises'
 import { useEquipment } from '@/hooks/use-equipment'
 import { useWorkouts } from '@/hooks/use-workouts'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { equipmentName, exerciseUsageCount } from '@/lib/domain'
 import { formatDuration } from '@/lib/formatters'
 

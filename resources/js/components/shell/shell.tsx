@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, Outlet } from 'react-router-dom'
 import { Dumbbell, List, TrendingUp, LayoutGrid } from 'lucide-react'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { Avatar } from '@/components/ui/avatar'
 
 interface NavItem {

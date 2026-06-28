@@ -1,6 +1,6 @@
 import { Trophy, Plus, ChevronDown } from 'lucide-react'
 import type { WorkoutEntry, Exercise } from '@/api/types'
-import { useApp } from '@/lib/store'
+import { useApp } from '@/lib/use-app'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { formatDuration } from '@/lib/formatters'
