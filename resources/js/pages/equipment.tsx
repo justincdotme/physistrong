@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { Dumbbell, Plus, Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 import { Badge } from '@/components/ui/badge'
@@ -7,16 +9,41 @@ import { Card } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Sheet } from '@/components/ui/sheet'
 import { EmptyState } from '@/components/ui/empty-state'
-import { useEquipment } from '@/hooks/use-equipment'
-import { useExercises } from '@/hooks/use-exercises'
 import { useApp } from '@/lib/use-app'
-import { equipmentUsageCount } from '@/lib/domain'
+import { listEquipment, createEquipment, deleteEquipment } from '@/api/equipment'
 import type { EquipmentType } from '@/api/types'
 
 export function EquipmentPage() {
-  const { data: equipment } = useEquipment()
-  const { data: exercises } = useExercises()
-  const { addEquipment, deleteEquipment, toast } = useApp()
+  const queryClient = useQueryClient()
+  const { toast } = useApp()
+  const { data: equipment = [], isLoading } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
+
+  const createMutation = useMutation({
+    mutationFn: createEquipment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['equipment'] })
+      toast('Equipment added.')
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteEquipment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['equipment'] })
+      toast('Equipment deleted.')
+    },
+    onError: error => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast(error.response.data?.message ?? 'Equipment is in use.')
+      } else {
+        toast('Could not delete. Try again.')
+      }
+    },
+  })
+
   const [addOpen, setAddOpen] = useState(false)
   const [name, setName] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<EquipmentType | null>(null)
@@ -24,23 +51,30 @@ export function EquipmentPage() {
   const handleCreate = () => {
     const trimmed = name.trim()
     if (!trimmed) return
-    addEquipment(trimmed)
+    createMutation.mutate(trimmed)
     setName('')
     setAddOpen(false)
-    toast('Equipment added.')
   }
 
   const handleDelete = () => {
     if (!deleteTarget) return
-    deleteEquipment(deleteTarget.id)
+    deleteMutation.mutate(deleteTarget.id)
     setDeleteTarget(null)
-    toast('Equipment deleted.')
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && name.trim()) {
       handleCreate()
     }
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Equipment" />
+        <p className="text-text-secondary text-sm">Loading...</p>
+      </>
+    )
   }
 
   return (
@@ -76,11 +110,7 @@ export function EquipmentPage() {
       ) : (
         <div className="flex flex-col gap-2.5">
           {equipment.map(eq => {
-            const usage = equipmentUsageCount(exercises, eq.id)
-            const inUse = usage > 0
-            const ariaLabel = inUse
-              ? `${eq.name} in use by ${usage} exercises`
-              : `Delete ${eq.name}`
+            const canDelete = !eq.isSystem
             return (
               <Card key={eq.id} className="p-4 flex items-center gap-3">
                 <span
@@ -100,17 +130,15 @@ export function EquipmentPage() {
                 </Badge>
                 <button
                   onClick={() => {
-                    if (!inUse) setDeleteTarget(eq)
+                    if (canDelete) setDeleteTarget(eq)
                   }}
-                  disabled={inUse}
+                  disabled={!canDelete}
                   title={
-                    inUse
-                      ? `${eq.name} in use by ${usage} exercise${usage === 1 ? '' : 's'} and cannot be deleted.`
-                      : 'Delete equipment'
+                    eq.isSystem ? 'System equipment types cannot be deleted.' : 'Delete equipment'
                   }
-                  aria-label={ariaLabel}
+                  aria-label={eq.isSystem ? `${eq.name} is a system type` : `Delete ${eq.name}`}
                   className={`h-10 w-10 flex items-center justify-center rounded-lg shrink-0 transition-colors ${
-                    inUse
+                    !canDelete
                       ? 'text-text-muted opacity-50 cursor-not-allowed'
                       : 'text-text-muted hover:text-destructive hover:bg-surface-muted'
                   }`}

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, Outlet } from 'react-router-dom'
 import { Dumbbell, List, TrendingUp, LayoutGrid } from 'lucide-react'
-import { useApp } from '@/lib/use-app'
+import { useAuth } from '@/hooks/use-auth'
 import { Avatar } from '@/components/ui/avatar'
 
 interface NavItem {
@@ -29,7 +29,8 @@ function getActiveKey(pathname: string): string {
 export function Shell() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { user } = useApp()
+  const { user } = useAuth()
+  if (!user) return null
   const activeKey = getActiveKey(location.pathname)
   const fullName = `${user.firstName} ${user.lastName}`
 
