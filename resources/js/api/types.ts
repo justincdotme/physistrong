@@ -19,7 +19,7 @@ export type ExerciseType = 'resistance' | 'timed_hold' | 'distance' | 'interval'
 
 export interface Exercise {
   id: string
-  userId: string
+  userId: string | null
   name: string
   type: ExerciseType
   equipmentTypeId: string | null
@@ -27,10 +27,12 @@ export interface Exercise {
   bodyweightBase?: boolean
   allowsAddedWeight?: boolean
   bilateral?: boolean
+  targetDurationSeconds?: number | null
+  distanceUnit?: string
   tracksElevation?: boolean
-  defaultWorkSeconds?: number
-  defaultRestSeconds?: number
-  defaultRounds?: number
+  defaultWorkSeconds?: number | null
+  defaultRestSeconds?: number | null
+  defaultRounds?: number | null
 }
 
 export interface LoadMetric {

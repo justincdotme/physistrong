@@ -1,17 +1,30 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 import { Card } from '@/components/ui/card'
 import { TypeBadge } from '@/components/ui/type-badge'
 import { InlineEdit } from '@/components/ui/inline-edit'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { useExercise } from '@/hooks/use-exercises'
-import { useEquipment } from '@/hooks/use-equipment'
-import { useWorkouts } from '@/hooks/use-workouts'
 import { useApp } from '@/lib/use-app'
-import { equipmentName, exerciseUsageCount } from '@/lib/domain'
+import { equipmentName } from '@/lib/domain'
 import { formatDuration } from '@/lib/formatters'
+import {
+  getExercise,
+  updateExercise as updateExerciseApi,
+  deleteExercise as deleteExerciseApi,
+} from '@/api/exercises'
+import { listEquipment } from '@/api/equipment'
+import type { UpdateExercisePayload } from '@/api/exercises'
+
+const DISTANCE_UNIT_LABELS: Record<string, string> = {
+  meters: 'Meters',
+  kilometers: 'Kilometers',
+  miles: 'Miles',
+  yards: 'Yards',
+}
 
 function AttrRow({ label, value }: { label: string; value: string }) {
   return (
@@ -24,12 +37,66 @@ function AttrRow({ label, value }: { label: string; value: string }) {
 
 export function ExerciseDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const { data: ex } = useExercise(id || '')
-  const { data: equipment } = useEquipment()
-  const { data: workouts } = useWorkouts()
-  const { updateExercise, deleteExercise, toast, user } = useApp()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { toast } = useApp()
   const [deleting, setDeleting] = useState(false)
+
+  const { data: ex, isLoading } = useQuery({
+    queryKey: ['exercises', id],
+    queryFn: () => {
+      if (!id) throw new Error('Exercise ID is required')
+      return getExercise(id)
+    },
+    enabled: !!id,
+  })
+
+  const { data: equipment = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: (payload: UpdateExercisePayload) => {
+      if (!id) throw new Error('Exercise ID is required')
+      return updateExerciseApi(id, payload)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      toast('Exercise updated.')
+    },
+    onError: () => {
+      toast('Could not update. Try again.')
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: () => {
+      if (!id) throw new Error('Exercise ID is required')
+      return deleteExerciseApi(id)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      toast('Exercise deleted.')
+      navigate('/exercises')
+    },
+    onError: error => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast(error.response.data?.message ?? 'Exercise is in use.')
+      } else {
+        toast('Could not delete. Try again.')
+      }
+    },
+  })
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader back onBack={() => navigate('/exercises')} title="Loading..." />
+        <p className="text-text-secondary text-sm">Loading exercise...</p>
+      </>
+    )
+  }
 
   if (!ex) {
     return (
@@ -46,16 +113,22 @@ export function ExerciseDetailPage() {
     )
   }
 
-  const usage = exerciseUsageCount(workouts, ex.id)
-  const inUse = usage > 0
-
+  const isOwned = ex.userId !== null
   const attrs: Array<[string, string]> = []
+
   if (ex.type === 'resistance') {
     attrs.push(['Bodyweight base', ex.bodyweightBase ? 'Yes' : 'No'])
     attrs.push(['Allows added weight', ex.allowsAddedWeight ? 'Yes' : 'No'])
     attrs.push(['Bilateral', ex.bilateral ? 'Yes' : 'No (single-arm/leg)'])
+  } else if (ex.type === 'timed_hold') {
+    if (ex.targetDurationSeconds) {
+      attrs.push(['Target duration', formatDuration(ex.targetDurationSeconds)])
+    }
   } else if (ex.type === 'distance') {
-    attrs.push(['Distance unit', user.measurementSystem === 'metric' ? 'Kilometers' : 'Miles'])
+    attrs.push([
+      'Distance unit',
+      DISTANCE_UNIT_LABELS[ex.distanceUnit ?? ''] ?? ex.distanceUnit ?? '',
+    ])
     attrs.push(['Tracks elevation', ex.tracksElevation ? 'Yes' : 'No'])
   } else if (ex.type === 'interval') {
     attrs.push(['Default work', formatDuration(ex.defaultWorkSeconds)])
@@ -69,20 +142,27 @@ export function ExerciseDetailPage() {
         back
         onBack={() => navigate('/exercises')}
         title={
-          <InlineEdit
-            value={ex.name}
-            onChange={v => updateExercise(ex.id, { name: v })}
-            ariaLabel="Exercise name"
-          />
+          isOwned ? (
+            <InlineEdit
+              value={ex.name}
+              onChange={v =>
+                updateMutation.mutate({
+                  name: v,
+                  equipment_type_id: ex.equipmentTypeId ? Number(ex.equipmentTypeId) : null,
+                  notes: ex.notes,
+                })
+              }
+              ariaLabel="Exercise name"
+            />
+          ) : (
+            ex.name
+          )
         }
       />
 
       <div className="flex items-center gap-2 mb-5">
         <TypeBadge type={ex.type} />
-        <span className="text-sm text-text-secondary inline-flex items-center gap-1.5">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M7 4h10v2H7V4zm-1 6h1v7H6v-7zm3 0h1v7H9v-7zm3 0h1v7h-1v-7zm3 0h1v7h-1v-7zm3 0h1v7h-1v-7zm1-2c1.1 0 2-.9 2-2h-2c0 1.1.9 2 2 2s2-.9 2-2h-2c0 1.1.9 2 2 2s2-.9 2-2h2c0 1.1-.9 2-2 2h-2V4z" />
-          </svg>
+        <span className="text-sm text-text-secondary">
           {equipmentName(equipment, ex.equipmentTypeId)}
         </span>
       </div>
@@ -140,43 +220,29 @@ export function ExerciseDetailPage() {
         </svg>
       </button>
 
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => {
-            if (!inUse) setDeleting(true)
-          }}
-          disabled={inUse}
-          title={
-            inUse
-              ? `In use by ${usage} workout${usage === 1 ? '' : 's'} and cannot be deleted.`
-              : 'Delete exercise'
-          }
-          className={`inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg ${
-            inUse
-              ? 'text-text-muted opacity-50 cursor-not-allowed'
-              : 'text-destructive hover:bg-surface-muted'
-          }`}
-        >
-          <Trash2 size={17} /> Delete
-        </button>
-        {inUse && (
-          <span className="text-[12px] text-text-muted">
-            In use by {usage} workout{usage === 1 ? '' : 's'}
-          </span>
-        )}
-      </div>
+      {isOwned && (
+        <>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDeleting(true)}
+              className="inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg text-destructive hover:bg-surface-muted"
+            >
+              <Trash2 size={17} /> Delete
+            </button>
+          </div>
 
-      <ConfirmDialog
-        open={deleting}
-        title="Delete exercise?"
-        message={`"${ex.name}" will be removed from your catalog.`}
-        onCancel={() => setDeleting(false)}
-        onConfirm={() => {
-          deleteExercise(ex.id)
-          toast('Exercise deleted.')
-          navigate('/exercises')
-        }}
-      />
+          <ConfirmDialog
+            open={deleting}
+            title="Delete exercise?"
+            message={`"${ex.name}" will be removed from your catalog.`}
+            onCancel={() => setDeleting(false)}
+            onConfirm={() => {
+              setDeleting(false)
+              deleteMutation.mutate()
+            }}
+          />
+        </>
+      )}
     </>
   )
 }

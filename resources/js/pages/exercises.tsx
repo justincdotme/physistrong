@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { Search, Plus, Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
@@ -10,12 +12,12 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Sheet } from '@/components/ui/sheet'
 import { Toggle } from '@/components/ui/toggle'
-import { useExercises } from '@/hooks/use-exercises'
-import { useEquipment } from '@/hooks/use-equipment'
-import { useWorkouts } from '@/hooks/use-workouts'
 import { useApp } from '@/lib/use-app'
-import { equipmentName, exerciseUsageCount, TYPE_LABELS } from '@/lib/domain'
+import { equipmentName, TYPE_LABELS } from '@/lib/domain'
+import { listExercises, createExercise, deleteExercise as deleteExerciseApi } from '@/api/exercises'
+import { listEquipment } from '@/api/equipment'
 import type { Exercise, ExerciseType, EquipmentType } from '@/api/types'
+import type { CreateExercisePayload } from '@/api/exercises'
 
 const TYPES: Array<{ value: string; label: string }> = [
   { value: 'all', label: 'All' },
@@ -25,55 +27,105 @@ const TYPES: Array<{ value: string; label: string }> = [
   { value: 'interval', label: 'Interval' },
 ]
 
-function CreateExerciseSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { addExercise, toast } = useApp()
-  const { data: equipment } = useEquipment()
+function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { toast } = useApp()
+
+  const { data: equipment = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
+
   const [name, setName] = useState('')
+  const [notes, setNotes] = useState('')
   const [type, setType] = useState<ExerciseType>('resistance')
   const [equip, setEquip] = useState('')
   const [bodyweight, setBodyweight] = useState(false)
   const [addedWeight, setAddedWeight] = useState(true)
   const [bilateral, setBilateral] = useState(true)
+  const [targetDurationSeconds, setTargetDurationSeconds] = useState('')
+  const [distanceUnit, setDistanceUnit] = useState('meters')
+  const [tracksElevation, setTracksElevation] = useState(false)
+  const [defaultWorkSeconds, setDefaultWorkSeconds] = useState('')
+  const [defaultRestSeconds, setDefaultRestSeconds] = useState('')
+  const [defaultRounds, setDefaultRounds] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  if (open && name === '') {
-    setName('')
-    setType('resistance')
-    setEquip('')
-    setBodyweight(false)
-    setAddedWeight(true)
-    setBilateral(true)
-  }
+  const createMutation = useMutation({
+    mutationFn: createExercise,
+    onSuccess: exercise => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      toast('Exercise created.')
+      onClose()
+      navigate(`/exercises/${exercise.id}`)
+    },
+    onError: error => {
+      if (isAxiosError(error) && error.response?.status === 422) {
+        const fieldErrors = error.response.data?.errors as Record<string, string[]> | undefined
+        if (fieldErrors) {
+          const mapped: Record<string, string> = {}
+          for (const [key, messages] of Object.entries(fieldErrors)) {
+            if (messages[0]) mapped[key] = messages[0]
+          }
+          setErrors(mapped)
+          return
+        }
+      }
+      toast('Could not create exercise. Try again.')
+    },
+  })
 
   const create = () => {
-    const ex: Partial<Exercise> & { name: string; type: ExerciseType } = {
-      name: name.trim(),
-      type,
-      equipmentTypeId: equip || null,
-    }
+    const trimmed = name.trim()
+    if (!trimmed) return
+
+    setErrors({})
+
+    const typeAttributes: Record<string, unknown> = {}
+
     if (type === 'resistance') {
-      Object.assign(ex, { bodyweightBase: bodyweight, allowsAddedWeight: addedWeight, bilateral })
+      typeAttributes.bodyweight_base = bodyweight
+      typeAttributes.allows_added_weight = addedWeight
+      typeAttributes.bilateral = bilateral
+    } else if (type === 'timed_hold') {
+      if (targetDurationSeconds) {
+        typeAttributes.target_duration_seconds = parseInt(targetDurationSeconds)
+      }
+    } else if (type === 'distance') {
+      typeAttributes.distance_unit = distanceUnit
+      typeAttributes.tracks_elevation = tracksElevation
+    } else if (type === 'interval') {
+      if (defaultWorkSeconds) {
+        typeAttributes.default_work_seconds = parseInt(defaultWorkSeconds)
+      }
+      if (defaultRestSeconds) {
+        typeAttributes.default_rest_seconds = parseInt(defaultRestSeconds)
+      }
+      if (defaultRounds) {
+        typeAttributes.default_rounds = parseInt(defaultRounds)
+      }
     }
-    if (type === 'distance') {
-      Object.assign(ex, { tracksElevation: false })
+
+    const payload: CreateExercisePayload = {
+      name: trimmed,
+      type,
+      equipment_type_id: equip ? Number(equip) : null,
+      notes: notes.trim() || null,
+      type_attributes: typeAttributes,
     }
-    if (type === 'interval') {
-      Object.assign(ex, { defaultWorkSeconds: 60, defaultRestSeconds: 60, defaultRounds: 8 })
-    }
-    const created = addExercise(ex)
-    onClose()
-    toast('Exercise created.')
-    navigate(`/exercises/${created.id}`)
+
+    createMutation.mutate(payload)
   }
 
   return (
     <Sheet
-      open={open}
+      open={true}
       onClose={onClose}
       title="Create Exercise"
       footer={
-        <Button full disabled={!name.trim()} onClick={create}>
-          Create Exercise
+        <Button full disabled={!name.trim() || createMutation.isPending} onClick={create}>
+          {createMutation.isPending ? 'Creating...' : 'Create Exercise'}
         </Button>
       }
     >
@@ -87,9 +139,25 @@ function CreateExerciseSheet({ open, onClose }: { open: boolean; onClose: () => 
             value={name}
             onChange={e => setName(e.target.value)}
             placeholder="e.g. Incline Bench Press"
-            className="ps-input w-full px-3 py-2.5 text-sm"
+            className={`ps-input w-full px-3 py-2.5 text-sm ${errors.name ? 'border-destructive' : ''}`}
+          />
+          {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="exercise-notes" className="label-caps text-text-secondary block mb-1.5">
+            Notes (optional)
+          </label>
+          <textarea
+            id="exercise-notes"
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder="e.g. Variations, form cues..."
+            className="ps-input w-full px-3 py-2.5 text-sm resize-none"
+            rows={3}
           />
         </div>
+
         <div>
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label id="exercise-type-label" className="label-caps text-text-secondary block mb-1.5">
@@ -124,6 +192,7 @@ function CreateExerciseSheet({ open, onClose }: { open: boolean; onClose: () => 
             ))}
           </div>
         </div>
+
         <div>
           <label
             htmlFor="exercise-equipment"
@@ -145,23 +214,112 @@ function CreateExerciseSheet({ open, onClose }: { open: boolean; onClose: () => 
             ))}
           </select>
         </div>
+
         {type === 'resistance' && (
           <div className="ps-metric p-3 flex flex-col gap-3">
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label className="flex items-center justify-between" aria-label="Bodyweight base">
+            <div className="flex items-center justify-between" aria-label="Bodyweight base">
               <span className="text-sm">Bodyweight base</span>
               <Toggle checked={bodyweight} onChange={setBodyweight} label="Bodyweight base" />
-            </label>
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label className="flex items-center justify-between" aria-label="Allows added weight">
+            </div>
+            <div className="flex items-center justify-between" aria-label="Allows added weight">
               <span className="text-sm">Allows added weight</span>
               <Toggle checked={addedWeight} onChange={setAddedWeight} label="Allows added weight" />
-            </label>
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label className="flex items-center justify-between" aria-label="Bilateral">
+            </div>
+            <div className="flex items-center justify-between" aria-label="Bilateral">
               <span className="text-sm">Bilateral</span>
               <Toggle checked={bilateral} onChange={setBilateral} label="Bilateral" />
-            </label>
+            </div>
+          </div>
+        )}
+
+        {type === 'timed_hold' && (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label htmlFor="target-duration" className="text-sm">
+                Target duration (seconds, optional)
+              </label>
+              <input
+                id="target-duration"
+                type="number"
+                value={targetDurationSeconds}
+                onChange={e => setTargetDurationSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+          </div>
+        )}
+
+        {type === 'distance' && (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label htmlFor="distance-unit" className="text-sm">
+                Distance unit
+              </label>
+              <select
+                id="distance-unit"
+                value={distanceUnit}
+                onChange={e => setDistanceUnit(e.target.value)}
+                className="ps-input px-2 py-1.5 text-sm"
+              >
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="miles">Miles</option>
+                <option value="yards">Yards</option>
+              </select>
+            </div>
+            <div className="flex items-center justify-between" aria-label="Tracks elevation">
+              <span className="text-sm">Tracks elevation</span>
+              <Toggle
+                checked={tracksElevation}
+                onChange={setTracksElevation}
+                label="Tracks elevation"
+              />
+            </div>
+          </div>
+        )}
+
+        {type === 'interval' && (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-work" className="text-sm">
+                Work seconds (optional)
+              </label>
+              <input
+                id="default-work"
+                type="number"
+                value={defaultWorkSeconds}
+                onChange={e => setDefaultWorkSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-rest" className="text-sm">
+                Rest seconds (optional)
+              </label>
+              <input
+                id="default-rest"
+                type="number"
+                value={defaultRestSeconds}
+                onChange={e => setDefaultRestSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-rounds" className="text-sm">
+                Rounds (optional)
+              </label>
+              <input
+                id="default-rounds"
+                type="number"
+                value={defaultRounds}
+                onChange={e => setDefaultRounds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
           </div>
         )}
       </div>
@@ -170,11 +328,35 @@ function CreateExerciseSheet({ open, onClose }: { open: boolean; onClose: () => 
 }
 
 export function ExercisesPage() {
-  const { data: exercises } = useExercises()
-  const { data: equipment } = useEquipment()
-  const { data: workouts } = useWorkouts()
-  const { deleteExercise, toast } = useApp()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { toast } = useApp()
+
+  const { data: exercises = [], isLoading } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: listExercises,
+  })
+
+  const { data: equipment = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteExerciseApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      toast('Exercise deleted.')
+    },
+    onError: error => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast(error.response.data?.message ?? 'Exercise is in use.')
+      } else {
+        toast('Could not delete. Try again.')
+      }
+    },
+  })
+
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
   const [equip, setEquip] = useState('all')
@@ -187,6 +369,15 @@ export function ExercisesPage() {
       (equip === 'all' || e.equipmentTypeId === equip) &&
       e.name.toLowerCase().includes(q.toLowerCase())
   )
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Exercises" />
+        <p className="text-text-secondary text-sm">Loading...</p>
+      </>
+    )
+  }
 
   return (
     <>
@@ -247,8 +438,7 @@ export function ExercisesPage() {
       {filtered.length ? (
         <div className="flex flex-col gap-2.5">
           {filtered.map(ex => {
-            const usage = exerciseUsageCount(workouts, ex.id)
-            const inUse = usage > 0
+            const isSystem = ex.userId === null
             return (
               <Card
                 key={ex.id}
@@ -262,28 +452,19 @@ export function ExercisesPage() {
                   </div>
                 </div>
                 <TypeBadge type={ex.type} />
-                <button
-                  onClick={e => {
-                    e.stopPropagation()
-                    if (!inUse) setDeleting(ex)
-                  }}
-                  disabled={inUse}
-                  title={
-                    inUse
-                      ? `${ex.name} is in use by ${usage} workout${usage === 1 ? '' : 's'} and cannot be deleted.`
-                      : 'Delete exercise'
-                  }
-                  aria-label={
-                    inUse ? `${ex.name} in use by ${usage} workouts` : `Delete ${ex.name}`
-                  }
-                  className={`h-10 w-10 flex items-center justify-center rounded-lg shrink-0 ${
-                    inUse
-                      ? 'text-text-muted opacity-50 cursor-not-allowed'
-                      : 'text-text-muted hover:text-destructive hover:bg-surface-muted'
-                  }`}
-                >
-                  <Trash2 size={17} />
-                </button>
+                {!isSystem && (
+                  <button
+                    onClick={e => {
+                      e.stopPropagation()
+                      setDeleting(ex)
+                    }}
+                    title="Delete exercise"
+                    aria-label={`Delete ${ex.name}`}
+                    className="h-10 w-10 flex items-center justify-center rounded-lg shrink-0 text-text-muted hover:text-destructive hover:bg-surface-muted"
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                )}
               </Card>
             )
           })}
@@ -309,7 +490,7 @@ export function ExercisesPage() {
         </EmptyState>
       )}
 
-      <CreateExerciseSheet open={showCreate} onClose={() => setShowCreate(false)} />
+      {showCreate && <CreateExerciseSheet onClose={() => setShowCreate(false)} />}
       <ConfirmDialog
         open={!!deleting}
         title="Delete exercise?"
@@ -317,9 +498,8 @@ export function ExercisesPage() {
         onCancel={() => setDeleting(null)}
         onConfirm={() => {
           if (deleting) {
-            deleteExercise(deleting.id)
+            deleteMutation.mutate(deleting.id)
             setDeleting(null)
-            toast('Exercise deleted.')
           }
         }}
       />
