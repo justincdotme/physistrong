@@ -7,6 +7,7 @@ namespace Tests\Feature\Api\V1;
 use App\Models\EquipmentType;
 use App\Models\Exercise;
 use App\Models\User;
+use App\Models\Workout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -397,6 +398,21 @@ class ExerciseTest extends TestCase
 
         $this->deleteJson("/api/v1/exercises/{$exercise->id}")
             ->assertStatus(403);
+    }
+
+    public function test_returns_409_when_deleting_exercise_in_use_by_workout(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance', ['name' => 'In Use']);
+        Passport::actingAs($user);
+
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $this->deleteJson("/api/v1/exercises/{$exercise->id}")
+            ->assertStatus(409);
+
+        $this->assertDatabaseHas('exercises', ['id' => $exercise->id]);
     }
 
     // -- Auth --
