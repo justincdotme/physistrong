@@ -1,0 +1,427 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Search, Plus, Edit, ChevronRight, ChevronLeft, Grid } from 'lucide-react'
+import type { Exercise, WorkoutTemplate, EquipmentType } from '@/api/types'
+import { useExercises } from '@/hooks/use-exercises'
+import { useTemplates } from '@/hooks/use-templates'
+import { useEquipment } from '@/hooks/use-equipment'
+import { Sheet } from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
+import { TypeBadge } from '@/components/ui/type-badge'
+import { SegmentedControl } from '@/components/ui/segmented-control'
+import { cn } from '@/lib/utils'
+import { todayISO } from '@/lib/formatters'
+
+function equipmentName(equipment: EquipmentType[], equipmentTypeId: string | null): string {
+  if (!equipmentTypeId) return 'No equipment'
+  const eq = equipment.find(e => e.id === equipmentTypeId)
+  return eq?.name || 'Unknown'
+}
+
+interface ExercisePickerProps {
+  open: boolean
+  onClose: () => void
+  onSelect: (exercise: Exercise) => void
+}
+
+export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps) {
+  const { data: exercises } = useExercises()
+  const { data: equipment } = useEquipment()
+  const [q, setQ] = useState('')
+  const [type, setType] = useState('all')
+
+  const filtered = exercises.filter(
+    e => (type === 'all' || e.type === type) && e.name.toLowerCase().includes(q.toLowerCase())
+  )
+
+  return (
+    <Sheet open={open} onClose={onClose} title="Add Exercise">
+      <div className="relative mb-3">
+        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+        <input
+          id="exercise-search"
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          placeholder="Search exercises"
+          className="ps-input w-full pl-10 pr-3 py-2.5 text-sm"
+        />
+      </div>
+      <div className="mb-3">
+        <SegmentedControl
+          size="sm"
+          value={type}
+          onChange={setType}
+          options={[
+            { value: 'all', label: 'All' },
+            { value: 'resistance', label: 'Lift' },
+            { value: 'timed_hold', label: 'Hold' },
+            { value: 'distance', label: 'Cardio' },
+            { value: 'interval', label: 'Interval' },
+          ]}
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {filtered.map(ex => (
+          <button
+            key={ex.id}
+            onClick={() => {
+              onSelect(ex)
+              onClose()
+            }}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-muted text-left min-h-[56px]"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold text-sm truncate">{ex.name}</div>
+              <div className="text-[12px] text-text-secondary truncate">
+                {equipmentName(equipment, ex.equipmentTypeId)}
+              </div>
+            </div>
+            <TypeBadge type={ex.type} />
+            <Plus size={18} className="text-primary shrink-0" />
+          </button>
+        ))}
+        {!filtered.length && (
+          <p className="text-text-muted text-sm text-center py-6">No matching exercises.</p>
+        )}
+      </div>
+    </Sheet>
+  )
+}
+
+interface NewWorkoutWizardProps {
+  open: boolean
+  onClose: () => void
+  onCreateEmpty: (config: { name: string; date: string }) => void
+  onCreateFromTemplate: (template: WorkoutTemplate, config: { name: string; date: string }) => void
+}
+
+export function NewWorkoutWizard({
+  open,
+  onClose,
+  onCreateEmpty,
+  onCreateFromTemplate,
+}: NewWorkoutWizardProps) {
+  const { data: templates } = useTemplates()
+  const navigate = useNavigate()
+  const [step, setStep] = useState<'method' | 'template' | 'details'>('method')
+  const [method, setMethod] = useState<'scratch' | 'template' | null>(null)
+  const [selectedTemplate, setSelectedTemplate] = useState<WorkoutTemplate | null>(null)
+  const [name, setName] = useState('')
+  const [date, setDate] = useState(todayISO())
+
+  useEffect(() => {
+    if (open) {
+      setStep('method')
+      setMethod(null)
+      setSelectedTemplate(null)
+      setName('')
+      setDate(todayISO())
+    }
+  }, [open])
+
+  const title =
+    step === 'method'
+      ? 'New Workout'
+      : step === 'template'
+        ? 'Choose a Template'
+        : 'Workout Details'
+
+  const back =
+    step === 'details'
+      ? () => setStep(method === 'template' ? 'template' : 'method')
+      : step === 'template'
+        ? () => setStep('method')
+        : null
+
+  const chooseScratch = () => {
+    setMethod('scratch')
+    setName('')
+    setStep('details')
+  }
+
+  const chooseTemplateMethod = () => {
+    setMethod('template')
+    setStep('template')
+  }
+
+  const pickTemplate = (t: WorkoutTemplate) => {
+    setSelectedTemplate(t)
+    setName(t.name)
+    setStep('details')
+  }
+
+  const finish = () => {
+    if (method === 'template' && selectedTemplate) {
+      onCreateFromTemplate(selectedTemplate, { name: name.trim(), date })
+    } else {
+      onCreateEmpty({ name: name.trim(), date })
+    }
+    onClose()
+  }
+
+  const footer =
+    step === 'details' ? (
+      <Button full disabled={!name.trim()} onClick={finish}>
+        Start Workout
+      </Button>
+    ) : null
+
+  interface MethodButtonProps {
+    icon: React.ReactNode
+    label: string
+    sub: string
+    onClick?: () => void
+    disabled?: boolean
+    badge?: string
+  }
+
+  function MethodButton({ icon, label, sub, onClick, disabled, badge }: MethodButtonProps) {
+    return (
+      <button
+        onClick={disabled ? undefined : onClick}
+        disabled={disabled}
+        className={cn(
+          'ps-card w-full p-4 flex items-center gap-3 text-left min-h-[68px]',
+          disabled ? 'opacity-60 cursor-not-allowed' : 'hover:bg-surface-muted'
+        )}
+      >
+        <span
+          className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
+          style={{
+            background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
+            color: 'var(--color-primary)',
+          }}
+        >
+          {icon}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-2">
+            <span className="font-semibold text-sm">{label}</span>
+            {badge && (
+              <span className="label-caps px-2 py-0.5 rounded-full bg-surface-muted text-text-secondary">
+                {badge}
+              </span>
+            )}
+          </span>
+          <span className="block text-[12px] text-text-secondary">{sub}</span>
+        </span>
+        {!disabled && <ChevronRight size={18} className="text-text-muted shrink-0" />}
+      </button>
+    )
+  }
+
+  return (
+    <Sheet open={open} onClose={onClose} title={title} footer={footer}>
+      {back && (
+        <button
+          onClick={back}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-secondary hover:text-text-primary -mt-1 mb-3"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
+      )}
+
+      {step === 'method' && (
+        <div className="flex flex-col gap-2.5">
+          <MethodButton
+            icon={<Plus size={20} />}
+            label="Start from scratch"
+            sub="Build it set by set"
+            onClick={chooseScratch}
+          />
+          <MethodButton
+            icon={<Grid size={20} />}
+            label="Use a template"
+            sub={`${templates.length} saved routine${templates.length === 1 ? '' : 's'}`}
+            onClick={chooseTemplateMethod}
+            disabled={!templates.length}
+          />
+          <MethodButton
+            icon={<Grid size={20} />}
+            label="Copy a previous workout"
+            sub="Repeat a past session"
+            disabled
+            badge="Coming Soon"
+          />
+        </div>
+      )}
+
+      {step === 'template' && (
+        <div className="flex flex-col gap-2">
+          {templates.map(t => {
+            const count = t.exercises.length + t.groups.reduce((a, g) => a + g.exercises.length, 0)
+            return (
+              <div key={t.id} className="ps-card p-2.5 flex items-center gap-2 min-h-[60px]">
+                <button
+                  onClick={() => pickTemplate(t)}
+                  className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                >
+                  <span
+                    className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{
+                      background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
+                      color: 'var(--color-primary)',
+                    }}
+                  >
+                    <Grid size={18} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-semibold text-sm truncate">{t.name}</span>
+                    <span className="block text-[12px] text-text-secondary">
+                      {count} exercise{count === 1 ? '' : 's'}
+                    </span>
+                  </span>
+                </button>
+                <button
+                  onClick={() => {
+                    onClose()
+                    navigate(`/templates/${t.id}`)
+                  }}
+                  title="Edit template"
+                  aria-label={`Edit ${t.name}`}
+                  className="h-10 w-10 flex items-center justify-center rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-muted shrink-0"
+                >
+                  <Edit size={17} />
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {step === 'details' && (
+        <div className="flex flex-col gap-4">
+          {method === 'template' && selectedTemplate && (
+            <div className="ps-metric p-3 flex items-center gap-2 text-sm">
+              <Grid size={16} className="text-primary" /> Based on{' '}
+              <span className="font-semibold">{selectedTemplate.name}</span>
+            </div>
+          )}
+          <div>
+            <label htmlFor="workout-name" className="label-caps text-text-secondary block mb-1.5">
+              Workout name
+            </label>
+            <input
+              id="workout-name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Push Day"
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="workout-date" className="label-caps text-text-secondary block mb-1.5">
+              Date
+            </label>
+            <input
+              id="workout-date"
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+        </div>
+      )}
+    </Sheet>
+  )
+}
+
+interface GroupConfigSheetProps {
+  open: boolean
+  onClose: () => void
+  count: number
+  onConfirm: (config: {
+    name: string | null
+    plannedRounds: number
+    restBetweenExercisesSeconds: number
+    restBetweenRoundsSeconds: number
+  }) => void
+}
+
+export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfigSheetProps) {
+  const [name, setName] = useState('')
+  const [rounds, setRounds] = useState(3)
+  const [restEx, setRestEx] = useState(30)
+  const [restRound, setRestRound] = useState(90)
+
+  useEffect(() => {
+    if (open) {
+      setName('')
+      setRounds(3)
+      setRestEx(30)
+      setRestRound(90)
+    }
+  }, [open])
+
+  interface NumInputProps {
+    label: string
+    value: number
+    set: (value: number) => void
+    suffix?: string
+  }
+
+  function NumInput({ label, value, set, suffix }: NumInputProps) {
+    return (
+      <div>
+        <label className="label-caps text-text-secondary block mb-1.5">{label}</label>
+        <div className="flex items-center gap-1">
+          <input
+            type="number"
+            value={value}
+            onChange={e => set(Number(e.target.value))}
+            className="ps-input w-full px-3 py-2.5 text-sm tabular-nums"
+          />
+          {suffix && <span className="text-text-muted text-sm w-6">{suffix}</span>}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Sheet
+      open={open}
+      onClose={onClose}
+      title={`Group ${count} Exercises`}
+      footer={
+        <Button
+          full
+          onClick={() => {
+            onConfirm({
+              name: name.trim() || null,
+              plannedRounds: rounds,
+              restBetweenExercisesSeconds: restEx,
+              restBetweenRoundsSeconds: restRound,
+            })
+            onClose()
+          }}
+        >
+          Create Group
+        </Button>
+      }
+    >
+      <p className="text-text-secondary text-sm mb-4">
+        These exercises will run as a superset — one round cycles through each before resting.
+      </p>
+      <div className="flex flex-col gap-4">
+        <div>
+          <label className="label-caps text-text-secondary block mb-1.5">
+            Group name{' '}
+            <span className="normal-case tracking-normal text-text-muted">(optional)</span>
+          </label>
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="e.g. Chest Superset"
+            className="ps-input w-full px-3 py-2.5 text-sm"
+          />
+        </div>
+        <NumInput label="Rounds" value={rounds} set={setRounds} />
+        <div className="grid grid-cols-2 gap-3">
+          <NumInput label="Rest between" value={restEx} set={setRestEx} suffix="s" />
+          <NumInput label="Rest / round" value={restRound} set={setRestRound} suffix="s" />
+        </div>
+      </div>
+    </Sheet>
+  )
+}
