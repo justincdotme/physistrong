@@ -7,22 +7,23 @@ namespace Tests\Feature\Api\V1\Auth;
 use App\Enums\MeasurementSystem;
 use App\Enums\ThemePreference;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
-use Laravel\Passport\ClientRepository;
+use Tests\CreatesPassportToken;
 use Tests\TestCase;
-use App\Notifications\WelcomeNotification;
 
 class RegisterTest extends TestCase
 {
+    use CreatesPassportToken;
     use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        app(ClientRepository::class)->createPersonalAccessGrantClient('Test Personal Access Client');
+        $this->setUpPassport();
     }
 
     /** @return array<string, mixed> */

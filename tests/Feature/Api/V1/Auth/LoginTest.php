@@ -6,17 +6,18 @@ namespace Tests\Feature\Api\V1\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Passport\ClientRepository;
+use Tests\CreatesPassportToken;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
+    use CreatesPassportToken;
     use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        app(ClientRepository::class)->createPersonalAccessGrantClient('Test Personal Access Client');
+        $this->setUpPassport();
     }
 
     public function test_logs_in_with_valid_credentials(): void

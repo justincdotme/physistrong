@@ -8,11 +8,19 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\Passport;
+use Tests\CreatesPassportToken;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    use CreatesPassportToken;
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpPassport();
+    }
 
     public function test_returns_authenticated_user(): void
     {
