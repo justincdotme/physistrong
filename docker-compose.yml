@@ -1,0 +1,126 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-physistrong}
+      MYSQL_USER: ${DB_USERNAME:-physistrong}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
+    ports:
+      - "${DB_FORWARD_HOST:-127.0.0.1}:${DB_FORWARD_PORT:-3306}:3306"
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+    networks:
+      - app-network
+
+  # PHP services read all Laravel configuration from the bind-mounted .env. Do
+  # not add config as `environment:` here: OS-level env vars override .env and
+  # .env.testing, which silently breaks `php artisan test`.
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: php artisan migrate --force
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: no
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /var/www/html
+    user: "1000:1000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /var/www/html
+    user: "1000:1000"
+    volumes:
+      - .:/var/www/html
+    command: php artisan queue:work
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+    networks:
+      - app-network
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /var/www/html
+    user: "1000:1000"
+    volumes:
+      - .:/var/www/html
+    command: php artisan schedule:work
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    environment:
+      SERVER_NAME: ${NGINX_SERVER_NAME:-_}
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

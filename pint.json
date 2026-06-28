@@ -1,0 +1,11 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "docker",
+        "storage"
+    ],
+    "rules": {
+        "@PSR12": true,
+        "no_trailing_comma_in_singleline": false
+    }
+}

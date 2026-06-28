@@ -1,0 +1,10 @@
+services:
+  vite:
+    image: node:22-alpine
+    working_dir: /var/www/html
+    user: "1000:1000"
+    command: sh -c "npm install && npm run build -- --watch"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network

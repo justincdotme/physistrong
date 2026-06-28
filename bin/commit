@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+exec docker compose run --rm --no-deps \
+  app git -c core.hooksPath=.githooks commit "$@"
