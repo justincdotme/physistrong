@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: bcmath, ctype, fileinfo, intl, json, mbstring, openssl, pdo, pdo_mysql, pdo_sqlite, tokenizer, xml
+          coverage: none
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+      - run: cp .env.example .env
+      - run: composer install --no-progress --prefer-dist
+      - name: Generate test app key
+        run: php artisan key:generate
+      - run: vendor/bin/pint --test
+      - run: vendor/bin/phpstan analyse --memory-limit=1G
+      - run: php artisan test
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build

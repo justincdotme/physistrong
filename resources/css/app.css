@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --primary: #0D9488;
+  --primary-hover: #0F766E;
+  --secondary: #0369A1;
+  --secondary-hover: #075985;
+  --accent: #EA580C;
+  --accent-hover: #C2410C;
+  --success: #16A34A;
+  --destructive: #DC2626;
+  --surface-bg: #FAFAF9;
+  --surface-card: #FFFFFF;
+  --surface-muted: #F5F5F4;
+  --border: #E7E5E4;
+  --border-strong: #D6D3D1;
+  --text-primary: #1C1917;
+  --text-secondary: #78716C;
+  --text-muted: #A8A29E;
+
+  --on-primary: #FFFFFF;
+  --on-accent: #FFFFFF;
+  --on-destructive: #FFFFFF;
+
+  --radius: 1rem;
+}
+
+.dark {
+  --primary: #14B8A6;
+  --primary-hover: #0D9488;
+  --secondary: #0EA5E9;
+  --secondary-hover: #0369A1;
+  --accent: #FB923C;
+  --accent-hover: #EA580C;
+  --success: #4ADE80;
+  --destructive: #EF4444;
+  --surface-bg: #1C1917;
+  --surface-card: #292524;
+  --surface-muted: #44403C;
+  --border: #44403C;
+  --border-strong: #57534E;
+  --text-primary: #E7E5E4;
+  --text-secondary: #A8A29E;
+  --text-muted: #78716C;
+}
+
+@theme inline {
+  --color-surface-bg: var(--surface-bg);
+  --color-surface-card: var(--surface-card);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-destructive: var(--destructive);
+
+  --color-background: var(--surface-bg);
+  --color-foreground: var(--text-primary);
+  --color-card: var(--surface-card);
+  --color-card-foreground: var(--text-primary);
+  --color-popover: var(--surface-card);
+  --color-popover-foreground: var(--text-primary);
+  --color-primary-foreground: var(--on-primary);
+  --color-muted: var(--surface-muted);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent-foreground: var(--on-accent);
+  --color-destructive-foreground: var(--on-destructive);
+  --color-input: var(--border-strong);
+  --color-ring: var(--primary);
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    height: 100%;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  .recharts-text {
+    fill: var(--text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
