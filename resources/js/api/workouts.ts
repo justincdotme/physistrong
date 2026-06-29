@@ -36,6 +36,18 @@ export interface UpdateEntryPayload {
   metrics?: Record<string, unknown>
 }
 
+export interface CreateGroupPayload {
+  name?: string | null
+  planned_rounds: number
+  rest_between_exercises_seconds: number
+  rest_between_rounds_seconds: number | null
+}
+
+export interface AssignEntryPayload {
+  entry_id: number
+  group_round: number
+}
+
 interface PaginatedResponse {
   items: WorkoutListItem[]
   nextPage: number | null
@@ -114,4 +126,25 @@ export async function reorderEntries(workoutId: string, ids: string[]): Promise<
     ids: ids.map(Number),
   })
   return (data.data as RawWorkoutEntry[]).map(toWorkoutEntry)
+}
+
+export async function createGroup(
+  workoutId: string,
+  payload: CreateGroupPayload
+): Promise<Workout> {
+  const { data } = await api.post(`/workouts/${workoutId}/groups`, payload)
+  return toWorkout(data.data as RawWorkout)
+}
+
+export async function deleteGroup(workoutId: string, groupId: string): Promise<void> {
+  await api.delete(`/workouts/${workoutId}/groups/${groupId}`)
+}
+
+export async function assignEntries(
+  workoutId: string,
+  groupId: string,
+  entries: AssignEntryPayload[]
+): Promise<Workout> {
+  const { data } = await api.post(`/workouts/${workoutId}/groups/${groupId}/entries`, { entries })
+  return toWorkout(data.data as RawWorkout)
 }

@@ -10,6 +10,9 @@ import {
   attachExercise as attachExerciseApi,
   detachExercise as detachExerciseApi,
   reorderExercises as reorderExercisesApi,
+  createTemplateGroup,
+  deleteTemplateGroup,
+  assignExercisesToGroup,
 } from '@/api/templates'
 import { listEquipment } from '@/api/equipment'
 import { useApp } from '@/lib/use-app'
@@ -18,7 +21,7 @@ import { formatDuration } from '@/lib/formatters'
 import type { Exercise } from '@/api/types'
 import { PageHeader, Button, Card, TypeBadge, InlineEdit, ConfirmDialog } from '@/components/ui'
 import { ReorderList } from '@/components/app/reorderable'
-import { ExercisePicker } from '@/components/app/pickers'
+import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
 
 interface TemplateBlock {
   kind: 'exercise' | 'group'
@@ -53,6 +56,9 @@ export function TemplateEditorPage() {
 
   const [exercisePickerOpen, setExercisePickerOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [selectMode, setSelectMode] = useState(false)
+  const [selected, setSelected] = useState<string[]>([])
+  const [groupSheetOpen, setGroupSheetOpen] = useState(false)
 
   const { data: tpl, isLoading } = useQuery({
     queryKey: ['templates', templateId],
@@ -104,6 +110,53 @@ export function TemplateEditorPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
     },
+  })
+
+  const createGroupMutation = useMutation({
+    mutationFn: async (config: {
+      name: string | null
+      plannedRounds: number
+      restBetweenExercisesSeconds: number
+      restBetweenRoundsSeconds: number
+    }) => {
+      if (!tpl) throw new Error('Template not loaded')
+      const afterCreate = await createTemplateGroup(templateId ?? '', {
+        name: config.name,
+        planned_rounds: config.plannedRounds,
+        rest_between_exercises_seconds: config.restBetweenExercisesSeconds,
+        rest_between_rounds_seconds: config.restBetweenRoundsSeconds,
+      })
+
+      const existingIds = new Set(tpl.groups.map(g => g.id))
+      const newGroup = afterCreate.groups.find(g => !existingIds.has(g.id))
+      if (!newGroup) throw new Error('Group not created')
+
+      const currentBlocks = buildBlocks(tpl)
+      const exerciseIds = currentBlocks
+        .filter(
+          (b): b is TemplateBlock & { te: TemplateExercise } =>
+            selected.includes(b.id) && b.kind === 'exercise' && !!b.te
+        )
+        .map(b => b.te.exerciseId)
+
+      return assignExercisesToGroup(templateId ?? '', newGroup.id, exerciseIds)
+    },
+    onSuccess: data => {
+      queryClient.setQueryData(['templates', templateId], data)
+      setSelectMode(false)
+      setSelected([])
+      toast('Group created.')
+    },
+    onError: () => toast('Could not create group. Try again.'),
+  })
+
+  const ungroupMutation = useMutation({
+    mutationFn: (groupId: string) => deleteTemplateGroup(templateId ?? '', groupId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      toast('Group removed.')
+    },
+    onError: () => toast('Could not ungroup. Try again.'),
   })
 
   if (!templateId) {
@@ -160,7 +213,7 @@ export function TemplateEditorPage() {
 
   const ungroup = (block: TemplateBlock) => {
     if (!block.group) return
-    toast('Coming in a future update')
+    ungroupMutation.mutate(block.group.id)
   }
 
   const exerciseBlockCount = blocks.filter(b => b.kind === 'exercise').length
@@ -193,24 +246,71 @@ export function TemplateEditorPage() {
         <Button size="sm" icon={<Plus size={16} />} onClick={() => setExercisePickerOpen(true)}>
           Add Exercise
         </Button>
-        {exerciseBlockCount >= 2 && (
+        {!selectMode && exerciseBlockCount >= 2 && (
           <Button
             size="sm"
             variant="secondary"
             icon={<span>⊕</span>}
-            onClick={() => toast('Coming in a future update')}
+            onClick={() => setSelectMode(true)}
           >
             Make a Superset
           </Button>
         )}
       </div>
 
+      {selectMode && (
+        <div
+          className="ps-card p-4 mb-4"
+          style={{
+            border: '1px solid var(--color-primary)',
+            background: 'color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-card))',
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <span
+              className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
+              style={{
+                background: 'color-mix(in srgb, var(--color-primary) 14%, transparent)',
+                color: 'var(--color-primary)',
+              }}
+            >
+              ✓
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-sm">Build a superset or circuit</div>
+              <div className="text-[13px] text-text-secondary mt-0.5">
+                Tap 2 or more exercises to group them.
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-3">
+            <Button
+              size="sm"
+              disabled={selected.length < 2}
+              onClick={() => setGroupSheetOpen(true)}
+            >
+              Continue · {selected.length} selected
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setSelectMode(false)
+                setSelected([])
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+
       {blocks.length ? (
         <ReorderList
           items={blocks}
           getKey={b => b.id}
           onReorder={handleReorder}
-          disabled={false}
+          disabled={selectMode}
           className="flex flex-col gap-3"
           itemClassName="rounded-2xl"
           renderItem={(block, { handle, controls }) => {
@@ -274,6 +374,51 @@ export function TemplateEditorPage() {
             if (!block.te) return null
             const te = block.te
 
+            if (selectMode) {
+              const isSelected = selected.includes(block.id)
+              return (
+                <Card
+                  className="p-4"
+                  style={
+                    isSelected
+                      ? { outline: '2px solid var(--color-primary)', outlineOffset: '-1px' }
+                      : undefined
+                  }
+                >
+                  <button
+                    onClick={() =>
+                      setSelected(s =>
+                        s.includes(block.id) ? s.filter(x => x !== block.id) : [...s, block.id]
+                      )
+                    }
+                    className="flex items-center gap-3 w-full text-left cursor-pointer"
+                  >
+                    <span
+                      className="h-6 w-6 rounded-md border-2 flex items-center justify-center shrink-0"
+                      style={
+                        isSelected
+                          ? {
+                              background: 'var(--color-primary)',
+                              borderColor: 'var(--color-primary)',
+                              color: '#fff',
+                            }
+                          : { borderColor: 'var(--color-border-strong)' }
+                      }
+                    >
+                      {isSelected && '✓'}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-sm truncate">{te.name}</div>
+                      <div className="text-[12px] text-text-secondary">
+                        {equipmentName(equipment, te.equipmentTypeId || null)}
+                      </div>
+                    </div>
+                    <TypeBadge type={te.type} />
+                  </button>
+                </Card>
+              )
+            }
+
             return (
               <Card className="p-4">
                 <div className="flex items-center gap-2">
@@ -319,6 +464,15 @@ export function TemplateEditorPage() {
         message={`"${tpl.name}" will be removed.`}
         onCancel={() => setConfirmDeleteOpen(false)}
         onConfirm={() => deleteMutation.mutate()}
+      />
+      <GroupConfigSheet
+        open={groupSheetOpen}
+        onClose={() => setGroupSheetOpen(false)}
+        count={selected.length}
+        onConfirm={config => {
+          createGroupMutation.mutate(config)
+          setGroupSheetOpen(false)
+        }}
       />
     </>
   )

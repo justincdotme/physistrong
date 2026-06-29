@@ -15,9 +15,12 @@ import {
   updateEntry,
   deleteEntry,
   reorderEntries,
+  createGroup,
+  deleteGroup,
+  assignEntries,
 } from '@/api/workouts'
 import { toMetricsPayload } from '@/api/transformers'
-import type { CreateEntryPayload } from '@/api/workouts'
+import type { CreateEntryPayload, AssignEntryPayload } from '@/api/workouts'
 import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
 import { workoutCompletion, exerciseById, equipmentName, entryHasActual } from '@/lib/domain'
@@ -334,6 +337,52 @@ export function WorkoutDetailPage() {
     onSuccess: invalidateWorkout,
   })
 
+  const createGroupMutation = useMutation({
+    mutationFn: async (config: {
+      name: string | null
+      plannedRounds: number
+      restBetweenExercisesSeconds: number
+      restBetweenRoundsSeconds: number
+    }) => {
+      if (!workout) throw new Error('Workout not loaded')
+
+      const afterCreate = await createGroup(workoutId, {
+        name: config.name,
+        planned_rounds: config.plannedRounds,
+        rest_between_exercises_seconds: config.restBetweenExercisesSeconds,
+        rest_between_rounds_seconds: config.restBetweenRoundsSeconds,
+      })
+
+      const existingIds = new Set((workout?.entryGroups ?? []).map(g => g.id))
+      const newGroup = afterCreate.entryGroups.find(g => !existingIds.has(g.id))
+      if (!newGroup) throw new Error('Group not created')
+
+      const currentBlocks = buildBlocks(workout?.entries ?? [], workout?.entryGroups ?? [])
+      const selectedBlocks = currentBlocks.filter(b => selected.includes(b.id))
+      const assignments: AssignEntryPayload[] = selectedBlocks.flatMap(b =>
+        b.entries.map(e => ({ entry_id: Number(e.id), group_round: 1 }))
+      )
+
+      return assignEntries(workoutId, newGroup.id, assignments)
+    },
+    onSuccess: data => {
+      queryClient.setQueryData(['workouts', workoutId], data)
+      setSelectMode(false)
+      setSelected([])
+      toast('Group created.')
+    },
+    onError: () => toast('Could not create group. Try again.'),
+  })
+
+  const ungroupMutation = useMutation({
+    mutationFn: (groupId: string) => deleteGroup(workoutId, groupId),
+    onSuccess: () => {
+      invalidateWorkout()
+      toast('Group removed.')
+    },
+    onError: () => toast('Could not ungroup. Try again.'),
+  })
+
   const debouncedEntryUpdate = useCallback(
     (entryId: string, entry: WorkoutEntry) => {
       const pending = pendingUpdates.current
@@ -628,6 +677,14 @@ export function WorkoutDetailPage() {
                             : 'no round rest'}
                         </div>
                       </div>
+                      {block.gid && (
+                        <button
+                          onClick={() => ungroupMutation.mutate(block.gid as string)}
+                          className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-8 rounded-lg hover:bg-surface-muted"
+                        >
+                          Ungroup
+                        </button>
+                      )}
                       {controls}
                     </div>
                     <div className="flex flex-col gap-4">
@@ -767,7 +824,7 @@ export function WorkoutDetailPage() {
       <div className="ps-card p-4 mt-6">
         <h3 className="font-semibold text-base mb-1">How was the session?</h3>
         <p className="text-[13px] text-text-secondary mb-4">
-          Rate after you finish — helps track recovery.
+          Rate after you finish. Helps track recovery.
         </p>
         <div className="flex flex-col gap-4">
           <div>
@@ -804,11 +861,9 @@ export function WorkoutDetailPage() {
         open={groupSheetOpen}
         onClose={() => setGroupSheetOpen(false)}
         count={selected.length}
-        onConfirm={() => {
-          toast('Supersets require the grouping API (Phase 8a).')
+        onConfirm={config => {
+          createGroupMutation.mutate(config)
           setGroupSheetOpen(false)
-          setSelectMode(false)
-          setSelected([])
         }}
       />
       <ConfirmDialog

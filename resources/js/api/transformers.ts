@@ -120,11 +120,21 @@ export interface RawWorkoutEntry {
   workout_id: number
   exercise_id: number
   set_order: number
+  entry_group_id: number | null
+  group_round: number | null
   notes: string | null
   exercise?: { id: number; name: string; type: string }
   metrics: Record<string, Record<string, unknown>>
   created_at: string
   updated_at: string
+}
+
+export interface RawEntryGroup {
+  id: number
+  name: string | null
+  planned_rounds: number
+  rest_between_exercises_seconds: number
+  rest_between_rounds_seconds: number | null
 }
 
 export interface RawWorkout {
@@ -135,6 +145,7 @@ export interface RawWorkout {
   soreness: number | null
   exercises: RawWorkoutExercise[]
   entries: RawWorkoutEntry[]
+  groups: RawEntryGroup[]
   created_at: string
   updated_at: string
 }
@@ -165,7 +176,14 @@ export function toWorkout(raw: RawWorkout): Workout {
     exhaustion: raw.exhaustion,
     soreness: raw.soreness,
     entries: raw.entries.map(toWorkoutEntry),
-    entryGroups: [],
+    entryGroups: (raw.groups ?? []).map(g => ({
+      id: String(g.id),
+      workoutId: String(raw.id),
+      name: g.name,
+      plannedRounds: g.planned_rounds,
+      restBetweenExercisesSeconds: g.rest_between_exercises_seconds,
+      restBetweenRoundsSeconds: g.rest_between_rounds_seconds,
+    })),
   }
 }
 
@@ -175,8 +193,8 @@ export function toWorkoutEntry(raw: RawWorkoutEntry): WorkoutEntry {
     workoutId: String(raw.workout_id),
     exerciseId: String(raw.exercise_id),
     setOrder: raw.set_order,
-    entryGroupId: null,
-    groupRound: null,
+    entryGroupId: raw.entry_group_id !== null ? String(raw.entry_group_id) : null,
+    groupRound: raw.group_round,
     notes: raw.notes,
   }
 

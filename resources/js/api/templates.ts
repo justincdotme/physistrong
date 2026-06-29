@@ -82,3 +82,33 @@ export async function cloneTemplate(
   const { data } = await api.post(`/templates/${templateId}/clone`, payload)
   return toWorkout(data.data as RawWorkout)
 }
+
+export interface CreateTemplateGroupPayload {
+  name?: string | null
+  planned_rounds: number
+  rest_between_exercises_seconds: number
+  rest_between_rounds_seconds: number
+}
+
+export async function createTemplateGroup(
+  templateId: string,
+  payload: CreateTemplateGroupPayload
+): Promise<WorkoutTemplate> {
+  const { data } = await api.post(`/templates/${templateId}/groups`, payload)
+  return toWorkoutTemplate(data.data as RawWorkoutTemplate)
+}
+
+export async function deleteTemplateGroup(templateId: string, groupId: string): Promise<void> {
+  await api.delete(`/templates/${templateId}/groups/${groupId}`)
+}
+
+export async function assignExercisesToGroup(
+  templateId: string,
+  groupId: string,
+  exerciseIds: string[]
+): Promise<WorkoutTemplate> {
+  const { data } = await api.post(`/templates/${templateId}/groups/${groupId}/exercises`, {
+    exercise_ids: exerciseIds.map(Number),
+  })
+  return toWorkoutTemplate(data.data as RawWorkoutTemplate)
+}
