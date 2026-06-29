@@ -6,6 +6,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { ProgressLineChart, VolumeBarChart } from '@/components/app/charts'
 import { useExerciseProgress } from '@/hooks/use-exercise-progress'
+import { useApp } from '@/lib/use-app'
+import { unitLabel } from '@/lib/units'
 import { getExercise } from '@/api/exercises'
 import { formatDuration } from '@/lib/formatters'
 import type { TimeRange } from '@/api/types'
@@ -25,23 +27,26 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
     enabled: !!exerciseId,
   })
   const { data, isLoading } = useExerciseProgress(exerciseId, range)
+  const { user } = useApp()
 
   if (!ex || isLoading) return null
 
   const isResistance = ex.type === 'resistance'
   const isHold = ex.type === 'timed_hold'
+  const weightUnit = unitLabel(user.measurementSystem, 'weight')
+  const distUnit = unitLabel(user.measurementSystem, 'distance')
   const yLabel = isResistance
-    ? 'Top set (lb)'
+    ? `Top set (${weightUnit})`
     : isHold
       ? 'Duration'
       : ex.type === 'distance'
-        ? 'Distance'
+        ? `Distance (${distUnit})`
         : 'Rounds'
   const valueFormatter = isHold ? (v: number) => formatDuration(Math.round(v)) : undefined
   const unit = isResistance
-    ? 'lb'
+    ? weightUnit
     : ex.type === 'distance'
-      ? 'mi'
+      ? distUnit
       : ex.type === 'interval'
         ? 'rounds'
         : ''

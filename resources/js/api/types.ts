@@ -13,6 +13,7 @@ export interface EquipmentType {
   id: string
   name: string
   isSystem: boolean
+  usageCount: number
 }
 
 export type ExerciseType = 'resistance' | 'timed_hold' | 'distance' | 'interval'
@@ -24,6 +25,7 @@ export interface Exercise {
   type: ExerciseType
   equipmentTypeId: string | null
   notes: string | null
+  usageCount: number
   bodyweightBase?: boolean
   allowsAddedWeight?: boolean
   bilateral?: boolean

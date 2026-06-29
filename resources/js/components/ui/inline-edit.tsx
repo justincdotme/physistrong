@@ -70,7 +70,7 @@ export function InlineEdit({
       }}
       className={cn('text-left inline-flex items-center gap-1.5 group', className)}
       aria-label={ariaLabel}
-      {...(duskDataAttribute && { 'data-dusk': duskDataAttribute })}
+      {...(duskDataAttribute && { dusk: duskDataAttribute })}
     >
       <span>{value || placeholder}</span>
       <Pencil

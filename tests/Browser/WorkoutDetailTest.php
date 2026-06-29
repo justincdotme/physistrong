@@ -353,7 +353,7 @@ it('displays workout date', function () {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@workout-detail-page')
-            ->assertSeeIn('@workout-detail-page', $testDate);
+            ->assertValue('input[type="date"]', $testDate);
     });
 });
 

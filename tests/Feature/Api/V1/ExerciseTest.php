@@ -49,7 +49,7 @@ class ExerciseTest extends TestCase
         return $exercise;
     }
 
-    // -- Index --
+    // Index
 
     public function test_lists_system_and_own_exercises(): void
     {
@@ -123,7 +123,7 @@ class ExerciseTest extends TestCase
         $this->assertFalse($names->contains('Deadlift'));
     }
 
-    // -- Show --
+    // Show
 
     public function test_shows_exercise_with_type_attributes(): void
     {
@@ -157,7 +157,7 @@ class ExerciseTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Store --
+    // Store
 
     public static function exerciseTypeProvider(): array
     {
@@ -285,15 +285,16 @@ class ExerciseTest extends TestCase
             ->assertJsonValidationErrors(['name', 'type']);
     }
 
-    public function test_validates_distance_unit_required_for_distance_type(): void
+    public function test_creates_distance_exercise_without_distance_unit(): void
     {
         Passport::actingAs(User::factory()->create());
 
         $this->postJson('/api/v1/exercises', [
             'name' => 'Run',
             'type' => 'distance',
-        ])->assertStatus(422)
-            ->assertJsonValidationErrors('type_attributes.distance_unit');
+        ])->assertStatus(201)
+            ->assertJsonPath('data.name', 'Run')
+            ->assertJsonPath('data.type', 'distance');
     }
 
     public function test_rejects_inaccessible_equipment_type(): void
@@ -315,7 +316,7 @@ class ExerciseTest extends TestCase
             ->assertJsonValidationErrors('equipment_type_id');
     }
 
-    // -- Update --
+    // Update
 
     public function test_updates_own_exercise(): void
     {
@@ -365,7 +366,7 @@ class ExerciseTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Destroy --
+    // Destroy
 
     public function test_deletes_own_exercise(): void
     {
@@ -429,7 +430,7 @@ class ExerciseTest extends TestCase
             ->assertStatus(409);
     }
 
-    // -- Auth --
+    // Auth
 
     public function test_unauthenticated_cannot_access_exercises(): void
     {

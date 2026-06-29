@@ -47,6 +47,27 @@ class ExerciseController extends Controller
             ->orderBy('name')
             ->get();
 
+        $exerciseIds = $exercises->pluck('id');
+
+        $workoutUsage = DB::table('exercise_workout')
+            ->whereIn('exercise_id', $exerciseIds)
+            ->selectRaw('exercise_id, count(*) as cnt')
+            ->groupBy('exercise_id')
+            ->pluck('cnt', 'exercise_id');
+
+        $templateUsage = DB::table('template_exercises')
+            ->whereIn('exercise_id', $exerciseIds)
+            ->selectRaw('exercise_id, count(*) as cnt')
+            ->groupBy('exercise_id')
+            ->pluck('cnt', 'exercise_id');
+
+        $exercises->each(function (Exercise $exercise) use ($workoutUsage, $templateUsage) {
+            $exercise->setAttribute(
+                'usage_count',
+                ($workoutUsage[$exercise->id] ?? 0) + ($templateUsage[$exercise->id] ?? 0)
+            );
+        });
+
         return ExerciseResource::collection($exercises);
     }
 
@@ -87,6 +108,10 @@ class ExerciseController extends Controller
         $this->authorize('view', $exercise);
 
         $exercise->load(self::EAGER_LOAD);
+
+        $usageCount = DB::table('exercise_workout')->where('exercise_id', $exercise->id)->count()
+            + DB::table('template_exercises')->where('exercise_id', $exercise->id)->count();
+        $exercise->setAttribute('usage_count', $usageCount);
 
         return new ExerciseResource($exercise);
     }

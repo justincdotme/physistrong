@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query'
 import { Trash2, Flame, Target, Plus } from 'lucide-react'
-import type { WorkoutEntry, EntryGroup, Exercise, Workout } from '@/api/types'
+import type { WorkoutEntry, EntryGroup, Exercise, EquipmentType, Workout } from '@/api/types'
 import { listExercises } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
 import {
@@ -166,7 +166,7 @@ function ExerciseHeader({
   exercise: Exercise
   handle: React.ReactNode
   controls: React.ReactNode
-  equipmentList: Array<{ id: string; name: string; isSystem: boolean }>
+  equipmentList: EquipmentType[]
 }) {
   return (
     <div className="flex items-center gap-2 mb-3">

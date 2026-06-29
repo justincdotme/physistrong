@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\Exercise;
+use App\Models\Workout;
+use App\Enums\ExerciseType;
 use Laravel\Dusk\Browser;
 
 it('renders the exercises page and displays system exercises', function () {
@@ -155,5 +158,97 @@ it('hides delete button on system exercise', function () {
             ->click('@exercise-list')
             ->waitFor('@exercise-detail-page')
             ->assertMissing('@delete-exercise-btn');
+    });
+});
+
+it('does not show distance unit selector when creating a distance exercise', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/exercises')
+            ->waitFor('@exercises-page')
+            ->press('Create')
+            ->waitForText('Create Exercise')
+            ->pause(300)
+            ->assertMissing('#distance-unit')
+            ->assertDontSee('Distance unit')
+            ->assertDontSee('Tracks elevation')
+            ->screenshot('create-exercise-no-distance-unit');
+    });
+});
+
+it('shows system badge on system exercise detail', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/exercises')
+            ->waitFor('@exercise-list')
+            ->click('@exercise-list')
+            ->waitFor('@exercise-detail-page')
+            ->assertVisible('@system-badge')
+            ->assertSee('SYSTEM')
+            ->assertMissing('@delete-exercise-btn')
+            ->screenshot('system-exercise-badge');
+    });
+});
+
+it('disables exercise delete button when exercise is in use', function () {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::create([
+        'name' => 'Test Custom Exercise',
+        'type' => ExerciseType::Resistance,
+        'user_id' => $user->id,
+    ]);
+    $exercise->resistance()->create([
+        'bodyweight_base' => false,
+        'allows_added_weight' => true,
+        'bilateral' => true,
+    ]);
+
+    $workout = Workout::factory()->create(['user_id' => $user->id]);
+    $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/exercises')
+            ->waitFor('@exercises-page')
+            ->type('@exercise-search', 'Test Custom Exercise')
+            ->pause(500)
+            ->click('@exercise-list')
+            ->waitFor('@exercise-detail-page')
+            ->assertVisible('@delete-exercise-btn')
+            ->assertDisabled('@delete-exercise-btn')
+            ->screenshot('exercise-delete-disabled-in-use');
+    });
+});
+
+it('enables exercise delete button when exercise is not in use', function () {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::create([
+        'name' => 'Unused Custom Exercise',
+        'type' => ExerciseType::Resistance,
+        'user_id' => $user->id,
+    ]);
+    $exercise->resistance()->create([
+        'bodyweight_base' => false,
+        'allows_added_weight' => true,
+        'bilateral' => true,
+    ]);
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/exercises')
+            ->waitFor('@exercises-page')
+            ->type('@exercise-search', 'Unused Custom Exercise')
+            ->pause(500)
+            ->click('@exercise-list')
+            ->waitFor('@exercise-detail-page')
+            ->assertVisible('@delete-exercise-btn')
+            ->assertEnabled('@delete-exercise-btn')
+            ->screenshot('exercise-delete-enabled');
     });
 });

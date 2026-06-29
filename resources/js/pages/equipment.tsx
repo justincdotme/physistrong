@@ -111,7 +111,12 @@ export function EquipmentPage() {
       ) : (
         <div dusk="equipment-list" className="flex flex-col gap-2.5">
           {equipment.map(eq => {
-            const canDelete = !eq.isSystem
+            const canDelete = !eq.isSystem && eq.usageCount === 0
+            const deleteReason = eq.isSystem
+              ? 'System equipment types cannot be deleted.'
+              : eq.usageCount > 0
+                ? `In use by ${eq.usageCount} exercise(s)`
+                : 'Delete equipment'
             return (
               <Card key={eq.id} className="p-4 flex items-center gap-3">
                 <span
@@ -134,10 +139,8 @@ export function EquipmentPage() {
                     if (canDelete) setDeleteTarget(eq)
                   }}
                   disabled={!canDelete}
-                  title={
-                    eq.isSystem ? 'System equipment types cannot be deleted.' : 'Delete equipment'
-                  }
-                  aria-label={eq.isSystem ? `${eq.name} is a system type` : `Delete ${eq.name}`}
+                  title={deleteReason}
+                  aria-label={canDelete ? `Delete ${eq.name}` : deleteReason}
                   className={`h-10 w-10 flex items-center justify-center rounded-lg shrink-0 transition-colors ${
                     !canDelete
                       ? 'text-text-muted opacity-50 cursor-not-allowed'

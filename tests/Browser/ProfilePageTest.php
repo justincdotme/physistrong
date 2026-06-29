@@ -25,7 +25,7 @@ it('renders and tests profile page', function () {
             ->assertSee('Measurement system')
             ->assertSee('Imperial (lb, mi)')
             ->assertSee('Metric (kg, km)')
-            ->assertSee('Security')
+            ->assertSee('Theme')
             ->assertVisible('@logout-btn')
             ->assertSee('Log Out')
             ->screenshot('profile-desktop');

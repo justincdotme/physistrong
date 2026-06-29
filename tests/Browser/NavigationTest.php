@@ -115,7 +115,7 @@ it('navigates to exercises from desktop nav', function () {
         $browser->resize(1920, 1080)
             ->visit('/workouts')
             ->waitFor('@desktop-nav')
-            ->click('@desktop-nav button:contains("Exercises")')
+            ->click('@desktop-nav-exercises')
             ->waitForLocation('/exercises')
             ->assertPathIs('/exercises');
     });
@@ -128,7 +128,7 @@ it('navigates to equipment from desktop nav', function () {
         $browser->resize(1920, 1080)
             ->visit('/workouts')
             ->waitFor('@desktop-nav')
-            ->click('@desktop-nav button:contains("Equipment")')
+            ->click('@desktop-nav-equipment')
             ->waitForLocation('/equipment')
             ->assertPathIs('/equipment');
     });
@@ -141,7 +141,7 @@ it('navigates to progress from desktop nav', function () {
         $browser->resize(1920, 1080)
             ->visit('/workouts')
             ->waitFor('@desktop-nav')
-            ->click('@desktop-nav button:contains("Progress")')
+            ->click('@desktop-nav-progress')
             ->waitForLocation('/progress')
             ->assertPathIs('/progress');
     });
@@ -154,7 +154,7 @@ it('navigates to exercises from mobile bottom nav', function () {
         $browser->resize(375, 812)
             ->visit('/workouts')
             ->waitFor('@mobile-bottom-nav')
-            ->click('@mobile-bottom-nav button:contains("Exercises")')
+            ->click('@mobile-bottom-nav-exercises')
             ->waitForLocation('/exercises')
             ->assertPathIs('/exercises');
     });
@@ -167,7 +167,7 @@ it('navigates to equipment from mobile bottom nav', function () {
         $browser->resize(375, 812)
             ->visit('/workouts')
             ->waitFor('@mobile-bottom-nav')
-            ->click('@mobile-bottom-nav button:contains("Equipment")')
+            ->click('@mobile-bottom-nav-equipment')
             ->waitForLocation('/equipment')
             ->assertPathIs('/equipment');
     });
@@ -206,7 +206,7 @@ it('navigates to workouts from logo in desktop sidebar', function () {
         $browser->resize(1920, 1080)
             ->visit('/exercises')
             ->waitFor('@desktop-nav')
-            ->click('@desktop-nav button:contains("Physistrong")')
+            ->click('@desktop-nav-logo')
             ->waitForLocation('/workouts')
             ->assertPathIs('/workouts');
     });
@@ -219,7 +219,7 @@ it('navigates to workouts from logo in mobile top bar', function () {
         $browser->resize(375, 812)
             ->visit('/exercises')
             ->waitFor('@mobile-top-bar')
-            ->click('@mobile-top-bar button:contains("Physistrong")')
+            ->click('@mobile-top-bar-logo')
             ->waitForLocation('/workouts')
             ->assertPathIs('/workouts');
     });
@@ -246,10 +246,10 @@ it('maintains nav state when navigating between sections at desktop', function (
             ->visit('/workouts')
             ->waitFor('@desktop-nav')
             ->assertVisible('@desktop-nav')
-            ->click('@desktop-nav button:contains("Exercises")')
+            ->click('@desktop-nav-exercises')
             ->waitForLocation('/exercises')
             ->assertVisible('@desktop-nav')
-            ->click('@desktop-nav button:contains("Progress")')
+            ->click('@desktop-nav-progress')
             ->waitForLocation('/progress')
             ->assertVisible('@desktop-nav');
     });
@@ -263,10 +263,10 @@ it('maintains nav state when navigating between sections on mobile', function ()
             ->visit('/workouts')
             ->waitFor('@mobile-bottom-nav')
             ->assertVisible('@mobile-bottom-nav')
-            ->click('@mobile-bottom-nav button:contains("Exercises")')
+            ->click('@mobile-bottom-nav-exercises')
             ->waitForLocation('/exercises')
             ->assertVisible('@mobile-bottom-nav')
-            ->click('@mobile-bottom-nav button:contains("Equipment")')
+            ->click('@mobile-bottom-nav-equipment')
             ->waitForLocation('/equipment')
             ->assertVisible('@mobile-bottom-nav');
     });
