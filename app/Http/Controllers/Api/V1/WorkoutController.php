@@ -41,10 +41,10 @@ class WorkoutController extends Controller
                 'entries as completed_entries_count' => function ($query) {
                     $query->where(function ($q) {
                         $q->whereHas('loadMetric', fn ($s) => $s->whereNotNull('actual_weight'))
-                          ->orWhereHas('repMetric', fn ($s) => $s->whereNotNull('actual_reps'))
-                          ->orWhereHas('durationMetric', fn ($s) => $s->whereNotNull('actual_duration_seconds'))
-                          ->orWhereHas('distanceMetric', fn ($s) => $s->whereNotNull('actual_distance'))
-                          ->orWhereHas('intervalHeader', fn ($s) => $s->where('completed_rounds', '>', 0));
+                            ->orWhereHas('repMetric', fn ($s) => $s->whereNotNull('actual_reps'))
+                            ->orWhereHas('durationMetric', fn ($s) => $s->whereNotNull('actual_duration_seconds'))
+                            ->orWhereHas('distanceMetric', fn ($s) => $s->whereNotNull('actual_distance'))
+                            ->orWhereHas('intervalHeader', fn ($s) => $s->where('completed_rounds', '>', 0));
                     });
                 },
             ])
