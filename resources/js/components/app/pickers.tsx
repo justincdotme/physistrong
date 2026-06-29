@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Search, Plus, Edit, ChevronRight, ChevronLeft, Grid } from 'lucide-react'
-import type { Exercise, WorkoutTemplate, EquipmentType } from '@/api/types'
-import { useExercises } from '@/hooks/use-exercises'
-import { useTemplates } from '@/hooks/use-templates'
-import { useEquipment } from '@/hooks/use-equipment'
+import { useQuery } from '@tanstack/react-query'
+import { Search, Plus, ChevronRight, ChevronLeft, Grid } from 'lucide-react'
+import type { Exercise, EquipmentType } from '@/api/types'
+import { listExercises } from '@/api/exercises'
+import { listEquipment } from '@/api/equipment'
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
@@ -12,7 +11,7 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
 import { todayISO } from '@/lib/formatters'
 
-function equipmentName(equipment: EquipmentType[], equipmentTypeId: string | null): string {
+function equipmentLabel(equipment: EquipmentType[], equipmentTypeId: string | null): string {
   if (!equipmentTypeId) return 'No equipment'
   const eq = equipment.find(e => e.id === equipmentTypeId)
   return eq?.name || 'Unknown'
@@ -25,8 +24,14 @@ interface ExercisePickerProps {
 }
 
 export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps) {
-  const { data: exercises } = useExercises()
-  const { data: equipment } = useEquipment()
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: listExercises,
+  })
+  const { data: equipment = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
 
@@ -73,7 +78,7 @@ export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps)
             <div className="min-w-0 flex-1">
               <div className="font-semibold text-sm truncate">{ex.name}</div>
               <div className="text-[12px] text-text-secondary truncate">
-                {equipmentName(equipment, ex.equipmentTypeId)}
+                {equipmentLabel(equipment, ex.equipmentTypeId)}
               </div>
             </div>
             <TypeBadge type={ex.type} />
@@ -92,70 +97,31 @@ interface NewWorkoutWizardProps {
   open: boolean
   onClose: () => void
   onCreateEmpty: (config: { name: string; date: string }) => void
-  onCreateFromTemplate: (template: WorkoutTemplate, config: { name: string; date: string }) => void
 }
 
-export function NewWorkoutWizard({
-  open,
-  onClose,
-  onCreateEmpty,
-  onCreateFromTemplate,
-}: NewWorkoutWizardProps) {
-  const { data: templates } = useTemplates()
-  const navigate = useNavigate()
-  const [step, setStep] = useState<'method' | 'template' | 'details'>('method')
-  const [method, setMethod] = useState<'scratch' | 'template' | null>(null)
-  const [selectedTemplate, setSelectedTemplate] = useState<WorkoutTemplate | null>(null)
+export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWizardProps) {
+  const [step, setStep] = useState<'method' | 'details'>('method')
   const [name, setName] = useState('')
   const [date, setDate] = useState(todayISO())
 
   useEffect(() => {
     if (open) {
       setStep('method')
-      setMethod(null)
-      setSelectedTemplate(null)
       setName('')
       setDate(todayISO())
     }
   }, [open])
 
-  const title =
-    step === 'method'
-      ? 'New Workout'
-      : step === 'template'
-        ? 'Choose a Template'
-        : 'Workout Details'
-
-  const back =
-    step === 'details'
-      ? () => setStep(method === 'template' ? 'template' : 'method')
-      : step === 'template'
-        ? () => setStep('method')
-        : null
+  const title = step === 'method' ? 'New Workout' : 'Workout Details'
+  const back = step === 'details' ? () => setStep('method') : null
 
   const chooseScratch = () => {
-    setMethod('scratch')
     setName('')
     setStep('details')
   }
 
-  const chooseTemplateMethod = () => {
-    setMethod('template')
-    setStep('template')
-  }
-
-  const pickTemplate = (t: WorkoutTemplate) => {
-    setSelectedTemplate(t)
-    setName(t.name)
-    setStep('details')
-  }
-
   const finish = () => {
-    if (method === 'template' && selectedTemplate) {
-      onCreateFromTemplate(selectedTemplate, { name: name.trim(), date })
-    } else {
-      onCreateEmpty({ name: name.trim(), date })
-    }
+    onCreateEmpty({ name: name.trim(), date })
     onClose()
   }
 
@@ -232,9 +198,9 @@ export function NewWorkoutWizard({
           <MethodButton
             icon={<Grid size={20} />}
             label="Use a template"
-            sub={`${templates.length} saved routine${templates.length === 1 ? '' : 's'}`}
-            onClick={chooseTemplateMethod}
-            disabled={!templates.length}
+            sub="Start from a saved routine"
+            disabled
+            badge="Coming Soon"
           />
           <MethodButton
             icon={<Grid size={20} />}
@@ -246,57 +212,8 @@ export function NewWorkoutWizard({
         </div>
       )}
 
-      {step === 'template' && (
-        <div className="flex flex-col gap-2">
-          {templates.map(t => {
-            const count = t.exercises.length + t.groups.reduce((a, g) => a + g.exercises.length, 0)
-            return (
-              <div key={t.id} className="ps-card p-2.5 flex items-center gap-2 min-h-[60px]">
-                <button
-                  onClick={() => pickTemplate(t)}
-                  className="flex items-center gap-3 flex-1 min-w-0 text-left"
-                >
-                  <span
-                    className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
-                    style={{
-                      background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
-                      color: 'var(--color-primary)',
-                    }}
-                  >
-                    <Grid size={18} />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-sm truncate">{t.name}</span>
-                    <span className="block text-[12px] text-text-secondary">
-                      {count} exercise{count === 1 ? '' : 's'}
-                    </span>
-                  </span>
-                </button>
-                <button
-                  onClick={() => {
-                    onClose()
-                    navigate(`/templates/${t.id}`)
-                  }}
-                  title="Edit template"
-                  aria-label={`Edit ${t.name}`}
-                  className="h-10 w-10 flex items-center justify-center rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-muted shrink-0"
-                >
-                  <Edit size={17} />
-                </button>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
       {step === 'details' && (
         <div className="flex flex-col gap-4">
-          {method === 'template' && selectedTemplate && (
-            <div className="ps-metric p-3 flex items-center gap-2 text-sm">
-              <Grid size={16} className="text-primary" /> Based on{' '}
-              <span className="font-semibold">{selectedTemplate.name}</span>
-            </div>
-          )}
           <div>
             <label htmlFor="workout-name" className="label-caps text-text-secondary block mb-1.5">
               Workout name
@@ -401,7 +318,7 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
       }
     >
       <p className="text-text-secondary text-sm mb-4">
-        These exercises will run as a superset — one round cycles through each before resting.
+        These exercises will run as a superset. One round cycles through each before resting.
       </p>
       <div className="flex flex-col gap-4">
         <div>

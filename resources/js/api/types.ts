@@ -84,6 +84,12 @@ export interface IntervalHeader {
   rounds: IntervalRound[]
 }
 
+export interface IntensityMetric {
+  rpe: number | null
+  avgHr: number | null
+  maxHr: number | null
+}
+
 export interface WorkoutEntry {
   id: string
   workoutId: string
@@ -98,6 +104,7 @@ export interface WorkoutEntry {
   distanceMetric?: DistanceMetric
   cardioSettings?: CardioSettings
   intervalHeader?: IntervalHeader
+  intensityMetric?: IntensityMetric
 }
 
 export interface EntryGroup {
@@ -118,6 +125,17 @@ export interface Workout {
   soreness: number | null
   entries: WorkoutEntry[]
   entryGroups: EntryGroup[]
+}
+
+export interface WorkoutListItem {
+  id: string
+  name: string
+  date: string
+  exhaustion: number | null
+  soreness: number | null
+  exercises: Array<{ id: string; name: string; type: ExerciseType }>
+  entriesCount: number
+  completedEntriesCount: number
 }
 
 export interface TemplateExercise {

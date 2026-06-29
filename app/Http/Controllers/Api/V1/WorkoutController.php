@@ -36,6 +36,18 @@ class WorkoutController extends Controller
     {
         $workouts = Workout::where('user_id', $request->user()->id)
             ->with('exercises')
+            ->withCount([
+                'entries',
+                'entries as completed_entries_count' => function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereHas('loadMetric', fn ($s) => $s->whereNotNull('actual_weight'))
+                          ->orWhereHas('repMetric', fn ($s) => $s->whereNotNull('actual_reps'))
+                          ->orWhereHas('durationMetric', fn ($s) => $s->whereNotNull('actual_duration_seconds'))
+                          ->orWhereHas('distanceMetric', fn ($s) => $s->whereNotNull('actual_distance'))
+                          ->orWhereHas('intervalHeader', fn ($s) => $s->where('completed_rounds', '>', 0));
+                    });
+                },
+            ])
             ->latest('date')
             ->paginate(15);
 

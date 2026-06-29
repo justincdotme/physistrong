@@ -1,4 +1,10 @@
-import type { User, EquipmentType, Exercise, ExerciseType } from '@/api/types'
+import type { User } from '@/api/types'
+import type { EquipmentType } from '@/api/types'
+import type { Exercise } from '@/api/types'
+import type { ExerciseType } from '@/api/types'
+import type { WorkoutListItem } from '@/api/types'
+import type { Workout } from '@/api/types'
+import type { WorkoutEntry } from '@/api/types'
 import type { MeasurementSystem } from '@/lib/units'
 
 export interface RawUser {
@@ -81,4 +87,235 @@ export function toExercise(raw: RawExercise): Exercise {
   }
 
   return exercise
+}
+
+export interface RawWorkoutListItem {
+  id: number
+  name: string
+  date: string
+  exhaustion: number | null
+  soreness: number | null
+  exercises: Array<{ id: number; name: string; type: string }>
+  entries_count: number
+  completed_entries_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface RawWorkoutExercise {
+  id: number
+  name: string
+  type: string
+  equipment_type_id: number | null
+  exercise_order: number
+}
+
+export interface RawWorkoutEntry {
+  id: number
+  workout_id: number
+  exercise_id: number
+  set_order: number
+  notes: string | null
+  exercise?: { id: number; name: string; type: string }
+  metrics: Record<string, Record<string, unknown>>
+  created_at: string
+  updated_at: string
+}
+
+export interface RawWorkout {
+  id: number
+  name: string
+  date: string
+  exhaustion: number | null
+  soreness: number | null
+  exercises: RawWorkoutExercise[]
+  entries: RawWorkoutEntry[]
+  created_at: string
+  updated_at: string
+}
+
+export function toWorkoutListItem(raw: RawWorkoutListItem): WorkoutListItem {
+  return {
+    id: String(raw.id),
+    name: raw.name,
+    date: raw.date,
+    exhaustion: raw.exhaustion,
+    soreness: raw.soreness,
+    exercises: raw.exercises.map(ex => ({
+      id: String(ex.id),
+      name: ex.name,
+      type: ex.type as ExerciseType,
+    })),
+    entriesCount: raw.entries_count,
+    completedEntriesCount: raw.completed_entries_count,
+  }
+}
+
+export function toWorkout(raw: RawWorkout): Workout {
+  return {
+    id: String(raw.id),
+    userId: '',
+    name: raw.name,
+    date: raw.date,
+    exhaustion: raw.exhaustion,
+    soreness: raw.soreness,
+    entries: raw.entries.map(toWorkoutEntry),
+    entryGroups: [],
+  }
+}
+
+export function toWorkoutEntry(raw: RawWorkoutEntry): WorkoutEntry {
+  const entry: WorkoutEntry = {
+    id: String(raw.id),
+    workoutId: String(raw.workout_id),
+    exerciseId: String(raw.exercise_id),
+    setOrder: raw.set_order,
+    entryGroupId: null,
+    groupRound: null,
+    notes: raw.notes,
+  }
+
+  const metrics = raw.metrics
+
+  if (metrics.load) {
+    entry.loadMetric = {
+      targetWeight: metrics.load.target_weight as number | null,
+      actualWeight: metrics.load.actual_weight as number | null,
+      bodyweightOnly: metrics.load.bodyweight_only as boolean,
+    }
+  }
+
+  if (metrics.reps) {
+    entry.repMetric = {
+      targetReps: metrics.reps.target_reps as number | null,
+      actualReps: metrics.reps.actual_reps as number | null,
+      toFailure: metrics.reps.to_failure as boolean,
+      failureRep: metrics.reps.failure_rep as number | null,
+    }
+  }
+
+  if (metrics.duration) {
+    entry.durationMetric = {
+      targetDurationSeconds: metrics.duration.target_duration_seconds as number | null,
+      actualDurationSeconds: metrics.duration.actual_duration_seconds as number | null,
+    }
+  }
+
+  if (metrics.distance) {
+    entry.distanceMetric = {
+      targetDistance: metrics.distance.target_distance as number | null,
+      actualDistance: metrics.distance.actual_distance as number | null,
+      distanceUnit: metrics.distance.distance_unit as string,
+      lapCount: metrics.distance.lap_count as number | null,
+      strokeCount: metrics.distance.stroke_count as number | null,
+    }
+  }
+
+  if (metrics.cardio_settings) {
+    entry.cardioSettings = {
+      resistanceLevel: metrics.cardio_settings.resistance_level as number | null,
+      incline: metrics.cardio_settings.incline as number | null,
+      speed: metrics.cardio_settings.speed as number | null,
+      cadence: metrics.cardio_settings.cadence as number | null,
+    }
+  }
+
+  if (metrics.interval_header) {
+    entry.intervalHeader = {
+      programmedRounds: metrics.interval_header.programmed_rounds as number,
+      completedRounds: metrics.interval_header.completed_rounds as number,
+      targetWorkSeconds: metrics.interval_header.target_work_seconds as number,
+      targetRestSeconds: metrics.interval_header.target_rest_seconds as number,
+      rounds: (metrics.interval_header.rounds as Array<Record<string, unknown>>).map(round => ({
+        roundNumber: round.round_number as number,
+        actualWorkSeconds: round.actual_work_seconds as number | null,
+        actualRestSeconds: round.actual_rest_seconds as number | null,
+        heartRateAvg: round.heart_rate_avg as number | null,
+        heartRatePeak: round.heart_rate_peak as number | null,
+      })),
+    }
+  }
+
+  if (metrics.intensity) {
+    entry.intensityMetric = {
+      rpe: metrics.intensity.rpe as number | null,
+      avgHr: metrics.intensity.avg_hr as number | null,
+      maxHr: metrics.intensity.max_hr as number | null,
+    }
+  }
+
+  return entry
+}
+
+export function toMetricsPayload(entry: WorkoutEntry): Record<string, unknown> {
+  const payload: Record<string, unknown> = {}
+
+  if (entry.loadMetric) {
+    payload.load = {
+      target_weight: entry.loadMetric.targetWeight,
+      actual_weight: entry.loadMetric.actualWeight,
+      bodyweight_only: entry.loadMetric.bodyweightOnly,
+    }
+  }
+
+  if (entry.repMetric) {
+    payload.reps = {
+      target_reps: entry.repMetric.targetReps,
+      actual_reps: entry.repMetric.actualReps,
+      to_failure: entry.repMetric.toFailure,
+      failure_rep: entry.repMetric.failureRep,
+    }
+  }
+
+  if (entry.durationMetric) {
+    payload.duration = {
+      target_duration_seconds: entry.durationMetric.targetDurationSeconds,
+      actual_duration_seconds: entry.durationMetric.actualDurationSeconds,
+    }
+  }
+
+  if (entry.distanceMetric) {
+    payload.distance = {
+      target_distance: entry.distanceMetric.targetDistance,
+      actual_distance: entry.distanceMetric.actualDistance,
+      distance_unit: entry.distanceMetric.distanceUnit,
+      lap_count: entry.distanceMetric.lapCount,
+      stroke_count: entry.distanceMetric.strokeCount,
+    }
+  }
+
+  if (entry.cardioSettings) {
+    payload.cardio_settings = {
+      resistance_level: entry.cardioSettings.resistanceLevel,
+      incline: entry.cardioSettings.incline,
+      speed: entry.cardioSettings.speed,
+      cadence: entry.cardioSettings.cadence,
+    }
+  }
+
+  if (entry.intervalHeader) {
+    payload.interval_header = {
+      programmed_rounds: entry.intervalHeader.programmedRounds,
+      completed_rounds: entry.intervalHeader.completedRounds,
+      target_work_seconds: entry.intervalHeader.targetWorkSeconds,
+      target_rest_seconds: entry.intervalHeader.targetRestSeconds,
+      rounds: entry.intervalHeader.rounds.map(round => ({
+        round_number: round.roundNumber,
+        actual_work_seconds: round.actualWorkSeconds,
+        actual_rest_seconds: round.actualRestSeconds,
+        heart_rate_avg: round.heartRateAvg,
+        heart_rate_peak: round.heartRatePeak,
+      })),
+    }
+  }
+
+  if (entry.intensityMetric) {
+    payload.intensity = {
+      rpe: entry.intensityMetric.rpe,
+      avg_hr: entry.intensityMetric.avgHr,
+      max_hr: entry.intensityMetric.maxHr,
+    }
+  }
+
+  return payload
 }
