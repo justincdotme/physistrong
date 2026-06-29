@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\EquipmentTypeController;
 use App\Http\Controllers\Api\V1\ExerciseController;
 use App\Http\Controllers\Api\V1\ExerciseProgressController;
 use App\Http\Controllers\Api\V1\TemplateCloneController;
+use App\Http\Controllers\Api\V1\TemplateEntryGroupController;
 use App\Http\Controllers\Api\V1\TemplateExerciseController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\WorkoutController;
@@ -44,6 +45,10 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('templates/{template}/exercises/{exercise}', [TemplateExerciseController::class, 'detach']);
     Route::put('templates/{template}/exercises/reorder', [TemplateExerciseController::class, 'reorder']);
     Route::post('templates/{template}/clone', TemplateCloneController::class);
+    Route::post('templates/{template}/groups', [TemplateEntryGroupController::class, 'store']);
+    Route::delete('templates/{template}/groups/{group}', [TemplateEntryGroupController::class, 'destroy']);
+    Route::post('templates/{template}/groups/{group}/exercises', [TemplateEntryGroupController::class, 'assignExercises']);
+    Route::delete('templates/{template}/groups/{group}/exercises/{exercise}', [TemplateEntryGroupController::class, 'removeExercise']);
     Route::post('workouts/{workout}/groups', [EntryGroupController::class, 'store']);
     Route::put('workouts/{workout}/groups/{group}', [EntryGroupController::class, 'update']);
     Route::delete('workouts/{workout}/groups/{group}', [EntryGroupController::class, 'destroy']);
