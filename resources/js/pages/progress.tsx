@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { ProgressPanel } from './exercise-progress'
-import { useExercises } from '@/hooks/use-exercises'
-import { useWorkouts } from '@/hooks/use-workouts'
+import { listExercises } from '@/api/exercises'
 import type { TimeRange } from '@/api/types'
 
 const TYPES: Array<{ value: string; label: string }> = [
@@ -24,24 +24,17 @@ const RANGES: Array<{ value: TimeRange; label: string }> = [
 ]
 
 export function ProgressPage() {
-  const { data: exercises } = useExercises()
-  const { data: workouts } = useWorkouts()
-
-  const withData = useMemo(() => {
-    const ids = new Set<string>()
-    workouts.forEach(w => w.entries.forEach(e => ids.add(e.exerciseId)))
-    return ids
-  }, [workouts])
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: listExercises,
+  })
 
   const [type, setType] = useState('all')
   const [range, setRange] = useState<TimeRange>('6M')
-  const [exId, setExId] = useState(() => {
-    const firstWithData = exercises.find(e => withData.has(e.id))
-    return (firstWithData || exercises[0] || {}).id
-  })
+  const [exId, setExId] = useState('')
 
   const visible = exercises.filter(e => type === 'all' || e.type === type)
-  const selected = visible.find(e => e.id === exId) ? exId : (visible[0] || {}).id
+  const selected = exId && visible.find(e => e.id === exId) ? exId : (visible[0]?.id ?? '')
 
   return (
     <>
@@ -55,14 +48,13 @@ export function ProgressPage() {
         <span className="label-caps text-text-secondary block mb-1.5">Exercise</span>
         <div className="relative">
           <select
-            value={selected || ''}
+            value={selected}
             onChange={e => setExId(e.target.value)}
             className="ps-input w-full pl-3 pr-10 py-3 text-sm font-semibold appearance-none cursor-pointer"
           >
             {visible.map(e => (
               <option key={e.id} value={e.id}>
                 {e.name}
-                {withData.has(e.id) ? '' : ' (no data yet)'}
               </option>
             ))}
           </select>

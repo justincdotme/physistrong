@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Trophy } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { ProgressLineChart, VolumeBarChart } from '@/components/app/charts'
-import { useExercise } from '@/hooks/use-exercises'
 import { useExerciseProgress } from '@/hooks/use-exercise-progress'
+import { getExercise } from '@/api/exercises'
 import { formatDuration } from '@/lib/formatters'
 import type { TimeRange } from '@/api/types'
 
@@ -18,10 +19,14 @@ const RANGES: Array<{ value: TimeRange; label: string }> = [
 ]
 
 export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range: TimeRange }) {
-  const { data: ex } = useExercise(exerciseId)
-  const { data } = useExerciseProgress(exerciseId, range)
+  const { data: ex } = useQuery({
+    queryKey: ['exercises', exerciseId],
+    queryFn: () => getExercise(exerciseId),
+    enabled: !!exerciseId,
+  })
+  const { data, isLoading } = useExerciseProgress(exerciseId, range)
 
-  if (!ex) return null
+  if (!ex || isLoading) return null
 
   const isResistance = ex.type === 'resistance'
   const isHold = ex.type === 'timed_hold'
@@ -108,7 +113,7 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
         </section>
       )}
 
-      {data.points.length === 0 && (
+      {data.points.length === 0 && !isLoading && (
         <div className="ps-card p-8 text-center text-text-secondary text-sm">
           No logged sets for this exercise yet. Progress appears as you train.
         </div>
@@ -119,9 +124,25 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
 
 export function ExerciseProgressPage() {
   const { id } = useParams<{ id: string }>()
-  const { data: ex } = useExercise(id || '')
+  const { data: ex, isLoading } = useQuery({
+    queryKey: ['exercises', id],
+    queryFn: () => {
+      if (!id) throw new Error('Exercise ID is required')
+      return getExercise(id)
+    },
+    enabled: !!id,
+  })
   const navigate = useNavigate()
   const [range, setRange] = useState<TimeRange>('6M')
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader back onBack={() => navigate(`/exercises/${id}`)} title="Loading..." />
+        <p className="text-text-secondary text-sm">Loading exercise...</p>
+      </>
+    )
+  }
 
   if (!ex) {
     return <div className="py-16 text-center text-text-muted">Exercise not found.</div>
