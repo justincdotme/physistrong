@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { Search, Plus, ChevronRight, ChevronLeft, Grid } from 'lucide-react'
 import type { Exercise, EquipmentType } from '@/api/types'
 import { listExercises } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
+import { listTemplates, cloneTemplate } from '@/api/templates'
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
@@ -97,23 +98,60 @@ interface NewWorkoutWizardProps {
   open: boolean
   onClose: () => void
   onCreateEmpty: (config: { name: string; date: string }) => void
+  onCloneSuccess?: (workoutId: string) => void
 }
 
-export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWizardProps) {
-  const [step, setStep] = useState<'method' | 'details'>('method')
+export function NewWorkoutWizard({
+  open,
+  onClose,
+  onCreateEmpty,
+  onCloneSuccess,
+}: NewWorkoutWizardProps) {
+  const [step, setStep] = useState<'method' | 'details' | 'template-picker' | 'template-date'>(
+    'method'
+  )
   const [name, setName] = useState('')
   const [date, setDate] = useState(todayISO())
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+
+  const { data: templates = [] } = useQuery({
+    queryKey: ['templates'],
+    queryFn: listTemplates,
+  })
+
+  const cloneMutation = useMutation({
+    mutationFn: (payload: { templateId: string; date: string; name?: string }) =>
+      cloneTemplate(payload.templateId, { date: payload.date, name: payload.name }),
+    onSuccess: workout => {
+      onClose()
+      onCloneSuccess?.(workout.id)
+    },
+  })
 
   useEffect(() => {
     if (open) {
       setStep('method')
       setName('')
       setDate(todayISO())
+      setSelectedTemplate(null)
     }
   }, [open])
 
-  const title = step === 'method' ? 'New Workout' : 'Workout Details'
-  const back = step === 'details' ? () => setStep('method') : null
+  const title =
+    step === 'method'
+      ? 'New Workout'
+      : step === 'template-picker'
+        ? 'Choose Template'
+        : 'Workout Details'
+
+  const back =
+    step === 'details'
+      ? () => setStep('method')
+      : step === 'template-picker'
+        ? () => setStep('method')
+        : step === 'template-date'
+          ? () => setStep('template-picker')
+          : null
 
   const chooseScratch = () => {
     setName('')
@@ -129,6 +167,22 @@ export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWiz
     step === 'details' ? (
       <Button full disabled={!name.trim()} onClick={finish}>
         Start Workout
+      </Button>
+    ) : step === 'template-date' ? (
+      <Button
+        full
+        disabled={cloneMutation.isPending}
+        onClick={() => {
+          if (selectedTemplate) {
+            cloneMutation.mutate({
+              templateId: selectedTemplate,
+              date,
+              name: name.trim() || undefined,
+            })
+          }
+        }}
+      >
+        {cloneMutation.isPending ? 'Creating...' : 'Start Workout'}
       </Button>
     ) : null
 
@@ -199,8 +253,8 @@ export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWiz
             icon={<Grid size={20} />}
             label="Use a template"
             sub="Start from a saved routine"
-            disabled
-            badge="Coming Soon"
+            onClick={() => setStep('template-picker')}
+            disabled={templates.length === 0}
           />
           <MethodButton
             icon={<Grid size={20} />}
@@ -209,6 +263,66 @@ export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWiz
             disabled
             badge="Coming Soon"
           />
+        </div>
+      )}
+
+      {step === 'template-picker' && (
+        <div className="flex flex-col gap-2">
+          {templates.map(tpl => (
+            <button
+              key={tpl.id}
+              onClick={() => {
+                setSelectedTemplate(tpl.id)
+                setName('')
+                setDate(todayISO())
+                setStep('template-date')
+              }}
+              className="ps-card w-full p-4 flex items-center gap-3 text-left min-h-[68px] hover:bg-surface-muted"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold text-sm truncate">{tpl.name}</div>
+                <div className="text-[12px] text-text-secondary">
+                  {tpl.exercises.length} exercise{tpl.exercises.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+              <ChevronRight size={18} className="text-text-muted shrink-0" />
+            </button>
+          ))}
+          {!templates.length && (
+            <p className="text-text-muted text-sm text-center py-6">No templates yet.</p>
+          )}
+        </div>
+      )}
+
+      {step === 'template-date' && (
+        <div className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="clone-name" className="label-caps text-text-secondary block mb-1.5">
+              Workout name{' '}
+              <span className="normal-case tracking-normal text-text-muted">
+                (optional override)
+              </span>
+            </label>
+            <input
+              id="clone-name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Use template name"
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="clone-date" className="label-caps text-text-secondary block mb-1.5">
+              Date
+            </label>
+            <input
+              id="clone-date"
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
         </div>
       )}
 

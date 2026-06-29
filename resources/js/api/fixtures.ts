@@ -1,4 +1,4 @@
-import type { User, EquipmentType, Exercise, Workout, WorkoutEntry, WorkoutTemplate } from './types'
+import type { User, EquipmentType, Exercise, Workout, WorkoutEntry } from './types'
 
 export const fixtureUser: User = {
   id: 'u1',
@@ -396,43 +396,3 @@ function buildFixtureWorkouts(): Workout[] {
 }
 
 export const fixtureWorkouts: Workout[] = buildFixtureWorkouts()
-
-export const fixtureTemplates: WorkoutTemplate[] = [
-  {
-    id: 'tpl-push',
-    userId: 'u1',
-    name: 'Push Day',
-    notes: 'Horizontal press focus with arm finisher.',
-    groups: [
-      {
-        id: 'tg-1',
-        name: 'Chest Superset',
-        plannedRounds: 3,
-        restBetweenExercisesSeconds: 30,
-        restBetweenRoundsSeconds: 90,
-        exercises: [
-          { id: 'te-1', exerciseId: 'ex-bench', exerciseOrder: 0, groupId: 'tg-1' },
-          { id: 'te-2', exerciseId: 'ex-dip', exerciseOrder: 1, groupId: 'tg-1' },
-        ],
-      },
-    ],
-    exercises: [
-      { id: 'te-3', exerciseId: 'ex-curl', exerciseOrder: 2, groupId: null },
-      { id: 'te-4', exerciseId: 'ex-pushdown', exerciseOrder: 3, groupId: null },
-    ],
-  },
-  {
-    id: 'tpl-full',
-    userId: 'u1',
-    name: 'Full Body',
-    notes: null,
-    groups: [],
-    exercises: [
-      { id: 'te-5', exerciseId: 'ex-squat', exerciseOrder: 0, groupId: null },
-      { id: 'te-6', exerciseId: 'ex-pullup', exerciseOrder: 1, groupId: null },
-      { id: 'te-7', exerciseId: 'ex-legpress', exerciseOrder: 2, groupId: null },
-      { id: 'te-8', exerciseId: 'ex-plank', exerciseOrder: 3, groupId: null },
-      { id: 'te-9', exerciseId: 'ex-treadmill', exerciseOrder: 4, groupId: null },
-    ],
-  },
-]
