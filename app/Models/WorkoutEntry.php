@@ -14,6 +14,8 @@ class WorkoutEntry extends Model
     protected $fillable = [
         'workout_id',
         'exercise_id',
+        'entry_group_id',
+        'group_round',
         'set_order',
         'notes',
     ];
@@ -28,6 +30,12 @@ class WorkoutEntry extends Model
     public function exercise(): BelongsTo
     {
         return $this->belongsTo(Exercise::class);
+    }
+
+    /** @return BelongsTo<EntryGroup, $this> */
+    public function entryGroup(): BelongsTo
+    {
+        return $this->belongsTo(EntryGroup::class, 'entry_group_id');
     }
 
     /** @return HasOne<LogLoadMetric, $this> */

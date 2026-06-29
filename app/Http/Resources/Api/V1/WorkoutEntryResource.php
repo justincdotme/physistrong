@@ -19,6 +19,8 @@ class WorkoutEntryResource extends JsonResource
             'workout_id' => $this->workout_id,
             'exercise_id' => $this->exercise_id,
             'set_order' => $this->set_order,
+            'entry_group_id' => $this->entry_group_id,
+            'group_round' => $this->group_round,
             'notes' => $this->notes,
             'exercise' => $this->whenLoaded('exercise', fn () => [
                 'id' => $this->exercise->id,

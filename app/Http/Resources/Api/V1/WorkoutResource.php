@@ -27,6 +27,13 @@ class WorkoutResource extends JsonResource
                 'equipment_type_id' => $exercise->equipment_type_id,
                 'exercise_order' => $exercise->pivot->exercise_order,
             ])),
+            'groups' => $this->whenLoaded('groups', fn () => $this->groups->map(fn ($group) => [
+                'id' => $group->id,
+                'name' => $group->name,
+                'planned_rounds' => $group->planned_rounds,
+                'rest_between_exercises_seconds' => $group->rest_between_exercises_seconds,
+                'rest_between_rounds_seconds' => $group->rest_between_rounds_seconds,
+            ])),
             'entries' => $this->whenLoaded('entries', fn () => WorkoutEntryResource::collection($this->entries)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -58,4 +58,10 @@ class Workout extends Model
     {
         return $this->hasMany(WorkoutEntry::class);
     }
+
+    /** @return HasMany<EntryGroup, $this> */
+    public function groups(): HasMany
+    {
+        return $this->hasMany(EntryGroup::class);
+    }
 }
