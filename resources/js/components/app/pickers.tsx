@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { Search, Plus, ChevronRight, ChevronLeft, Grid } from 'lucide-react'
-import type { Exercise, EquipmentType } from '@/api/types'
+import { Search, Plus, ChevronRight, ChevronLeft, Grid, Copy } from 'lucide-react'
+import type { Exercise, EquipmentType, WorkoutListItem } from '@/api/types'
 import { listExercises } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
 import { listTemplates, cloneTemplate } from '@/api/templates'
+import { listWorkouts, copyWorkout } from '@/api/workouts'
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
-import { todayISO } from '@/lib/formatters'
+import { todayISO, formatDate } from '@/lib/formatters'
 
 function equipmentLabel(equipment: EquipmentType[], equipmentTypeId: string | null): string {
   if (!equipmentTypeId) return 'No equipment'
@@ -99,6 +100,7 @@ interface NewWorkoutWizardProps {
   onClose: () => void
   onCreateEmpty: (config: { name: string; date: string }) => void
   onCloneSuccess?: (workoutId: string) => void
+  onCopySuccess?: (workoutId: string) => void
 }
 
 export function NewWorkoutWizard({
@@ -106,17 +108,25 @@ export function NewWorkoutWizard({
   onClose,
   onCreateEmpty,
   onCloneSuccess,
+  onCopySuccess,
 }: NewWorkoutWizardProps) {
-  const [step, setStep] = useState<'method' | 'details' | 'template-picker' | 'template-date'>(
-    'method'
-  )
+  const [step, setStep] = useState<
+    'method' | 'details' | 'template-picker' | 'template-date' | 'workout-picker' | 'workout-date'
+  >('method')
   const [name, setName] = useState('')
   const [date, setDate] = useState(todayISO())
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+  const [selectedWorkout, setSelectedWorkout] = useState<WorkoutListItem | null>(null)
 
   const { data: templates = [] } = useQuery({
     queryKey: ['templates'],
     queryFn: listTemplates,
+  })
+
+  const { data: recentWorkouts } = useQuery({
+    queryKey: ['workouts', 'picker'],
+    queryFn: () => listWorkouts(1),
+    enabled: step === 'workout-picker',
   })
 
   const cloneMutation = useMutation({
@@ -128,12 +138,22 @@ export function NewWorkoutWizard({
     },
   })
 
+  const copyMutation = useMutation({
+    mutationFn: (payload: { workoutId: string; date: string; name?: string }) =>
+      copyWorkout(payload.workoutId, { date: payload.date, name: payload.name }),
+    onSuccess: workout => {
+      onClose()
+      onCopySuccess?.(workout.id)
+    },
+  })
+
   useEffect(() => {
     if (open) {
       setStep('method')
       setName('')
       setDate(todayISO())
       setSelectedTemplate(null)
+      setSelectedWorkout(null)
     }
   }, [open])
 
@@ -142,7 +162,9 @@ export function NewWorkoutWizard({
       ? 'New Workout'
       : step === 'template-picker'
         ? 'Choose Template'
-        : 'Workout Details'
+        : step === 'workout-picker'
+          ? 'Copy Previous Workout'
+          : 'Workout Details'
 
   const back =
     step === 'details'
@@ -151,7 +173,11 @@ export function NewWorkoutWizard({
         ? () => setStep('method')
         : step === 'template-date'
           ? () => setStep('template-picker')
-          : null
+          : step === 'workout-picker'
+            ? () => setStep('method')
+            : step === 'workout-date'
+              ? () => setStep('workout-picker')
+              : null
 
   const chooseScratch = () => {
     setName('')
@@ -183,6 +209,22 @@ export function NewWorkoutWizard({
         }}
       >
         {cloneMutation.isPending ? 'Creating...' : 'Start Workout'}
+      </Button>
+    ) : step === 'workout-date' ? (
+      <Button
+        full
+        disabled={copyMutation.isPending}
+        onClick={() => {
+          if (selectedWorkout) {
+            copyMutation.mutate({
+              workoutId: selectedWorkout.id,
+              date,
+              name: name.trim() || undefined,
+            })
+          }
+        }}
+      >
+        {copyMutation.isPending ? 'Copying...' : 'Start Workout'}
       </Button>
     ) : null
 
@@ -257,11 +299,10 @@ export function NewWorkoutWizard({
             disabled={templates.length === 0}
           />
           <MethodButton
-            icon={<Grid size={20} />}
+            icon={<Copy size={20} />}
             label="Copy a previous workout"
             sub="Repeat a past session"
-            disabled
-            badge="Coming Soon"
+            onClick={() => setStep('workout-picker')}
           />
         </div>
       )}
@@ -317,6 +358,67 @@ export function NewWorkoutWizard({
             </label>
             <input
               id="clone-date"
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+        </div>
+      )}
+
+      {step === 'workout-picker' && (
+        <div className="flex flex-col gap-2">
+          {(recentWorkouts?.items ?? []).map(w => (
+            <button
+              key={w.id}
+              onClick={() => {
+                setSelectedWorkout(w)
+                setName('')
+                setDate(todayISO())
+                setStep('workout-date')
+              }}
+              className="ps-card w-full p-4 flex items-center gap-3 text-left min-h-[68px] hover:bg-surface-muted"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold text-sm truncate">{w.name}</div>
+                <div className="text-[12px] text-text-secondary">
+                  {formatDate(w.date)} &middot; {w.exercises.length} exercise
+                  {w.exercises.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+              <ChevronRight size={18} className="text-text-muted shrink-0" />
+            </button>
+          ))}
+          {!(recentWorkouts?.items ?? []).length && (
+            <p className="text-text-muted text-sm text-center py-6">No workouts yet.</p>
+          )}
+        </div>
+      )}
+
+      {step === 'workout-date' && (
+        <div className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="copy-name" className="label-caps text-text-secondary block mb-1.5">
+              Workout name{' '}
+              <span className="normal-case tracking-normal text-text-muted">
+                (optional override)
+              </span>
+            </label>
+            <input
+              id="copy-name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Use workout name"
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="copy-date" className="label-caps text-text-secondary block mb-1.5">
+              Date
+            </label>
+            <input
+              id="copy-date"
               type="date"
               value={date}
               onChange={e => setDate(e.target.value)}

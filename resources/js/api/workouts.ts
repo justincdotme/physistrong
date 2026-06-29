@@ -48,6 +48,11 @@ export interface AssignEntryPayload {
   group_round: number
 }
 
+export interface CopyWorkoutPayload {
+  date: string
+  name?: string
+}
+
 interface PaginatedResponse {
   items: WorkoutListItem[]
   nextPage: number | null
@@ -146,5 +151,13 @@ export async function assignEntries(
   entries: AssignEntryPayload[]
 ): Promise<Workout> {
   const { data } = await api.post(`/workouts/${workoutId}/groups/${groupId}/entries`, { entries })
+  return toWorkout(data.data as RawWorkout)
+}
+
+export async function copyWorkout(
+  workoutId: string,
+  payload: CopyWorkoutPayload
+): Promise<Workout> {
+  const { data } = await api.post(`/workouts/${workoutId}/copy`, payload)
   return toWorkout(data.data as RawWorkout)
 }
