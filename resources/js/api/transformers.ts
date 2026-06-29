@@ -1,10 +1,12 @@
-import type { User } from '@/api/types'
-import type { EquipmentType } from '@/api/types'
-import type { Exercise } from '@/api/types'
-import type { ExerciseType } from '@/api/types'
-import type { WorkoutListItem } from '@/api/types'
-import type { Workout } from '@/api/types'
-import type { WorkoutEntry } from '@/api/types'
+import type {
+  User,
+  EquipmentType,
+  Exercise,
+  ExerciseType,
+  WorkoutListItem,
+  Workout,
+  WorkoutEntry,
+} from '@/api/types'
 import type { MeasurementSystem } from '@/lib/units'
 
 export interface RawUser {

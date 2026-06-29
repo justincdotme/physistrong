@@ -8,6 +8,7 @@ use App\Models\EquipmentType;
 use App\Models\Exercise;
 use App\Models\User;
 use App\Models\Workout;
+use App\Models\WorkoutTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -413,6 +414,19 @@ class ExerciseTest extends TestCase
             ->assertStatus(409);
 
         $this->assertDatabaseHas('exercises', ['id' => $exercise->id]);
+    }
+
+    public function test_cannot_delete_exercise_referenced_by_template(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->deleteJson("/api/v1/exercises/{$exercise->id}")
+            ->assertStatus(409);
     }
 
     // -- Auth --
