@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\TemplateEntryGroupController;
 use App\Http\Controllers\Api\V1\TemplateExerciseController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\WorkoutController;
+use App\Http\Controllers\Api\V1\WorkoutCopyController;
 use App\Http\Controllers\Api\V1\WorkoutEntryController;
 use App\Http\Controllers\Api\V1\WorkoutExerciseController;
 use App\Http\Controllers\Api\V1\WorkoutTemplateController;
@@ -45,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('templates/{template}/exercises/{exercise}', [TemplateExerciseController::class, 'detach']);
     Route::put('templates/{template}/exercises/reorder', [TemplateExerciseController::class, 'reorder']);
     Route::post('templates/{template}/clone', TemplateCloneController::class);
+    Route::post('workouts/{workout}/copy', WorkoutCopyController::class);
     Route::post('templates/{template}/groups', [TemplateEntryGroupController::class, 'store']);
     Route::delete('templates/{template}/groups/{group}', [TemplateEntryGroupController::class, 'destroy']);
     Route::post('templates/{template}/groups/{group}/exercises', [TemplateEntryGroupController::class, 'assignExercises']);

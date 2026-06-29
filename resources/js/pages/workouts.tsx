@@ -210,6 +210,12 @@ export function WorkoutsPage() {
           toast('Workout started from template.')
           navigate(`/workouts/${workoutId}`)
         }}
+        onCopySuccess={workoutId => {
+          setWizardOpen(false)
+          queryClient.invalidateQueries({ queryKey: ['workouts'] })
+          toast('Workout copied.')
+          navigate(`/workouts/${workoutId}`)
+        }}
       />
 
       <Sheet
