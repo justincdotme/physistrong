@@ -21,6 +21,6 @@
       "@/*": ["resources/js/*"]
     }
   },
-  "include": ["resources/js"],
+  "include": ["resources/js", "resources/js/dusk.d.ts"],
   "types": ["vite/client"]
 }

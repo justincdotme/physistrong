@@ -75,6 +75,7 @@ export default typescriptEslint.config(
       'prettier/prettier': 'error',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
+      'react/no-unknown-property': ['error', { ignore: ['dusk'] }],
     },
   },
   {

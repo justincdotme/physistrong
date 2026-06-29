@@ -9,6 +9,7 @@ export interface InlineEditProps {
   className?: string
   inputClassName?: string
   ariaLabel?: string
+  duskDataAttribute?: string
 }
 
 export function InlineEdit({
@@ -18,6 +19,7 @@ export function InlineEdit({
   className,
   inputClassName,
   ariaLabel,
+  duskDataAttribute,
 }: InlineEditProps) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
@@ -68,6 +70,7 @@ export function InlineEdit({
       }}
       className={cn('text-left inline-flex items-center gap-1.5 group', className)}
       aria-label={ariaLabel}
+      {...(duskDataAttribute && { 'data-dusk': duskDataAttribute })}
     >
       <span>{value || placeholder}</span>
       <Pencil

@@ -15,7 +15,10 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-5 py-10">
+    <div
+      dusk="auth-layout"
+      className="min-h-[100dvh] flex flex-col items-center justify-center px-5 py-10"
+    >
       <div className="w-full max-w-[400px]">
         <div className="flex flex-col items-center mb-7">
           <span
@@ -133,11 +136,16 @@ export function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {generalError && <p className="text-destructive text-sm text-center">{generalError}</p>}
+      <form dusk="login-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {generalError && (
+          <p dusk="auth-error" className="text-destructive text-sm text-center">
+            {generalError}
+          </p>
+        )}
         <Field
           label="Email"
           type="email"
+          name="email"
           value={email}
           onChange={setEmail}
           placeholder="you@example.com"
@@ -147,6 +155,7 @@ export function LoginPage() {
           <Field
             label="Password"
             type="password"
+            name="password"
             value={password}
             onChange={setPassword}
             placeholder="••••••••"
@@ -238,11 +247,12 @@ export function RegisterPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form dusk="register-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
         {generalError && <p className="text-destructive text-sm text-center">{generalError}</p>}
         <div className="grid grid-cols-2 gap-3">
           <Field
             label="First name"
+            name="first_name"
             value={form.first}
             onChange={updateField('first')}
             placeholder="Justin"
@@ -250,6 +260,7 @@ export function RegisterPage() {
           />
           <Field
             label="Last name"
+            name="last_name"
             value={form.last}
             onChange={updateField('last')}
             placeholder="Carter"
@@ -260,6 +271,7 @@ export function RegisterPage() {
         <Field
           label="Email"
           type="email"
+          name="email"
           value={form.email}
           onChange={updateField('email')}
           placeholder="you@example.com"
@@ -270,6 +282,7 @@ export function RegisterPage() {
           <Field
             label="Password"
             type="password"
+            name="password"
             value={form.password}
             onChange={updateField('password')}
             placeholder="••••••••"
@@ -278,13 +291,14 @@ export function RegisterPage() {
           <Field
             label="Confirm"
             type="password"
+            name="password_confirmation"
             value={form.passwordConfirm}
             onChange={updateField('passwordConfirm')}
             placeholder="••••••••"
           />
         </div>
 
-        <div className="ps-metric p-3">
+        <div dusk="measurement-system-picker" className="ps-metric p-3">
           <span className="label-caps text-text-secondary block mb-2">
             Measurement system <span className="text-destructive">*</span>
           </span>
@@ -361,11 +375,12 @@ export function PasswordResetRequestPage() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form dusk="forgot-password-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
           {error && <p className="text-destructive text-sm text-center">{error}</p>}
           <Field
             label="Email"
             type="email"
+            name="email"
             value={email}
             onChange={setEmail}
             placeholder="you@example.com"

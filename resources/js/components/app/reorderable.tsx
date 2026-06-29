@@ -26,6 +26,7 @@ interface ReorderListProps<T> {
   className?: string
   itemClassName?: string
   disabled?: boolean
+  duskDataAttribute?: string
 }
 
 function SortableItem<T>({
@@ -113,6 +114,7 @@ export function ReorderList<T>({
   className,
   itemClassName,
   disabled,
+  duskDataAttribute,
 }: ReorderListProps<T>) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -142,7 +144,7 @@ export function ReorderList<T>({
         strategy={verticalListSortingStrategy}
         disabled={disabled ?? false}
       >
-        <div className={className}>
+        <div className={className} {...(duskDataAttribute && { 'data-dusk': duskDataAttribute })}>
           {items.map((item, index) => (
             <SortableItem
               key={getKey(item, index)}

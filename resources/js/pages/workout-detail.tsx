@@ -205,7 +205,7 @@ function SetRow({
   allTimeBest,
 }: SetRowProps) {
   return (
-    <div className="flex items-start gap-2">
+    <div dusk="entry-row" className="flex items-start gap-2">
       <div className="flex flex-col items-center shrink-0">
         <span className="label-caps text-text-muted mb-0.5">{index + 1}</span>
         {handle}
@@ -557,7 +557,7 @@ export function WorkoutDetailPage() {
   const exerciseBlockCount = blocks.filter(b => b.kind === 'exercise').length
 
   return (
-    <>
+    <div dusk="workout-detail-page">
       <PageHeader
         back
         onBack={() => navigate('/workouts')}
@@ -566,6 +566,7 @@ export function WorkoutDetailPage() {
             value={workout.name}
             onChange={v => updateWorkoutMutation.mutate({ name: v })}
             ariaLabel="Workout name"
+            duskDataAttribute="workout-name"
           />
         }
         actions={
@@ -605,7 +606,12 @@ export function WorkoutDetailPage() {
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        <Button size="sm" icon={<Plus size={16} />} onClick={() => setExercisePickerOpen(true)}>
+        <Button
+          dusk="add-exercise-btn"
+          size="sm"
+          icon={<Plus size={16} />}
+          onClick={() => setExercisePickerOpen(true)}
+        >
           Add Exercise
         </Button>
         {!selectMode && exerciseBlockCount >= 2 && (
@@ -685,7 +691,11 @@ export function WorkoutDetailPage() {
               }
 
               return (
-                <div className="pl-3 ml-1" style={{ borderLeft: '2px solid var(--color-primary)' }}>
+                <div
+                  dusk="entry-group"
+                  className="pl-3 ml-1"
+                  style={{ borderLeft: '2px solid var(--color-primary)' }}
+                >
                   <Card className="p-4">
                     <div className="flex items-center gap-2 mb-3">
                       {handle}
@@ -775,6 +785,7 @@ export function WorkoutDetailPage() {
 
             return (
               <Card
+                dusk="exercise-section"
                 className="p-4"
                 style={
                   selectMode && isSelected
@@ -914,6 +925,6 @@ export function WorkoutDetailPage() {
         onCancel={() => setConfirmDeleteOpen(false)}
         onConfirm={() => deleteWorkoutMutation.mutate()}
       />
-    </>
+    </div>
   )
 }

@@ -380,12 +380,17 @@ export function ExercisesPage() {
   }
 
   return (
-    <>
+    <div dusk="exercises-page">
       <PageHeader
         title="Exercises"
         subtitle={`${exercises.length} in your catalog`}
         actions={
-          <Button size="sm" icon={<Plus size={16} />} onClick={() => setShowCreate(true)}>
+          <Button
+            size="sm"
+            icon={<Plus size={16} />}
+            onClick={() => setShowCreate(true)}
+            dusk="create-exercise-btn"
+          >
             Create
           </Button>
         }
@@ -394,6 +399,7 @@ export function ExercisesPage() {
       <div className="relative mb-3">
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
         <input
+          dusk="exercise-search"
           value={q}
           onChange={e => setQ(e.target.value)}
           placeholder="Search exercises"
@@ -401,11 +407,11 @@ export function ExercisesPage() {
         />
       </div>
 
-      <div className="mb-3">
+      <div className="mb-3" dusk="type-filter">
         <SegmentedControl size="sm" value={type} onChange={setType} options={TYPES} />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4" dusk="equipment-filter">
         <button
           onClick={() => setEquip('all')}
           className={`shrink-0 px-3 h-8 rounded-full text-[13px] font-semibold border ${
@@ -436,7 +442,7 @@ export function ExercisesPage() {
       </div>
 
       {filtered.length ? (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2.5" dusk="exercise-list">
           {filtered.map(ex => {
             const isSystem = ex.userId === null
             return (
@@ -503,6 +509,6 @@ export function ExercisesPage() {
           }
         }}
       />
-    </>
+    </div>
   )
 }

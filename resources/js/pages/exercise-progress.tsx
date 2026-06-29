@@ -48,7 +48,7 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
 
   return (
     <>
-      <div className="ps-card p-4 mb-4">
+      <div className="ps-card p-4 mb-4" dusk="progress-chart">
         <div className="flex items-center justify-between mb-3">
           <span className="label-caps text-text-secondary">{yLabel} over time</span>
           <span className="inline-flex items-center gap-1 text-[12px] text-text-secondary">
@@ -82,7 +82,7 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
       )}
 
       {data.records.length > 0 && (
-        <section>
+        <section dusk="personal-records">
           <h2 className="text-[18px] font-semibold mb-3 mt-2">Personal Records</h2>
           <div className="grid grid-cols-2 gap-3">
             {data.records.map(r => (
@@ -149,14 +149,14 @@ export function ExerciseProgressPage() {
   }
 
   return (
-    <>
+    <div dusk="exercise-progress-page">
       <PageHeader
         back
         onBack={() => navigate(`/exercises/${id}`)}
         title={ex.name}
         subtitle="Progress"
       />
-      <div className="mb-5">
+      <div className="mb-5" dusk="time-range-selector">
         <SegmentedControl
           size="sm"
           value={range}
@@ -165,6 +165,6 @@ export function ExerciseProgressPage() {
         />
       </div>
       <ProgressPanel exerciseId={ex.id} range={range} />
-    </>
+    </div>
   )
 }

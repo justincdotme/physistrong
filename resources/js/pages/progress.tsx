@@ -37,14 +37,14 @@ export function ProgressPage() {
   const selected = exId && visible.find(e => e.id === exId) ? exId : (visible[0]?.id ?? '')
 
   return (
-    <>
+    <div dusk="progress-page">
       <PageHeader title="Progress" subtitle="Track every lift over time" />
 
       <div className="mb-3">
         <SegmentedControl size="sm" value={type} onChange={v => setType(v)} options={TYPES} />
       </div>
 
-      <label className="block mb-5">
+      <label className="block mb-5" dusk="exercise-picker">
         <span className="label-caps text-text-secondary block mb-1.5">Exercise</span>
         <div className="relative">
           <select
@@ -82,6 +82,6 @@ export function ProgressPage() {
           No exercises to chart yet.
         </div>
       )}
-    </>
+    </div>
   )
 }

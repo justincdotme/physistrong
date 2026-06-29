@@ -137,7 +137,7 @@ export function ExerciseDetailPage() {
   }
 
   return (
-    <>
+    <div dusk="exercise-detail-page">
       <PageHeader
         back
         onBack={() => navigate('/exercises')}
@@ -155,13 +155,15 @@ export function ExerciseDetailPage() {
               ariaLabel="Exercise name"
             />
           ) : (
-            ex.name
+            <span dusk="exercise-name">{ex.name}</span>
           )
         }
       />
 
       <div className="flex items-center gap-2 mb-5">
-        <TypeBadge type={ex.type} />
+        <div dusk="exercise-type">
+          <TypeBadge type={ex.type} />
+        </div>
         <span className="text-sm text-text-secondary">
           {equipmentName(equipment, ex.equipmentTypeId)}
         </span>
@@ -181,6 +183,7 @@ export function ExerciseDetailPage() {
       )}
 
       <button
+        dusk="progress-link"
         onClick={() => navigate(`/exercises/${ex.id}/progress`)}
         className="ps-card w-full p-4 flex items-center gap-3 mb-6 hover:bg-surface-muted text-left"
       >
@@ -224,6 +227,7 @@ export function ExerciseDetailPage() {
         <>
           <div className="flex items-center gap-2">
             <button
+              dusk="delete-exercise-btn"
               onClick={() => setDeleting(true)}
               className="inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg text-destructive hover:bg-surface-muted"
             >
@@ -243,6 +247,6 @@ export function ExerciseDetailPage() {
           />
         </>
       )}
-    </>
+    </div>
   )
 }

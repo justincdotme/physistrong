@@ -119,11 +119,17 @@ export function WorkoutsPage() {
   }
 
   return (
-    <>
+    <div dusk="workouts-page">
       <PageHeader title="Workouts" subtitle={`${total} logged`} />
 
       <div className="flex flex-col gap-2.5 mb-7">
-        <Button full size="lg" icon={<Plus size={18} />} onClick={() => setWizardOpen(true)}>
+        <Button
+          full
+          size="lg"
+          icon={<Plus size={18} />}
+          onClick={() => setWizardOpen(true)}
+          data-dusk="create-workout-btn"
+        >
           New Workout
         </Button>
         <Button
@@ -145,7 +151,7 @@ export function WorkoutsPage() {
       </div>
 
       {templates.length > 0 && (
-        <section className="mb-7">
+        <section className="mb-7" dusk="template-section">
           <SectionHeading>Templates</SectionHeading>
           <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
             {templates.map(tpl => (
@@ -169,7 +175,7 @@ export function WorkoutsPage() {
       <section>
         <SectionHeading>History</SectionHeading>
         {workouts.length ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3" dusk="workout-history">
             {workouts.map(w => (
               <WorkoutCard key={w.id} workout={w} />
             ))}
@@ -186,17 +192,19 @@ export function WorkoutsPage() {
             )}
           </div>
         ) : (
-          <EmptyState
-            icon="dumbbell"
-            title="Ready to train?"
-            action={
-              <Button onClick={() => setWizardOpen(true)} icon={<Plus size={18} />}>
-                New Workout
-              </Button>
-            }
-          >
-            Create your first workout or set up a template.
-          </EmptyState>
+          <div dusk="workouts-empty">
+            <EmptyState
+              icon="dumbbell"
+              title="Ready to train?"
+              action={
+                <Button onClick={() => setWizardOpen(true)} icon={<Plus size={18} />}>
+                  New Workout
+                </Button>
+              }
+            >
+              Create your first workout or set up a template.
+            </EmptyState>
+          </div>
         )}
       </section>
 
@@ -251,6 +259,6 @@ export function WorkoutsPage() {
           />
         </div>
       </Sheet>
-    </>
+    </div>
   )
 }
