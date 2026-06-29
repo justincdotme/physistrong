@@ -78,12 +78,13 @@ export function EquipmentPage() {
   }
 
   return (
-    <>
+    <div dusk="equipment-page">
       <PageHeader
         title="Equipment"
         subtitle={`${equipment.length} types`}
         actions={
           <Button
+            dusk="create-equipment-btn"
             size="sm"
             onClick={() => {
               setName('')
@@ -108,7 +109,7 @@ export function EquipmentPage() {
           Start by adding the equipment types you use.
         </EmptyState>
       ) : (
-        <div className="flex flex-col gap-2.5">
+        <div dusk="equipment-list" className="flex flex-col gap-2.5">
           {equipment.map(eq => {
             const canDelete = !eq.isSystem
             return (
@@ -181,6 +182,6 @@ export function EquipmentPage() {
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
-    </>
+    </div>
   )
 }

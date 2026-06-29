@@ -108,7 +108,7 @@ export function ProfilePage() {
   const canChangePassword = password.current && password.next && password.next === password.confirm
 
   return (
-    <>
+    <div dusk="profile-page">
       <PageHeader title="Profile" />
 
       <div className="flex items-center gap-3 mb-6">
@@ -220,10 +220,16 @@ export function ProfilePage() {
         </div>
       </Card>
 
-      <Button variant="secondary" full onClick={handleLogout} icon={<LogOut size={16} />}>
+      <Button
+        dusk="logout-btn"
+        variant="secondary"
+        full
+        onClick={handleLogout}
+        icon={<LogOut size={16} />}
+      >
         Log Out
       </Button>
       <div className="h-4" />
-    </>
+    </div>
   )
 }

@@ -35,9 +35,12 @@ export function Shell() {
   const fullName = `${user.firstName} ${user.lastName}`
 
   return (
-    <div className="min-h-[100dvh] md:flex">
+    <div dusk="app-shell" className="min-h-[100dvh] md:flex">
       {/* Desktop side nav */}
-      <aside className="hidden md:flex md:flex-col md:w-[244px] md:shrink-0 md:h-[100dvh] md:sticky md:top-0 border-r border-border bg-surface-card px-4 py-6">
+      <aside
+        dusk="desktop-nav"
+        className="hidden md:flex md:flex-col md:w-[244px] md:shrink-0 md:h-[100dvh] md:sticky md:top-0 border-r border-border bg-surface-card px-4 py-6"
+      >
         <button
           onClick={() => navigate('/workouts')}
           className="flex items-center gap-2.5 px-2 mb-8 hover:opacity-75 transition-opacity"
@@ -77,6 +80,7 @@ export function Shell() {
         </nav>
 
         <button
+          dusk="desktop-profile-link"
           onClick={() => navigate('/profile')}
           className="mt-auto flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-surface-muted text-left transition-colors"
         >
@@ -92,6 +96,7 @@ export function Shell() {
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Mobile top bar */}
         <header
+          dusk="mobile-top-bar"
           className="md:hidden sticky top-0 z-30 bg-surface-bg/90 backdrop-blur border-b border-border"
           style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
         >
@@ -109,6 +114,7 @@ export function Shell() {
               <span className="font-extrabold text-[17px] tracking-tight">Physistrong</span>
             </button>
             <button
+              dusk="mobile-profile-link"
               onClick={() => navigate('/profile')}
               className="flex items-center gap-2 hover:opacity-75 transition-opacity"
               aria-label="Profile"
@@ -129,6 +135,7 @@ export function Shell() {
 
       {/* Mobile bottom tab bar */}
       <nav
+        dusk="mobile-bottom-nav"
         className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-surface-card border-t border-border"
         style={{
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',

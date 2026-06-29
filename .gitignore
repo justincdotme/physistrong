@@ -41,3 +41,8 @@ AGENTS.md
 
 # Linked git worktrees
 .worktrees/
+
+# Dusk test artifacts
+/tests/Browser/screenshots
+/tests/Browser/console
+/tests/Browser/source
