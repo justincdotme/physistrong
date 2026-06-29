@@ -11,7 +11,7 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
 import { todayISO } from '@/lib/formatters'
 
-function equipmentName(equipment: EquipmentType[], equipmentTypeId: string | null): string {
+function equipmentLabel(equipment: EquipmentType[], equipmentTypeId: string | null): string {
   if (!equipmentTypeId) return 'No equipment'
   const eq = equipment.find(e => e.id === equipmentTypeId)
   return eq?.name || 'Unknown'
@@ -78,7 +78,7 @@ export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps)
             <div className="min-w-0 flex-1">
               <div className="font-semibold text-sm truncate">{ex.name}</div>
               <div className="text-[12px] text-text-secondary truncate">
-                {equipmentName(equipment, ex.equipmentTypeId)}
+                {equipmentLabel(equipment, ex.equipmentTypeId)}
               </div>
             </div>
             <TypeBadge type={ex.type} />
@@ -113,7 +113,6 @@ export function NewWorkoutWizard({ open, onClose, onCreateEmpty }: NewWorkoutWiz
   }, [open])
 
   const title = step === 'method' ? 'New Workout' : 'Workout Details'
-
   const back = step === 'details' ? () => setStep('method') : null
 
   const chooseScratch = () => {
@@ -319,7 +318,7 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
       }
     >
       <p className="text-text-secondary text-sm mb-4">
-        These exercises will run as a superset — one round cycles through each before resting.
+        These exercises will run as a superset. One round cycles through each before resting.
       </p>
       <div className="flex flex-col gap-4">
         <div>

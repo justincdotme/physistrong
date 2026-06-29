@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus, BarChart3 } from 'lucide-react'
+import type { WorkoutListItem } from '@/api/types'
+import { listWorkouts, createWorkout } from '@/api/workouts'
 import { useApp } from '@/lib/use-app'
 import { formatDate } from '@/lib/formatters'
-import { listWorkouts, createWorkout } from '@/api/workouts'
-import type { WorkoutListItem } from '@/api/types'
 import {
   PageHeader,
   SectionHeading,
@@ -16,11 +16,7 @@ import {
 } from '@/components/ui'
 import { NewWorkoutWizard } from '@/components/app/pickers'
 
-interface WorkoutCardProps {
-  workout: WorkoutListItem
-}
-
-function WorkoutCard({ workout }: WorkoutCardProps) {
+function WorkoutCard({ workout }: { workout: WorkoutListItem }) {
   const navigate = useNavigate()
 
   const ratio = workout.entriesCount > 0 ? workout.completedEntriesCount / workout.entriesCount : 0
@@ -70,12 +66,13 @@ export function WorkoutsPage() {
 
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['workouts'],
-    queryFn: ({ pageParam = 1 }) => listWorkouts(pageParam),
+    queryFn: ({ pageParam }) => listWorkouts(pageParam),
     getNextPageParam: last => last.nextPage,
     initialPageParam: 1,
   })
 
   const workouts = data?.pages?.flatMap(p => p.items) ?? []
+  const total = data?.pages?.[0]?.total ?? 0
 
   const createMutation = useMutation({
     mutationFn: createWorkout,
@@ -102,7 +99,7 @@ export function WorkoutsPage() {
 
   return (
     <>
-      <PageHeader title="Workouts" subtitle={`${data?.pages?.[0]?.total ?? 0} logged`} />
+      <PageHeader title="Workouts" subtitle={`${total} logged`} />
 
       <div className="flex flex-col gap-2.5 mb-7">
         <Button full size="lg" icon={<Plus size={18} />} onClick={() => setWizardOpen(true)}>

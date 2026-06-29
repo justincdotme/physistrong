@@ -132,6 +132,48 @@ class WorkoutTest extends TestCase
         $this->assertCount(3, $response->json('data'));
     }
 
+    public function test_lists_workouts_with_entry_counts(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $completedEntry1 = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+        $completedEntry1->loadMetric()->create([
+            'target_weight' => 100,
+            'actual_weight' => 95,
+        ]);
+
+        $completedEntry2 = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 1,
+        ]);
+        $completedEntry2->loadMetric()->create([
+            'target_weight' => 100,
+            'actual_weight' => 90,
+        ]);
+
+        $incompleteEntry = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 2,
+        ]);
+        $incompleteEntry->loadMetric()->create([
+            'target_weight' => 100,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/v1/workouts');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.entries_count', 3)
+            ->assertJsonPath('data.0.completed_entries_count', 2);
+    }
+
     // -- Show --
 
     public function test_shows_workout_with_exercises_and_entries(): void

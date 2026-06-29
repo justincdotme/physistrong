@@ -1,19 +1,26 @@
-import { useState, useMemo } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash2, Flame, Target, Plus } from 'lucide-react'
-import type { WorkoutEntry, EntryGroup, Exercise } from '@/api/types'
-import { useWorkout } from '@/hooks/use-workouts'
-import { useExercises } from '@/hooks/use-exercises'
-import { useEquipment } from '@/hooks/use-equipment'
+import type { WorkoutEntry, EntryGroup, Exercise, Workout } from '@/api/types'
+import { listExercises } from '@/api/exercises'
+import { listEquipment } from '@/api/equipment'
+import {
+  getWorkout,
+  updateWorkout as updateWorkoutApi,
+  deleteWorkout as deleteWorkoutApi,
+  attachExercise,
+  reorderExercises,
+  createEntry,
+  updateEntry,
+  deleteEntry,
+  reorderEntries,
+} from '@/api/workouts'
+import { toMetricsPayload } from '@/api/transformers'
+import type { CreateEntryPayload } from '@/api/workouts'
 import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
-import {
-  workoutCompletion,
-  exerciseById,
-  equipmentName,
-  entryHasActual,
-  bestWeight,
-} from '@/lib/domain'
+import { workoutCompletion, exerciseById, equipmentName, entryHasActual } from '@/lib/domain'
 import {
   PageHeader,
   Button,
@@ -77,111 +84,93 @@ function buildBlocks(entries: WorkoutEntry[], groups: EntryGroup[]): Block[] {
   return blocks
 }
 
-function flatten(blocks: Block[]): WorkoutEntry[] {
-  const out: WorkoutEntry[] = []
-  blocks.forEach(b => b.entries.forEach(e => out.push(e)))
-  return out.map((e, idx) => ({ ...e, setOrder: idx }))
-}
-
-function freshEntry(
+function defaultEntryPayload(
   ex: Exercise,
-  workoutId: string,
-  uid: (p: string) => string,
+  setOrder: number,
   distanceUnit: string
-): WorkoutEntry {
-  const base = {
-    id: uid('we'),
-    workoutId,
-    exerciseId: ex.id,
-    setOrder: 0,
-    entryGroupId: null,
-    groupRound: null,
-    notes: null,
-  } as const
+): CreateEntryPayload {
+  const base: CreateEntryPayload = {
+    exercise_id: Number(ex.id),
+    set_order: setOrder,
+    metrics: {},
+  }
 
   if (ex.type === 'resistance') {
-    return {
-      ...base,
-      loadMetric: {
-        targetWeight: null,
-        actualWeight: null,
-        bodyweightOnly: !!ex.bodyweightBase,
+    base.metrics = {
+      load: {
+        target_weight: null,
+        actual_weight: null,
+        bodyweight_only: !!ex.bodyweightBase,
       },
-      repMetric: {
-        targetReps: null,
-        actualReps: null,
-        toFailure: false,
-        failureRep: null,
+      reps: {
+        target_reps: null,
+        actual_reps: null,
+        to_failure: false,
+        failure_rep: null,
       },
-    } as WorkoutEntry
+    }
+  } else if (ex.type === 'timed_hold') {
+    base.metrics = {
+      duration: {
+        target_duration_seconds: null,
+        actual_duration_seconds: null,
+      },
+    }
+  } else if (ex.type === 'distance') {
+    base.metrics = {
+      distance: {
+        target_distance: null,
+        actual_distance: null,
+        distance_unit: distanceUnit,
+        lap_count: null,
+        stroke_count: null,
+      },
+      duration: {
+        target_duration_seconds: null,
+        actual_duration_seconds: null,
+      },
+    }
+  } else if (ex.type === 'interval') {
+    const n = ex.defaultRounds || 8
+    const rounds = Array.from({ length: n }, (_, k) => ({
+      round_number: k + 1,
+      actual_work_seconds: null,
+      actual_rest_seconds: null,
+      heart_rate_avg: null,
+      heart_rate_peak: null,
+    }))
+    base.metrics = {
+      interval_header: {
+        programmed_rounds: n,
+        completed_rounds: 0,
+        target_work_seconds: ex.defaultWorkSeconds || 60,
+        target_rest_seconds: ex.defaultRestSeconds || 60,
+        rounds,
+      },
+    }
   }
 
-  if (ex.type === 'timed_hold') {
-    return {
-      ...base,
-      durationMetric: {
-        targetDurationSeconds: null,
-        actualDurationSeconds: null,
-      },
-    } as WorkoutEntry
-  }
-
-  if (ex.type === 'distance') {
-    return {
-      ...base,
-      distanceMetric: {
-        targetDistance: null,
-        actualDistance: null,
-        distanceUnit,
-        lapCount: null,
-        strokeCount: null,
-      },
-      durationMetric: {
-        targetDurationSeconds: null,
-        actualDurationSeconds: null,
-      },
-    } as WorkoutEntry
-  }
-
-  // interval
-  const n = ex.defaultRounds || 8
-  const rounds = []
-  for (let k = 1; k <= n; k++) {
-    rounds.push({
-      roundNumber: k,
-      actualWorkSeconds: null,
-      actualRestSeconds: null,
-      heartRateAvg: null,
-      heartRatePeak: null,
-    })
-  }
-  return {
-    ...base,
-    intervalHeader: {
-      programmedRounds: n,
-      completedRounds: 0,
-      targetWorkSeconds: ex.defaultWorkSeconds || 60,
-      targetRestSeconds: ex.defaultRestSeconds || 60,
-      rounds,
-    },
-  } as WorkoutEntry
+  return base
 }
 
-interface ExerciseHeaderProps {
+function ExerciseHeader({
+  exercise,
+  handle,
+  controls,
+  equipmentList,
+}: {
   exercise: Exercise
   handle: React.ReactNode
   controls: React.ReactNode
-  equipment: ReturnType<typeof useEquipment>['data']
-}
-
-function ExerciseHeader({ exercise, handle, controls, equipment }: ExerciseHeaderProps) {
+  equipmentList: Array<{ id: string; name: string; isSystem: boolean }>
+}) {
   return (
     <div className="flex items-center gap-2 mb-3">
       {handle}
       <div className="min-w-0 flex-1">
         <div className="font-semibold text-base truncate">{exercise.name}</div>
         <div className="text-[12px] text-text-secondary">
-          {equipmentName(equipment, exercise.equipmentTypeId)}
+          {equipmentName(equipmentList, exercise.equipmentTypeId)}
         </div>
       </div>
       <TypeBadge type={exercise.type} />
@@ -196,21 +185,11 @@ interface SetRowProps {
   index: number
   handle: React.ReactNode
   controls: React.ReactNode
-  allTimeBest: number | null
   onPatch: (patch: Partial<WorkoutEntry>) => void
   onRemove: () => void
 }
 
-function SetRow({
-  entry,
-  exercise,
-  index,
-  handle,
-  controls,
-  allTimeBest,
-  onPatch,
-  onRemove,
-}: SetRowProps) {
+function SetRow({ entry, exercise, index, handle, controls, onPatch, onRemove }: SetRowProps) {
   return (
     <div className="flex items-start gap-2">
       <div className="flex flex-col items-center shrink-0">
@@ -219,12 +198,7 @@ function SetRow({
         {controls}
       </div>
       <div className="flex-1 min-w-0 pt-1">
-        <EntryMetrics
-          entry={entry}
-          exercise={exercise}
-          allTimeBest={allTimeBest}
-          onChange={onPatch}
-        />
+        <EntryMetrics entry={entry} exercise={exercise} allTimeBest={null} onChange={onPatch} />
       </div>
       <button
         onClick={onRemove}
@@ -239,12 +213,26 @@ function SetRow({
 }
 
 export function WorkoutDetailPage() {
-  const { id: workoutId } = useParams<{ id: string }>()
+  const { id: workoutId = '' } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: workout } = useWorkout(workoutId ?? '')
-  const { data: exercises } = useExercises()
-  const { data: equipment } = useEquipment()
-  const { updateWorkout, deleteWorkout, uid, toast, workouts, user } = useApp()
+  const queryClient = useQueryClient()
+  const { toast, user } = useApp()
+
+  const { data: workout, isLoading } = useQuery({
+    queryKey: ['workouts', workoutId],
+    queryFn: () => getWorkout(workoutId),
+    enabled: !!workoutId,
+  })
+
+  const { data: exercises = [] } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: listExercises,
+  })
+
+  const { data: equipment = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: listEquipment,
+  })
 
   const [exercisePickerOpen, setExercisePickerOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
@@ -252,15 +240,138 @@ export function WorkoutDetailPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
 
-  const bestWeights = useMemo(() => {
-    const m: Record<string, number | null> = {}
-    exercises.forEach(ex => {
-      if (ex.type === 'resistance') {
-        m[ex.id] = bestWeight(workouts, ex.id)
+  const pendingUpdates = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+
+  useEffect(() => {
+    const timers = pendingUpdates.current
+    return () => {
+      timers.forEach(t => clearTimeout(t))
+    }
+  }, [])
+
+  const invalidateWorkout = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] })
+  }, [queryClient, workoutId])
+
+  const updateWorkoutMutation = useMutation({
+    mutationFn: (payload: Parameters<typeof updateWorkoutApi>[1]) =>
+      updateWorkoutApi(workoutId, payload),
+    onSuccess: data => {
+      queryClient.setQueryData(['workouts', workoutId], data)
+    },
+    onError: () => toast('Could not save. Try again.'),
+  })
+
+  const deleteWorkoutMutation = useMutation({
+    mutationFn: () => deleteWorkoutApi(workoutId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+      toast('Workout deleted.')
+      navigate('/workouts')
+    },
+    onError: () => toast('Could not delete. Try again.'),
+  })
+
+  const attachExerciseMutation = useMutation({
+    mutationFn: async (ex: Exercise) => {
+      await attachExercise(workoutId, ex.id)
+      const du = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
+      const nextOrder = workout ? workout.entries.length : 0
+      await createEntry(workoutId, defaultEntryPayload(ex, nextOrder, du))
+    },
+    onSuccess: () => {
+      invalidateWorkout()
+      toast('Exercise added.')
+    },
+    onError: () => toast('Could not add exercise. Try again.'),
+  })
+
+  const reorderExercisesMutation = useMutation({
+    mutationFn: (ids: string[]) => reorderExercises(workoutId, ids),
+    onSuccess: data => {
+      queryClient.setQueryData(['workouts', workoutId], data)
+    },
+  })
+
+  const addSetMutation = useMutation({
+    mutationFn: (payload: CreateEntryPayload) => createEntry(workoutId, payload),
+    onSuccess: invalidateWorkout,
+    onError: () => toast('Could not add set. Try again.'),
+  })
+
+  const deleteEntryMutation = useMutation({
+    mutationFn: (entryId: string) => deleteEntry(workoutId, entryId),
+    onSuccess: (_data, entryId) => {
+      queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
+        if (!old) return old
+        return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
+      })
+    },
+    onError: () => toast('Could not remove set. Try again.'),
+  })
+
+  const updateEntryMutation = useMutation({
+    mutationFn: ({
+      entryId,
+      payload,
+    }: {
+      entryId: string
+      payload: Parameters<typeof updateEntry>[2]
+    }) => updateEntry(workoutId, entryId, payload),
+    onSuccess: updatedEntry => {
+      queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
+        if (!old) return old
+        return {
+          ...old,
+          entries: old.entries.map(e => (e.id === updatedEntry.id ? updatedEntry : e)),
+        }
+      })
+    },
+  })
+
+  const reorderEntriesMutation = useMutation({
+    mutationFn: (ids: string[]) => reorderEntries(workoutId, ids),
+    onSuccess: invalidateWorkout,
+  })
+
+  const debouncedEntryUpdate = useCallback(
+    (entryId: string, entry: WorkoutEntry) => {
+      const pending = pendingUpdates.current
+      const existing = pending.get(entryId)
+      if (existing) clearTimeout(existing)
+
+      const timer = setTimeout(() => {
+        pending.delete(entryId)
+        updateEntryMutation.mutate({
+          entryId,
+          payload: { metrics: toMetricsPayload(entry) },
+        })
+      }, 800)
+      pending.set(entryId, timer)
+    },
+    [updateEntryMutation]
+  )
+
+  const patchEntry = useCallback(
+    (entryId: string, patch: Partial<WorkoutEntry>) => {
+      const oldWorkout = queryClient.getQueryData<Workout>(['workouts', workoutId])
+      if (!oldWorkout) return
+
+      const updatedEntries = oldWorkout.entries.map(e =>
+        e.id === entryId ? { ...e, ...patch } : e
+      )
+      queryClient.setQueryData(['workouts', workoutId], {
+        ...oldWorkout,
+        entries: updatedEntries,
+      })
+
+      const merged = updatedEntries.find(e => e.id === entryId)
+      if (merged) {
+        debouncedEntryUpdate(entryId, merged)
       }
-    })
-    return m
-  }, [workouts, exercises])
+    },
+    [queryClient, workoutId, debouncedEntryUpdate]
+  )
 
   if (!workoutId) {
     return (
@@ -270,6 +381,15 @@ export function WorkoutDetailPage() {
           Back to Workouts
         </button>
       </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader back onBack={() => navigate('/workouts')} title="Loading..." />
+        <p className="text-text-secondary text-sm">Loading workout...</p>
+      </>
     )
   }
 
@@ -286,119 +406,63 @@ export function WorkoutDetailPage() {
 
   const blocks = buildBlocks(workout.entries, workout.entryGroups)
   const ratio = workoutCompletion(workout)
+  const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
 
-  const persist = (newBlocks: Block[]) => {
-    updateWorkout(workoutId, { entries: flatten(newBlocks) })
-  }
+  const handleReorderBlocks = (next: Block[]) => {
+    const allEntries = next.flatMap(b => b.entries)
+    const ids = allEntries.map(e => e.id)
 
-  const patchEntry = (entryId: string, patch: Partial<WorkoutEntry>) => {
-    updateWorkout(workoutId, {
-      entries: workout.entries.map(e => (e.id === entryId ? { ...e, ...patch } : e)),
+    queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
+      if (!old) return old
+      return {
+        ...old,
+        entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+      }
     })
+
+    const exerciseIds = next
+      .filter((b): b is Block & { exerciseId: string } => b.kind === 'exercise' && !!b.exerciseId)
+      .map(b => b.exerciseId)
+    const uniqueExerciseIds = [...new Set(exerciseIds)]
+    if (uniqueExerciseIds.length > 1) {
+      reorderExercisesMutation.mutate(uniqueExerciseIds)
+    }
+    reorderEntriesMutation.mutate(ids)
   }
 
-  const reorderBlocks = (next: Block[]) => persist(next)
+  const handleReorderSets = (blockId: string, nextEntries: WorkoutEntry[]) => {
+    const newBlocks = blocks.map(b => (b.id === blockId ? { ...b, entries: nextEntries } : b))
+    const allEntries = newBlocks.flatMap(b => b.entries)
+    const ids = allEntries.map(e => e.id)
 
-  const reorderSets = (blockId: string, nextEntries: WorkoutEntry[]) => {
-    persist(blocks.map(b => (b.id === blockId ? { ...b, entries: nextEntries } : b)))
+    queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
+      if (!old) return old
+      return {
+        ...old,
+        entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+      }
+    })
+
+    reorderEntriesMutation.mutate(ids)
   }
 
-  const addSet = (block: Block) => {
+  const handleAddSet = (block: Block) => {
     const ex = exerciseById(exercises, block.exerciseId ?? '')
     if (!ex) return
-    const ref = block.entries[0]
-    if (!ref) return
-    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
-    const ne: WorkoutEntry = {
-      ...freshEntry(ex, workoutId, uid, distanceUnit),
-      loadMetric: ref.loadMetric ? { ...ref.loadMetric, actualWeight: null } : undefined,
-      repMetric: ref.repMetric
-        ? { ...ref.repMetric, actualReps: null, toFailure: false, failureRep: null }
-        : undefined,
-    }
-    reorderSets(block.id, [ne, ...block.entries])
+    const nextOrder = workout.entries.length
+    addSetMutation.mutate(defaultEntryPayload(ex, nextOrder, distanceUnit))
   }
 
-  const removeSet = (block: Block, entryId: string) => {
-    const next = block.entries.filter(e => e.id !== entryId)
-    if (!next.length) {
-      persist(blocks.filter(b => b.id !== block.id))
-    } else {
-      reorderSets(block.id, next)
-    }
+  const handleRemoveSet = (entryId: string) => {
+    deleteEntryMutation.mutate(entryId)
   }
 
-  const addExercise = (ex: Exercise) => {
-    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
-    const ne = freshEntry(ex, workoutId, uid, distanceUnit)
-    persist([
-      { kind: 'exercise', id: `b-new-${ne.id}`, exerciseId: ex.id, entries: [ne] },
-      ...blocks,
-    ])
-    toast('Exercise added.')
-  }
-
-  const ungroup = (block: Block) => {
-    const cleared = block.entries.map(e => ({
-      ...e,
-      entryGroupId: null,
-      groupRound: null,
-    }))
-    const newBlocks = blocks.map(b =>
-      b.id === block.id ? { ...b, kind: 'exercise', entries: cleared } : b
-    )
-    updateWorkout(workoutId, {
-      entries: flatten(newBlocks as Block[]),
-      entryGroups: workout.entryGroups.filter(g => g.id !== block.gid),
-    })
-    toast('Group removed.')
+  const handleAddExercise = (ex: Exercise) => {
+    attachExerciseMutation.mutate(ex)
   }
 
   const toggleSelect = (blockId: string) =>
     setSelected(s => (s.includes(blockId) ? s.filter(x => x !== blockId) : [...s, blockId]))
-
-  const confirmGroup = (cfg: {
-    name: string | null
-    plannedRounds: number
-    restBetweenExercisesSeconds: number
-    restBetweenRoundsSeconds: number
-  }) => {
-    const gid = uid('grp')
-    const chosen = blocks.filter(b => selected.includes(b.id) && b.kind === 'exercise')
-    const groupEntries: WorkoutEntry[] = []
-
-    const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
-    for (let r = 1; r <= cfg.plannedRounds; r++) {
-      chosen.forEach(b => {
-        const ex = exerciseById(exercises, b.exerciseId ?? '')
-        if (ex) {
-          const e = freshEntry(ex, workoutId, uid, distanceUnit)
-          groupEntries.push({
-            ...e,
-            entryGroupId: gid,
-            groupRound: r,
-          })
-        }
-      })
-    }
-
-    const groupBlock: Block = {
-      kind: 'group',
-      id: `b-${gid}`,
-      gid,
-      group: { id: gid, workoutId, ...cfg },
-      entries: groupEntries,
-    }
-
-    const newBlocks = [groupBlock, ...blocks.filter(b => !selected.includes(b.id))]
-    updateWorkout(workoutId, {
-      entries: flatten(newBlocks),
-      entryGroups: [...workout.entryGroups, { id: gid, workoutId, ...cfg }],
-    })
-    setSelected([])
-    setSelectMode(false)
-    toast('Group created.')
-  }
 
   const canGroup = selectMode && selected.length >= 2
   const exerciseBlockCount = blocks.filter(b => b.kind === 'exercise').length
@@ -411,7 +475,7 @@ export function WorkoutDetailPage() {
         title={
           <InlineEdit
             value={workout.name}
-            onChange={v => updateWorkout(workoutId, { name: v })}
+            onChange={v => updateWorkoutMutation.mutate({ name: v })}
             ariaLabel="Workout name"
           />
         }
@@ -434,7 +498,7 @@ export function WorkoutDetailPage() {
             <input
               type="date"
               value={workout.date}
-              onChange={e => updateWorkout(workoutId, { date: e.target.value })}
+              onChange={e => updateWorkoutMutation.mutate({ date: e.target.value })}
               className="bg-transparent font-medium text-text-primary outline-none"
               aria-label="Workout date"
             />
@@ -515,7 +579,7 @@ export function WorkoutDetailPage() {
         <ReorderList
           items={blocks}
           getKey={b => b.id}
-          onReorder={reorderBlocks}
+          onReorder={handleReorderBlocks}
           disabled={selectMode}
           className="flex flex-col gap-3"
           itemClassName="rounded-2xl"
@@ -564,13 +628,6 @@ export function WorkoutDetailPage() {
                             : 'no round rest'}
                         </div>
                       </div>
-                      <button
-                        onClick={() => ungroup(block)}
-                        title="Ungroup exercises"
-                        className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
-                      >
-                        Ungroup
-                      </button>
                       {controls}
                     </div>
                     <div className="flex flex-col gap-4">
@@ -600,7 +657,7 @@ export function WorkoutDetailPage() {
                                     <EntryMetrics
                                       entry={entry}
                                       exercise={ex}
-                                      allTimeBest={bestWeights[ex.id] || null}
+                                      allTimeBest={null}
                                       onChange={p => patchEntry(entry.id, p)}
                                     />
                                   </div>
@@ -615,7 +672,6 @@ export function WorkoutDetailPage() {
               )
             }
 
-            // Exercise block
             const ex = exerciseById(exercises, block.exerciseId ?? '')
             if (!ex) return null
             const isSelected = selected.includes(block.id)
@@ -665,12 +721,12 @@ export function WorkoutDetailPage() {
                       exercise={ex}
                       handle={handle}
                       controls={controls}
-                      equipment={equipment}
+                      equipmentList={equipment}
                     />
                     <ReorderList
                       items={block.entries}
                       getKey={e => e.id}
-                      onReorder={next => reorderSets(block.id, next)}
+                      onReorder={next => handleReorderSets(block.id, next)}
                       className="flex flex-col gap-3"
                       itemClassName="rounded-lg"
                       renderItem={(entry, { index, handle: h, controls: c }) => (
@@ -680,9 +736,8 @@ export function WorkoutDetailPage() {
                           index={index}
                           handle={h}
                           controls={c}
-                          allTimeBest={bestWeights[ex.id] || null}
                           onPatch={p => patchEntry(entry.id, p)}
-                          onRemove={() => removeSet(block, entry.id)}
+                          onRemove={() => handleRemoveSet(entry.id)}
                         />
                       )}
                     />
@@ -692,7 +747,7 @@ export function WorkoutDetailPage() {
                       icon={<Plus size={16} />}
                       full
                       className="mt-3"
-                      onClick={() => addSet(block)}
+                      onClick={() => handleAddSet(block)}
                     >
                       Add Set
                     </Button>
@@ -722,7 +777,7 @@ export function WorkoutDetailPage() {
             </div>
             <RatingSlider
               value={workout.exhaustion}
-              onChange={v => updateWorkout(workoutId, { exhaustion: v })}
+              onChange={v => updateWorkoutMutation.mutate({ exhaustion: v })}
               accent="accent"
             />
           </div>
@@ -733,7 +788,7 @@ export function WorkoutDetailPage() {
             </div>
             <RatingSlider
               value={workout.soreness}
-              onChange={v => updateWorkout(workoutId, { soreness: v })}
+              onChange={v => updateWorkoutMutation.mutate({ soreness: v })}
               accent="secondary"
             />
           </div>
@@ -743,24 +798,25 @@ export function WorkoutDetailPage() {
       <ExercisePicker
         open={exercisePickerOpen}
         onClose={() => setExercisePickerOpen(false)}
-        onSelect={addExercise}
+        onSelect={handleAddExercise}
       />
       <GroupConfigSheet
         open={groupSheetOpen}
         onClose={() => setGroupSheetOpen(false)}
         count={selected.length}
-        onConfirm={confirmGroup}
+        onConfirm={() => {
+          toast('Supersets require the grouping API (Phase 8a).')
+          setGroupSheetOpen(false)
+          setSelectMode(false)
+          setSelected([])
+        }}
       />
       <ConfirmDialog
         open={confirmDeleteOpen}
         title="Delete workout?"
         message="This session and its logged sets will be removed."
         onCancel={() => setConfirmDeleteOpen(false)}
-        onConfirm={() => {
-          deleteWorkout(workoutId)
-          toast('Workout deleted.')
-          navigate('/workouts')
-        }}
+        onConfirm={() => deleteWorkoutMutation.mutate()}
       />
     </>
   )
