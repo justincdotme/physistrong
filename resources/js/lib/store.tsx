@@ -1,18 +1,10 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import type {
-  User,
-  EquipmentType,
-  Exercise,
-  Workout,
-  WorkoutEntry,
-  WorkoutTemplate,
-} from '@/api/types'
+import type { User, EquipmentType, Exercise, Workout } from '@/api/types'
 import {
   fixtureUser,
   fixtureEquipmentTypes,
   fixtureExercises,
   fixtureWorkouts,
-  fixtureTemplates,
 } from '@/api/fixtures'
 import { AppContext, type AppContextValue } from './app-context'
 
@@ -44,7 +36,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [exercises, setExercises] = useState<Exercise[]>(() => clone(fixtureExercises))
   const [equipment, setEquipment] = useState<EquipmentType[]>(() => clone(fixtureEquipmentTypes))
   const [workouts, setWorkouts] = useState<Workout[]>(() => clone(fixtureWorkouts))
-  const [templates, setTemplates] = useState<WorkoutTemplate[]>(() => clone(fixtureTemplates))
   const [toasts, setToasts] = useState<Toast[]>([])
 
   useEffect(() => {
@@ -122,124 +113,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     []
   )
 
-  const createFromTemplate = useCallback(
-    (templateId: string, date: string, name?: string): Workout | null => {
-      const tpl = templates.find(t => t.id === templateId)
-      if (!tpl) return null
-      const wid = uid('wk')
-      const entries: WorkoutEntry[] = []
-      const entryGroups: Workout['entryGroups'] = []
-      let order = 0
-
-      const makeEntries = (exId: string, groupId: string | null, round: number | null) => {
-        const ex = exercises.find(e => e.id === exId)
-        if (!ex) return
-        const base = {
-          id: uid('we'),
-          workoutId: wid,
-          exerciseId: exId,
-          setOrder: order++,
-          entryGroupId: groupId,
-          groupRound: round,
-          notes: null,
-        }
-        if (ex.type === 'resistance') {
-          entries.push({
-            ...base,
-            loadMetric: {
-              targetWeight: null,
-              actualWeight: null,
-              bodyweightOnly: !!ex.bodyweightBase,
-            },
-            repMetric: { targetReps: null, actualReps: null, toFailure: false, failureRep: null },
-          })
-        } else if (ex.type === 'timed_hold') {
-          entries.push({
-            ...base,
-            durationMetric: { targetDurationSeconds: null, actualDurationSeconds: null },
-          })
-        } else if (ex.type === 'distance') {
-          entries.push({
-            ...base,
-            distanceMetric: {
-              targetDistance: null,
-              actualDistance: null,
-              distanceUnit: user.measurementSystem === 'imperial' ? 'miles' : 'kilometers',
-              lapCount: null,
-              strokeCount: null,
-            },
-          })
-        } else if (ex.type === 'interval') {
-          const rounds = []
-          const n = ex.defaultRounds ?? 8
-          for (let i = 1; i <= n; i++)
-            rounds.push({
-              roundNumber: i,
-              actualWorkSeconds: null,
-              actualRestSeconds: null,
-              heartRateAvg: null,
-              heartRatePeak: null,
-            })
-          entries.push({
-            ...base,
-            intervalHeader: {
-              programmedRounds: n,
-              completedRounds: 0,
-              targetWorkSeconds: ex.defaultWorkSeconds ?? 60,
-              targetRestSeconds: ex.defaultRestSeconds ?? 60,
-              rounds,
-            },
-          })
-        }
-      }
-
-      tpl.groups.forEach(g => {
-        const gid = uid('grp')
-        entryGroups.push({
-          id: gid,
-          workoutId: wid,
-          name: g.name,
-          plannedRounds: g.plannedRounds,
-          restBetweenExercisesSeconds: g.restBetweenExercisesSeconds,
-          restBetweenRoundsSeconds: g.restBetweenRoundsSeconds,
-        })
-        for (let r = 1; r <= g.plannedRounds; r++) {
-          g.exercises.forEach(te => makeEntries(te.exerciseId, gid, r))
-        }
-      })
-      tpl.exercises.forEach(te => makeEntries(te.exerciseId, null, null))
-
-      const w: Workout = {
-        id: wid,
-        userId: 'u1',
-        name: name ?? tpl.name,
-        date,
-        exhaustion: null,
-        soreness: null,
-        entries,
-        entryGroups,
-      }
-      setWorkouts(ws => [w, ...ws])
-      return w
-    },
-    [templates, exercises, user.measurementSystem]
-  )
-
-  const updateTemplate = useCallback((id: string, patch: Partial<WorkoutTemplate>) => {
-    setTemplates(ts => ts.map(t => (t.id === id ? { ...t, ...patch } : t)))
-  }, [])
-  const deleteTemplate = useCallback(
-    (id: string) => setTemplates(ts => ts.filter(t => t.id !== id)),
-    []
-  )
-
   const value: AppContextValue = {
     user,
     authed,
     exercises,
     equipment,
     workouts,
-    templates,
     toasts,
     uid,
     toast,
@@ -254,9 +133,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     addWorkout,
     updateWorkout,
     deleteWorkout,
-    createFromTemplate,
-    updateTemplate,
-    deleteTemplate,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

@@ -6,6 +6,9 @@ import type {
   WorkoutListItem,
   Workout,
   WorkoutEntry,
+  WorkoutTemplate,
+  WorkoutTemplateListItem,
+  TemplateExercise,
 } from '@/api/types'
 import type { MeasurementSystem } from '@/lib/units'
 
@@ -247,6 +250,93 @@ export function toWorkoutEntry(raw: RawWorkoutEntry): WorkoutEntry {
   }
 
   return entry
+}
+
+export interface RawTemplateExercise {
+  id: number
+  name: string
+  type: string
+  equipment_type_id: number | null
+  exercise_order: number
+  template_entry_group_id: number | null
+}
+
+export interface RawTemplateGroup {
+  id: number
+  name: string | null
+  planned_rounds: number
+  rest_between_exercises_seconds: number
+  rest_between_rounds_seconds: number | null
+}
+
+export interface RawWorkoutTemplate {
+  id: number
+  name: string
+  notes: string | null
+  exercises: RawTemplateExercise[]
+  groups: RawTemplateGroup[]
+  created_at: string
+  updated_at: string
+}
+
+export interface RawWorkoutTemplateListItem {
+  id: number
+  name: string
+  notes: string | null
+  exercises: Array<{ id: number; name: string; type: string }>
+  created_at: string
+  updated_at: string
+}
+
+function toTemplateExercise(raw: RawTemplateExercise): TemplateExercise {
+  return {
+    id: String(raw.id),
+    exerciseId: String(raw.id),
+    name: raw.name,
+    type: raw.type as ExerciseType,
+    equipmentTypeId: raw.equipment_type_id !== null ? String(raw.equipment_type_id) : null,
+    exerciseOrder: raw.exercise_order,
+    groupId: raw.template_entry_group_id !== null ? String(raw.template_entry_group_id) : null,
+  }
+}
+
+export function toWorkoutTemplate(raw: RawWorkoutTemplate): WorkoutTemplate {
+  const allExercises = raw.exercises.map(toTemplateExercise)
+  const ungrouped = allExercises.filter(e => e.groupId === null)
+  const groups = raw.groups.map(g => {
+    const groupId = String(g.id)
+    return {
+      id: groupId,
+      name: g.name,
+      plannedRounds: g.planned_rounds,
+      restBetweenExercisesSeconds: g.rest_between_exercises_seconds,
+      restBetweenRoundsSeconds: g.rest_between_rounds_seconds,
+      exercises: allExercises.filter(e => e.groupId === groupId),
+    }
+  })
+
+  return {
+    id: String(raw.id),
+    name: raw.name,
+    notes: raw.notes,
+    exercises: ungrouped,
+    groups,
+  }
+}
+
+export function toWorkoutTemplateListItem(
+  raw: RawWorkoutTemplateListItem
+): WorkoutTemplateListItem {
+  return {
+    id: String(raw.id),
+    name: raw.name,
+    notes: raw.notes,
+    exercises: raw.exercises.map(ex => ({
+      id: String(ex.id),
+      name: ex.name,
+      type: ex.type as ExerciseType,
+    })),
+  }
 }
 
 export function toMetricsPayload(entry: WorkoutEntry): Record<string, unknown> {

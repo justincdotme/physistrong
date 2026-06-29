@@ -141,6 +141,9 @@ export interface WorkoutListItem {
 export interface TemplateExercise {
   id: string
   exerciseId: string
+  name: string
+  type: ExerciseType
+  equipmentTypeId: string | null
   exerciseOrder: number
   groupId: string | null
 }
@@ -156,11 +159,17 @@ export interface TemplateEntryGroup {
 
 export interface WorkoutTemplate {
   id: string
-  userId: string
   name: string
   notes: string | null
   exercises: TemplateExercise[]
   groups: TemplateEntryGroup[]
+}
+
+export interface WorkoutTemplateListItem {
+  id: string
+  name: string
+  notes: string | null
+  exercises: Array<{ id: string; name: string; type: ExerciseType }>
 }
 
 export interface ProgressPoint {
