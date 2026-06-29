@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\EntryGroupController;
 use App\Http\Controllers\Api\V1\EquipmentTypeController;
 use App\Http\Controllers\Api\V1\ExerciseController;
+use App\Http\Controllers\Api\V1\ExerciseProgressController;
 use App\Http\Controllers\Api\V1\TemplateCloneController;
 use App\Http\Controllers\Api\V1\TemplateExerciseController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -30,6 +31,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/user', [UserController::class, 'update']);
     Route::apiResource('equipment-types', EquipmentTypeController::class);
     Route::apiResource('exercises', ExerciseController::class);
+    Route::get('exercises/{exercise}/progress', [ExerciseProgressController::class, 'progress']);
+    Route::get('exercises/{exercise}/records', [ExerciseProgressController::class, 'records']);
     Route::apiResource('workouts', WorkoutController::class);
     Route::post('workouts/{workout}/exercises', [WorkoutExerciseController::class, 'attach']);
     Route::delete('workouts/{workout}/exercises/{exercise}', [WorkoutExerciseController::class, 'detach']);
