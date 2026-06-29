@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query'
 import { Trash2, Flame, Target, Plus } from 'lucide-react'
 import type { WorkoutEntry, EntryGroup, Exercise, Workout } from '@/api/types'
 import { listExercises } from '@/api/exercises'
@@ -21,6 +21,7 @@ import {
 } from '@/api/workouts'
 import { toMetricsPayload } from '@/api/transformers'
 import type { CreateEntryPayload, AssignEntryPayload } from '@/api/workouts'
+import { fetchRecords, extractAllTimeBest } from '@/api/progress'
 import { useApp } from '@/lib/use-app'
 import { formatDuration } from '@/lib/formatters'
 import { workoutCompletion, exerciseById, equipmentName, entryHasActual } from '@/lib/domain'
@@ -190,9 +191,19 @@ interface SetRowProps {
   controls: React.ReactNode
   onPatch: (patch: Partial<WorkoutEntry>) => void
   onRemove: () => void
+  allTimeBest: number | null
 }
 
-function SetRow({ entry, exercise, index, handle, controls, onPatch, onRemove }: SetRowProps) {
+function SetRow({
+  entry,
+  exercise,
+  index,
+  handle,
+  controls,
+  onPatch,
+  onRemove,
+  allTimeBest,
+}: SetRowProps) {
   return (
     <div className="flex items-start gap-2">
       <div className="flex flex-col items-center shrink-0">
@@ -201,7 +212,12 @@ function SetRow({ entry, exercise, index, handle, controls, onPatch, onRemove }:
         {controls}
       </div>
       <div className="flex-1 min-w-0 pt-1">
-        <EntryMetrics entry={entry} exercise={exercise} allTimeBest={null} onChange={onPatch} />
+        <EntryMetrics
+          entry={entry}
+          exercise={exercise}
+          allTimeBest={allTimeBest}
+          onChange={onPatch}
+        />
       </div>
       <button
         onClick={onRemove}
@@ -235,6 +251,30 @@ export function WorkoutDetailPage() {
   const { data: equipment = [] } = useQuery({
     queryKey: ['equipment'],
     queryFn: listEquipment,
+  })
+
+  const exerciseIdsInWorkout = workout ? [...new Set(workout.entries.map(e => e.exerciseId))] : []
+
+  const recordsQueries = useQueries({
+    queries: exerciseIdsInWorkout.map(exId => ({
+      queryKey: ['exercises', exId, 'records'],
+      queryFn: async () => {
+        const records = await fetchRecords(exId)
+        return { exerciseId: exId, records }
+      },
+      enabled: !!workout,
+      staleTime: 1000 * 60 * 5,
+    })),
+  })
+
+  const allTimeBestMap = new Map<string, number | null>()
+  recordsQueries.forEach(q => {
+    if (q.data) {
+      const ex = exerciseById(exercises, q.data.exerciseId)
+      if (ex) {
+        allTimeBestMap.set(q.data.exerciseId, extractAllTimeBest(q.data.records, ex.type))
+      }
+    }
   })
 
   const [exercisePickerOpen, setExercisePickerOpen] = useState(false)
@@ -714,7 +754,7 @@ export function WorkoutDetailPage() {
                                     <EntryMetrics
                                       entry={entry}
                                       exercise={ex}
-                                      allTimeBest={null}
+                                      allTimeBest={allTimeBestMap.get(ex.id) ?? null}
                                       onChange={p => patchEntry(entry.id, p)}
                                     />
                                   </div>
@@ -795,6 +835,7 @@ export function WorkoutDetailPage() {
                           controls={c}
                           onPatch={p => patchEntry(entry.id, p)}
                           onRemove={() => handleRemoveSet(entry.id)}
+                          allTimeBest={allTimeBestMap.get(ex.id) ?? null}
                         />
                       )}
                     />
