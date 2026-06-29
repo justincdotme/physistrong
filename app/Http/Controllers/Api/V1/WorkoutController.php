@@ -22,6 +22,7 @@ class WorkoutController extends Controller
 
     private const SHOW_EAGER_LOAD = [
         'exercises',
+        'groups',
         'entries.exercise',
         'entries.loadMetric',
         'entries.repMetric',

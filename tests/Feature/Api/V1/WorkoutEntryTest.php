@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Api\V1;
 
+use App\Models\EntryGroup;
 use App\Models\Exercise;
 use App\Models\User;
 use App\Models\Workout;
@@ -500,5 +501,98 @@ class WorkoutEntryTest extends TestCase
             'exercise_id' => $exercise->id,
             'set_order' => 0,
         ])->assertStatus(403);
+    }
+
+    // -- Group Fields --
+
+    public function test_creates_entry_with_group_assignment(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $group = EntryGroup::create([
+            'workout_id' => $workout->id,
+            'planned_rounds' => 3,
+            'rest_between_exercises_seconds' => 30,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'entry_group_id' => $group->id,
+            'group_round' => 1,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.entry_group_id', $group->id)
+            ->assertJsonPath('data.group_round', 1);
+
+        $this->assertDatabaseHas('workout_entries', [
+            'workout_id' => $workout->id,
+            'entry_group_id' => $group->id,
+            'group_round' => 1,
+        ]);
+    }
+
+    public function test_updates_entry_group_assignment(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+
+        $group = EntryGroup::create([
+            'workout_id' => $workout->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/{$entry->id}", [
+            'entry_group_id' => $group->id,
+            'group_round' => 2,
+        ])->assertOk()
+            ->assertJsonPath('data.entry_group_id', $group->id)
+            ->assertJsonPath('data.group_round', 2);
+    }
+
+    public function test_removes_entry_from_group_via_update(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $group = EntryGroup::create([
+            'workout_id' => $workout->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        $entry = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'entry_group_id' => $group->id,
+            'group_round' => 1,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/{$entry->id}", [
+            'entry_group_id' => null,
+            'group_round' => null,
+        ])->assertOk()
+            ->assertJsonPath('data.entry_group_id', null)
+            ->assertJsonPath('data.group_round', null);
     }
 }

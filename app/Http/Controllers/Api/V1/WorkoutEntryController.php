@@ -53,6 +53,8 @@ class WorkoutEntryController extends Controller
                 'exercise_id' => $request->validated('exercise_id'),
                 'set_order' => $request->validated('set_order'),
                 'notes' => $request->validated('notes'),
+                'entry_group_id' => $request->validated('entry_group_id'),
+                'group_round' => $request->validated('group_round'),
             ]);
 
             $metrics = $request->validated('metrics') ?? [];
@@ -84,7 +86,7 @@ class WorkoutEntryController extends Controller
         $this->authorize('update', $workout);
 
         DB::transaction(function () use ($request, $entry) {
-            $entry->update($request->safe()->only(['set_order', 'notes']));
+            $entry->update($request->safe()->only(['set_order', 'notes', 'entry_group_id', 'group_round']));
 
             $metrics = $request->validated('metrics') ?? [];
             if ($metrics) {

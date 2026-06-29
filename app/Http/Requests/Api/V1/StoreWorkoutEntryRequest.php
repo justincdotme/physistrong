@@ -23,6 +23,12 @@ class StoreWorkoutEntryRequest extends FormRequest
             ],
             'set_order' => ['required', 'integer', 'min:0'],
             'notes' => ['sometimes', 'nullable', 'string'],
+            'entry_group_id' => [
+                'sometimes',
+                'nullable',
+                Rule::exists('entry_groups', 'id')->where('workout_id', $this->route('workout')->id),
+            ],
+            'group_round' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'metrics' => ['sometimes', 'array'],
         ], $this->metricRules());
     }
