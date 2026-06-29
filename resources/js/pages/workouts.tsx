@@ -128,7 +128,7 @@ export function WorkoutsPage() {
           size="lg"
           icon={<Plus size={18} />}
           onClick={() => setWizardOpen(true)}
-          data-dusk="create-workout-btn"
+          dusk="create-workout-btn"
         >
           New Workout
         </Button>

@@ -50,7 +50,7 @@ class StoreExerciseRequest extends FormRequest
                 'type_attributes.target_duration_seconds' => ['nullable', 'integer', 'min:1'],
             ],
             'distance' => [
-                'type_attributes.distance_unit' => ['required', Rule::enum(DistanceUnit::class)],
+                'type_attributes.distance_unit' => ['nullable', Rule::enum(DistanceUnit::class)],
                 'type_attributes.tracks_elevation' => ['boolean'],
             ],
             'interval' => [

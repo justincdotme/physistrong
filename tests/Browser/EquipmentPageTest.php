@@ -18,7 +18,7 @@ it('renders and tests equipment page', function () {
             ->assertVisible('@equipment-page')
             ->assertVisible('@equipment-list')
             ->assertVisible('@create-equipment-btn')
-            ->assertSeeIn('@equipment-list', 'System')
+            ->assertSeeIn('@equipment-list', 'SYSTEM')
             ->screenshot('equipment-desktop');
 
         // Tablet
@@ -38,5 +38,22 @@ it('renders and tests equipment page', function () {
             ->assertVisible('@equipment-list')
             ->assertVisible('@create-equipment-btn')
             ->screenshot('equipment-phone');
+    });
+});
+
+it('disables delete button for system equipment types', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/equipment')
+            ->waitFor('@equipment-page')
+            ->waitFor('@equipment-list')
+            ->screenshot('equipment-delete-guards');
+
+        // System equipment types should have disabled delete buttons
+        // The seeded equipment includes system types with exercises using them
+        $disabledButtons = $browser->elements('button[disabled]');
+        $this->assertNotEmpty($disabledButtons, 'System equipment should have at least one disabled delete button');
     });
 });

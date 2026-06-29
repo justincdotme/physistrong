@@ -45,8 +45,6 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const [addedWeight, setAddedWeight] = useState(true)
   const [bilateral, setBilateral] = useState(true)
   const [targetDurationSeconds, setTargetDurationSeconds] = useState('')
-  const [distanceUnit, setDistanceUnit] = useState('meters')
-  const [tracksElevation, setTracksElevation] = useState(false)
   const [defaultWorkSeconds, setDefaultWorkSeconds] = useState('')
   const [defaultRestSeconds, setDefaultRestSeconds] = useState('')
   const [defaultRounds, setDefaultRounds] = useState('')
@@ -92,9 +90,6 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
       if (targetDurationSeconds) {
         typeAttributes.target_duration_seconds = parseInt(targetDurationSeconds)
       }
-    } else if (type === 'distance') {
-      typeAttributes.distance_unit = distanceUnit
-      typeAttributes.tracks_elevation = tracksElevation
     } else if (type === 'interval') {
       if (defaultWorkSeconds) {
         typeAttributes.default_work_seconds = parseInt(defaultWorkSeconds)
@@ -173,16 +168,13 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
                 key={t}
                 onClick={() => setType(t)}
                 className={`px-3 py-2.5 rounded-lg text-sm font-semibold border text-left ${
-                  type === t
-                    ? 'border-transparent text-white'
-                    : 'border-border-strong text-text-secondary'
+                  type === t ? 'border-transparent' : 'border-border-strong text-text-secondary'
                 }`}
                 style={
                   type === t
                     ? {
-                        borderColor: 'var(--color-primary)',
+                        background: 'var(--color-primary)',
                         color: 'white',
-                        background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
                       }
                     : undefined
                 }
@@ -245,35 +237,6 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
                 onChange={e => setTargetDurationSeconds(e.target.value)}
                 className="ps-input w-20 px-2 py-1.5 text-sm"
                 min="1"
-              />
-            </div>
-          </div>
-        )}
-
-        {type === 'distance' && (
-          <div className="ps-metric p-3 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <label htmlFor="distance-unit" className="text-sm">
-                Distance unit
-              </label>
-              <select
-                id="distance-unit"
-                value={distanceUnit}
-                onChange={e => setDistanceUnit(e.target.value)}
-                className="ps-input px-2 py-1.5 text-sm"
-              >
-                <option value="meters">Meters</option>
-                <option value="kilometers">Kilometers</option>
-                <option value="miles">Miles</option>
-                <option value="yards">Yards</option>
-              </select>
-            </div>
-            <div className="flex items-center justify-between" aria-label="Tracks elevation">
-              <span className="text-sm">Tracks elevation</span>
-              <Toggle
-                checked={tracksElevation}
-                onChange={setTracksElevation}
-                label="Tracks elevation"
               />
             </div>
           </div>
@@ -458,19 +421,28 @@ export function ExercisesPage() {
                   </div>
                 </div>
                 <TypeBadge type={ex.type} />
-                {!isSystem && (
-                  <button
-                    onClick={e => {
-                      e.stopPropagation()
-                      setDeleting(ex)
-                    }}
-                    title="Delete exercise"
-                    aria-label={`Delete ${ex.name}`}
-                    className="h-10 w-10 flex items-center justify-center rounded-lg shrink-0 text-text-muted hover:text-destructive hover:bg-surface-muted"
-                  >
-                    <Trash2 size={17} />
-                  </button>
-                )}
+                {!isSystem &&
+                  (() => {
+                    const inUse = ex.usageCount > 0
+                    return (
+                      <button
+                        onClick={e => {
+                          e.stopPropagation()
+                          if (!inUse) setDeleting(ex)
+                        }}
+                        disabled={inUse}
+                        title={inUse ? `In use by ${ex.usageCount} workout(s)` : 'Delete exercise'}
+                        aria-label={inUse ? `${ex.name} is in use` : `Delete ${ex.name}`}
+                        className={`h-10 w-10 flex items-center justify-center rounded-lg shrink-0 ${
+                          inUse
+                            ? 'text-text-muted opacity-50 cursor-not-allowed'
+                            : 'text-text-muted hover:text-destructive hover:bg-surface-muted'
+                        }`}
+                      >
+                        <Trash2 size={17} />
+                      </button>
+                    )
+                  })()}
               </Card>
             )
           })}

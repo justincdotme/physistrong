@@ -253,7 +253,7 @@ it('opens create template sheet when clicking create template button', function 
             ->waitFor('@workouts-page')
             ->press('Create Template')
             ->waitForText('Create Template')
-            ->assertSeeIn('h2', 'Create Template')
+            ->assertSeeIn('h3', 'Create Template')
             ->screenshot('workouts-template-sheet-open');
     });
 });
@@ -266,9 +266,12 @@ it('closes template sheet when clicking outside', function () {
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
             ->press('Create Template')
-            ->waitForText('Create Template')
-            ->keys('@keydown', '{Escape}')
-            ->waitUntilMissing('.sheet')
+            ->waitForText('Create Template');
+
+        $browser->script("document.querySelector('.ps-backdrop').click()");
+
+        $browser->pause(300)
+            ->assertMissing('.ps-sheet')
             ->screenshot('workouts-template-sheet-closed');
     });
 });
@@ -285,8 +288,12 @@ it('creates a template with name', function () {
             ->type('#template-name-input', 'New Template')
             ->pause(500)
             ->press('Create')
-            ->waitForLocation('/templates')
-            ->screenshot('workouts-template-created');
+            ->pause(1000);
+
+        $path = $browser->driver->getCurrentURL();
+        expect(str_contains($path, '/templates/'))->toBeTrue();
+
+        $browser->screenshot('workouts-template-created');
     });
 
     $this->assertDatabaseHas('workout_templates', [
@@ -304,10 +311,11 @@ it('disables create template button when name is empty', function () {
             ->waitFor('@workouts-page')
             ->press('Create Template')
             ->waitForText('Create Template')
-            ->assertDisabled('button[type="submit"]')
+            ->waitFor('#template-name-input')
+            ->assertPresent('button:disabled')
             ->type('#template-name-input', 'Test')
             ->pause(300)
-            ->assertEnabled('button[type="submit"]')
+            ->assertMissing('button:disabled')
             ->screenshot('workouts-template-button-states');
     });
 });

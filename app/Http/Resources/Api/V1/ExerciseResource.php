@@ -26,6 +26,7 @@ class ExerciseResource extends JsonResource
             'type_attributes' => $this->typeAttributes(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'usage_count' => $this->getAttribute('usage_count') ?? 0,
         ];
     }
 

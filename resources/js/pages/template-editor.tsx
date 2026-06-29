@@ -219,7 +219,7 @@ export function TemplateEditorPage() {
   const exerciseBlockCount = blocks.filter(b => b.kind === 'exercise').length
 
   return (
-    <>
+    <div dusk="template-editor-page">
       <PageHeader
         back
         onBack={() => navigate('/workouts')}
@@ -228,6 +228,7 @@ export function TemplateEditorPage() {
             value={tpl.name}
             onChange={v => updateNameMutation.mutate({ name: v })}
             ariaLabel="Template name"
+            duskDataAttribute="template-name"
           />
         }
         subtitle="Template"
@@ -243,7 +244,12 @@ export function TemplateEditorPage() {
       />
 
       <div className="flex items-center gap-2 mb-4">
-        <Button size="sm" icon={<Plus size={16} />} onClick={() => setExercisePickerOpen(true)}>
+        <Button
+          dusk="add-template-exercise-btn"
+          size="sm"
+          icon={<Plus size={16} />}
+          onClick={() => setExercisePickerOpen(true)}
+        >
           Add Exercise
         </Button>
         {!selectMode && exerciseBlockCount >= 2 && (
@@ -370,7 +376,6 @@ export function TemplateEditorPage() {
               )
             }
 
-            // Exercise block
             if (!block.te) return null
             const te = block.te
 
@@ -474,6 +479,6 @@ export function TemplateEditorPage() {
           setGroupSheetOpen(false)
         }}
       />
-    </>
+    </div>
   )
 }

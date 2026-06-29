@@ -42,6 +42,7 @@ export function Shell() {
         className="hidden md:flex md:flex-col md:w-[244px] md:shrink-0 md:h-[100dvh] md:sticky md:top-0 border-r border-border bg-surface-card px-4 py-6"
       >
         <button
+          dusk="desktop-nav-logo"
           onClick={() => navigate('/workouts')}
           className="flex items-center gap-2.5 px-2 mb-8 hover:opacity-75 transition-opacity"
         >
@@ -61,6 +62,7 @@ export function Shell() {
             return (
               <button
                 key={item.key}
+                dusk={`desktop-nav-${item.key}`}
                 onClick={() => navigate(item.to)}
                 className="flex items-center gap-3 px-3 h-12 rounded-lg font-semibold text-sm transition-colors text-left"
                 style={
@@ -102,6 +104,7 @@ export function Shell() {
         >
           <div className="flex items-center justify-between px-4 h-14">
             <button
+              dusk="mobile-top-bar-logo"
               onClick={() => navigate('/workouts')}
               className="flex items-center gap-2 hover:opacity-75 transition-opacity"
             >
@@ -149,6 +152,7 @@ export function Shell() {
             return (
               <button
                 key={item.key}
+                dusk={`mobile-bottom-nav-${item.key}`}
                 onClick={() => navigate(item.to)}
                 className="flex-1 flex flex-col items-center justify-center gap-0.5 h-[60px] min-h-[44px] transition-colors"
                 style={{

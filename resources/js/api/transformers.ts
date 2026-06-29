@@ -25,6 +25,7 @@ export interface RawEquipmentType {
   id: number
   name: string
   is_system: boolean
+  usage_count: number
 }
 
 export function toUser(raw: RawUser): User {
@@ -43,6 +44,7 @@ export function toEquipmentType(raw: RawEquipmentType): EquipmentType {
     id: String(raw.id),
     name: raw.name,
     isSystem: raw.is_system,
+    usageCount: raw.usage_count ?? 0,
   }
 }
 
@@ -53,6 +55,7 @@ export interface RawExercise {
   notes: string | null
   user_id: number | null
   equipment_type_id: number | null
+  usage_count: number
   type_attributes: Record<string, unknown> | null
   created_at: string
   updated_at: string
@@ -66,6 +69,7 @@ export function toExercise(raw: RawExercise): Exercise {
     type: raw.type as ExerciseType,
     equipmentTypeId: raw.equipment_type_id !== null ? String(raw.equipment_type_id) : null,
     notes: raw.notes,
+    usageCount: raw.usage_count ?? 0,
   }
 
   const attrs = raw.type_attributes

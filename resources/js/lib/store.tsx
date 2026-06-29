@@ -64,6 +64,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         userId: 'u1',
         notes: null,
         equipmentTypeId: null,
+        usageCount: 0,
         ...ex,
       }
       setExercises(xs => [full, ...xs])
@@ -80,7 +81,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   )
 
   const addEquipment = useCallback((name: string): EquipmentType => {
-    const eq: EquipmentType = { id: uid('eq'), name, isSystem: false }
+    const eq: EquipmentType = { id: uid('eq'), name, isSystem: false, usageCount: 0 }
     setEquipment(es => [eq, ...es])
     return eq
   }, [])

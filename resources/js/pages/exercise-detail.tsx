@@ -6,6 +6,7 @@ import { Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 import { Card } from '@/components/ui/card'
 import { TypeBadge } from '@/components/ui/type-badge'
+import { Badge } from '@/components/ui/badge'
 import { InlineEdit } from '@/components/ui/inline-edit'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useApp } from '@/lib/use-app'
@@ -18,13 +19,6 @@ import {
 } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
 import type { UpdateExercisePayload } from '@/api/exercises'
-
-const DISTANCE_UNIT_LABELS: Record<string, string> = {
-  meters: 'Meters',
-  kilometers: 'Kilometers',
-  miles: 'Miles',
-  yards: 'Yards',
-}
 
 function AttrRow({ label, value }: { label: string; value: string }) {
   return (
@@ -124,12 +118,6 @@ export function ExerciseDetailPage() {
     if (ex.targetDurationSeconds) {
       attrs.push(['Target duration', formatDuration(ex.targetDurationSeconds)])
     }
-  } else if (ex.type === 'distance') {
-    attrs.push([
-      'Distance unit',
-      DISTANCE_UNIT_LABELS[ex.distanceUnit ?? ''] ?? ex.distanceUnit ?? '',
-    ])
-    attrs.push(['Tracks elevation', ex.tracksElevation ? 'Yes' : 'No'])
   } else if (ex.type === 'interval') {
     attrs.push(['Default work', formatDuration(ex.defaultWorkSeconds)])
     attrs.push(['Default rest', formatDuration(ex.defaultRestSeconds)])
@@ -164,6 +152,11 @@ export function ExerciseDetailPage() {
         <div dusk="exercise-type">
           <TypeBadge type={ex.type} />
         </div>
+        {!isOwned && (
+          <span dusk="system-badge">
+            <Badge tone="neutral">System</Badge>
+          </span>
+        )}
         <span className="text-sm text-text-secondary">
           {equipmentName(equipment, ex.equipmentTypeId)}
         </span>
@@ -223,30 +216,42 @@ export function ExerciseDetailPage() {
         </svg>
       </button>
 
-      {isOwned && (
-        <>
-          <div className="flex items-center gap-2">
-            <button
-              dusk="delete-exercise-btn"
-              onClick={() => setDeleting(true)}
-              className="inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg text-destructive hover:bg-surface-muted"
-            >
-              <Trash2 size={17} /> Delete
-            </button>
-          </div>
+      {isOwned &&
+        (() => {
+          const inUse = ex.usageCount > 0
+          return (
+            <>
+              <div className="flex items-center gap-2">
+                <button
+                  dusk="delete-exercise-btn"
+                  onClick={() => {
+                    if (!inUse) setDeleting(true)
+                  }}
+                  disabled={inUse}
+                  title={inUse ? `In use by ${ex.usageCount} workout(s)` : undefined}
+                  className={`inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg ${
+                    inUse
+                      ? 'text-text-muted opacity-50 cursor-not-allowed'
+                      : 'text-destructive hover:bg-surface-muted'
+                  }`}
+                >
+                  <Trash2 size={17} /> Delete
+                </button>
+              </div>
 
-          <ConfirmDialog
-            open={deleting}
-            title="Delete exercise?"
-            message={`"${ex.name}" will be removed from your catalog.`}
-            onCancel={() => setDeleting(false)}
-            onConfirm={() => {
-              setDeleting(false)
-              deleteMutation.mutate()
-            }}
-          />
-        </>
-      )}
+              <ConfirmDialog
+                open={deleting}
+                title="Delete exercise?"
+                message={`"${ex.name}" will be removed from your catalog.`}
+                onCancel={() => setDeleting(false)}
+                onConfirm={() => {
+                  setDeleting(false)
+                  deleteMutation.mutate()
+                }}
+              />
+            </>
+          )
+        })()}
     </div>
   )
 }
