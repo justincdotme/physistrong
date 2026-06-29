@@ -120,11 +120,12 @@ class ExerciseController extends Controller
         $this->authorize('delete', $exercise);
 
         $inUse = DB::table('exercise_workout')->where('exercise_id', $exercise->id)->exists()
-            || DB::table('workout_entries')->where('exercise_id', $exercise->id)->exists();
+            || DB::table('workout_entries')->where('exercise_id', $exercise->id)->exists()
+            || DB::table('template_exercises')->where('exercise_id', $exercise->id)->exists();
 
         if ($inUse) {
             return response()->json([
-                'message' => 'Exercise is in use by workouts.',
+                'message' => 'Exercise is in use by workouts or templates.',
             ], 409);
         }
 

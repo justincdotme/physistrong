@@ -120,6 +120,17 @@ export interface Workout {
   entryGroups: EntryGroup[]
 }
 
+export interface WorkoutListItem {
+  id: string
+  name: string
+  date: string
+  exhaustion: number | null
+  soreness: number | null
+  entriesCount: number
+  completedEntriesCount: number
+  exercises: Array<{ id: string; name: string; type: ExerciseType }>
+}
+
 export interface TemplateExercise {
   id: string
   exerciseId: string

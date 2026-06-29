@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus, BarChart3 } from 'lucide-react'
-import type { useWorkout } from '@/hooks/use-workouts'
-import { useWorkouts } from '@/hooks/use-workouts'
-import { useExercises } from '@/hooks/use-exercises'
 import { useApp } from '@/lib/use-app'
 import { formatDate } from '@/lib/formatters'
-import { workoutCompletion, exerciseById } from '@/lib/domain'
+import { listWorkouts, createWorkout } from '@/api/workouts'
+import type { WorkoutListItem } from '@/api/types'
 import {
   PageHeader,
   SectionHeading,
@@ -18,26 +17,14 @@ import {
 import { NewWorkoutWizard } from '@/components/app/pickers'
 
 interface WorkoutCardProps {
-  workout: ReturnType<typeof useWorkout>['data']
-  exercises: ReturnType<typeof useExercises>['data']
+  workout: WorkoutListItem
 }
 
-function WorkoutCard({ workout, exercises }: WorkoutCardProps) {
+function WorkoutCard({ workout }: WorkoutCardProps) {
   const navigate = useNavigate()
-  if (!workout) return null
 
-  const ratio = workoutCompletion(workout)
-  const names: string[] = []
-  const seen = new Set<string>()
-
-  workout.entries.forEach(e => {
-    if (!seen.has(e.exerciseId)) {
-      seen.add(e.exerciseId)
-      const ex = exerciseById(exercises, e.exerciseId)
-      if (ex) names.push(ex.name)
-    }
-  })
-
+  const ratio = workout.entriesCount > 0 ? workout.completedEntriesCount / workout.entriesCount : 0
+  const names = workout.exercises.map(e => e.name)
   const shown = names.slice(0, 4)
   const extra = names.length - shown.length
   const complete = ratio >= 1
@@ -76,32 +63,46 @@ function WorkoutCard({ workout, exercises }: WorkoutCardProps) {
 
 export function WorkoutsPage() {
   const navigate = useNavigate()
-  const { data: workouts } = useWorkouts()
-  const { data: exercises } = useExercises()
-  const { addWorkout, createFromTemplate, toast } = useApp()
+  const queryClient = useQueryClient()
+  const { toast } = useApp()
 
   const [wizardOpen, setWizardOpen] = useState(false)
 
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['workouts'],
+    queryFn: ({ pageParam = 1 }) => listWorkouts(pageParam),
+    getNextPageParam: last => last.nextPage,
+    initialPageParam: 1,
+  })
+
+  const workouts = data?.pages?.flatMap(p => p.items) ?? []
+
+  const createMutation = useMutation({
+    mutationFn: createWorkout,
+    onSuccess: workout => {
+      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+      toast('Workout started.')
+      navigate(`/workouts/${workout.id}`)
+    },
+    onError: () => toast('Could not create workout. Try again.'),
+  })
+
   const startEmpty = ({ name, date }: { name: string; date: string }) => {
-    const w = addWorkout({ name, date, entries: [], entryGroups: [] })
-    toast('Workout started.')
-    navigate(`/workouts/${w.id}`)
+    createMutation.mutate({ name, date })
   }
 
-  const startFromTemplate = (
-    tpl: { id: string },
-    { name, date }: { name: string; date: string }
-  ) => {
-    const w = createFromTemplate(tpl.id, date, name || undefined)
-    if (w) {
-      toast('Workout started.')
-      navigate(`/workouts/${w.id}`)
-    }
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Workouts" />
+        <p className="text-text-secondary text-sm">Loading...</p>
+      </>
+    )
   }
 
   return (
     <>
-      <PageHeader title="Workouts" subtitle={`${workouts.length} logged`} />
+      <PageHeader title="Workouts" subtitle={`${data?.pages?.[0]?.total ?? 0} logged`} />
 
       <div className="flex flex-col gap-2.5 mb-7">
         <Button full size="lg" icon={<Plus size={18} />} onClick={() => setWizardOpen(true)}>
@@ -122,8 +123,19 @@ export function WorkoutsPage() {
         {workouts.length ? (
           <div className="flex flex-col gap-3">
             {workouts.map(w => (
-              <WorkoutCard key={w.id} workout={w} exercises={exercises} />
+              <WorkoutCard key={w.id} workout={w} />
             ))}
+            {hasNextPage && (
+              <Button
+                full
+                variant="secondary"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="mt-3"
+              >
+                {isFetchingNextPage ? 'Loading...' : 'Load More'}
+              </Button>
+            )}
           </div>
         ) : (
           <EmptyState
@@ -144,7 +156,6 @@ export function WorkoutsPage() {
         open={wizardOpen}
         onClose={() => setWizardOpen(false)}
         onCreateEmpty={startEmpty}
-        onCreateFromTemplate={startFromTemplate}
       />
     </>
   )

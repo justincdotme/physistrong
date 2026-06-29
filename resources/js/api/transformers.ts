@@ -1,4 +1,4 @@
-import type { User, EquipmentType, Exercise, ExerciseType } from '@/api/types'
+import type { User, EquipmentType, Exercise, ExerciseType, WorkoutListItem } from '@/api/types'
 import type { MeasurementSystem } from '@/lib/units'
 
 export interface RawUser {
@@ -81,4 +81,32 @@ export function toExercise(raw: RawExercise): Exercise {
   }
 
   return exercise
+}
+
+export interface RawWorkoutListItem {
+  id: number
+  name: string
+  date: string
+  exhaustion: number | null
+  soreness: number | null
+  entries_count: number
+  completed_entries_count: number
+  exercises: Array<{ id: number; name: string; type: string }>
+}
+
+export function toWorkoutListItem(raw: RawWorkoutListItem): WorkoutListItem {
+  return {
+    id: String(raw.id),
+    name: raw.name,
+    date: raw.date,
+    exhaustion: raw.exhaustion,
+    soreness: raw.soreness,
+    entriesCount: raw.entries_count,
+    completedEntriesCount: raw.completed_entries_count,
+    exercises: raw.exercises.map(e => ({
+      id: String(e.id),
+      name: e.name,
+      type: e.type as ExerciseType,
+    })),
+  }
 }
