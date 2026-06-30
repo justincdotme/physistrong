@@ -26,7 +26,7 @@ export function PageHeader({ title, subtitle, back, onBack, actions, className }
           </button>
         )}
         <h1
-          className="truncate min-w-0 flex-1 leading-normal"
+          className="truncate min-w-0 flex-1 py-px"
           style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.5px' }}
         >
           {title}
