@@ -23,6 +23,7 @@ import { toMetricsPayload } from '@/api/transformers'
 import type { CreateEntryPayload, AssignEntryPayload } from '@/api/workouts'
 import { fetchRecords, extractAllTimeBest } from '@/api/progress'
 import { useApp } from '@/lib/use-app'
+import { useAuth } from '@/hooks/use-auth'
 import { formatDuration } from '@/lib/formatters'
 import { workoutCompletion, exerciseById, equipmentName, entryHasActual } from '@/lib/domain'
 import {
@@ -235,7 +236,8 @@ export function WorkoutDetailPage() {
   const { id: workoutId = '' } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { toast, user } = useApp()
+  const { toast } = useApp()
+  const { user } = useAuth()
 
   const { data: workout, isLoading } = useQuery({
     queryKey: ['workouts', workoutId],
@@ -318,7 +320,7 @@ export function WorkoutDetailPage() {
   const attachExerciseMutation = useMutation({
     mutationFn: async (ex: Exercise) => {
       await attachExercise(workoutId, ex.id)
-      const du = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
+      const du = user?.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
       const nextOrder = workout ? workout.entries.length : 0
       await createEntry(workoutId, defaultEntryPayload(ex, nextOrder, du))
     },
@@ -473,7 +475,7 @@ export function WorkoutDetailPage() {
     )
   }
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
       <>
         <PageHeader back onBack={() => navigate('/workouts')} title="Loading..." />
