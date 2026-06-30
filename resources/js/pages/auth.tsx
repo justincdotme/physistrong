@@ -1,5 +1,5 @@
 import { type FormEvent, type ReactNode, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
@@ -47,6 +47,7 @@ interface FieldProps {
   placeholder?: string
   name?: string
   error?: string
+  readOnly?: boolean
 }
 
 export function Field({
@@ -57,6 +58,7 @@ export function Field({
   placeholder,
   name,
   error,
+  readOnly,
 }: FieldProps) {
   return (
     <label className="block">
@@ -66,8 +68,9 @@ export function Field({
         name={name}
         value={value}
         placeholder={placeholder}
+        readOnly={readOnly}
         onChange={e => onChange(e.target.value)}
-        className={`ps-input w-full px-3 py-2.5 text-sm${error ? ' border-destructive' : ''}`}
+        className={`ps-input w-full px-3 py-2.5 text-sm${error ? ' border-destructive' : ''}${readOnly ? ' opacity-60 cursor-not-allowed' : ''}`}
       />
       {error && <p className="text-destructive text-xs mt-1">{error}</p>}
     </label>
@@ -397,7 +400,8 @@ export function PasswordResetRequestPage() {
 export function PasswordResetFormPage() {
   const navigate = useNavigate()
   const { token } = useParams<{ token: string }>()
-  const [email, setEmail] = useState('')
+  const [searchParams] = useSearchParams()
+  const [email, setEmail] = useState(searchParams.get('email') ?? '')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [done, setDone] = useState(false)
@@ -460,6 +464,7 @@ export function PasswordResetFormPage() {
             onChange={setEmail}
             placeholder="you@example.com"
             error={errors.email}
+            readOnly={searchParams.has('email')}
           />
           <Field
             label="New password"

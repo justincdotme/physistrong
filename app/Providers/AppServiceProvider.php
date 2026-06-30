@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Notifications\WelcomeNotification;
 use DateInterval;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -23,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Registered::class, function (Registered $event): void {
             $event->user->notify(new WelcomeNotification());
+        });
+
+        ResetPassword::createUrlUsing(function (mixed $notifiable, string $token): string {
+            return config('app.url').'/password/reset/'.$token.'?email='.urlencode($notifiable->getEmailForPasswordReset());
         });
     }
 }

@@ -90,4 +90,19 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/v1/password/forgot', ['email' => 'user@example.com'])
             ->assertStatus(429);
     }
+
+    public function test_reset_link_contains_email_and_spa_path(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create(['email' => 'user@example.com']);
+
+        $this->postJson('/api/v1/password/forgot', ['email' => 'user@example.com']);
+
+        Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use ($user): bool {
+            $url = $notification->toMail($user)->actionUrl;
+
+            return str_contains($url, '/password/reset/')
+                && str_contains($url, 'email=user%40example.com');
+        });
+    }
 }
