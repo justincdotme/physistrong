@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { ProgressLineChart, VolumeBarChart } from '@/components/app/charts'
 import { useExerciseProgress } from '@/hooks/use-exercise-progress'
-import { useApp } from '@/lib/use-app'
+import { useAuth } from '@/hooks/use-auth'
 import { unitLabel } from '@/lib/units'
 import { getExercise } from '@/api/exercises'
 import { formatDuration } from '@/lib/formatters'
@@ -27,9 +27,9 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
     enabled: !!exerciseId,
   })
   const { data, isLoading } = useExerciseProgress(exerciseId, range)
-  const { user } = useApp()
+  const { user } = useAuth()
 
-  if (!ex || isLoading) return null
+  if (!ex || !user || isLoading) return null
 
   const isResistance = ex.type === 'resistance'
   const isHold = ex.type === 'timed_hold'

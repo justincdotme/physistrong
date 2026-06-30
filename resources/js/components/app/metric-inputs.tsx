@@ -1,6 +1,6 @@
 import { Trophy, Plus, ChevronDown } from 'lucide-react'
 import type { WorkoutEntry, Exercise } from '@/api/types'
-import { useApp } from '@/lib/use-app'
+import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { unitLabel } from '@/lib/units'
 import { Badge } from '@/components/ui/badge'
@@ -77,7 +77,8 @@ interface EntryMetricsProps {
 }
 
 export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMetricsProps) {
-  const { user } = useApp()
+  const { user } = useAuth()
+  if (!user) return null
   const unit = unitLabel(user.measurementSystem, 'weight')
 
   if (exercise.type === 'resistance') {
