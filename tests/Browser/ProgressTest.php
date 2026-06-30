@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Models\Exercise;
+use App\Models\LogLoadMetric;
+use App\Models\LogRepMetric;
 use App\Models\User;
+use App\Models\Workout;
+use App\Models\WorkoutEntry;
 use Laravel\Dusk\Browser;
 
 it('renders the progress page at desktop width', function () {
@@ -44,5 +49,130 @@ it('renders the progress page at phone width', function () {
             ->assertVisible('@progress-page')
             ->assertVisible('@exercise-picker')
             ->screenshot('progress-phone');
+    });
+});
+
+it('defaults to the first exercise with logged data', function () {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::where('name', 'Barbell Squat')->whereNull('user_id')->first();
+
+    $workout = Workout::create([
+        'user_id' => $user->id,
+        'name' => 'Test Workout',
+        'date' => '2026-06-15',
+    ]);
+    $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
+
+    $entry = WorkoutEntry::create([
+        'workout_id' => $workout->id,
+        'exercise_id' => $exercise->id,
+        'set_order' => 0,
+    ]);
+    LogLoadMetric::create(['entry_id' => $entry->id, 'actual_weight' => 135, 'bodyweight_only' => false]);
+    LogRepMetric::create(['entry_id' => $entry->id, 'actual_reps' => 5]);
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/progress')
+            ->waitFor('@progress-page')
+            ->waitFor('@exercise-picker-trigger')
+            ->pause(1000)
+            ->assertSeeIn('@exercise-picker-trigger', 'Barbell Squat')
+            ->screenshot('progress-smart-default');
+    });
+});
+
+it('shows "no data yet" for exercises without logged entries', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/progress')
+            ->waitFor('@progress-page')
+            ->click('@exercise-picker-trigger')
+            ->waitFor('@exercise-search-input')
+            ->assertSee('no data yet')
+            ->screenshot('progress-no-data-indicator');
+    });
+});
+
+it('filters exercises when typing in the search field', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/progress')
+            ->waitFor('@progress-page')
+            ->click('@exercise-picker-trigger')
+            ->waitFor('@exercise-search-input')
+            ->type('@exercise-search-input', 'Barbell Squat')
+            ->pause(300)
+            ->assertSee('Barbell Squat')
+            ->assertDontSee('Plank')
+            ->screenshot('progress-search-filter');
+    });
+});
+
+it('updates the chart when selecting an exercise from search', function () {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::where('name', 'Dumbbell Bench Press')->whereNull('user_id')->first();
+    $workout = Workout::create([
+        'user_id' => $user->id,
+        'name' => 'Bench Day',
+        'date' => '2026-06-20',
+    ]);
+    $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
+    $entry = WorkoutEntry::create([
+        'workout_id' => $workout->id,
+        'exercise_id' => $exercise->id,
+        'set_order' => 0,
+    ]);
+    LogLoadMetric::create(['entry_id' => $entry->id, 'actual_weight' => 185, 'bodyweight_only' => false]);
+    LogRepMetric::create(['entry_id' => $entry->id, 'actual_reps' => 8]);
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/progress')
+            ->waitFor('@progress-page')
+            ->waitFor('@exercise-picker-trigger')
+            ->pause(1000)
+            ->click('@exercise-picker-trigger')
+            ->waitFor('@exercise-search-input')
+            ->type('@exercise-search-input', 'Dumbbell Bench Press')
+            ->pause(300)
+            ->press('Dumbbell Bench Press')
+            ->pause(500)
+            ->assertSeeIn('@exercise-picker-trigger', 'Dumbbell Bench Press')
+            ->waitFor('@progress-chart')
+            ->screenshot('progress-search-select');
+    });
+});
+
+it('shows the time range label on the progress page', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/progress')
+            ->waitFor('@progress-page')
+            ->waitFor('@time-range-selector')
+            ->assertSeeIn('@time-range-selector', 'TIME RANGE')
+            ->screenshot('progress-time-range-label');
+    });
+});
+
+it('shows the time range label on the exercise progress page', function () {
+    $user = User::factory()->create();
+    $exercise = Exercise::where('name', 'Barbell Squat')->whereNull('user_id')->first();
+
+    $this->browse(function (Browser $browser) use ($user, $exercise) {
+        $this->loginAs($browser, $user);
+        $browser->visit("/exercises/{$exercise->id}/progress")
+            ->waitFor('@exercise-progress-page')
+            ->waitFor('@time-range-selector')
+            ->assertSeeIn('@time-range-selector', 'TIME RANGE')
+            ->screenshot('exercise-progress-time-range-label');
     });
 });

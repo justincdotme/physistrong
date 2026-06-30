@@ -61,10 +61,19 @@ class ExerciseController extends Controller
             ->groupBy('exercise_id')
             ->pluck('cnt', 'exercise_id');
 
-        $exercises->each(function (Exercise $exercise) use ($workoutUsage, $templateUsage) {
+        $exercisesWithEntries = DB::table('workout_entries')
+            ->whereIn('exercise_id', $exerciseIds)
+            ->distinct()
+            ->pluck('exercise_id');
+
+        $exercises->each(function (Exercise $exercise) use ($workoutUsage, $templateUsage, $exercisesWithEntries) {
             $exercise->setAttribute(
                 'usage_count',
                 ($workoutUsage[$exercise->id] ?? 0) + ($templateUsage[$exercise->id] ?? 0)
+            );
+            $exercise->setAttribute(
+                'has_logged_data',
+                $exercisesWithEntries->contains($exercise->id)
             );
         });
 

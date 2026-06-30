@@ -26,6 +26,7 @@ export interface Exercise {
   equipmentTypeId: string | null
   notes: string | null
   usageCount: number
+  hasLoggedData: boolean
   bodyweightBase?: boolean
   allowsAddedWeight?: boolean
   bilateral?: boolean

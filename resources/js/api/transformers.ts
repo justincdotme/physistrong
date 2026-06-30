@@ -56,6 +56,7 @@ export interface RawExercise {
   user_id: number | null
   equipment_type_id: number | null
   usage_count: number
+  has_logged_data: boolean
   type_attributes: Record<string, unknown> | null
   created_at: string
   updated_at: string
@@ -70,6 +71,7 @@ export function toExercise(raw: RawExercise): Exercise {
     equipmentTypeId: raw.equipment_type_id !== null ? String(raw.equipment_type_id) : null,
     notes: raw.notes,
     usageCount: raw.usage_count ?? 0,
+    hasLoggedData: raw.has_logged_data ?? false,
   }
 
   const attrs = raw.type_attributes

@@ -162,6 +162,7 @@ export function ExerciseProgressPage() {
         subtitle="Progress"
       />
       <div className="mb-5" dusk="time-range-selector">
+        <span className="label-caps text-text-secondary block mb-1.5">Time Range</span>
         <SegmentedControl
           size="sm"
           value={range}

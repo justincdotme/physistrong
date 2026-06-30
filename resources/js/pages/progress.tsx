@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { ProgressPanel } from './exercise-progress'
 import { listExercises } from '@/api/exercises'
 import type { TimeRange } from '@/api/types'
@@ -33,8 +33,14 @@ export function ProgressPage() {
   const [range, setRange] = useState<TimeRange>('6M')
   const [exId, setExId] = useState('')
 
-  const visible = exercises.filter(e => type === 'all' || e.type === type)
-  const selected = exId && visible.find(e => e.id === exId) ? exId : (visible[0]?.id ?? '')
+  const visible = exercises
+    .filter(e => type === 'all' || e.type === type)
+    .sort((a, b) => {
+      if (a.hasLoggedData !== b.hasLoggedData) return a.hasLoggedData ? -1 : 1
+      return a.name.localeCompare(b.name)
+    })
+  const defaultId = visible.find(e => e.hasLoggedData)?.id ?? visible[0]?.id ?? ''
+  const selected = exId && visible.find(e => e.id === exId) ? exId : defaultId
 
   return (
     <div dusk="progress-page">
@@ -44,30 +50,24 @@ export function ProgressPage() {
         <SegmentedControl size="sm" value={type} onChange={v => setType(v)} options={TYPES} />
       </div>
 
-      <label className="block mb-5" dusk="exercise-picker">
+      <div className="mb-5" dusk="exercise-picker">
         <span className="label-caps text-text-secondary block mb-1.5">Exercise</span>
-        <div className="relative">
-          <select
-            value={selected}
-            onChange={e => setExId(e.target.value)}
-            className="ps-input w-full pl-3 pr-10 py-3 text-sm font-semibold appearance-none cursor-pointer"
-          >
-            {visible.map(e => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            size={18}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
-          />
-        </div>
-      </label>
+        <SearchableSelect
+          options={visible.map(e => ({
+            value: e.id,
+            label: e.name,
+            suffix: e.hasLoggedData ? undefined : 'no data yet',
+          }))}
+          value={selected}
+          onChange={v => setExId(v)}
+          placeholder="Select an exercise..."
+        />
+      </div>
 
       {selected ? (
         <>
-          <div className="mb-5">
+          <div className="mb-5" dusk="time-range-selector">
+            <span className="label-caps text-text-secondary block mb-1.5">Time Range</span>
             <SegmentedControl
               size="sm"
               value={range}

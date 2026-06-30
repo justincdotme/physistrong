@@ -27,6 +27,7 @@ class ExerciseResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'usage_count' => $this->getAttribute('usage_count') ?? 0,
+            'has_logged_data' => (bool) ($this->getAttribute('has_logged_data') ?? false),
         ];
     }
 
