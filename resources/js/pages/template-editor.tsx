@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Trash2, Plus } from 'lucide-react'
+import { Trash2, Plus, Route, Check } from 'lucide-react'
 import type { WorkoutTemplate, TemplateExercise, TemplateEntryGroup } from '@/api/types'
 import {
   getTemplate,
@@ -256,7 +256,7 @@ export function TemplateEditorPage() {
           <Button
             size="sm"
             variant="secondary"
-            icon={<span>⊕</span>}
+            icon={<Route size={16} />}
             onClick={() => setSelectMode(true)}
           >
             Make a Superset
@@ -280,12 +280,14 @@ export function TemplateEditorPage() {
                 color: 'var(--color-primary)',
               }}
             >
-              ✓
+              <Check size={18} />
             </span>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-sm">Build a superset or circuit</div>
               <div className="text-[13px] text-text-secondary mt-0.5">
-                Tap 2 or more exercises to group them.
+                {
+                  "Tap 2 or more exercises below to combine them. You'll set rounds and rest in the next step."
+                }
               </div>
             </div>
           </div>
@@ -352,7 +354,7 @@ export function TemplateEditorPage() {
                       </div>
                       <button
                         onClick={() => ungroup(block)}
-                        className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-8 rounded-lg hover:bg-surface-muted"
+                        className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
                       >
                         Ungroup
                       </button>
@@ -410,7 +412,7 @@ export function TemplateEditorPage() {
                           : { borderColor: 'var(--color-border-strong)' }
                       }
                     >
-                      {isSelected && '✓'}
+                      {isSelected && <Check size={16} />}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="font-semibold text-sm truncate">{te.name}</div>

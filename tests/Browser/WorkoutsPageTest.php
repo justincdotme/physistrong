@@ -140,19 +140,32 @@ it('has view progress button', function () {
     });
 });
 
-it('has create template button', function () {
+it('has a templates button', function () {
     $user = User::factory()->create();
 
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
-            ->assertSee('Create Template')
-            ->screenshot('workouts-create-template-btn');
+            ->assertSee('Templates')
+            ->screenshot('workouts-templates-btn');
     });
 });
 
-it('shows templates section when templates exist', function () {
+it('navigates to the templates page from the templates button', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+        $browser->visit('/workouts')
+            ->waitFor('@workouts-page')
+            ->click('@templates-link')
+            ->waitForLocation('/templates')
+            ->assertPathIs('/templates');
+    });
+});
+
+it('does not list templates on the workouts page', function () {
     $user = User::factory()->create();
     WorkoutTemplate::factory()->create([
         'user_id' => $user->id,
@@ -162,43 +175,10 @@ it('shows templates section when templates exist', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
-            ->waitFor('@template-section')
-            ->assertSee('Templates')
-            ->assertSee('Upper Body')
-            ->screenshot('workouts-templates-section');
-    });
-});
-
-it('hides templates section when no templates exist', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
             ->waitFor('@workouts-page')
             ->assertMissing('@template-section')
-            ->screenshot('workouts-no-templates');
-    });
-});
-
-it('displays multiple templates in carousel', function () {
-    $user = User::factory()->create();
-    WorkoutTemplate::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'Push Day',
-    ]);
-    WorkoutTemplate::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'Pull Day',
-    ]);
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@template-section')
-            ->assertSee('Push Day')
-            ->assertSee('Pull Day')
-            ->screenshot('workouts-multiple-templates');
+            ->assertDontSee('Upper Body')
+            ->screenshot('workouts-no-template-list');
     });
 });
 
@@ -224,99 +204,6 @@ it('navigates to workout detail when clicking a workout card', function () {
             ->click('@workout-history .cursor-pointer:first-child')
             ->waitForLocation("/workouts/{$workout->id}")
             ->assertPathIs("/workouts/{$workout->id}");
-    });
-});
-
-it('navigates to template detail when clicking a template', function () {
-    $user = User::factory()->create();
-    $template = WorkoutTemplate::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'Test Template',
-    ]);
-
-    $this->browse(function (Browser $browser) use ($user, $template) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@template-section')
-            ->click('@template-section .cursor-pointer:first-child')
-            ->waitForLocation("/templates/{$template->id}")
-            ->assertPathIs("/templates/{$template->id}");
-    });
-});
-
-it('opens create template sheet when clicking create template button', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@workouts-page')
-            ->press('Create Template')
-            ->waitForText('Create Template')
-            ->assertSeeIn('h3', 'Create Template')
-            ->screenshot('workouts-template-sheet-open');
-    });
-});
-
-it('closes template sheet when clicking outside', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@workouts-page')
-            ->press('Create Template')
-            ->waitForText('Create Template');
-
-        $browser->script("document.querySelector('.ps-backdrop').click()");
-
-        $browser->pause(300)
-            ->assertMissing('.ps-sheet')
-            ->screenshot('workouts-template-sheet-closed');
-    });
-});
-
-it('creates a template with name', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@workouts-page')
-            ->press('Create Template')
-            ->waitForText('Create Template')
-            ->type('#template-name-input', 'New Template')
-            ->pause(500)
-            ->press('Create')
-            ->pause(1000);
-
-        $path = $browser->driver->getCurrentURL();
-        expect(str_contains($path, '/templates/'))->toBeTrue();
-
-        $browser->screenshot('workouts-template-created');
-    });
-
-    $this->assertDatabaseHas('workout_templates', [
-        'user_id' => $user->id,
-        'name' => 'New Template',
-    ]);
-});
-
-it('disables create template button when name is empty', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $this->loginAs($browser, $user);
-        $browser->visit('/workouts')
-            ->waitFor('@workouts-page')
-            ->press('Create Template')
-            ->waitForText('Create Template')
-            ->waitFor('#template-name-input')
-            ->assertPresent('button:disabled')
-            ->type('#template-name-input', 'Test')
-            ->pause(300)
-            ->assertMissing('button:disabled')
-            ->screenshot('workouts-template-button-states');
     });
 });
 

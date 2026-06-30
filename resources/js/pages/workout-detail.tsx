@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query'
-import { Trash2, Flame, Target, Plus } from 'lucide-react'
+import { Trash2, Flame, Target, Plus, Calendar, Route, Check } from 'lucide-react'
 import type { WorkoutEntry, EntryGroup, Exercise, EquipmentType, Workout } from '@/api/types'
 import { listExercises } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
@@ -584,7 +584,7 @@ export function WorkoutDetailPage() {
       <div className="ps-card p-4 mb-5">
         <div className="flex items-center justify-between mb-3">
           <label className="flex items-center gap-2 text-sm text-text-secondary">
-            <span>📅</span>
+            <Calendar size={16} />
             <input
               type="date"
               value={workout.date}
@@ -618,7 +618,7 @@ export function WorkoutDetailPage() {
           <Button
             size="sm"
             variant="secondary"
-            icon={<span>⊕</span>}
+            icon={<Route size={16} />}
             onClick={() => setSelectMode(true)}
           >
             Make a Superset
@@ -642,13 +642,14 @@ export function WorkoutDetailPage() {
                 color: 'var(--color-primary)',
               }}
             >
-              ✓
+              <Check size={18} />
             </span>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-sm">Build a superset or circuit</div>
               <div className="text-[13px] text-text-secondary mt-0.5">
-                Tap 2 or more exercises below to combine them. You will set rounds and rest in the
-                next step.
+                {
+                  "Tap 2 or more exercises below to combine them. You'll set rounds and rest in the next step."
+                }
               </div>
             </div>
           </div>
@@ -730,7 +731,7 @@ export function WorkoutDetailPage() {
                       {block.gid && (
                         <button
                           onClick={() => ungroupMutation.mutate(block.gid as string)}
-                          className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-8 rounded-lg hover:bg-surface-muted"
+                          className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
                         >
                           Ungroup
                         </button>
@@ -747,7 +748,7 @@ export function WorkoutDetailPage() {
                               style={{ background: 'var(--color-border)' }}
                             />
                             {completed.includes(r) && (
-                              <span style={{ color: 'var(--color-success)' }}>✓</span>
+                              <Check size={14} style={{ color: 'var(--color-success)' }} />
                             )}
                           </div>
                           <div className="flex flex-col gap-3">
@@ -813,7 +814,7 @@ export function WorkoutDetailPage() {
                           : { borderColor: 'var(--color-border-strong)' }
                       }
                     >
-                      {isSelected && '✓'}
+                      {isSelected && <Check size={16} />}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="font-semibold text-base truncate">{ex.name}</div>

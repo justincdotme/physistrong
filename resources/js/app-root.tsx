@@ -12,6 +12,7 @@ import {
 } from '@/pages/auth'
 import { WorkoutsPage } from '@/pages/workouts'
 import { WorkoutDetailPage } from '@/pages/workout-detail'
+import { TemplatesPage } from '@/pages/templates'
 import { TemplateEditorPage } from '@/pages/template-editor'
 import { ExercisesPage } from '@/pages/exercises'
 import { ExerciseDetailPage } from '@/pages/exercise-detail'
@@ -75,6 +76,7 @@ export function AppRoot() {
               >
                 <Route path="workouts" element={<WorkoutsPage />} />
                 <Route path="workouts/:id" element={<WorkoutDetailPage />} />
+                <Route path="templates" element={<TemplatesPage />} />
                 <Route path="templates/:id" element={<TemplateEditorPage />} />
                 <Route path="exercises" element={<ExercisesPage />} />
                 <Route path="exercises/:id" element={<ExerciseDetailPage />} />
