@@ -65,6 +65,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         notes: null,
         equipmentTypeId: null,
         usageCount: 0,
+        hasLoggedData: false,
         ...ex,
       }
       setExercises(xs => [full, ...xs])
