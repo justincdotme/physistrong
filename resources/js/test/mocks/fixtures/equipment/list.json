@@ -1,0 +1,211 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "barbell",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 179
+    },
+    {
+      "id": 12,
+      "name": "bench",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 3
+    },
+    {
+      "id": 3,
+      "name": "cable machine",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 81
+    },
+    {
+      "id": 19,
+      "name": "Capture Test Equipment",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 0
+    },
+    {
+      "id": 20,
+      "name": "Capture Test Equipment 1782864710381",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 0
+    },
+    {
+      "id": 21,
+      "name": "Capture Test Equipment 1782864734455",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 2
+    },
+    {
+      "id": 22,
+      "name": "Capture Test Equipment 1782864760486",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 4
+    },
+    {
+      "id": 23,
+      "name": "Capture Test Equipment 1782864843578",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 4
+    },
+    {
+      "id": 24,
+      "name": "Capture Test Equipment 1782864860106",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 4
+    },
+    {
+      "id": 2,
+      "name": "dumbbell",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 123
+    },
+    {
+      "id": 16,
+      "name": "elliptical",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1
+    },
+    {
+      "id": 14,
+      "name": "exercise ball",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 12
+    },
+    {
+      "id": 15,
+      "name": "foam roller",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 11
+    },
+    {
+      "id": 9,
+      "name": "kettlebell",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 53
+    },
+    {
+      "id": 4,
+      "name": "lever machine",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 39
+    },
+    {
+      "id": 13,
+      "name": "medicine ball",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 17
+    },
+    {
+      "id": 11,
+      "name": "pull-up bar",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 9
+    },
+    {
+      "id": 10,
+      "name": "resistance band",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 23
+    },
+    {
+      "id": 8,
+      "name": "rowing machine",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1
+    },
+    {
+      "id": 5,
+      "name": "smith machine",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 20
+    },
+    {
+      "id": 17,
+      "name": "stair climber",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 2
+    },
+    {
+      "id": 7,
+      "name": "stationary bike",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 2
+    },
+    {
+      "id": 6,
+      "name": "treadmill",
+      "is_system": true,
+      "user_id": null,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 4
+    }
+  ]
+}

@@ -22,5 +22,5 @@
     }
   },
   "include": ["resources/js", "resources/js/dusk.d.ts"],
-  "types": ["vite/client"]
+  "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
 }

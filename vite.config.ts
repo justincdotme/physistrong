@@ -25,5 +25,10 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./resources/js/test/setup.ts'],
     include: ['resources/js/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      exclude: ['resources/js/test/**', '**/*.d.ts', '**/*.config.*'],
+    },
   },
 })

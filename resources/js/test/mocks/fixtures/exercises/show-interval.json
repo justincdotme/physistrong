@@ -1,0 +1,28 @@
+{
+  "data": {
+    "id": 898,
+    "name": "Capture Test Interval 1782864880612",
+    "type": "interval",
+    "notes": null,
+    "user_id": 3,
+    "equipment_type_id": 25,
+    "equipment_type": {
+      "id": 25,
+      "name": "Capture Test Equipment 1782864880604",
+      "is_system": false,
+      "user_id": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 0
+    },
+    "type_attributes": {
+      "default_work_seconds": 30,
+      "default_rest_seconds": 20,
+      "default_rounds": 4
+    },
+    "created_at": "2026-01-01T00:00:00.000000Z",
+    "updated_at": "2026-01-01T00:00:00.000000Z",
+    "usage_count": 0,
+    "has_logged_data": false
+  }
+}

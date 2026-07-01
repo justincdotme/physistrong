@@ -1,0 +1,83 @@
+{
+  "data": {
+    "id": 28,
+    "name": "Capture Test Workout",
+    "date": "2026-06-15",
+    "exhaustion": null,
+    "soreness": null,
+    "exercises": [],
+    "groups": [],
+    "entries": [
+      {
+        "id": 15,
+        "workout_id": 28,
+        "exercise_id": 895,
+        "set_order": 1,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": "First set",
+        "exercise": {
+          "id": 895,
+          "name": "Capture Test Resistance 1782864880612",
+          "type": "resistance"
+        },
+        "metrics": [],
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 16,
+        "workout_id": 28,
+        "exercise_id": 895,
+        "set_order": 2,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": "Second set",
+        "exercise": {
+          "id": 895,
+          "name": "Capture Test Resistance 1782864880612",
+          "type": "resistance"
+        },
+        "metrics": [],
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 17,
+        "workout_id": 28,
+        "exercise_id": 896,
+        "set_order": 3,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 896,
+          "name": "Capture Test Hold 1782864880612",
+          "type": "timed_hold"
+        },
+        "metrics": [],
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 18,
+        "workout_id": 28,
+        "exercise_id": 897,
+        "set_order": 4,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 897,
+          "name": "Capture Test Distance 1782864880612",
+          "type": "distance"
+        },
+        "metrics": [],
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      }
+    ],
+    "created_at": "2026-01-01T00:00:00.000000Z",
+    "updated_at": "2026-01-01T00:00:00.000000Z"
+  }
+}

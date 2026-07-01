@@ -1,0 +1,56 @@
+{
+  "data": {
+    "exercise_id": 895,
+    "exercise_type": "resistance",
+    "range": "all",
+    "primary_metric": "weight",
+    "data_points": [
+      {
+        "entry_id": 28,
+        "date": "2026-04-01",
+        "value": 95,
+        "is_pr": true
+      },
+      {
+        "entry_id": 29,
+        "date": "2026-04-15",
+        "value": 100,
+        "is_pr": true
+      },
+      {
+        "entry_id": 30,
+        "date": "2026-05-01",
+        "value": 105,
+        "is_pr": true
+      },
+      {
+        "entry_id": 31,
+        "date": "2026-05-15",
+        "value": 102,
+        "is_pr": false
+      }
+    ],
+    "volume": [
+      {
+        "workout_id": 36,
+        "date": "2026-04-01",
+        "total_volume": 950
+      },
+      {
+        "workout_id": 37,
+        "date": "2026-04-15",
+        "total_volume": 1000
+      },
+      {
+        "workout_id": 38,
+        "date": "2026-05-01",
+        "total_volume": 840
+      },
+      {
+        "workout_id": 39,
+        "date": "2026-05-15",
+        "total_volume": 612
+      }
+    ]
+  }
+}
