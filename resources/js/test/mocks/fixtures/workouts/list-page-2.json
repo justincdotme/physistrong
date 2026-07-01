@@ -1,0 +1,177 @@
+{
+  "data": [
+    {
+      "id": 18,
+      "name": "Throwaway 10 1782864860716",
+      "date": "2026-01-12",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 17,
+      "name": "Throwaway 9 1782864860707",
+      "date": "2026-01-11",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 16,
+      "name": "Throwaway 8 1782864860698",
+      "date": "2026-01-10",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 15,
+      "name": "Throwaway 7 1782864860689",
+      "date": "2026-01-09",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 14,
+      "name": "Throwaway 6 1782864860681",
+      "date": "2026-01-08",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 13,
+      "name": "Throwaway 5 1782864860672",
+      "date": "2026-01-07",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 12,
+      "name": "Throwaway 4 1782864860663",
+      "date": "2026-01-06",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 11,
+      "name": "Throwaway 3 1782864860654",
+      "date": "2026-01-05",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 10,
+      "name": "Throwaway 2 1782864860645",
+      "date": "2026-01-04",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 9,
+      "name": "Throwaway 1 1782864860636",
+      "date": "2026-01-03",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 8,
+      "name": "Throwaway 0 1782864860627",
+      "date": "2026-01-02",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 0,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    }
+  ],
+  "links": {
+    "first": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+    "last": "https://physistrong.justinc.srv/api/v1/workouts?page=2",
+    "prev": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+    "next": null
+  },
+  "meta": {
+    "current_page": 2,
+    "from": 16,
+    "last_page": 2,
+    "links": [
+      {
+        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+        "label": "&laquo; Previous",
+        "page": 1,
+        "active": false
+      },
+      {
+        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+        "label": "1",
+        "page": 1,
+        "active": false
+      },
+      {
+        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=2",
+        "label": "2",
+        "page": 2,
+        "active": true
+      },
+      {
+        "url": null,
+        "label": "Next &raquo;",
+        "page": null,
+        "active": false
+      }
+    ],
+    "path": "https://physistrong.justinc.srv/api/v1/workouts",
+    "per_page": 15,
+    "to": 26,
+    "total": 26
+  }
+}

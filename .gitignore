@@ -23,6 +23,7 @@ Thumbs.db
 
 # Build output
 /public/build
+/coverage
 
 # Docker bind-mounted data and generated TLS certs
 /docker/data

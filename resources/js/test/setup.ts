@@ -1,9 +1,20 @@
-import { afterEach, vi } from 'vitest'
+import { beforeAll, afterAll, afterEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom'
+import { server } from './server'
+
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' })
+})
 
 afterEach(() => {
   cleanup()
+  localStorage.clear()
+  server.resetHandlers()
+})
+
+afterAll(() => {
+  server.close()
 })
 
 Object.defineProperty(window, 'matchMedia', {
@@ -19,3 +30,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 })
+
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {}
+}

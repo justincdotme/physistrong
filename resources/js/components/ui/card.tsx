@@ -8,18 +8,27 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, onClick, children, ...props }, ref) => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onClick?.()
+      }
+    }
+
     if (onClick) {
       return (
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={onClick}
+          onKeyDown={handleKeyDown}
           className={cn(
             'ps-card text-left w-full cursor-pointer transition-transform active:scale-[.995]',
             className
           )}
         >
           {children}
-        </button>
+        </div>
       )
     }
 

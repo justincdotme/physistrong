@@ -1,0 +1,23 @@
+{
+  "data": {
+    "exercise_id": 895,
+    "exercise_type": "resistance",
+    "records": {
+      "weight": {
+        "value": 105,
+        "entry_id": 30,
+        "date": "2026-05-01"
+      },
+      "reps": {
+        "value": 10,
+        "entry_id": 28,
+        "date": "2026-04-01"
+      },
+      "volume": {
+        "value": 1000,
+        "entry_id": 29,
+        "date": "2026-04-15"
+      }
+    }
+  }
+}
