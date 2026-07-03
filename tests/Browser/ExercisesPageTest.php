@@ -75,8 +75,8 @@ it('navigates to exercise detail page', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')
             ->assertVisible('@exercise-type')
@@ -91,8 +91,8 @@ it('exercise detail displays at desktop width', function () {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')
             ->assertVisible('@exercise-type')
@@ -108,8 +108,8 @@ it('exercise detail displays at tablet width', function () {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')
             ->assertVisible('@exercise-type')
@@ -124,8 +124,8 @@ it('exercise detail displays at phone width', function () {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')
             ->assertVisible('@exercise-type')
@@ -140,8 +140,8 @@ it('shows progress link on exercise detail', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@progress-link')
             ->assertSee('View Progress');
@@ -154,8 +154,8 @@ it('hides delete button on system exercise', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertMissing('@delete-exercise-btn');
     });
@@ -184,8 +184,8 @@ it('shows system badge on system exercise detail', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
-            ->waitFor('@exercise-list')
-            ->click('@exercise-list')
+            ->waitFor('[dusk="exercise-list"] > *:first-child')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@system-badge')
             ->assertSee('SYSTEM')
@@ -217,7 +217,7 @@ it('disables exercise delete button when exercise is in use', function () {
             ->waitFor('@exercises-page')
             ->type('@exercise-search', 'Test Custom Exercise')
             ->pause(500)
-            ->click('@exercise-list')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@delete-exercise-btn')
             ->assertDisabled('@delete-exercise-btn')
@@ -245,7 +245,7 @@ it('enables exercise delete button when exercise is not in use', function () {
             ->waitFor('@exercises-page')
             ->type('@exercise-search', 'Unused Custom Exercise')
             ->pause(500)
-            ->click('@exercise-list')
+            ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@delete-exercise-btn')
             ->assertEnabled('@delete-exercise-btn')

@@ -1,10 +1,9 @@
-import { api, setToken, clearToken } from './client'
+import { api, markAuthenticated, markUnauthenticated } from './client'
 import { toUser } from './transformers'
 import type { User } from './types'
 
 interface AuthResponse {
   user: User
-  token: string
 }
 
 interface LoginPayload {
@@ -23,24 +22,19 @@ interface RegisterPayload {
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const { data } = await api.post('/login', payload)
-  const user = toUser(data.user)
-  setToken(data.token)
-  return { user, token: data.token }
+  markAuthenticated()
+  return { user: toUser(data.user) }
 }
 
 export async function register(payload: RegisterPayload): Promise<AuthResponse> {
   const { data } = await api.post('/register', payload)
-  const user = toUser(data.user)
-  setToken(data.token)
-  return { user, token: data.token }
+  markAuthenticated()
+  return { user: toUser(data.user) }
 }
 
 export async function logout(): Promise<void> {
-  try {
-    await api.post('/logout')
-  } finally {
-    clearToken()
-  }
+  await api.post('/logout')
+  markUnauthenticated()
 }
 
 export async function forgotPassword(email: string): Promise<void> {

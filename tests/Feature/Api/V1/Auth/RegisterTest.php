@@ -39,15 +39,17 @@ class RegisterTest extends TestCase
         ], $overrides);
     }
 
-    public function test_registers_user_and_returns_token(): void
+    public function test_registers_user_and_sets_the_token_cookie(): void
     {
         $response = $this->postJson('/api/v1/register', $this->validPayload());
 
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'user' => ['id', 'email', 'first_name', 'last_name', 'measurement_system', 'theme'],
-                'token',
-            ]);
+            ])
+            ->assertJsonMissingPath('token');
+
+        $this->assertIssuesAuthTokenCookie($response);
 
         $this->assertDatabaseHas('users', [
             'email' => 'new@example.com',

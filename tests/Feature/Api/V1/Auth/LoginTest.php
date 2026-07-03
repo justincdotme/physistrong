@@ -20,7 +20,7 @@ class LoginTest extends TestCase
         $this->setUpPassport();
     }
 
-    public function test_logs_in_with_valid_credentials(): void
+    public function test_logs_in_with_valid_credentials_and_sets_the_token_cookie(): void
     {
         User::factory()->create([
             'email' => 'user@example.com',
@@ -33,7 +33,10 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonStructure(['user', 'token']);
+            ->assertJsonStructure(['user'])
+            ->assertJsonMissingPath('token');
+
+        $this->assertIssuesAuthTokenCookie($response);
     }
 
     public function test_rejects_wrong_password(): void

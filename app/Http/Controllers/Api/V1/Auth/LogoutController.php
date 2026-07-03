@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\AuthTokenCookie;
 use App\Services\TokenBlacklist;
 use DateTimeInterface;
 use Illuminate\Http\Request;
@@ -29,6 +30,6 @@ class LogoutController extends Controller
             $token->revoke();
         }
 
-        return response()->noContent();
+        return response()->noContent()->withCookie(AuthTokenCookie::expire());
     }
 }

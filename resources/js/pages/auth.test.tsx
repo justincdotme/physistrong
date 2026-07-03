@@ -5,31 +5,28 @@ import { http } from 'msw'
 import { errorEnvelope } from '@/test/mocks/handlers/_helpers'
 import { LoginPage, RegisterPage } from './auth'
 
+const workoutsStub = { path: '/workouts', element: <div>Workouts landing</div> }
+
 describe('LoginPage', () => {
-  it('logs in successfully and sets token in localStorage', async () => {
+  it('logs in successfully and redirects to workouts', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<LoginPage />, { user: null })
+    renderWithProviders(<LoginPage />, {
+      user: null,
+      route: '/login',
+      path: '/login',
+      additionalRoutes: [workoutsStub],
+    })
 
-    const emailInput = screen.getByLabelText('Email')
-    const passwordInput = screen.getByLabelText('Password')
-    const submitButton = screen.getByRole('button', { name: /log in/i })
+    await user.type(screen.getByLabelText('Email'), 'test@example.com')
+    await user.type(screen.getByLabelText('Password'), 'password123')
+    await user.click(screen.getByRole('button', { name: /log in/i }))
 
-    await user.type(emailInput, 'test@example.com')
-    await user.type(passwordInput, 'password123')
-    await user.click(submitButton)
-
-    // Verify token was set in localStorage (setToken is called by login())
-    expect(localStorage.getItem('ps_token')).toBe('test-access-token')
-
-    // Verify no error message is displayed
-    const errorElements = screen.queryAllByText(/something went wrong/i)
-    expect(errorElements).toHaveLength(0)
+    expect(await screen.findByText('Workouts landing')).toBeInTheDocument()
   })
 
   it('displays validation error message when credentials are invalid', async () => {
     const user = userEvent.setup()
 
-    // Override the login handler to return a 422 validation error
     server.use(
       http.post('/api/v1/login', () =>
         errorEnvelope(422, 'The given data was invalid.', {
@@ -38,83 +35,60 @@ describe('LoginPage', () => {
       )
     )
 
-    renderWithProviders(<LoginPage />, { user: null })
+    renderWithProviders(<LoginPage />, {
+      user: null,
+      route: '/login',
+      path: '/login',
+      additionalRoutes: [workoutsStub],
+    })
 
-    const emailInput = screen.getByLabelText('Email')
-    const passwordInput = screen.getByLabelText('Password')
-    const submitButton = screen.getByRole('button', { name: /log in/i })
+    await user.type(screen.getByLabelText('Email'), 'invalid@example.com')
+    await user.type(screen.getByLabelText('Password'), 'wrongpassword')
+    await user.click(screen.getByRole('button', { name: /log in/i }))
 
-    await user.type(emailInput, 'invalid@example.com')
-    await user.type(passwordInput, 'wrongpassword')
-    await user.click(submitButton)
-
-    // Verify error message is displayed
-    const errorMessage = await screen.findByText('These credentials do not match our records.')
-    expect(errorMessage).toBeInTheDocument()
-
-    // Verify token was not set
-    expect(localStorage.getItem('ps_token')).toBeNull()
+    expect(
+      await screen.findByText('These credentials do not match our records.')
+    ).toBeInTheDocument()
+    expect(screen.queryByText('Workouts landing')).not.toBeInTheDocument()
   })
 })
 
 describe('RegisterPage', () => {
-  it('creates account successfully with required fields and sets token in localStorage', async () => {
+  it('creates account successfully with required fields and redirects to workouts', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<RegisterPage />, { user: null })
+    renderWithProviders(<RegisterPage />, {
+      user: null,
+      route: '/register',
+      path: '/register',
+      additionalRoutes: [workoutsStub],
+    })
 
-    const emailInput = screen.getByLabelText('Email')
-    const passwordInput = screen.getByLabelText('Password')
-    const confirmInput = screen.getByLabelText('Confirm')
-    const submitButton = screen.getByRole('button', { name: /create account/i })
+    await user.click(screen.getByRole('tab', { name: /imperial/i }))
+    await user.type(screen.getByLabelText('Email'), 'newuser@example.com')
+    await user.type(screen.getByLabelText('Password'), 'password123')
+    await user.type(screen.getByLabelText('Confirm'), 'password123')
+    await user.click(screen.getByRole('button', { name: /create account/i }))
 
-    // Select measurement system (imperial)
-    const imperialButton = screen.getByRole('tab', { name: /imperial/i })
-    await user.click(imperialButton)
-
-    // Fill in required fields
-    await user.type(emailInput, 'newuser@example.com')
-    await user.type(passwordInput, 'password123')
-    await user.type(confirmInput, 'password123')
-
-    // Submit the form
-    await user.click(submitButton)
-
-    // Verify token was set in localStorage
-    expect(localStorage.getItem('ps_token')).toBe('test-access-token')
-
-    // Verify no error message is displayed
-    const errorElements = screen.queryAllByText(/something went wrong/i)
-    expect(errorElements).toHaveLength(0)
+    expect(await screen.findByText('Workouts landing')).toBeInTheDocument()
   })
 
   it('allows registering with optional first and last name fields', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<RegisterPage />, { user: null })
+    renderWithProviders(<RegisterPage />, {
+      user: null,
+      route: '/register',
+      path: '/register',
+      additionalRoutes: [workoutsStub],
+    })
 
-    const firstNameInput = screen.getByLabelText('First name')
-    const lastNameInput = screen.getByLabelText('Last name')
-    const emailInput = screen.getByLabelText('Email')
-    const passwordInput = screen.getByLabelText('Password')
-    const confirmInput = screen.getByLabelText('Confirm')
-    const metricButton = screen.getByRole('tab', { name: /metric/i })
-    const submitButton = screen.getByRole('button', { name: /create account/i })
+    await user.type(screen.getByLabelText('First name'), 'Justin')
+    await user.type(screen.getByLabelText('Last name'), 'Christenson')
+    await user.type(screen.getByLabelText('Email'), 'justin@example.com')
+    await user.type(screen.getByLabelText('Password'), 'password123')
+    await user.type(screen.getByLabelText('Confirm'), 'password123')
+    await user.click(screen.getByRole('tab', { name: /metric/i }))
+    await user.click(screen.getByRole('button', { name: /create account/i }))
 
-    // Fill in all fields including optional ones
-    await user.type(firstNameInput, 'Justin')
-    await user.type(lastNameInput, 'Christenson')
-    await user.type(emailInput, 'justin@example.com')
-    await user.type(passwordInput, 'password123')
-    await user.type(confirmInput, 'password123')
-    await user.click(metricButton)
-
-    // Submit the form
-    await user.click(submitButton)
-
-    // Verify token was set in localStorage
-    expect(localStorage.getItem('ps_token')).toBe('test-access-token')
-
-    // Verify no error message is displayed
-    const errorElements = screen.queryAllByText(/something went wrong/i)
-    expect(errorElements).toHaveLength(0)
+    expect(await screen.findByText('Workouts landing')).toBeInTheDocument()
   })
 })

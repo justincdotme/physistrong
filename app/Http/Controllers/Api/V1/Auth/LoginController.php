@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
-use App\Http\Resources\Api\V1\UserResource;
+use App\Http\Responses\AuthTokenResponse;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -34,11 +34,6 @@ class LoginController extends Controller
 
         RateLimiter::clear($key);
 
-        $token = $user->createToken('auth');
-
-        return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token->accessToken,
-        ]);
+        return AuthTokenResponse::make($user);
     }
 }

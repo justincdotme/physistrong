@@ -53,8 +53,10 @@ it('logs in with valid credentials and redirects to workouts', function () {
 
 it('redirects unauthenticated user from workouts to login', function () {
     $this->browse(function (Browser $browser) {
+        // The guard redirect now waits on the boot-time auth probe, so give the
+        // first cold page load a bigger budget than Dusk's 5-second default.
         $browser->visit('/workouts')
-            ->waitForLocation('/login')
+            ->waitForLocation('/login', 10)
             ->assertPathIs('/login');
     });
 });
@@ -100,5 +102,25 @@ it('renders the forgot password page', function () {
             ->assertPresent('input[name="email"]')
             ->assertSeeLink('Back to login')
             ->screenshot('auth-forgot-password-desktop');
+    });
+});
+
+it('keeps the auth cookie out of document.cookie and dead after logout', function () {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user) {
+        $this->loginAs($browser, $user);
+
+        // HttpOnly plus the /api/v1 path scope keep the token invisible to scripts.
+        $cookies = (string) $browser->script('return document.cookie')[0];
+        expect($cookies)->not->toContain('ps_token');
+
+        $browser->visit('/profile')
+            ->waitFor('@logout-btn')
+            ->click('@logout-btn')
+            ->waitForLocation('/login')
+            ->visit('/workouts')
+            ->waitForLocation('/login')
+            ->assertPathIs('/login');
     });
 });
