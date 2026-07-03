@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Api\V1;
 
-use App\Enums\DistanceUnit;
 use App\Enums\ExerciseType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -53,7 +52,6 @@ class UpdateExerciseRequest extends FormRequest
                 'type_attributes.target_duration_seconds' => ['nullable', 'integer', 'min:1'],
             ],
             ExerciseType::Distance => [
-                'type_attributes.distance_unit' => [Rule::enum(DistanceUnit::class)],
                 'type_attributes.tracks_elevation' => ['boolean'],
             ],
             ExerciseType::Interval => [

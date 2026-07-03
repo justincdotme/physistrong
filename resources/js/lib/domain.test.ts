@@ -79,7 +79,6 @@ describe('entryHasActual', () => {
         distanceMetric: {
           actualDistance: 5.2,
           targetDistance: null,
-          distanceUnit: 'mi',
           lapCount: null,
           strokeCount: null,
         },
@@ -92,7 +91,6 @@ describe('entryHasActual', () => {
         distanceMetric: {
           actualDistance: null,
           targetDistance: 5,
-          distanceUnit: 'mi',
           lapCount: null,
           strokeCount: null,
         },

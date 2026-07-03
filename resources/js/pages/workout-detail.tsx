@@ -89,11 +89,7 @@ function buildBlocks(entries: WorkoutEntry[], groups: EntryGroup[]): Block[] {
   return blocks
 }
 
-function defaultEntryPayload(
-  ex: Exercise,
-  setOrder: number,
-  distanceUnit: string
-): CreateEntryPayload {
+function defaultEntryPayload(ex: Exercise, setOrder: number): CreateEntryPayload {
   const base: CreateEntryPayload = {
     exercise_id: Number(ex.id),
     set_order: setOrder,
@@ -126,7 +122,6 @@ function defaultEntryPayload(
       distance: {
         target_distance: null,
         actual_distance: null,
-        distance_unit: distanceUnit,
         lap_count: null,
         stroke_count: null,
       },
@@ -320,9 +315,8 @@ export function WorkoutDetailPage() {
   const attachExerciseMutation = useMutation({
     mutationFn: async (ex: Exercise) => {
       await attachExercise(workoutId, ex.id)
-      const du = user?.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
       const nextOrder = workout ? workout.entries.length : 0
-      await createEntry(workoutId, defaultEntryPayload(ex, nextOrder, du))
+      await createEntry(workoutId, defaultEntryPayload(ex, nextOrder))
     },
     onSuccess: () => {
       invalidateWorkout()
@@ -497,7 +491,6 @@ export function WorkoutDetailPage() {
 
   const blocks = buildBlocks(workout.entries, workout.entryGroups)
   const ratio = workoutCompletion(workout)
-  const distanceUnit = user.measurementSystem === 'imperial' ? 'miles' : 'kilometers'
 
   const handleReorderBlocks = (next: Block[]) => {
     const allEntries = next.flatMap(b => b.entries)
@@ -541,7 +534,7 @@ export function WorkoutDetailPage() {
     const ex = exerciseById(exercises, block.exerciseId ?? '')
     if (!ex) return
     const nextOrder = workout.entries.length
-    addSetMutation.mutate(defaultEntryPayload(ex, nextOrder, distanceUnit))
+    addSetMutation.mutate(defaultEntryPayload(ex, nextOrder))
   }
 
   const handleRemoveSet = (entryId: string) => {

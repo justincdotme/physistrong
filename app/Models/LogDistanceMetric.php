@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\DistanceUnit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,7 +16,6 @@ class LogDistanceMetric extends Model
         'entry_id',
         'target_distance',
         'actual_distance',
-        'distance_unit',
         'lap_count',
         'stroke_count',
     ];
@@ -26,7 +24,6 @@ class LogDistanceMetric extends Model
     protected function casts(): array
     {
         return [
-            'distance_unit' => DistanceUnit::class,
             'target_distance' => 'decimal:2',
             'actual_distance' => 'decimal:2',
         ];

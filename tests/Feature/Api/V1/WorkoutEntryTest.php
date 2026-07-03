@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Workout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WorkoutEntryTest extends TestCase
@@ -30,7 +31,7 @@ class WorkoutEntryTest extends TestCase
         $defaults = match ($type) {
             'resistance' => [],
             'timed_hold' => [],
-            'distance' => ['distance_unit' => 'meters'],
+            'distance' => [],
             'interval' => [],
             default => [],
         };
@@ -128,15 +129,36 @@ class WorkoutEntryTest extends TestCase
                 'distance' => [
                     'target_distance' => 5.0,
                     'actual_distance' => 4.8,
-                    'distance_unit' => 'kilometers',
                 ],
             ],
         ]);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.metrics.distance.target_distance', '5.00')
-            ->assertJsonPath('data.metrics.distance.actual_distance', '4.80')
-            ->assertJsonPath('data.metrics.distance.distance_unit', 'kilometers');
+            ->assertJsonPath('data.metrics.distance.actual_distance', '4.80');
+    }
+
+    public function test_ignores_submitted_distance_unit_metric(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'distance', ['name' => 'Row']);
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'metrics' => [
+                'distance' => [
+                    'target_distance' => 5.0,
+                    'distance_unit' => 'kilometers',
+                ],
+            ],
+        ])->assertStatus(201)
+            ->assertJsonPath('data.metrics.distance.target_distance', '5.00')
+            ->assertJsonMissingPath('data.metrics.distance.distance_unit');
     }
 
     public function test_creates_entry_with_interval_metrics(): void
@@ -196,6 +218,98 @@ class WorkoutEntryTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonPath('data.metrics', []);
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function disallowedMetricProvider(): array
+    {
+        return [
+            'resistance rejects interval_header' => ['resistance', 'interval_header'],
+            'resistance rejects distance' => ['resistance', 'distance'],
+            'resistance rejects cardio_settings' => ['resistance', 'cardio_settings'],
+            'timed_hold rejects reps' => ['timed_hold', 'reps'],
+            'timed_hold rejects distance' => ['timed_hold', 'distance'],
+            'distance rejects load' => ['distance', 'load'],
+            'distance rejects reps' => ['distance', 'reps'],
+            'interval rejects load' => ['interval', 'load'],
+            'interval rejects reps' => ['interval', 'reps'],
+        ];
+    }
+
+    #[DataProvider('disallowedMetricProvider')]
+    public function test_store_rejects_metric_not_allowed_for_exercise_type(string $type, string $metricKey): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, $type);
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'metrics' => [$metricKey => []],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors("metrics.{$metricKey}");
+    }
+
+    public function test_store_accepts_optional_metric_for_exercise_type(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Weighted Plank']);
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'metrics' => [
+                'duration' => ['actual_duration_seconds' => 60],
+                'load' => ['actual_weight' => 25.0],
+            ],
+        ])->assertStatus(201)
+            ->assertJsonPath('data.metrics.duration.actual_duration_seconds', 60)
+            ->assertJsonPath('data.metrics.load.actual_weight', '25.00');
+    }
+
+    public function test_store_rejects_unknown_metric_key(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+            'metrics' => ['bogus' => ['value' => 1]],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('metrics.bogus');
+    }
+
+    public function test_update_rejects_metric_not_allowed_for_exercise_type(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/{$entry->id}", [
+            'metrics' => ['interval_header' => ['programmed_rounds' => 4]],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('metrics.interval_header');
     }
 
     public function test_validates_exercise_id_required(): void

@@ -856,7 +856,6 @@
     "type": "distance",
     "equipment": null,
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -865,7 +864,6 @@
     "type": "distance",
     "equipment": "stationary bike",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -2538,7 +2536,6 @@
     "type": "distance",
     "equipment": "elliptical",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -3605,7 +3602,6 @@
     "type": "distance",
     "equipment": "treadmill",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -5424,7 +5420,6 @@
     "type": "distance",
     "equipment": null,
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -5615,7 +5610,6 @@
     "type": "distance",
     "equipment": "stationary bike",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -5912,7 +5906,6 @@
     "type": "distance",
     "equipment": null,
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -5939,7 +5932,6 @@
     "type": "distance",
     "equipment": "rowing machine",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -5956,7 +5948,6 @@
     "type": "distance",
     "equipment": "treadmill",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -6679,7 +6670,6 @@
     "type": "distance",
     "equipment": null,
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -7184,7 +7174,6 @@
     "type": "distance",
     "equipment": "stair climber",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -7653,7 +7642,6 @@
     "type": "distance",
     "equipment": "stair climber",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -7952,7 +7940,6 @@
     "type": "distance",
     "equipment": null,
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },
@@ -8191,7 +8178,6 @@
     "type": "distance",
     "equipment": "treadmill",
     "attributes": {
-      "distance_unit": "miles",
       "tracks_elevation": false
     }
   },

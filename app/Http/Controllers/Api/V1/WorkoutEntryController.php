@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\MetricDimension;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\ReorderRequest;
 use App\Http\Requests\Api\V1\StoreWorkoutEntryRequest;
@@ -130,33 +131,25 @@ class WorkoutEntryController extends Controller
     /** @param array<string, mixed> $metrics */
     private function syncMetrics(WorkoutEntry $entry, array $metrics): void
     {
-        $metricMap = [
-            'load' => 'loadMetric',
-            'reps' => 'repMetric',
-            'duration' => 'durationMetric',
-            'distance' => 'distanceMetric',
-            'cardio_settings' => 'cardioSetting',
-            'interval_header' => 'intervalHeader',
-            'intensity' => 'intensityMetric',
-        ];
+        foreach ($metrics as $key => $values) {
+            $dimension = MetricDimension::tryFrom((string) $key);
 
-        foreach ($metrics as $type => $data) {
-            if (! isset($metricMap[$type])) {
+            if ($dimension === null) {
                 continue;
             }
 
-            $relation = $metricMap[$type];
+            $relation = $dimension->relation();
 
-            if ($type === 'interval_header') {
-                $rounds = $data['rounds'] ?? [];
-                unset($data['rounds']);
-                $header = $entry->$relation()->updateOrCreate([], $data);
+            if ($dimension === MetricDimension::IntervalHeader) {
+                $rounds = $values['rounds'] ?? [];
+                unset($values['rounds']);
+                $header = $entry->$relation()->updateOrCreate([], $values);
                 $header->rounds()->delete();
                 foreach ($rounds as $round) {
                     $header->rounds()->create($round);
                 }
             } else {
-                $entry->$relation()->updateOrCreate([], $data);
+                $entry->$relation()->updateOrCreate([], $values);
             }
         }
     }

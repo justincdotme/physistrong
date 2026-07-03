@@ -87,7 +87,6 @@ export function toExercise(raw: RawExercise): Exercise {
       exercise.targetDurationSeconds = (attrs.target_duration_seconds as number) ?? null
       break
     case 'distance':
-      exercise.distanceUnit = attrs.distance_unit as string
       exercise.tracksElevation = attrs.tracks_elevation as boolean
       break
     case 'interval':
@@ -234,7 +233,6 @@ export function toWorkoutEntry(raw: RawWorkoutEntry): WorkoutEntry {
     entry.distanceMetric = {
       targetDistance: metrics.distance.target_distance as number | null,
       actualDistance: metrics.distance.actual_distance as number | null,
-      distanceUnit: metrics.distance.distance_unit as string,
       lapCount: metrics.distance.lap_count as number | null,
       strokeCount: metrics.distance.stroke_count as number | null,
     }
@@ -394,7 +392,6 @@ export function toMetricsPayload(entry: WorkoutEntry): Record<string, unknown> {
     payload.distance = {
       target_distance: entry.distanceMetric.targetDistance,
       actual_distance: entry.distanceMetric.actualDistance,
-      distance_unit: entry.distanceMetric.distanceUnit,
       lap_count: entry.distanceMetric.lapCount,
       stroke_count: entry.distanceMetric.strokeCount,
     }

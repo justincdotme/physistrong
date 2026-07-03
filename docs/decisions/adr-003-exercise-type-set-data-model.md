@@ -3,6 +3,10 @@
 ## Status
 Accepted
 
+The `exercise_distance.distance_unit` column is superseded by
+[ADR-014](adr-014-unitless-distance-values.md); the column was dropped
+on 2026-07-03.
+
 ## Date
 2026-06-27
 

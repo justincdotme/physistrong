@@ -31,7 +31,7 @@ class WorkoutCopyTest extends TestCase
         $defaults = match ($type) {
             'resistance' => [],
             'timed_hold' => [],
-            'distance' => ['distance_unit' => 'meters'],
+            'distance' => [],
             'interval' => [],
             default => [],
         };

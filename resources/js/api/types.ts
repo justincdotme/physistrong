@@ -31,7 +31,6 @@ export interface Exercise {
   allowsAddedWeight?: boolean
   bilateral?: boolean
   targetDurationSeconds?: number | null
-  distanceUnit?: string
   tracksElevation?: boolean
   defaultWorkSeconds?: number | null
   defaultRestSeconds?: number | null
@@ -59,7 +58,6 @@ export interface DurationMetric {
 export interface DistanceMetric {
   targetDistance: number | null
   actualDistance: number | null
-  distanceUnit: string
   lapCount: number | null
   strokeCount: number | null
 }
