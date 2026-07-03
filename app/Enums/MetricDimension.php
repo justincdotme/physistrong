@@ -102,4 +102,18 @@ enum MetricDimension: string
             self::IntervalHeader => ['programmed_rounds', 'target_work_seconds', 'target_rest_seconds'],
         };
     }
+
+    /** @return list<string> */
+    public function apiColumns(): array
+    {
+        return match ($this) {
+            self::Load => ['target_weight', 'actual_weight', 'bodyweight_only'],
+            self::Reps => ['target_reps', 'actual_reps', 'to_failure', 'failure_rep'],
+            self::Duration => ['target_duration_seconds', 'actual_duration_seconds'],
+            self::Distance => ['target_distance', 'actual_distance', 'lap_count', 'stroke_count'],
+            self::CardioSettings => ['resistance_level', 'incline', 'speed', 'cadence'],
+            self::Intensity => ['rpe', 'avg_hr', 'max_hr'],
+            self::IntervalHeader => ['programmed_rounds', 'completed_rounds', 'target_work_seconds', 'target_rest_seconds'],
+        };
+    }
 }

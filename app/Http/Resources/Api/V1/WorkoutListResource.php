@@ -20,11 +20,7 @@ class WorkoutListResource extends JsonResource
             'date' => $this->date->toDateString(),
             'exhaustion' => $this->exhaustion,
             'soreness' => $this->soreness,
-            'exercises' => $this->whenLoaded('exercises', fn () => $this->exercises->map(fn ($exercise) => [
-                'id' => $exercise->id,
-                'name' => $exercise->name,
-                'type' => $exercise->type,
-            ])),
+            'exercises' => $this->whenLoaded('exercises', fn () => ExerciseSummaryResource::collection($this->exercises)),
             'entries_count' => $this->entries_count ?? 0,
             'completed_entries_count' => $this->completed_entries_count ?? 0,
             'created_at' => $this->created_at,

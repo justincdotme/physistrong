@@ -20,19 +20,6 @@ class WorkoutController extends Controller
 {
     use AuthorizesRequests;
 
-    private const SHOW_EAGER_LOAD = [
-        'exercises',
-        'groups',
-        'entries.exercise',
-        'entries.loadMetric',
-        'entries.repMetric',
-        'entries.durationMetric',
-        'entries.distanceMetric',
-        'entries.cardioSetting',
-        'entries.intervalHeader.rounds',
-        'entries.intensityMetric',
-    ];
-
     public function index(Request $request): AnonymousResourceCollection
     {
         $workouts = Workout::where('user_id', $request->user()->id)
@@ -65,7 +52,7 @@ class WorkoutController extends Controller
             'soreness' => $request->validated('soreness'),
         ]);
 
-        $workout->load(self::SHOW_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return (new WorkoutResource($workout))
             ->response()
@@ -76,7 +63,7 @@ class WorkoutController extends Controller
     {
         $this->authorize('view', $workout);
 
-        $workout->load(self::SHOW_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }
@@ -86,7 +73,7 @@ class WorkoutController extends Controller
         $this->authorize('update', $workout);
 
         $workout->update($request->validated());
-        $workout->load(self::SHOW_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }

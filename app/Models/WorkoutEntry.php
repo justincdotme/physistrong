@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\MetricDimension;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -78,5 +79,16 @@ class WorkoutEntry extends Model
     public function intensityMetric(): HasOne
     {
         return $this->hasOne(LogIntensityMetric::class, 'entry_id');
+    }
+
+    /** @return list<string> */
+    public static function metricRelations(): array
+    {
+        return array_map(
+            fn (MetricDimension $d) => $d === MetricDimension::IntervalHeader
+                ? 'intervalHeader.rounds'
+                : $d->relation(),
+            MetricDimension::cases()
+        );
     }
 }

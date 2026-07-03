@@ -105,7 +105,13 @@ export interface RawWorkoutListItem {
   date: string
   exhaustion: number | null
   soreness: number | null
-  exercises: Array<{ id: number; name: string; type: string }>
+  exercises: Array<{
+    id: number
+    name: string
+    type: string
+    equipment_type_id: number | null
+    exercise_order: number
+  }>
   entries_count: number
   completed_entries_count: number
   created_at: string
@@ -128,7 +134,7 @@ export interface RawWorkoutEntry {
   entry_group_id: number | null
   group_round: number | null
   notes: string | null
-  exercise?: { id: number; name: string; type: string }
+  exercise?: { id: number; name: string; type: string; equipment_type_id: number | null }
   metrics: Record<string, Record<string, unknown>>
   created_at: string
   updated_at: string
@@ -305,7 +311,14 @@ export interface RawWorkoutTemplateListItem {
   id: number
   name: string
   notes: string | null
-  exercises: Array<{ id: number; name: string; type: string }>
+  exercises: Array<{
+    id: number
+    name: string
+    type: string
+    equipment_type_id: number | null
+    exercise_order: number
+    template_entry_group_id: number | null
+  }>
   created_at: string
   updated_at: string
 }

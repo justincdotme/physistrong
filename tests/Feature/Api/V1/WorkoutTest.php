@@ -297,4 +297,33 @@ class WorkoutTest extends TestCase
         $this->postJson('/api/v1/workouts', ['name' => 'Nope', 'date' => '2026-01-15'])
             ->assertStatus(401);
     }
+
+    public function test_metric_response_contains_only_declared_columns(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry = $workout->entries()->create([
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+
+        $entry->loadMetric()->create([
+            'target_weight' => 100,
+            'actual_weight' => 95,
+            'bodyweight_only' => false,
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson("/api/v1/workouts/{$workout->id}");
+        $loadMetric = $response->json('data.entries.0.metrics.load');
+
+        $this->assertEqualsCanonicalizing(
+            ['target_weight', 'actual_weight', 'bodyweight_only'],
+            array_keys($loadMetric),
+        );
+    }
 }

@@ -23,22 +23,12 @@ class WorkoutEntryController extends Controller
 {
     use AuthorizesRequests;
 
-    private const METRIC_EAGER_LOAD = [
-        'loadMetric',
-        'repMetric',
-        'durationMetric',
-        'distanceMetric',
-        'cardioSetting',
-        'intervalHeader.rounds',
-        'intensityMetric',
-    ];
-
     public function index(Request $request, Workout $workout): AnonymousResourceCollection
     {
         $this->authorize('view', $workout);
 
         $entries = $workout->entries()
-            ->with(self::METRIC_EAGER_LOAD)
+            ->with(WorkoutEntry::metricRelations())
             ->orderBy('set_order')
             ->get();
 
@@ -66,7 +56,7 @@ class WorkoutEntryController extends Controller
             return $entry;
         });
 
-        $entry->load(self::METRIC_EAGER_LOAD);
+        $entry->load(WorkoutEntry::metricRelations());
 
         return (new WorkoutEntryResource($entry))
             ->response()
@@ -77,7 +67,7 @@ class WorkoutEntryController extends Controller
     {
         $this->authorize('view', $workout);
 
-        $entry->load(self::METRIC_EAGER_LOAD);
+        $entry->load(WorkoutEntry::metricRelations());
 
         return new WorkoutEntryResource($entry);
     }
@@ -95,7 +85,7 @@ class WorkoutEntryController extends Controller
             }
         });
 
-        $entry->load(self::METRIC_EAGER_LOAD);
+        $entry->load(WorkoutEntry::metricRelations());
 
         return new WorkoutEntryResource($entry);
     }
@@ -121,7 +111,7 @@ class WorkoutEntryController extends Controller
         });
 
         $entries = $workout->entries()
-            ->with(self::METRIC_EAGER_LOAD)
+            ->with(WorkoutEntry::metricRelations())
             ->orderBy('set_order')
             ->get();
 
