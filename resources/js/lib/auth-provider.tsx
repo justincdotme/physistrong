@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { hasToken, clearToken } from '@/api/client'
+import { markAuthenticated } from '@/api/client'
 import { getProfile } from '@/api/user'
 import { logout as logoutApi } from '@/api/auth'
 import { AuthContext } from './auth-context'
@@ -9,18 +9,19 @@ import type { User } from '@/api/types'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(hasToken())
+  // The token is an HttpOnly cookie the client cannot inspect, so the only
+  // way to learn the auth state is to ask the API.
+  const [isLoading, setIsLoading] = useState(true)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!hasToken()) return
     getProfile()
-      .then(setUser)
-      .catch(() => {
-        clearToken()
-        setUser(null)
+      .then(profile => {
+        markAuthenticated()
+        setUser(profile)
       })
+      .catch(() => setUser(null))
       .finally(() => setIsLoading(false))
   }, [])
 

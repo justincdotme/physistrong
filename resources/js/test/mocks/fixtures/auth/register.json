@@ -1,6 +1,6 @@
 {
   "user": {
-    "id": 14,
+    "id": 18,
     "email": "test-throwaway@example.com",
     "first_name": "Capture",
     "last_name": "Test",
@@ -8,6 +8,5 @@
     "theme": null,
     "created_at": "2026-01-01T00:00:00.000000Z",
     "updated_at": "2026-01-01T00:00:00.000000Z"
-  },
-  "token": "test-access-token"
+  }
 }

@@ -92,9 +92,6 @@ class TokenRevocationTest extends TestCase
 
     private function login(User $user): string
     {
-        return $this->postJson('/api/v1/login', [
-            'email' => $user->email,
-            'password' => 'secret123',
-        ])->json('token');
+        return $this->loginAndReadTokenCookie($user->email, 'secret123');
     }
 }

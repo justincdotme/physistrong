@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (amended 2026-07-02 with PS-90 implementation notes)
+Accepted (amended 2026-07-02 with PS-90 implementation notes, 2026-07-03 with PS-91 cookie delivery)
 
 ## Date
 
@@ -63,7 +63,39 @@ than raw Redis commands:
 - A Redis flush does not resurrect logged-out tokens today because
   the database `revoked` flag still rejects them.
 
-Cookie-based delivery for web clients remains open under PS-91.
+## Implementation Notes (2026-07-03, PS-91)
+
+Web delivery is cookie-only as of PS-91:
+
+- Login and register attach the Passport JWT to the response as a
+  `ps_token` cookie flagged `HttpOnly`, `Secure`, and `SameSite=Lax`,
+  path-scoped to `/api/v1`, with the cookie lifetime matching the token
+  lifetime. The token no longer appears in any response body.
+  `App\Services\AuthTokenCookie` is the single source for the name,
+  path, and flags; `App\Http\Responses\AuthTokenResponse` builds the
+  login and register responses.
+- `App\Http\Middleware\AuthenticateViaTokenCookie` (prepended to the
+  `api` middleware group) copies the cookie into the `Authorization`
+  header when no such header is present. A caller-supplied
+  `Authorization` header always wins, which keeps bearer clients
+  (curl, Postman, the future mobile app) working unchanged.
+- Logout attaches an expired `ps_token` cookie so the browser drops
+  it; revocation itself remains the PS-90 JTI blacklist plus the
+  database `revoked` flag.
+- **SameSite/Secure decision** (resolves the open item under New
+  Decisions Required): `SameSite=Lax` plus the CORS origin allowlist
+  covers CSRF on the cookie path, since cross-site state-changing
+  requests never carry a Lax cookie and Lax top-level navigations are
+  GET-only reads. `Secure` is always set: the deployed instance and
+  Dusk run HTTPS, and browsers treat `http://localhost` as a
+  trustworthy origin, so local development keeps working. The
+  `/api/v1` path scope keeps the cookie away from web-group routes and
+  their cookie middleware entirely.
+- **Deferred mobile branch**: when a mobile client ships, an explicit
+  client signal (for example an `X-Client: mobile` header) at login
+  and register will return the token in the response body instead of
+  setting the cookie. The authenticated request path needs no change
+  because the header already wins over the cookie.
 
 ---
 
@@ -128,7 +160,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 ### New Decisions Required
 
 - Implement secure Redis connection pooling and failover strategy to keep the blacklist available
-- Decide on HTTP-only cookie SameSite and Secure flags for web clients to prevent CSRF and XSS attacks
+- ~~Decide on HTTP-only cookie SameSite and Secure flags for web clients to prevent CSRF and XSS attacks~~ (resolved by PS-91; see Implementation Notes, 2026-07-03)
 - Define JWT expiration times (access token TTL and refresh token rotation policy)
 - Determine scope definitions and their mapping to application permissions
 
