@@ -134,4 +134,13 @@ class RegisterTest extends TestCase
         $user = User::where('email', 'new@example.com')->first();
         Notification::assertSentTo($user, WelcomeNotification::class);
     }
+
+    public function test_register_is_rate_limited(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson('/api/v1/register', []);
+        }
+
+        $this->postJson('/api/v1/register', [])->assertStatus(429);
+    }
 }
