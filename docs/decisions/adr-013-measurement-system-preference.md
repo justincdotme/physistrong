@@ -3,6 +3,11 @@
 ## Status
 Accepted
 
+Both per-record `distance_unit` columns (`exercise_distance` and
+`log_distance_metrics`) are superseded by
+[ADR-014](adr-014-unitless-distance-values.md); they were dropped
+on 2026-07-03.
+
 ## Supersedes
 - [ADR-005](adr-005-weight-unit-preference.md) (weight unit preference)
 - [ADR-012](adr-012-distance-unit-preference.md) (distance unit preference)
@@ -71,6 +76,9 @@ library supports conversion via its `->to()` method for future
 implementation.
 
 ### Per-exercise distance_unit
+
+> Superseded by [ADR-014](adr-014-unitless-distance-values.md): both
+> per-record distance_unit columns were dropped on 2026-07-03.
 
 The `exercise_distance.distance_unit` column (ADR-003) is a per-exercise
 definition attribute (meters/kilometers/miles/yards), not a user preference.

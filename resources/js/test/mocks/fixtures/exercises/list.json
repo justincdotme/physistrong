@@ -15,7 +15,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
+      "usage_count": 1,
       "has_logged_data": true
     },
     {
@@ -141,7 +141,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
+      "usage_count": 1,
       "has_logged_data": false
     },
     {
@@ -367,7 +367,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
+      "usage_count": 1,
       "has_logged_data": false
     },
     {
@@ -1007,7 +1007,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
+      "usage_count": 1,
       "has_logged_data": false
     },
     {
@@ -2087,7 +2087,6 @@
       "equipment_type_id": null,
       "equipment_type": null,
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -2112,7 +2111,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3385,7 +3383,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": true
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3410,7 +3407,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": true
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3435,7 +3431,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": true
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3444,15 +3439,15 @@
       "has_logged_data": true
     },
     {
-      "id": 897,
-      "name": "Capture Test Distance 1782864880612",
+      "id": 918,
+      "name": "Capture Test Distance 1783106255973",
       "type": "distance",
       "notes": null,
       "user_id": 3,
-      "equipment_type_id": 25,
+      "equipment_type_id": 28,
       "equipment_type": {
-        "id": 25,
-        "name": "Capture Test Equipment 1782864880604",
+        "id": 28,
+        "name": "Capture Test Equipment 1783106255958",
         "is_system": false,
         "user_id": 3,
         "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3460,7 +3455,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": true
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3565,15 +3559,15 @@
       "has_logged_data": true
     },
     {
-      "id": 896,
-      "name": "Capture Test Hold 1782864880612",
+      "id": 917,
+      "name": "Capture Test Hold 1783106255973",
       "type": "timed_hold",
       "notes": null,
       "user_id": 3,
-      "equipment_type_id": 25,
+      "equipment_type_id": 28,
       "equipment_type": {
-        "id": 25,
-        "name": "Capture Test Equipment 1782864880604",
+        "id": 28,
+        "name": "Capture Test Equipment 1783106255958",
         "is_system": false,
         "user_id": 3,
         "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3667,15 +3661,15 @@
       "has_logged_data": false
     },
     {
-      "id": 898,
-      "name": "Capture Test Interval 1782864880612",
+      "id": 919,
+      "name": "Capture Test Interval 1783106255973",
       "type": "interval",
       "notes": null,
       "user_id": 3,
-      "equipment_type_id": 25,
+      "equipment_type_id": 28,
       "equipment_type": {
-        "id": 25,
-        "name": "Capture Test Equipment 1782864880604",
+        "id": 28,
+        "name": "Capture Test Equipment 1783106255958",
         "is_system": false,
         "user_id": 3,
         "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3797,15 +3791,15 @@
       "has_logged_data": true
     },
     {
-      "id": 895,
-      "name": "Capture Test Resistance 1782864880612",
+      "id": 916,
+      "name": "Capture Test Resistance 1783106255973",
       "type": "resistance",
       "notes": null,
       "user_id": 3,
-      "equipment_type_id": 25,
+      "equipment_type_id": 28,
       "equipment_type": {
-        "id": 25,
-        "name": "Capture Test Equipment 1782864880604",
+        "id": 28,
+        "name": "Capture Test Equipment 1783106255958",
         "is_system": false,
         "user_id": 3,
         "created_at": "2026-01-01T00:00:00.000000Z",
@@ -3821,6 +3815,114 @@
       "updated_at": "2026-01-01T00:00:00.000000Z",
       "usage_count": 0,
       "has_logged_data": false
+    },
+    {
+      "id": 900,
+      "name": "Capture Test Show Bench",
+      "type": "resistance",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "bodyweight_base": false,
+        "allows_added_weight": true,
+        "bilateral": true
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
+    },
+    {
+      "id": 902,
+      "name": "Capture Test Show Bench 1782865696160",
+      "type": "resistance",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "bodyweight_base": false,
+        "allows_added_weight": true,
+        "bilateral": true
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
+    },
+    {
+      "id": 904,
+      "name": "Capture Test Show Bench 1782865708716",
+      "type": "resistance",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "bodyweight_base": false,
+        "allows_added_weight": true,
+        "bilateral": true
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
+    },
+    {
+      "id": 901,
+      "name": "Capture Test Show Intervals",
+      "type": "interval",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "default_work_seconds": 30,
+        "default_rest_seconds": 15,
+        "default_rounds": 4
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
+    },
+    {
+      "id": 903,
+      "name": "Capture Test Show Intervals 1782865696160",
+      "type": "interval",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "default_work_seconds": 30,
+        "default_rest_seconds": 15,
+        "default_rounds": 4
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
+    },
+    {
+      "id": 905,
+      "name": "Capture Test Show Intervals 1782865708716",
+      "type": "interval",
+      "notes": null,
+      "user_id": 3,
+      "equipment_type_id": null,
+      "equipment_type": null,
+      "type_attributes": {
+        "default_work_seconds": 30,
+        "default_rest_seconds": 15,
+        "default_rounds": 4
+      },
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z",
+      "usage_count": 1,
+      "has_logged_data": true
     },
     {
       "id": 142,
@@ -6533,7 +6635,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -9072,7 +9173,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -13419,7 +13519,6 @@
       "equipment_type_id": null,
       "equipment_type": null,
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -13858,7 +13957,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -14571,7 +14669,6 @@
       "equipment_type_id": null,
       "equipment_type": null,
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -14638,7 +14735,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -14679,7 +14775,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -16290,7 +16385,6 @@
       "equipment_type_id": null,
       "equipment_type": null,
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -17523,7 +17617,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -18638,7 +18731,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -19391,7 +19483,6 @@
       "equipment_type_id": null,
       "equipment_type": null,
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
@@ -19974,7 +20065,6 @@
         "usage_count": 0
       },
       "type_attributes": {
-        "distance_unit": "miles",
         "tracks_elevation": false
       },
       "created_at": "2026-01-01T00:00:00.000000Z",

@@ -187,7 +187,6 @@ export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMe
     const dist = entry.distanceMetric || {
       targetDistance: null,
       actualDistance: null,
-      distanceUnit: user.measurementSystem === 'imperial' ? 'miles' : 'kilometers',
       lapCount: null,
       strokeCount: null,
     }

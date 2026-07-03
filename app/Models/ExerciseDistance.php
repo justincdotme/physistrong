@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\DistanceUnit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,7 +13,6 @@ class ExerciseDistance extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'distance_unit',
         'tracks_elevation',
     ];
 
@@ -22,7 +20,6 @@ class ExerciseDistance extends Model
     protected function casts(): array
     {
         return [
-            'distance_unit' => DistanceUnit::class,
             'tracks_elevation' => 'boolean',
         ];
     }

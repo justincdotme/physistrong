@@ -135,7 +135,6 @@ describe('toExercise', () => {
         bilateral: false,
       })
       expect(result.targetDurationSeconds).toBeUndefined()
-      expect(result.distanceUnit).toBeUndefined()
       expect(result.defaultWorkSeconds).toBeUndefined()
     })
   })
@@ -166,7 +165,6 @@ describe('toExercise', () => {
         targetDurationSeconds: 60,
       })
       expect(result.bodyweightBase).toBeUndefined()
-      expect(result.distanceUnit).toBeUndefined()
       expect(result.defaultWorkSeconds).toBeUndefined()
     })
   })
@@ -183,7 +181,6 @@ describe('toExercise', () => {
         usage_count: 0,
         has_logged_data: false,
         type_attributes: {
-          distance_unit: 'miles',
           tracks_elevation: true,
         },
         created_at: '2026-01-01T00:00:00.000000Z',
@@ -195,7 +192,6 @@ describe('toExercise', () => {
       expect(result).toMatchObject({
         id: '897',
         type: 'distance',
-        distanceUnit: 'miles',
         tracksElevation: true,
       })
       expect(result.bodyweightBase).toBeUndefined()
@@ -235,7 +231,6 @@ describe('toExercise', () => {
       })
       expect(result.bodyweightBase).toBeUndefined()
       expect(result.targetDurationSeconds).toBeUndefined()
-      expect(result.distanceUnit).toBeUndefined()
     })
   })
 
@@ -461,7 +456,6 @@ describe('toWorkoutEntry', () => {
           distance: {
             target_distance: 5.0,
             actual_distance: 4.8,
-            distance_unit: 'miles',
             lap_count: 10,
             stroke_count: 1200,
           },
@@ -475,7 +469,6 @@ describe('toWorkoutEntry', () => {
       expect(result.distanceMetric).toEqual({
         targetDistance: 5.0,
         actualDistance: 4.8,
-        distanceUnit: 'miles',
         lapCount: 10,
         strokeCount: 1200,
       })
@@ -1163,7 +1156,6 @@ describe('toMetricsPayload', () => {
       distanceMetric: {
         targetDistance: 5.0,
         actualDistance: 4.8,
-        distanceUnit: 'miles',
         lapCount: 10,
         strokeCount: 1200,
       },
@@ -1174,7 +1166,6 @@ describe('toMetricsPayload', () => {
     expect(result.distance).toEqual({
       target_distance: 5.0,
       actual_distance: 4.8,
-      distance_unit: 'miles',
       lap_count: 10,
       stroke_count: 1200,
     })

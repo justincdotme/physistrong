@@ -32,7 +32,7 @@ class ExerciseProgressTest extends TestCase
         $defaults = match ($type) {
             'resistance' => [],
             'timed_hold' => [],
-            'distance' => ['distance_unit' => 'meters'],
+            'distance' => [],
             'interval' => [],
         };
 
@@ -152,10 +152,10 @@ class ExerciseProgressTest extends TestCase
         $exercise = $this->createExercise($user, 'distance', ['name' => 'Treadmill Run']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
-            'distance' => ['actual_distance' => 3.10, 'distance_unit' => 'miles'],
+            'distance' => ['actual_distance' => 3.10],
         ]);
         $r2 = $this->createEntryWithMetrics($user, $exercise, '2026-05-15', [
-            'distance' => ['actual_distance' => 5.00, 'distance_unit' => 'miles'],
+            'distance' => ['actual_distance' => 5.00],
         ]);
 
         Passport::actingAs($user);
@@ -467,10 +467,10 @@ class ExerciseProgressTest extends TestCase
         $exercise = $this->createExercise($user, 'distance', ['name' => 'Rowing Records']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
-            'distance' => ['actual_distance' => 2.00, 'distance_unit' => 'kilometers'],
+            'distance' => ['actual_distance' => 2.00],
         ]);
         $r2 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
-            'distance' => ['actual_distance' => 5.50, 'distance_unit' => 'kilometers'],
+            'distance' => ['actual_distance' => 5.50],
         ]);
 
         Passport::actingAs($user);

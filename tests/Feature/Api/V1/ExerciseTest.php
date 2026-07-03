@@ -33,7 +33,7 @@ class ExerciseTest extends TestCase
         $defaults = match ($type) {
             'resistance' => [],
             'timed_hold' => [],
-            'distance' => ['distance_unit' => 'meters'],
+            'distance' => [],
             'interval' => [],
         };
 
@@ -172,7 +172,7 @@ class ExerciseTest extends TestCase
             ],
             'distance' => [
                 'distance',
-                ['distance_unit' => 'miles', 'tracks_elevation' => true],
+                ['tracks_elevation' => true],
             ],
             'interval' => [
                 'interval',
@@ -285,16 +285,17 @@ class ExerciseTest extends TestCase
             ->assertJsonValidationErrors(['name', 'type']);
     }
 
-    public function test_creates_distance_exercise_without_distance_unit(): void
+    public function test_ignores_submitted_distance_unit(): void
     {
         Passport::actingAs(User::factory()->create());
 
         $this->postJson('/api/v1/exercises', [
             'name' => 'Run',
             'type' => 'distance',
+            'type_attributes' => ['distance_unit' => 'miles', 'tracks_elevation' => true],
         ])->assertStatus(201)
-            ->assertJsonPath('data.name', 'Run')
-            ->assertJsonPath('data.type', 'distance');
+            ->assertJsonPath('data.type_attributes.tracks_elevation', true)
+            ->assertJsonMissingPath('data.type_attributes.distance_unit');
     }
 
     public function test_rejects_inaccessible_equipment_type(): void
