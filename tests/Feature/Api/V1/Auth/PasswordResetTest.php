@@ -105,4 +105,13 @@ class PasswordResetTest extends TestCase
                 && str_contains($url, 'email=user%40example.com');
         });
     }
+
+    public function test_reset_is_rate_limited(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson('/api/v1/password/reset', []);
+        }
+
+        $this->postJson('/api/v1/password/reset', [])->assertStatus(429);
+    }
 }

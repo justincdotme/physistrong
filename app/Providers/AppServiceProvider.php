@@ -8,7 +8,10 @@ use App\Notifications\WelcomeNotification;
 use DateInterval;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -31,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
         ResetPassword::createUrlUsing(function (mixed $notifiable, string $token): string {
             return config('app.url').'/password/reset/'.$token.'?email='.urlencode($notifiable->getEmailForPasswordReset());
         });
+
+        RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
     }
 }

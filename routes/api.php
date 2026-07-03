@@ -23,10 +23,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
 
-Route::post('/register', RegisterController::class);
+// Login and forgot-password rate-limit in the controller (incremented on failure, reset on success) to allow legitimate retries; register and password reset use global middleware limits.
+Route::post('/register', RegisterController::class)->middleware('throttle:auth');
 Route::post('/login', LoginController::class);
 Route::post('/password/forgot', ForgotPasswordController::class);
-Route::post('/password/reset', ResetPasswordController::class);
+Route::post('/password/reset', ResetPasswordController::class)->middleware('throttle:auth');
 
 Route::middleware(['auth:api', RejectBlacklistedTokens::class])->group(function () {
     Route::post('/logout', LogoutController::class);
