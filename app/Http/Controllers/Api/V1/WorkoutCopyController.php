@@ -17,19 +17,6 @@ class WorkoutCopyController extends Controller
 {
     use AuthorizesRequests;
 
-    private const WORKOUT_EAGER_LOAD = [
-        'exercises',
-        'groups',
-        'entries.exercise',
-        'entries.loadMetric',
-        'entries.repMetric',
-        'entries.durationMetric',
-        'entries.distanceMetric',
-        'entries.cardioSetting',
-        'entries.intervalHeader.rounds',
-        'entries.intensityMetric',
-    ];
-
     public function __construct(private WorkoutCloneService $cloneService) {}
 
     public function __invoke(CopyWorkoutRequest $request, Workout $workout): JsonResponse
@@ -41,7 +28,7 @@ class WorkoutCopyController extends Controller
 
         $copy = $this->cloneService->fromWorkout($workout, $user, $request->validated());
 
-        $copy->load(self::WORKOUT_EAGER_LOAD);
+        $copy->load(Workout::detailRelations());
 
         return (new WorkoutResource($copy))
             ->response()

@@ -18,13 +18,7 @@ class WorkoutTemplateListResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'notes' => $this->notes,
-            'exercises' => $this->whenLoaded('exercises', function (): array {
-                return $this->exercises->map(fn ($exercise) => [
-                    'id' => $exercise->id,
-                    'name' => $exercise->name,
-                    'type' => $exercise->type,
-                ])->all();
-            }),
+            'exercises' => $this->whenLoaded('exercises', fn () => ExerciseSummaryResource::collection($this->exercises)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

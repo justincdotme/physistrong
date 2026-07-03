@@ -19,19 +19,6 @@ class WorkoutExerciseController extends Controller
 {
     use AuthorizesRequests;
 
-    private const SHOW_EAGER_LOAD = [
-        'exercises',
-        'groups',
-        'entries.exercise',
-        'entries.loadMetric',
-        'entries.repMetric',
-        'entries.durationMetric',
-        'entries.distanceMetric',
-        'entries.cardioSetting',
-        'entries.intervalHeader.rounds',
-        'entries.intensityMetric',
-    ];
-
     public function attach(AttachExerciseRequest $request, Workout $workout): JsonResponse
     {
         $this->authorize('update', $workout);
@@ -48,7 +35,7 @@ class WorkoutExerciseController extends Controller
         $nextOrder++;
 
         $workout->exercises()->attach($exerciseId, ['exercise_order' => $nextOrder]);
-        $workout->load(self::SHOW_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return (new WorkoutResource($workout))
             ->response()
@@ -76,7 +63,7 @@ class WorkoutExerciseController extends Controller
             }
         });
 
-        $workout->load(self::SHOW_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }

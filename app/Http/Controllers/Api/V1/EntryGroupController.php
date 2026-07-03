@@ -21,26 +21,13 @@ class EntryGroupController extends Controller
 {
     use AuthorizesRequests;
 
-    private const WORKOUT_EAGER_LOAD = [
-        'exercises',
-        'groups',
-        'entries.exercise',
-        'entries.loadMetric',
-        'entries.repMetric',
-        'entries.durationMetric',
-        'entries.distanceMetric',
-        'entries.cardioSetting',
-        'entries.intervalHeader.rounds',
-        'entries.intensityMetric',
-    ];
-
     public function store(StoreEntryGroupRequest $request, Workout $workout): JsonResponse
     {
         $this->authorize('update', $workout);
 
         $workout->groups()->create($request->validated());
 
-        $workout->load(self::WORKOUT_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return (new WorkoutResource($workout))
             ->response()
@@ -55,7 +42,7 @@ class EntryGroupController extends Controller
 
         $group->update($request->validated());
 
-        $workout->load(self::WORKOUT_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }
@@ -90,7 +77,7 @@ class EntryGroupController extends Controller
             }
         });
 
-        $workout->load(self::WORKOUT_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }
@@ -107,7 +94,7 @@ class EntryGroupController extends Controller
             'group_round' => null,
         ]);
 
-        $workout->load(self::WORKOUT_EAGER_LOAD);
+        $workout->load(Workout::detailRelations());
 
         return new WorkoutResource($workout);
     }

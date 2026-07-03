@@ -64,4 +64,18 @@ class Workout extends Model
     {
         return $this->hasMany(EntryGroup::class);
     }
+
+    /** @return list<string> */
+    public static function detailRelations(): array
+    {
+        $entryMetrics = array_map(
+            fn (string $r) => "entries.{$r}",
+            WorkoutEntry::metricRelations()
+        );
+
+        return array_merge(
+            ['exercises', 'groups', 'entries.exercise'],
+            $entryMetrics
+        );
+    }
 }
