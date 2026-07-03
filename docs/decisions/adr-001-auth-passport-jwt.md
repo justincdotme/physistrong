@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted (amended 2026-07-02 with PS-90 implementation notes)
 
 ## Date
 
@@ -36,7 +36,34 @@ We will use Laravel Passport with OAuth2 + JWT for authentication.
 - JWTs will include a JTI (JWT ID) claim for token identity
 - Web clients receive JWT in an HTTP-only cookie (standard browser security practice)
 - Mobile clients receive JWT in the response body for secure device storage, sent via Authorization header on subsequent requests
-- Logout invalidates tokens via a Redis-backed JTI blacklist where each entry's TTL equals the remaining lifetime of the invalidated token, ensuring auto-expiration without filling up Redis
+- Logout invalidates tokens via a Redis-backed JTI blacklist where each entry's TTL equals the remaining lifetime of the invalidated token, so entries auto-expire without filling up Redis
+
+---
+
+## Implementation Notes (2026-07-02, PS-90)
+
+The JTI blacklist is implemented behind Laravel's cache layer rather
+than raw Redis commands:
+
+- `App\Services\TokenBlacklist` writes `auth:revoked-jti:{jti}`
+  entries through the default cache store with the entry expiry set
+  to the token's `expires_at`. The deployed stack sets
+  `CACHE_STORE=redis` (cache connection, Redis database 1), so
+  entries land in Redis under the framework cache prefix and expire
+  with the token. The test suite swaps in the array store, keeping
+  the suite free of a Redis dependency.
+- `App\Http\Middleware\RejectBlacklistedTokens` runs after `auth:api`
+  on the protected route group and rejects blacklisted JTIs with 401.
+- Logout keeps Passport's database revocation (`revoked` flag) as a
+  second layer, so Passport's per-request database token lookup still
+  runs. The "token revocation without database lookups per request"
+  property above is a design goal, not yet the runtime behavior.
+  Removing the lookup is deferred until blacklist state can be
+  rebuilt from the database after a Redis flush (PS-124).
+- A Redis flush does not resurrect logged-out tokens today because
+  the database `revoked` flag still rejects them.
+
+Cookie-based delivery for web clients remains open under PS-91.
 
 ---
 
@@ -100,7 +127,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 
 ### New Decisions Required
 
-- Implement secure Redis connection pooling and failover strategy to ensure blacklist availability
+- Implement secure Redis connection pooling and failover strategy to keep the blacklist available
 - Decide on HTTP-only cookie SameSite and Secure flags for web clients to prevent CSRF and XSS attacks
 - Define JWT expiration times (access token TTL and refresh token rotation policy)
 - Determine scope definitions and their mapping to application permissions

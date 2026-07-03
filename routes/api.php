@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\WorkoutCopyController;
 use App\Http\Controllers\Api\V1\WorkoutEntryController;
 use App\Http\Controllers\Api\V1\WorkoutExerciseController;
 use App\Http\Controllers\Api\V1\WorkoutTemplateController;
+use App\Http\Middleware\RejectBlacklistedTokens;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
@@ -27,7 +28,7 @@ Route::post('/login', LoginController::class);
 Route::post('/password/forgot', ForgotPasswordController::class);
 Route::post('/password/reset', ResetPasswordController::class);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', RejectBlacklistedTokens::class])->group(function () {
     Route::post('/logout', LogoutController::class);
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
