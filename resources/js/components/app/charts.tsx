@@ -10,6 +10,7 @@ import {
   Tooltip,
   Cell,
 } from 'recharts'
+import { formatDate, formatDateCompact } from '@/lib/formatters'
 
 const COLORS = {
   primary: '#0D9488',
@@ -38,22 +39,6 @@ interface VolumeBarChartProps {
   data: { date: string; value: number }[]
   height?: number
   valueFormatter?: (value: number) => string
-}
-
-function formatDateShort(dateString: string): string {
-  const date = new Date(dateString)
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${month}/${day}`
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
 }
 
 function CustomTooltip({
@@ -130,7 +115,7 @@ export function ProgressLineChart({
           <XAxis
             dataKey="date"
             tick={{ fontSize: 11, fill: COLORS.textMuted }}
-            tickFormatter={formatDateShort}
+            tickFormatter={formatDateCompact}
             interval={Math.ceil(points.length / 5) - 1}
             stroke="transparent"
             tickLine={false}
@@ -221,7 +206,7 @@ export function VolumeBarChart({ data, height = 160, valueFormatter }: VolumeBar
           <XAxis
             dataKey="date"
             tick={{ fontSize: 11, fill: COLORS.textMuted }}
-            tickFormatter={formatDateShort}
+            tickFormatter={formatDateCompact}
             interval={Math.ceil(data.length / 5) - 1}
             stroke="transparent"
             tickLine={false}

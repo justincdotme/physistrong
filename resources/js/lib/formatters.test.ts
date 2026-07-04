@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { formatDate, formatDateShort, formatDuration, todayISO } from './formatters'
+import {
+  formatDate,
+  formatDateShort,
+  formatDateCompact,
+  formatDuration,
+  todayISO,
+} from './formatters'
 
 describe('formatDuration', () => {
   it.each([
@@ -107,6 +113,23 @@ describe('formatDateShort', () => {
   })
 })
 
+describe('formatDateCompact', () => {
+  it.each([['', '']])('returns empty string for empty input: "%s"', (input, expected) => {
+    expect(formatDateCompact(input)).toBe(expected)
+  })
+
+  it.each([
+    ['2026-06-30', '06/30'],
+    ['2026-01-01', '01/01'],
+    ['2026-12-31', '12/31'],
+    ['2025-02-14', '02/14'],
+    ['2000-03-05', '03/05'],
+    ['1999-11-09', '11/09'],
+  ])('formats ISO date to "MM/DD": %s → %s', (input, expected) => {
+    expect(formatDateCompact(input)).toBe(expected)
+  })
+})
+
 describe('todayISO', () => {
   it('returns ISO format date string for today', () => {
     const result = todayISO()
@@ -125,4 +148,19 @@ describe('todayISO', () => {
   afterEach(() => {
     vi.useRealTimers()
   })
+})
+
+describe('timezone safety - civil date formatters never shift dates', () => {
+  it.each([
+    ['2026-01-01', 'Jan 1, 2026', 'Jan 1', '01/01'],
+    ['2026-07-03', 'Jul 3, 2026', 'Jul 3', '07/03'],
+    ['2026-12-31', 'Dec 31, 2026', 'Dec 31', '12/31'],
+  ])(
+    'preserves calendar day %s regardless of runtime timezone',
+    (iso, expectedFull, expectedShort, expectedCompact) => {
+      expect(formatDate(iso)).toBe(expectedFull)
+      expect(formatDateShort(iso)).toBe(expectedShort)
+      expect(formatDateCompact(iso)).toBe(expectedCompact)
+    }
+  )
 })
