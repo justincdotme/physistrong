@@ -186,6 +186,11 @@ export function toWorkout(raw: RawWorkout): Workout {
     date: raw.date,
     exhaustion: raw.exhaustion,
     soreness: raw.soreness,
+    exercises: raw.exercises.map(ex => ({
+      id: String(ex.id),
+      name: ex.name,
+      type: ex.type as ExerciseType,
+    })),
     entries: raw.entries.map(toWorkoutEntry),
     entryGroups: (raw.groups ?? []).map(g => ({
       id: String(g.id),

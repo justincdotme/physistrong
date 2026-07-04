@@ -172,6 +172,7 @@ describe('workoutCompletion', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [],
         entryGroups: [],
       },
@@ -189,6 +190,7 @@ describe('workoutCompletion', () => {
       date: '2026-06-30',
       exhaustion: null,
       soreness: null,
+      exercises: [],
       entries: [
         {
           id: '1',
@@ -222,6 +224,7 @@ describe('workoutCompletion', () => {
       date: '2026-06-30',
       exhaustion: null,
       soreness: null,
+      exercises: [],
       entries: [
         {
           id: '1',
@@ -257,6 +260,7 @@ describe('workoutCompletion', () => {
       date: '2026-06-30',
       exhaustion: null,
       soreness: null,
+      exercises: [],
       entries: [
         {
           id: '1',
@@ -300,6 +304,7 @@ describe('workoutCompletion', () => {
       date: '2026-06-30',
       exhaustion: null,
       soreness: null,
+      exercises: [],
       entries: [
         {
           id: '1',
@@ -385,6 +390,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -411,6 +417,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -437,6 +444,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -472,6 +480,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -492,6 +501,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-29',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '2',
@@ -512,6 +522,7 @@ describe('exerciseUsageCount', () => {
         date: '2026-06-28',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '3',
@@ -652,6 +663,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -679,6 +691,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -706,6 +719,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -733,6 +747,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -760,6 +775,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -807,6 +823,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -828,6 +845,7 @@ describe('bestWeight', () => {
         date: '2026-06-29',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '2',
@@ -849,6 +867,7 @@ describe('bestWeight', () => {
         date: '2026-06-28',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '3',
@@ -876,6 +895,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',
@@ -914,6 +934,7 @@ describe('bestWeight', () => {
         date: '2026-06-30',
         exhaustion: null,
         soreness: null,
+        exercises: [],
         entries: [
           {
             id: '1',

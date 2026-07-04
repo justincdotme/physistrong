@@ -39,6 +39,7 @@ import {
 import { ReorderList } from '@/components/app/reorderable'
 import { EntryMetrics } from '@/components/app/metric-inputs'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
+import { collectReorderExerciseIds } from './workout-detail.utils'
 
 interface Block {
   kind: 'exercise' | 'group'
@@ -504,12 +505,9 @@ export function WorkoutDetailPage() {
       }
     })
 
-    const exerciseIds = next
-      .filter((b): b is Block & { exerciseId: string } => b.kind === 'exercise' && !!b.exerciseId)
-      .map(b => b.exerciseId)
-    const uniqueExerciseIds = [...new Set(exerciseIds)]
-    if (uniqueExerciseIds.length > 1) {
-      reorderExercisesMutation.mutate(uniqueExerciseIds)
+    const exerciseIds = collectReorderExerciseIds(next, workout.exercises)
+    if (exerciseIds.length > 1) {
+      reorderExercisesMutation.mutate(exerciseIds)
     }
     reorderEntriesMutation.mutate(ids)
   }

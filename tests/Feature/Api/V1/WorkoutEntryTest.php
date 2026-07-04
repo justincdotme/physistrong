@@ -580,6 +580,95 @@ class WorkoutEntryTest extends TestCase
         ]);
     }
 
+    public function test_reorder_rejects_nonexistent_entry_id(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry1 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
+        $entry2 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 1]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/reorder", [
+            'ids' => [999999, $entry1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry1->id, 'set_order' => 0]);
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry2->id, 'set_order' => 1]);
+    }
+
+    public function test_reorder_rejects_entry_from_other_workout(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $otherWorkout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+        $otherWorkout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry1 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
+        $entry2 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 1]);
+        $foreignEntry = $otherWorkout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/reorder", [
+            'ids' => [$foreignEntry->id, $entry1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry1->id, 'set_order' => 0]);
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry2->id, 'set_order' => 1]);
+    }
+
+    public function test_reorder_rejects_duplicate_ids(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry1 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
+        $entry2 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 1]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/reorder", [
+            'ids' => [$entry1->id, $entry1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry1->id, 'set_order' => 0]);
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry2->id, 'set_order' => 1]);
+    }
+
+    public function test_reorder_rejects_partial_id_list(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance');
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $entry1 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
+        $entry2 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 1]);
+        $entry3 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 2]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/workouts/{$workout->id}/entries/reorder", [
+            'ids' => [$entry3->id, $entry1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids');
+
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry1->id, 'set_order' => 0]);
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry2->id, 'set_order' => 1]);
+        $this->assertDatabaseHas('workout_entries', ['id' => $entry3->id, 'set_order' => 2]);
+    }
+
     // -- Scoped Binding --
 
     public function test_scoped_binding_rejects_entry_from_other_workout(): void
