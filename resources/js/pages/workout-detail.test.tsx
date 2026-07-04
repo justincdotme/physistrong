@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw'
 import { screen, renderWithProviders, userEvent, waitFor } from '@/test/render'
 import { server } from '@/test/server'
 import { WorkoutDetailPage } from './workout-detail'
+import { collectReorderExerciseIds } from './workout-detail.utils'
 
 describe('WorkoutDetailPage', () => {
   it('renders grouped entries with group name and round indicator', async () => {
@@ -99,8 +100,39 @@ describe('WorkoutDetailPage', () => {
   })
 })
 
-/*
-  Out of scope for this first pass:
-  - Drag-and-drop reordering via dnd-kit: requires complex setup of draggable/droppable contexts
-  - Debounced metric save flow: requires fake timers and testing pendingUpdates ref timing
-*/
+describe('collectReorderExerciseIds', () => {
+  const block = (exerciseIds: string[]) => ({
+    entries: exerciseIds.map(id => ({ exerciseId: id })),
+  })
+
+  it('collects exercise ids from blocks in visual order', () => {
+    expect(collectReorderExerciseIds([block(['2']), block(['1'])], [])).toEqual(['2', '1'])
+  })
+
+  it('includes grouped exercises via their entries', () => {
+    // A superset block carries entries for several exercises
+    expect(collectReorderExerciseIds([block(['3', '4']), block(['1'])], [])).toEqual([
+      '3',
+      '4',
+      '1',
+    ])
+  })
+
+  it('appends attached exercises that have no visible block', () => {
+    expect(collectReorderExerciseIds([block(['1'])], [{ id: '9' }, { id: '1' }])).toEqual([
+      '1',
+      '9',
+    ])
+  })
+
+  it('dedupes to first occurrence when an exercise spans blocks', () => {
+    expect(collectReorderExerciseIds([block(['1']), block(['2']), block(['1'])], [])).toEqual([
+      '1',
+      '2',
+    ])
+  })
+})
+
+// Out of scope for this first pass: drag-and-drop reordering via dnd-kit (requires complex setup
+// of draggable/droppable contexts) and debounced metric save flow (requires fake timers and
+// testing pendingUpdates ref timing).

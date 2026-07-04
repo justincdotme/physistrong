@@ -124,6 +124,7 @@ export interface Workout {
   date: string
   exhaustion: number | null
   soreness: number | null
+  exercises: Array<{ id: string; name: string; type: ExerciseType }>
   entries: WorkoutEntry[]
   entryGroups: EntryGroup[]
 }

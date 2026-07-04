@@ -201,6 +201,92 @@ class TemplateExerciseTest extends TestCase
         ]);
     }
 
+    public function test_reorder_rejects_nonexistent_exercise_id(): void
+    {
+        $user = User::factory()->create();
+        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 1']);
+        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 2']);
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
+        $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/templates/{$template->id}/exercises/reorder", [
+            'ids' => [999999, $exercise1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise1->id, 'exercise_order' => 0]);
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise2->id, 'exercise_order' => 1]);
+    }
+
+    public function test_reorder_rejects_exercise_attached_to_other_template(): void
+    {
+        $user = User::factory()->create();
+        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 1']);
+        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 2']);
+        $unattached = $this->createExercise($user, 'resistance', ['name' => 'Elsewhere']);
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $otherTemplate = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
+        $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
+        $otherTemplate->exercises()->attach($unattached->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/templates/{$template->id}/exercises/reorder", [
+            'ids' => [$unattached->id, $exercise1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise1->id, 'exercise_order' => 0]);
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise2->id, 'exercise_order' => 1]);
+    }
+
+    public function test_reorder_rejects_duplicate_exercise_ids(): void
+    {
+        $user = User::factory()->create();
+        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 1']);
+        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 2']);
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
+        $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/templates/{$template->id}/exercises/reorder", [
+            'ids' => [$exercise1->id, $exercise1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids.0');
+
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise1->id, 'exercise_order' => 0]);
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise2->id, 'exercise_order' => 1]);
+    }
+
+    public function test_reorder_rejects_partial_exercise_id_list(): void
+    {
+        $user = User::factory()->create();
+        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 1']);
+        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 2']);
+        $exercise3 = $this->createExercise($user, 'resistance', ['name' => 'Exercise 3']);
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
+        $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
+        $template->exercises()->attach($exercise3->id, ['exercise_order' => 2]);
+
+        Passport::actingAs($user);
+
+        $this->putJson("/api/v1/templates/{$template->id}/exercises/reorder", [
+            'ids' => [$exercise3->id, $exercise1->id],
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('ids');
+
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise1->id, 'exercise_order' => 0]);
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise2->id, 'exercise_order' => 1]);
+        $this->assertDatabaseHas('template_exercises', ['exercise_id' => $exercise3->id, 'exercise_order' => 2]);
+    }
+
     // -- Authorization --
 
     public function test_cannot_attach_to_other_users_template(): void

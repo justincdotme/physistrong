@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AttachExerciseRequest;
-use App\Http\Requests\Api\V1\ReorderRequest;
+use App\Http\Requests\Api\V1\ReorderWorkoutExercisesRequest;
 use App\Http\Resources\Api\V1\WorkoutResource;
 use App\Models\Exercise;
 use App\Models\Workout;
@@ -25,16 +25,29 @@ class WorkoutExerciseController extends Controller
 
         $exerciseId = $request->validated('exercise_id');
 
-        if ($workout->exercises()->where('exercises.id', $exerciseId)->exists()) {
+        $attached = DB::transaction(function () use ($workout, $exerciseId): bool {
+            // Discarded read: holding the parent row serializes concurrent
+            // attach/reorder so two attaches cannot compute the same max order.
+            Workout::whereKey($workout->id)->lockForUpdate()->first();
+
+            if ($workout->exercises()->where('exercises.id', $exerciseId)->exists()) {
+                return false;
+            }
+
+            $nextOrder = $workout->exercises()->max('exercise_order') ?? -1;
+            $nextOrder++;
+
+            $workout->exercises()->attach($exerciseId, ['exercise_order' => $nextOrder]);
+
+            return true;
+        });
+
+        if (! $attached) {
             return response()->json([
                 'message' => 'Exercise is already attached to this workout.',
             ], 409);
         }
 
-        $nextOrder = $workout->exercises()->max('exercise_order') ?? -1;
-        $nextOrder++;
-
-        $workout->exercises()->attach($exerciseId, ['exercise_order' => $nextOrder]);
         $workout->load(Workout::detailRelations());
 
         return (new WorkoutResource($workout))
@@ -52,11 +65,13 @@ class WorkoutExerciseController extends Controller
         return response()->noContent();
     }
 
-    public function reorder(ReorderRequest $request, Workout $workout): WorkoutResource
+    public function reorder(ReorderWorkoutExercisesRequest $request, Workout $workout): WorkoutResource
     {
         $this->authorize('update', $workout);
 
         DB::transaction(function () use ($request, $workout) {
+            Workout::whereKey($workout->id)->lockForUpdate()->first();
+
             $ids = $request->validated('ids');
             foreach ($ids as $index => $id) {
                 $workout->exercises()->updateExistingPivot($id, ['exercise_order' => $index]);

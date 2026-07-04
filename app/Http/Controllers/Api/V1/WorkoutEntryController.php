@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\MetricDimension;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\ReorderRequest;
+use App\Http\Requests\Api\V1\ReorderEntriesRequest;
 use App\Http\Requests\Api\V1\StoreWorkoutEntryRequest;
 use App\Http\Requests\Api\V1\UpdateWorkoutEntryRequest;
 use App\Http\Resources\Api\V1\WorkoutEntryResource;
@@ -99,11 +99,13 @@ class WorkoutEntryController extends Controller
         return response()->noContent();
     }
 
-    public function reorder(ReorderRequest $request, Workout $workout): AnonymousResourceCollection
+    public function reorder(ReorderEntriesRequest $request, Workout $workout): AnonymousResourceCollection
     {
         $this->authorize('update', $workout);
 
         DB::transaction(function () use ($request, $workout) {
+            Workout::whereKey($workout->id)->lockForUpdate()->first();
+
             $ids = $request->validated('ids');
             foreach ($ids as $index => $id) {
                 $workout->entries()->where('id', $id)->update(['set_order' => $index]);
