@@ -300,7 +300,7 @@ export function WorkoutDetailPage() {
     onSuccess: data => {
       queryClient.setQueryData(['workouts', workoutId], data)
     },
-    onError: () => toast('Could not save. Try again.'),
+    onError: () => toast('Could not save. Try again.', 'error'),
   })
 
   const deleteWorkoutMutation = useMutation({
@@ -310,7 +310,7 @@ export function WorkoutDetailPage() {
       toast('Workout deleted.')
       navigate('/workouts')
     },
-    onError: () => toast('Could not delete. Try again.'),
+    onError: () => toast('Could not delete. Try again.', 'error'),
   })
 
   const attachExerciseMutation = useMutation({
@@ -323,7 +323,7 @@ export function WorkoutDetailPage() {
       invalidateWorkout()
       toast('Exercise added.')
     },
-    onError: () => toast('Could not add exercise. Try again.'),
+    onError: () => toast('Could not add exercise. Try again.', 'error'),
   })
 
   const reorderExercisesMutation = useMutation({
@@ -336,7 +336,7 @@ export function WorkoutDetailPage() {
   const addSetMutation = useMutation({
     mutationFn: (payload: CreateEntryPayload) => createEntry(workoutId, payload),
     onSuccess: invalidateWorkout,
-    onError: () => toast('Could not add set. Try again.'),
+    onError: () => toast('Could not add set. Try again.', 'error'),
   })
 
   const deleteEntryMutation = useMutation({
@@ -347,7 +347,7 @@ export function WorkoutDetailPage() {
         return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
       })
     },
-    onError: () => toast('Could not remove set. Try again.'),
+    onError: () => toast('Could not remove set. Try again.', 'error'),
   })
 
   const updateEntryMutation = useMutation({
@@ -408,7 +408,7 @@ export function WorkoutDetailPage() {
       setSelected([])
       toast('Group created.')
     },
-    onError: () => toast('Could not create group. Try again.'),
+    onError: () => toast('Could not create group. Try again.', 'error'),
   })
 
   const ungroupMutation = useMutation({
@@ -417,7 +417,7 @@ export function WorkoutDetailPage() {
       invalidateWorkout()
       toast('Group removed.')
     },
-    onError: () => toast('Could not ungroup. Try again.'),
+    onError: () => toast('Could not ungroup. Try again.', 'error'),
   })
 
   const debouncedEntryUpdate = useCallback(

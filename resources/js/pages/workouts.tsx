@@ -81,7 +81,7 @@ export function WorkoutsPage() {
       toast('Workout started.')
       navigate(`/workouts/${workout.id}`)
     },
-    onError: () => toast('Could not create workout. Try again.'),
+    onError: () => toast('Could not create workout. Try again.', 'error'),
   })
 
   const startEmpty = ({ name, date }: { name: string; date: string }) => {

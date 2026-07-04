@@ -147,7 +147,7 @@ export function TemplateEditorPage() {
       setSelected([])
       toast('Group created.')
     },
-    onError: () => toast('Could not create group. Try again.'),
+    onError: () => toast('Could not create group. Try again.', 'error'),
   })
 
   const ungroupMutation = useMutation({
@@ -156,7 +156,7 @@ export function TemplateEditorPage() {
       queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
       toast('Group removed.')
     },
-    onError: () => toast('Could not ungroup. Try again.'),
+    onError: () => toast('Could not ungroup. Try again.', 'error'),
   })
 
   if (!templateId) {

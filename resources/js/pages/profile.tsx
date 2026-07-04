@@ -56,9 +56,9 @@ export function ProfilePage() {
       if (isAxiosError(err) && err.response?.status === 422) {
         const fieldErrors = err.response.data?.errors as Record<string, string[]> | undefined
         const msg = fieldErrors ? Object.values(fieldErrors).flat()[0] : 'Could not save.'
-        toast(msg ?? 'Could not save.')
+        toast(msg ?? 'Could not save.', 'error')
       } else {
-        toast('Could not save. Try again.')
+        toast('Could not save. Try again.', 'error')
       }
     } finally {
       setSaving(false)
@@ -100,7 +100,7 @@ export function ProfilePage() {
       setUser(updated)
       toast(field === 'theme' ? 'Theme updated.' : 'Measurement system updated.')
     } catch {
-      toast('Could not save preference. Try again.')
+      toast('Could not save preference. Try again.', 'error')
     }
   }
 
