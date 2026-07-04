@@ -7,6 +7,7 @@ import {
   exerciseUsageCount,
   equipmentUsageCount,
   bestWeight,
+  groupRoundProgress,
 } from './domain'
 
 describe('entryHasActual', () => {
@@ -961,5 +962,111 @@ describe('bestWeight', () => {
       },
     ]
     expect(bestWeight(workouts, 'e1')).toBe(185.75)
+  })
+})
+
+describe('groupRoundProgress', () => {
+  const complete = (round: number) =>
+    ({
+      groupRound: round,
+      loadMetric: { actualWeight: 100, targetWeight: null, bodyweightOnly: false },
+    }) as WorkoutEntry
+
+  const incomplete = (round: number) =>
+    ({
+      groupRound: round,
+      loadMetric: { actualWeight: null, targetWeight: 100, bodyweightOnly: false },
+    }) as WorkoutEntry
+
+  it('uses plannedRounds when provided', () => {
+    const entries: WorkoutEntry[] = [complete(1), incomplete(2)]
+    const result = groupRoundProgress(entries, 5)
+    expect(result.rounds).toBe(5)
+  })
+
+  it('falls back to max groupRound when plannedRounds is undefined', () => {
+    const entries: WorkoutEntry[] = [complete(1), complete(2), complete(4)]
+    const result = groupRoundProgress(entries, undefined)
+    expect(result.rounds).toBe(4)
+  })
+
+  it('defaults groupRound to 1 for entries with null groupRound', () => {
+    const entries: WorkoutEntry[] = [
+      {
+        loadMetric: { actualWeight: 100, targetWeight: null, bodyweightOnly: false },
+      } as WorkoutEntry,
+    ]
+    const result = groupRoundProgress(entries, undefined)
+    expect(result.rounds).toBe(1)
+  })
+
+  it('returns rounds=1 for empty entries with no plannedRounds', () => {
+    const entries: WorkoutEntry[] = []
+    const result = groupRoundProgress(entries, undefined)
+    expect(result.rounds).toBe(1)
+  })
+
+  it('identifies completed rounds (partial - rounds 1,3 complete but 2 not)', () => {
+    const entries: WorkoutEntry[] = [
+      complete(1),
+      complete(1),
+      incomplete(2),
+      incomplete(2),
+      complete(3),
+      complete(3),
+    ]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.completedRounds).toEqual([1, 3])
+  })
+
+  it('identifies all rounds as completed', () => {
+    const entries: WorkoutEntry[] = [
+      complete(1),
+      complete(1),
+      complete(2),
+      complete(2),
+      complete(3),
+      complete(3),
+    ]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.completedRounds).toEqual([1, 2, 3])
+  })
+
+  it('identifies no rounds as completed', () => {
+    const entries: WorkoutEntry[] = [incomplete(1), incomplete(1), incomplete(2), incomplete(2)]
+    const result = groupRoundProgress(entries, 2)
+    expect(result.completedRounds).toEqual([])
+  })
+
+  it('sets displayRound past completed rounds', () => {
+    const entries: WorkoutEntry[] = [complete(1), incomplete(2), incomplete(3)]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.displayRound).toBe(2)
+  })
+
+  it('caps displayRound at total when all complete', () => {
+    const entries: WorkoutEntry[] = [complete(1), complete(1), complete(2), complete(2)]
+    const result = groupRoundProgress(entries, 2)
+    expect(result.displayRound).toBe(2)
+  })
+
+  it('sets displayRound to 1 when nothing is complete', () => {
+    const entries: WorkoutEntry[] = [incomplete(1), incomplete(1), incomplete(2), incomplete(2)]
+    const result = groupRoundProgress(entries, 2)
+    expect(result.displayRound).toBe(1)
+  })
+
+  it('displayRound uses completed count, not position, for non-contiguous completions', () => {
+    const entries: WorkoutEntry[] = [complete(1), incomplete(2), complete(3)]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.completedRounds).toEqual([1, 3])
+    expect(result.displayRound).toBe(3)
+  })
+
+  it('handles empty array with plannedRounds', () => {
+    const result = groupRoundProgress([], 3)
+    expect(result.rounds).toBe(3)
+    expect(result.completedRounds).toEqual([1, 2, 3])
+    expect(result.displayRound).toBe(3)
   })
 })

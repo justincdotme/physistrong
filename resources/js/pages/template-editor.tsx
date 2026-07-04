@@ -22,6 +22,7 @@ import type { Exercise } from '@/api/types'
 import { PageHeader, Button, Card, TypeBadge, InlineEdit, ConfirmDialog } from '@/components/ui'
 import { ReorderList } from '@/components/app/reorderable'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
+import { GroupSelectBanner } from '@/components/app/group-select-banner'
 
 interface TemplateBlock {
   kind: 'exercise' | 'group'
@@ -265,52 +266,15 @@ export function TemplateEditorPage() {
       </div>
 
       {selectMode && (
-        <div
-          className="ps-card p-4 mb-4"
-          style={{
-            border: '1px solid var(--color-primary)',
-            background: 'color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-card))',
+        <GroupSelectBanner
+          selectedCount={selected.length}
+          canContinue={selected.length >= 2}
+          onContinue={() => setGroupSheetOpen(true)}
+          onCancel={() => {
+            setSelectMode(false)
+            setSelected([])
           }}
-        >
-          <div className="flex items-start gap-3">
-            <span
-              className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{
-                background: 'color-mix(in srgb, var(--color-primary) 14%, transparent)',
-                color: 'var(--color-primary)',
-              }}
-            >
-              <Check size={18} />
-            </span>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm">Build a superset or circuit</div>
-              <div className="text-[13px] text-text-secondary mt-0.5">
-                {
-                  "Tap 2 or more exercises below to combine them. You'll set rounds and rest in the next step."
-                }
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-3">
-            <Button
-              size="sm"
-              disabled={selected.length < 2}
-              onClick={() => setGroupSheetOpen(true)}
-            >
-              Continue · {selected.length} selected
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setSelectMode(false)
-                setSelected([])
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
+        />
       )}
 
       {blocks.length ? (

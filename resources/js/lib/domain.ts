@@ -12,6 +12,22 @@ export function entryHasActual(e: WorkoutEntry): boolean {
   return false
 }
 
+export function groupRoundProgress(
+  entries: WorkoutEntry[],
+  plannedRounds: number | undefined
+): { rounds: number; completedRounds: number[]; displayRound: number } {
+  const rounds = plannedRounds || Math.max(1, ...entries.map(e => e.groupRound || 1))
+  const completedRounds: number[] = []
+  for (let r = 1; r <= rounds; r++) {
+    if (entries.filter(e => e.groupRound === r).every(e => entryHasActual(e))) {
+      completedRounds.push(r)
+    }
+  }
+  const c = completedRounds.length
+  const displayRound = Math.min(c + (c < rounds ? 1 : 0), rounds)
+  return { rounds, completedRounds, displayRound }
+}
+
 export function workoutCompletion(workout: Workout | null): number {
   if (!workout || !workout.entries.length) return 0
   const done = workout.entries.filter(entryHasActual).length

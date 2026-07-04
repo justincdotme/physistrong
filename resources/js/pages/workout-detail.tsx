@@ -26,7 +26,7 @@ import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { useAuth } from '@/hooks/use-auth'
 import { formatDuration } from '@/lib/formatters'
-import { workoutCompletion, exerciseById, equipmentName, entryHasActual } from '@/lib/domain'
+import { workoutCompletion, exerciseById, equipmentName, groupRoundProgress } from '@/lib/domain'
 import {
   PageHeader,
   Button,
@@ -40,6 +40,7 @@ import {
 import { ReorderList } from '@/components/app/reorderable'
 import { EntryMetrics } from '@/components/app/metric-inputs'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
+import { GroupSelectBanner } from '@/components/app/group-select-banner'
 import { collectReorderExerciseIds } from './workout-detail.utils'
 
 interface Block {
@@ -170,6 +171,220 @@ function SetRow({
         <Trash2 size={18} />
       </button>
     </div>
+  )
+}
+
+function GroupBlockCard({
+  block,
+  exercises,
+  allTimeBestMap,
+  handle,
+  controls,
+  onPatchEntry,
+  onUngroup,
+}: {
+  block: Block
+  exercises: Exercise[]
+  allTimeBestMap: Map<string, number | null>
+  handle: React.ReactNode
+  controls: React.ReactNode
+  onPatchEntry: (entryId: string, patch: Partial<WorkoutEntry>) => void
+  onUngroup: (groupId: string) => void
+}) {
+  const g = block.group
+  const { rounds, completedRounds, displayRound } = groupRoundProgress(
+    block.entries,
+    g?.plannedRounds
+  )
+
+  return (
+    <div
+      dusk="entry-group"
+      className="pl-3 ml-1"
+      style={{ borderLeft: '2px solid var(--color-primary)' }}
+    >
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          {handle}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-base truncate">{g?.name || 'Superset'}</span>
+              <span
+                className="label-caps px-1.5 py-0.5 rounded-full"
+                style={{
+                  color: 'var(--color-primary)',
+                  background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
+                }}
+              >
+                Round {displayRound} of {rounds}
+              </span>
+            </div>
+            <div className="text-[12px] text-text-secondary">
+              {formatDuration(g?.restBetweenExercisesSeconds || 0)} between ·{' '}
+              {g?.restBetweenRoundsSeconds
+                ? `${formatDuration(g.restBetweenRoundsSeconds)} / round`
+                : 'no round rest'}
+            </div>
+          </div>
+          {block.gid && (
+            <button
+              onClick={() => onUngroup(block.gid as string)}
+              className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
+            >
+              Ungroup
+            </button>
+          )}
+          {controls}
+        </div>
+        <div className="flex flex-col gap-4">
+          {Array.from({ length: rounds }, (_, ri) => ri + 1).map(r => (
+            <div key={r}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="label-caps text-text-muted">Round {r}</span>
+                <span className="h-px flex-1" style={{ background: 'var(--color-border)' }} />
+                {completedRounds.includes(r) && (
+                  <Check size={14} style={{ color: 'var(--color-success)' }} />
+                )}
+              </div>
+              <div className="flex flex-col gap-3">
+                {block.entries
+                  .filter(e => e.groupRound === r)
+                  .map(entry => {
+                    const ex = exerciseById(exercises, entry.exerciseId)
+                    if (!ex) return null
+                    return (
+                      <div key={entry.id}>
+                        <div className="text-[13px] font-semibold mb-1.5">{ex.name}</div>
+                        <EntryMetrics
+                          entry={entry}
+                          exercise={ex}
+                          allTimeBest={allTimeBestMap.get(ex.id) ?? null}
+                          onChange={p => onPatchEntry(entry.id, p)}
+                        />
+                      </div>
+                    )
+                  })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+function SelectableExerciseCard({
+  exercise,
+  equipmentList,
+  isSelected,
+  onToggle,
+}: {
+  exercise: Exercise
+  equipmentList: EquipmentType[]
+  isSelected: boolean
+  onToggle: () => void
+}) {
+  return (
+    <Card
+      dusk="exercise-section"
+      className="p-4"
+      style={
+        isSelected
+          ? { outline: '2px solid var(--color-primary)', outlineOffset: '-1px' }
+          : undefined
+      }
+    >
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-3 w-full text-left cursor-pointer"
+      >
+        <span
+          className="h-6 w-6 rounded-md border-2 flex items-center justify-center shrink-0"
+          style={
+            isSelected
+              ? {
+                  background: 'var(--color-primary)',
+                  borderColor: 'var(--color-primary)',
+                  color: '#fff',
+                }
+              : { borderColor: 'var(--color-border-strong)' }
+          }
+        >
+          {isSelected && <Check size={16} />}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="font-semibold text-base truncate">{exercise.name}</div>
+          <div className="text-[12px] text-text-secondary">
+            {equipmentName(equipmentList, exercise.equipmentTypeId)}
+          </div>
+        </div>
+        <TypeBadge type={exercise.type} />
+      </button>
+    </Card>
+  )
+}
+
+function ExerciseBlockCard({
+  block,
+  exercise,
+  equipmentList,
+  allTimeBestMap,
+  handle,
+  controls,
+  onReorderSets,
+  onPatchEntry,
+  onRemoveSet,
+  onAddSet,
+}: {
+  block: Block
+  exercise: Exercise
+  equipmentList: EquipmentType[]
+  allTimeBestMap: Map<string, number | null>
+  handle: React.ReactNode
+  controls: React.ReactNode
+  onReorderSets: (nextEntries: WorkoutEntry[]) => void
+  onPatchEntry: (entryId: string, patch: Partial<WorkoutEntry>) => void
+  onRemoveSet: (entryId: string) => void
+  onAddSet: () => void
+}) {
+  return (
+    <Card dusk="exercise-section" className="p-4">
+      <ExerciseHeader
+        exercise={exercise}
+        handle={handle}
+        controls={controls}
+        equipmentList={equipmentList}
+      />
+      <ReorderList
+        items={block.entries}
+        getKey={e => e.id}
+        onReorder={onReorderSets}
+        className="flex flex-col gap-3"
+        itemClassName="rounded-lg"
+        renderItem={(entry, { index, handle: h, controls: c }) => (
+          <SetRow
+            entry={entry}
+            exercise={exercise}
+            index={index}
+            handle={h}
+            controls={c}
+            onPatch={p => onPatchEntry(entry.id, p)}
+            onRemove={() => onRemoveSet(entry.id)}
+            allTimeBest={allTimeBestMap.get(exercise.id) ?? null}
+          />
+        )}
+      />
+      <Button
+        variant="secondary"
+        size="sm"
+        icon={<Plus size={16} />}
+        full
+        className="mt-3"
+        onClick={onAddSet}
+      >
+        Add Set
+      </Button>
+    </Card>
   )
 }
 
@@ -491,7 +706,6 @@ export function WorkoutDetailPage() {
   const toggleSelect = (blockId: string) =>
     setSelected(s => (s.includes(blockId) ? s.filter(x => x !== blockId) : [...s, blockId]))
 
-  const canGroup = selectMode && selected.length >= 2
   const exerciseBlockCount = blocks.filter(b => b.kind === 'exercise').length
 
   return (
@@ -565,48 +779,15 @@ export function WorkoutDetailPage() {
       </div>
 
       {selectMode && (
-        <div
-          className="ps-card p-4 mb-4"
-          style={{
-            border: '1px solid var(--color-primary)',
-            background: 'color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-card))',
+        <GroupSelectBanner
+          selectedCount={selected.length}
+          canContinue={selected.length >= 2}
+          onContinue={() => setGroupSheetOpen(true)}
+          onCancel={() => {
+            setSelectMode(false)
+            setSelected([])
           }}
-        >
-          <div className="flex items-start gap-3">
-            <span
-              className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{
-                background: 'color-mix(in srgb, var(--color-primary) 14%, transparent)',
-                color: 'var(--color-primary)',
-              }}
-            >
-              <Check size={18} />
-            </span>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm">Build a superset or circuit</div>
-              <div className="text-[13px] text-text-secondary mt-0.5">
-                {
-                  "Tap 2 or more exercises below to combine them. You'll set rounds and rest in the next step."
-                }
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-3">
-            <Button size="sm" disabled={!canGroup} onClick={() => setGroupSheetOpen(true)}>
-              Continue · {selected.length} selected
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setSelectMode(false)
-                setSelected([])
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
+        />
       )}
 
       {blocks.length ? (
@@ -619,189 +800,46 @@ export function WorkoutDetailPage() {
           itemClassName="rounded-2xl"
           renderItem={(block, { handle, controls }) => {
             if (block.kind === 'group') {
-              const g = block.group
-              const rounds =
-                g?.plannedRounds || Math.max(...block.entries.map(e => e.groupRound || 1))
-              const roundComplete = (r: number) =>
-                block.entries.filter(e => e.groupRound === r).every(e => entryHasActual(e))
-              const completed: number[] = []
-              for (let r = 1; r <= rounds; r++) {
-                if (roundComplete(r)) completed.push(r)
-              }
-
               return (
-                <div
-                  dusk="entry-group"
-                  className="pl-3 ml-1"
-                  style={{ borderLeft: '2px solid var(--color-primary)' }}
-                >
-                  <Card className="p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      {handle}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-base truncate">
-                            {g?.name || 'Superset'}
-                          </span>
-                          <span
-                            className="label-caps px-1.5 py-0.5 rounded-full"
-                            style={{
-                              color: 'var(--color-primary)',
-                              background:
-                                'color-mix(in srgb, var(--color-primary) 12%, transparent)',
-                            }}
-                          >
-                            Round{' '}
-                            {Math.min(
-                              completed.length + (completed.length < rounds ? 1 : 0),
-                              rounds
-                            )}{' '}
-                            of {rounds}
-                          </span>
-                        </div>
-                        <div className="text-[12px] text-text-secondary">
-                          {formatDuration(g?.restBetweenExercisesSeconds || 0)} between ·{' '}
-                          {g?.restBetweenRoundsSeconds
-                            ? `${formatDuration(g.restBetweenRoundsSeconds)} / round`
-                            : 'no round rest'}
-                        </div>
-                      </div>
-                      {block.gid && (
-                        <button
-                          onClick={() => ungroupMutation.mutate(block.gid as string)}
-                          className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
-                        >
-                          Ungroup
-                        </button>
-                      )}
-                      {controls}
-                    </div>
-                    <div className="flex flex-col gap-4">
-                      {Array.from({ length: rounds }, (_, ri) => ri + 1).map(r => (
-                        <div key={r}>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="label-caps text-text-muted">Round {r}</span>
-                            <span
-                              className="h-px flex-1"
-                              style={{ background: 'var(--color-border)' }}
-                            />
-                            {completed.includes(r) && (
-                              <Check size={14} style={{ color: 'var(--color-success)' }} />
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-3">
-                            {block.entries
-                              .filter(e => e.groupRound === r)
-                              .map(entry => {
-                                const ex = exerciseById(exercises, entry.exerciseId)
-                                if (!ex) return null
-                                return (
-                                  <div key={entry.id}>
-                                    <div className="text-[13px] font-semibold mb-1.5">
-                                      {ex.name}
-                                    </div>
-                                    <EntryMetrics
-                                      entry={entry}
-                                      exercise={ex}
-                                      allTimeBest={allTimeBestMap.get(ex.id) ?? null}
-                                      onChange={p => patchEntry(entry.id, p)}
-                                    />
-                                  </div>
-                                )
-                              })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-                </div>
+                <GroupBlockCard
+                  block={block}
+                  exercises={exercises}
+                  allTimeBestMap={allTimeBestMap}
+                  handle={handle}
+                  controls={controls}
+                  onPatchEntry={patchEntry}
+                  onUngroup={gid => ungroupMutation.mutate(gid)}
+                />
               )
             }
 
             const ex = exerciseById(exercises, block.exerciseId ?? '')
             if (!ex) return null
-            const isSelected = selected.includes(block.id)
+
+            if (selectMode) {
+              return (
+                <SelectableExerciseCard
+                  exercise={ex}
+                  equipmentList={equipment}
+                  isSelected={selected.includes(block.id)}
+                  onToggle={() => toggleSelect(block.id)}
+                />
+              )
+            }
 
             return (
-              <Card
-                dusk="exercise-section"
-                className="p-4"
-                style={
-                  selectMode && isSelected
-                    ? {
-                        outline: '2px solid var(--color-primary)',
-                        outlineOffset: '-1px',
-                      }
-                    : undefined
-                }
-              >
-                {selectMode ? (
-                  <button
-                    onClick={() => toggleSelect(block.id)}
-                    className="flex items-center gap-3 w-full text-left cursor-pointer"
-                  >
-                    <span
-                      className="h-6 w-6 rounded-md border-2 flex items-center justify-center shrink-0"
-                      style={
-                        isSelected
-                          ? {
-                              background: 'var(--color-primary)',
-                              borderColor: 'var(--color-primary)',
-                              color: '#fff',
-                            }
-                          : { borderColor: 'var(--color-border-strong)' }
-                      }
-                    >
-                      {isSelected && <Check size={16} />}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-base truncate">{ex.name}</div>
-                      <div className="text-[12px] text-text-secondary">
-                        {equipmentName(equipment, ex.equipmentTypeId)}
-                      </div>
-                    </div>
-                    <TypeBadge type={ex.type} />
-                  </button>
-                ) : (
-                  <>
-                    <ExerciseHeader
-                      exercise={ex}
-                      handle={handle}
-                      controls={controls}
-                      equipmentList={equipment}
-                    />
-                    <ReorderList
-                      items={block.entries}
-                      getKey={e => e.id}
-                      onReorder={next => handleReorderSets(block.id, next)}
-                      className="flex flex-col gap-3"
-                      itemClassName="rounded-lg"
-                      renderItem={(entry, { index, handle: h, controls: c }) => (
-                        <SetRow
-                          entry={entry}
-                          exercise={ex}
-                          index={index}
-                          handle={h}
-                          controls={c}
-                          onPatch={p => patchEntry(entry.id, p)}
-                          onRemove={() => handleRemoveSet(entry.id)}
-                          allTimeBest={allTimeBestMap.get(ex.id) ?? null}
-                        />
-                      )}
-                    />
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      icon={<Plus size={16} />}
-                      full
-                      className="mt-3"
-                      onClick={() => handleAddSet(block)}
-                    >
-                      Add Set
-                    </Button>
-                  </>
-                )}
-              </Card>
+              <ExerciseBlockCard
+                block={block}
+                exercise={ex}
+                equipmentList={equipment}
+                allTimeBestMap={allTimeBestMap}
+                handle={handle}
+                controls={controls}
+                onReorderSets={next => handleReorderSets(block.id, next)}
+                onPatchEntry={patchEntry}
+                onRemoveSet={handleRemoveSet}
+                onAddSet={() => handleAddSet(block)}
+              />
             )
           }}
         />
