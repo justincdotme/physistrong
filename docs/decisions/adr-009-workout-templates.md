@@ -72,14 +72,6 @@ workout_templates
 +----- notes (text, nullable)
 +----- created_at, updated_at
 
-template_exercises
-+----- id (PK)
-+----- template_id (FK -> workout_templates.id, ON DELETE CASCADE)
-+----- exercise_id (FK -> exercises.id)
-+----- exercise_order (integer)
-+----- created_at, updated_at
-+----- INDEX(template_id, exercise_order)
-
 template_entry_groups
 +----- id (PK)
 +----- template_id (FK -> workout_templates.id, ON DELETE CASCADE)
@@ -89,18 +81,43 @@ template_entry_groups
 +----- rest_between_rounds_seconds (integer, nullable)
 +----- created_at, updated_at
 
-template_group_exercises
-+----- id (PK)
-+----- template_entry_group_id (FK -> template_entry_groups.id, ON DELETE CASCADE)
-+----- exercise_id (FK -> exercises.id)
+template_exercises
++----- template_id (FK -> workout_templates.id, ON DELETE CASCADE)
++----- exercise_id (FK -> exercises.id, ON DELETE RESTRICT)
 +----- exercise_order (integer)
-+----- created_at, updated_at
++----- template_entry_group_id (FK -> template_entry_groups.id, nullable, ON DELETE SET NULL)
++----- PRIMARY KEY (template_id, exercise_id)
++----- INDEX (template_id, exercise_order)
 ```
 
-`template_exercises` holds standalone exercises (not in a group).
-`template_group_exercises` holds exercises within a group, with their order
-within the rotation. Between the two, the full exercise structure is
-defined.
+A single `template_exercises` pivot holds all exercises regardless of group
+membership. The nullable `template_entry_group_id` optionally links an
+exercise to a group. Ungrouped exercises have NULL in this column.
+
+---
+
+## Amendment: Single-Pivot Template Exercise Structure
+
+**Date:** 2026-07-03
+
+**Amended by:** PS-112 (documents implementation decision from Phase 7a,
+discovered during 2026-07-02 backend review)
+
+The original design specified three tables: `template_exercises` for
+standalone exercises, `template_entry_groups` for group definitions, and
+`template_group_exercises` for exercises within groups. The implementation
+merged the exercise tables into a single `template_exercises` pivot with a
+nullable `template_entry_group_id` FK.
+
+**Rationale:**
+
+1. **ADR-007 consistency.** The workout side uses the same pattern:
+   `workout_entries.entry_group_id` is a nullable FK, with all entries in
+   one table regardless of group membership.
+2. **Composite-key duplicate prevention.** The `(template_id, exercise_id)`
+   primary key prevents attaching the same exercise twice.
+3. **SET NULL semantics.** Deleting a group sets the FK to NULL rather than
+   cascading exercise deletion, matching ADR-007's group-deletion behavior.
 
 ---
 
