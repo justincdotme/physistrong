@@ -37,9 +37,9 @@ export function EquipmentPage() {
     },
     onError: error => {
       if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Equipment is in use.')
+        toast(error.response.data?.message ?? 'Equipment is in use.', 'error')
       } else {
-        toast('Could not delete. Try again.')
+        toast('Could not delete. Try again.', 'error')
       }
     },
   })

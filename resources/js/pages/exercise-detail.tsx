@@ -60,7 +60,7 @@ export function ExerciseDetailPage() {
       toast('Exercise updated.')
     },
     onError: () => {
-      toast('Could not update. Try again.')
+      toast('Could not update. Try again.', 'error')
     },
   })
 
@@ -76,9 +76,9 @@ export function ExerciseDetailPage() {
     },
     onError: error => {
       if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Exercise is in use.')
+        toast(error.response.data?.message ?? 'Exercise is in use.', 'error')
       } else {
-        toast('Could not delete. Try again.')
+        toast('Could not delete. Try again.', 'error')
       }
     },
   })

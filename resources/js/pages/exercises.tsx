@@ -70,7 +70,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
           return
         }
       }
-      toast('Could not create exercise. Try again.')
+      toast('Could not create exercise. Try again.', 'error')
     },
   })
 
@@ -313,9 +313,9 @@ export function ExercisesPage() {
     },
     onError: error => {
       if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Exercise is in use.')
+        toast(error.response.data?.message ?? 'Exercise is in use.', 'error')
       } else {
-        toast('Could not delete. Try again.')
+        toast('Could not delete. Try again.', 'error')
       }
     },
   })

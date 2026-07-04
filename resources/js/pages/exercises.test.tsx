@@ -11,10 +11,8 @@ describe('ExercisesPage', () => {
     it('displays exercises from the fixture with correct count in subtitle', async () => {
       renderWithProviders(<ExercisesPage />)
 
-      // Wait for an exercise from the fixture to appear
       await screen.findByText('3/4 Sit-Up')
 
-      // Assert subtitle shows the count
       const exerciseCount = fixtureList.data.length
       expect(screen.getByText(`${exerciseCount} in your catalog`)).toBeInTheDocument()
     })
@@ -56,27 +54,21 @@ describe('ExercisesPage', () => {
 
       renderWithProviders(<ExercisesPage />)
 
-      // Wait for exercises to load
       await screen.findByText('3/4 Sit-Up')
 
-      // Click the Create button (in PageHeader)
       const createButton = screen.getByRole('button', { name: 'Create' })
       await user.click(createButton)
 
-      // Type in the name input
       const nameInput = screen.getByLabelText('Name')
       await user.type(nameInput, 'Incline Press')
 
-      // Click Create Exercise button (in Sheet footer)
       const createExerciseButton = screen.getByRole('button', { name: 'Create Exercise' })
       await user.click(createExerciseButton)
 
-      // Wait for the payload to be captured
       await waitFor(() => {
         expect(capturedPayload).toBeTruthy()
       })
 
-      // Verify the payload
       expect(capturedPayload).toEqual({
         name: 'Incline Press',
         type: 'resistance',
@@ -88,6 +80,8 @@ describe('ExercisesPage', () => {
           bilateral: true,
         },
       })
+
+      expect(await screen.findByText('Exercise created.')).toBeInTheDocument()
     }, 15000)
   })
 
@@ -131,17 +125,13 @@ describe('ExercisesPage', () => {
 
       renderWithProviders(<ExercisesPage />)
 
-      // Wait for exercises to load
       await screen.findByText('3/4 Sit-Up')
-
-      // Wait for the user exercise to appear
       await screen.findByText('Test User Exercise')
 
-      // Click the delete button for the user exercise
       const deleteButton = screen.getByLabelText('Delete Test User Exercise')
       await user.click(deleteButton)
 
-      // Confirm the deletion in the dialog - wait for the dialog to appear first
+      // The confirm dialog reuses the "Delete" label, so target the last one.
       const confirmButtons = screen.getAllByRole('button', { name: 'Delete' })
       const dialogConfirmButton = confirmButtons[confirmButtons.length - 1]
       expect(dialogConfirmButton).toBeDefined()
@@ -149,14 +139,11 @@ describe('ExercisesPage', () => {
         await user.click(dialogConfirmButton)
       }
 
-      // Wait for the delete mutation to be called with 409 response
       await waitFor(() => {
         expect(deleteCalled).toBe(true)
       })
 
-      // The error handler in ExercisesPage shows the error message from the 409 response in a toast
-      // The toast appears briefly and disappears after 2400ms, so we verify the mutation was called
-      // which confirms the error flow works correctly
+      expect(await screen.findByText('Exercise is in use by 2 workout(s).')).toBeInTheDocument()
     }, 15000)
   })
 })

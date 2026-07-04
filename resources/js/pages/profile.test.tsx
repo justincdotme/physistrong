@@ -71,10 +71,8 @@ describe('ProfilePage', () => {
 
       await user.click(saveButton)
 
-      // Wait for the request to be captured
       await new Promise(resolve => setTimeout(resolve, 100))
 
-      // Verify the update payload was sent correctly
       expect(updatePayload).toEqual({
         first_name: 'Claude',
         last_name: 'Ai',
@@ -96,10 +94,10 @@ describe('ProfilePage', () => {
       const saveButton = screen.getByRole('button', { name: /save changes/i })
       await user.click(saveButton)
 
-      // The page doesn't display the error message inline; instead it shows a toast
-      // Since we can't verify the toast in unit tests without rendering the Toaster component,
-      // we verify that the error response was handled by checking that the UI didn't change
-      // and the save was attempted
+      // The 422 field error surfaces through the toast, not inline.
+      expect(
+        await screen.findByText('The email field must be a valid email address.')
+      ).toBeInTheDocument()
       expect(emailInput.value).toBe('invalid@sentinel.test')
     })
   })

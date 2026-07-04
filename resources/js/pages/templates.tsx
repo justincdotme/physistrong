@@ -30,7 +30,7 @@ export function TemplatesPage() {
       toast('Template created.')
       navigate(`/templates/${tpl.id}`)
     },
-    onError: () => toast('Could not create template. Try again.'),
+    onError: () => toast('Could not create template. Try again.', 'error'),
   })
 
   const deleteMutation = useMutation({
@@ -39,7 +39,7 @@ export function TemplatesPage() {
       queryClient.invalidateQueries({ queryKey: ['templates'] })
       toast('Template deleted.')
     },
-    onError: () => toast('Could not delete template. Try again.'),
+    onError: () => toast('Could not delete template. Try again.', 'error'),
   })
 
   if (isLoading) {
