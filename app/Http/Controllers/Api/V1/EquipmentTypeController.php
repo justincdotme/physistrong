@@ -23,10 +23,7 @@ class EquipmentTypeController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $types = EquipmentType::withCount('exercises as usage_count')
-            ->where(function ($q) use ($request) {
-                $q->where('is_system', true)
-                    ->orWhere('user_id', $request->user()->id);
-            })
+            ->visibleTo($request->user())
             ->orderBy('name')
             ->get();
 

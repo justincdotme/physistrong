@@ -39,4 +39,21 @@ enum ExerciseType: string
 
         return [...$this->requiredMetrics(), ...$optional];
     }
+
+    /** The CTI child relation name on the Exercise model. */
+    public function childRelation(): string
+    {
+        return match ($this) {
+            self::Resistance => 'resistance',
+            self::TimedHold => 'timedHold',
+            self::Distance => 'distance',
+            self::Interval => 'interval',
+        };
+    }
+
+    /** @return list<string> */
+    public static function childRelations(): array
+    {
+        return array_map(fn (self $type) => $type->childRelation(), self::cases());
+    }
 }

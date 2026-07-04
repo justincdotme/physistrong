@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Models\Exercise;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,10 +16,7 @@ class AttachExerciseRequest extends FormRequest
         return [
             'exercise_id' => [
                 'required',
-                Rule::exists('exercises', 'id')->where(function ($query) {
-                    $query->whereNull('user_id')
-                        ->orWhere('user_id', $this->user()->id);
-                }),
+                Rule::exists('exercises', 'id')->where(Exercise::visibilityConstraint($this->user())),
             ],
         ];
     }

@@ -17,7 +17,7 @@ class ExercisePolicy
 
     public function view(User $user, Exercise $exercise): bool
     {
-        return $exercise->user_id === null || $exercise->user_id === $user->id;
+        return $exercise->isVisibleTo($user);
     }
 
     public function create(User $user): bool

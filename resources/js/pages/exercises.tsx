@@ -423,7 +423,7 @@ export function ExercisesPage() {
                 <TypeBadge type={ex.type} />
                 {!isSystem &&
                   (() => {
-                    const inUse = ex.usageCount > 0
+                    const inUse = ex.usageCount > 0 || ex.hasLoggedData
                     return (
                       <button
                         onClick={e => {
@@ -431,7 +431,13 @@ export function ExercisesPage() {
                           if (!inUse) setDeleting(ex)
                         }}
                         disabled={inUse}
-                        title={inUse ? `In use by ${ex.usageCount} workout(s)` : 'Delete exercise'}
+                        title={
+                          inUse
+                            ? ex.usageCount > 0
+                              ? `In use by ${ex.usageCount} workout(s)`
+                              : 'Has logged workout data'
+                            : 'Delete exercise'
+                        }
                         aria-label={inUse ? `${ex.name} is in use` : `Delete ${ex.name}`}
                         className={`h-10 w-10 flex items-center justify-center rounded-lg shrink-0 ${
                           inUse

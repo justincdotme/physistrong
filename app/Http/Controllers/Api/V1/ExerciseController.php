@@ -10,25 +10,28 @@ use App\Http\Requests\Api\V1\StoreExerciseRequest;
 use App\Http\Requests\Api\V1\UpdateExerciseRequest;
 use App\Http\Resources\Api\V1\ExerciseResource;
 use App\Models\Exercise;
+use App\Repositories\ExerciseRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 class ExerciseController extends Controller
 {
     use AuthorizesRequests;
 
-    private const EAGER_LOAD = ['resistance', 'timedHold', 'distance', 'interval', 'equipmentType'];
+    public function __construct(private ExerciseRepository $exercises) {}
+
+    /** @return list<string> */
+    private function eagerLoad(): array
+    {
+        return [...ExerciseType::childRelations(), 'equipmentType'];
+    }
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Exercise::where(function ($q) use ($request) {
-            $q->whereNull('user_id')
-                ->orWhere('user_id', $request->user()->id);
-        });
+        $query = Exercise::visibleTo($request->user())->withUsage();
 
         if ($request->has('type')) {
             $query->where('type', $request->input('type'));
@@ -42,72 +45,16 @@ class ExerciseController extends Controller
             $query->where('name', 'like', '%'.$request->input('search').'%');
         }
 
-        $exercises = $query
-            ->with(self::EAGER_LOAD)
-            ->orderBy('name')
-            ->get();
-
-        $exerciseIds = $exercises->pluck('id');
-
-        $workoutUsage = DB::table('exercise_workout')
-            ->whereIn('exercise_id', $exerciseIds)
-            ->selectRaw('exercise_id, count(*) as cnt')
-            ->groupBy('exercise_id')
-            ->pluck('cnt', 'exercise_id');
-
-        $templateUsage = DB::table('template_exercises')
-            ->whereIn('exercise_id', $exerciseIds)
-            ->selectRaw('exercise_id, count(*) as cnt')
-            ->groupBy('exercise_id')
-            ->pluck('cnt', 'exercise_id');
-
-        $exercisesWithEntries = DB::table('workout_entries')
-            ->whereIn('exercise_id', $exerciseIds)
-            ->distinct()
-            ->pluck('exercise_id');
-
-        $exercises->each(function (Exercise $exercise) use ($workoutUsage, $templateUsage, $exercisesWithEntries) {
-            $exercise->setAttribute(
-                'usage_count',
-                ($workoutUsage[$exercise->id] ?? 0) + ($templateUsage[$exercise->id] ?? 0)
-            );
-            $exercise->setAttribute(
-                'has_logged_data',
-                $exercisesWithEntries->contains($exercise->id)
-            );
-        });
-
-        return ExerciseResource::collection($exercises);
+        return ExerciseResource::collection(
+            $query->with($this->eagerLoad())->orderBy('name')->get()
+        );
     }
 
     public function store(StoreExerciseRequest $request): JsonResponse
     {
-        $exercise = DB::transaction(function () use ($request) {
-            $exercise = Exercise::create([
-                'name' => $request->validated('name'),
-                'type' => $request->validated('type'),
-                'user_id' => $request->user()->id,
-                'equipment_type_id' => $request->validated('equipment_type_id'),
-                'notes' => $request->validated('notes'),
-            ]);
+        $exercise = $this->exercises->create($request->user(), $request->validated());
 
-            $typeAttributes = $request->validated('type_attributes') ?? [];
-
-            $childRelation = match ($exercise->type) {
-                ExerciseType::Resistance => 'resistance',
-                ExerciseType::TimedHold => 'timedHold',
-                ExerciseType::Distance => 'distance',
-                ExerciseType::Interval => 'interval',
-            };
-
-            $exercise->$childRelation()->create($typeAttributes);
-
-            return $exercise;
-        });
-
-        $exercise->load(self::EAGER_LOAD);
-
-        return (new ExerciseResource($exercise))
+        return (new ExerciseResource($exercise->load($this->eagerLoad())))
             ->response()
             ->setStatusCode(201);
     }
@@ -116,11 +63,9 @@ class ExerciseController extends Controller
     {
         $this->authorize('view', $exercise);
 
-        $exercise->load(self::EAGER_LOAD);
-
-        $usageCount = DB::table('exercise_workout')->where('exercise_id', $exercise->id)->count()
-            + DB::table('template_exercises')->where('exercise_id', $exercise->id)->count();
-        $exercise->setAttribute('usage_count', $usageCount);
+        $exercise->load($this->eagerLoad())
+            ->loadCount(['workouts', 'templates'])
+            ->loadExists(['entries as has_logged_data']);
 
         return new ExerciseResource($exercise);
     }
@@ -129,35 +74,16 @@ class ExerciseController extends Controller
     {
         $this->authorize('update', $exercise);
 
-        DB::transaction(function () use ($request, $exercise) {
-            $exercise->update($request->safe()->only(['name', 'equipment_type_id', 'notes']));
+        $this->exercises->update($exercise, $request->validated());
 
-            $validated = $request->validated();
-            if (isset($validated['type_attributes'])) {
-                $childRelation = match ($exercise->type) {
-                    ExerciseType::Resistance => 'resistance',
-                    ExerciseType::TimedHold => 'timedHold',
-                    ExerciseType::Distance => 'distance',
-                    ExerciseType::Interval => 'interval',
-                };
-                $exercise->$childRelation->update($validated['type_attributes']);
-            }
-        });
-
-        $exercise->load(self::EAGER_LOAD);
-
-        return new ExerciseResource($exercise);
+        return new ExerciseResource($exercise->load($this->eagerLoad()));
     }
 
     public function destroy(Exercise $exercise): Response|JsonResponse
     {
         $this->authorize('delete', $exercise);
 
-        $inUse = DB::table('exercise_workout')->where('exercise_id', $exercise->id)->exists()
-            || DB::table('workout_entries')->where('exercise_id', $exercise->id)->exists()
-            || DB::table('template_exercises')->where('exercise_id', $exercise->id)->exists();
-
-        if ($inUse) {
+        if ($exercise->isInUse()) {
             return response()->json([
                 'message' => 'Exercise is in use by workouts or templates.',
             ], 409);
