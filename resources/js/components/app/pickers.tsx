@@ -12,6 +12,7 @@ import { TypeBadge } from '@/components/ui/type-badge'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
 import { todayISO, formatDate } from '@/lib/formatters'
+import { TYPE_OPTIONS } from '@/lib/exercise-types'
 
 function equipmentLabel(equipment: EquipmentType[], equipmentTypeId: string | null): string {
   if (!equipmentTypeId) return 'No equipment'
@@ -58,13 +59,7 @@ export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps)
           size="sm"
           value={type}
           onChange={setType}
-          options={[
-            { value: 'all', label: 'All' },
-            { value: 'resistance', label: 'Lift' },
-            { value: 'timed_hold', label: 'Hold' },
-            { value: 'distance', label: 'Cardio' },
-            { value: 'interval', label: 'Interval' },
-          ]}
+          options={[{ value: 'all', label: 'All' }, ...TYPE_OPTIONS]}
         />
       </div>
       <div className="flex flex-col gap-1.5">

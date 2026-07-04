@@ -13,19 +13,15 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Sheet } from '@/components/ui/sheet'
 import { Toggle } from '@/components/ui/toggle'
 import { useApp } from '@/lib/use-app'
-import { equipmentName, TYPE_LABELS } from '@/lib/domain'
+import { equipmentName } from '@/lib/domain'
+import { assertNever } from '@/lib/utils'
+import { EXERCISE_TYPES, TYPE_OPTIONS } from '@/lib/exercise-types'
 import { listExercises, createExercise, deleteExercise as deleteExerciseApi } from '@/api/exercises'
 import { listEquipment } from '@/api/equipment'
 import type { Exercise, ExerciseType, EquipmentType } from '@/api/types'
 import type { CreateExercisePayload } from '@/api/exercises'
 
-const TYPES: Array<{ value: string; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'resistance', label: 'Resistance' },
-  { value: 'timed_hold', label: 'Hold' },
-  { value: 'distance', label: 'Distance' },
-  { value: 'interval', label: 'Interval' },
-]
+const TYPES = [{ value: 'all', label: 'All' }, ...TYPE_OPTIONS]
 
 function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
@@ -82,24 +78,32 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
 
     const typeAttributes: Record<string, unknown> = {}
 
-    if (type === 'resistance') {
-      typeAttributes.bodyweight_base = bodyweight
-      typeAttributes.allows_added_weight = addedWeight
-      typeAttributes.bilateral = bilateral
-    } else if (type === 'timed_hold') {
-      if (targetDurationSeconds) {
-        typeAttributes.target_duration_seconds = parseInt(targetDurationSeconds)
-      }
-    } else if (type === 'interval') {
-      if (defaultWorkSeconds) {
-        typeAttributes.default_work_seconds = parseInt(defaultWorkSeconds)
-      }
-      if (defaultRestSeconds) {
-        typeAttributes.default_rest_seconds = parseInt(defaultRestSeconds)
-      }
-      if (defaultRounds) {
-        typeAttributes.default_rounds = parseInt(defaultRounds)
-      }
+    switch (type) {
+      case 'resistance':
+        typeAttributes.bodyweight_base = bodyweight
+        typeAttributes.allows_added_weight = addedWeight
+        typeAttributes.bilateral = bilateral
+        break
+      case 'timed_hold':
+        if (targetDurationSeconds) {
+          typeAttributes.target_duration_seconds = parseInt(targetDurationSeconds)
+        }
+        break
+      case 'distance':
+        break
+      case 'interval':
+        if (defaultWorkSeconds) {
+          typeAttributes.default_work_seconds = parseInt(defaultWorkSeconds)
+        }
+        if (defaultRestSeconds) {
+          typeAttributes.default_rest_seconds = parseInt(defaultRestSeconds)
+        }
+        if (defaultRounds) {
+          typeAttributes.default_rounds = parseInt(defaultRounds)
+        }
+        break
+      default:
+        assertNever(type)
     }
 
     const payload: CreateExercisePayload = {
@@ -111,6 +115,94 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
     }
 
     createMutation.mutate(payload)
+  }
+
+  function typeFields() {
+    switch (type) {
+      case 'resistance':
+        return (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between" aria-label="Bodyweight base">
+              <span className="text-sm">Bodyweight base</span>
+              <Toggle checked={bodyweight} onChange={setBodyweight} label="Bodyweight base" />
+            </div>
+            <div className="flex items-center justify-between" aria-label="Allows added weight">
+              <span className="text-sm">Allows added weight</span>
+              <Toggle checked={addedWeight} onChange={setAddedWeight} label="Allows added weight" />
+            </div>
+            <div className="flex items-center justify-between" aria-label="Bilateral">
+              <span className="text-sm">Bilateral</span>
+              <Toggle checked={bilateral} onChange={setBilateral} label="Bilateral" />
+            </div>
+          </div>
+        )
+      case 'timed_hold':
+        return (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label htmlFor="target-duration" className="text-sm">
+                Target duration (seconds, optional)
+              </label>
+              <input
+                id="target-duration"
+                type="number"
+                value={targetDurationSeconds}
+                onChange={e => setTargetDurationSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+          </div>
+        )
+      case 'distance':
+        return null
+      case 'interval':
+        return (
+          <div className="ps-metric p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-work" className="text-sm">
+                Work seconds (optional)
+              </label>
+              <input
+                id="default-work"
+                type="number"
+                value={defaultWorkSeconds}
+                onChange={e => setDefaultWorkSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-rest" className="text-sm">
+                Rest seconds (optional)
+              </label>
+              <input
+                id="default-rest"
+                type="number"
+                value={defaultRestSeconds}
+                onChange={e => setDefaultRestSeconds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="default-rounds" className="text-sm">
+                Rounds (optional)
+              </label>
+              <input
+                id="default-rounds"
+                type="number"
+                value={defaultRounds}
+                onChange={e => setDefaultRounds(e.target.value)}
+                className="ps-input w-20 px-2 py-1.5 text-sm"
+                min="1"
+              />
+            </div>
+          </div>
+        )
+      default:
+        return assertNever(type)
+    }
   }
 
   return (
@@ -179,7 +271,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
                     : undefined
                 }
               >
-                {TYPE_LABELS[t]}
+                {EXERCISE_TYPES[t].label}
               </button>
             ))}
           </div>
@@ -207,84 +299,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
           </select>
         </div>
 
-        {type === 'resistance' && (
-          <div className="ps-metric p-3 flex flex-col gap-3">
-            <div className="flex items-center justify-between" aria-label="Bodyweight base">
-              <span className="text-sm">Bodyweight base</span>
-              <Toggle checked={bodyweight} onChange={setBodyweight} label="Bodyweight base" />
-            </div>
-            <div className="flex items-center justify-between" aria-label="Allows added weight">
-              <span className="text-sm">Allows added weight</span>
-              <Toggle checked={addedWeight} onChange={setAddedWeight} label="Allows added weight" />
-            </div>
-            <div className="flex items-center justify-between" aria-label="Bilateral">
-              <span className="text-sm">Bilateral</span>
-              <Toggle checked={bilateral} onChange={setBilateral} label="Bilateral" />
-            </div>
-          </div>
-        )}
-
-        {type === 'timed_hold' && (
-          <div className="ps-metric p-3 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <label htmlFor="target-duration" className="text-sm">
-                Target duration (seconds, optional)
-              </label>
-              <input
-                id="target-duration"
-                type="number"
-                value={targetDurationSeconds}
-                onChange={e => setTargetDurationSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
-              />
-            </div>
-          </div>
-        )}
-
-        {type === 'interval' && (
-          <div className="ps-metric p-3 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <label htmlFor="default-work" className="text-sm">
-                Work seconds (optional)
-              </label>
-              <input
-                id="default-work"
-                type="number"
-                value={defaultWorkSeconds}
-                onChange={e => setDefaultWorkSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="default-rest" className="text-sm">
-                Rest seconds (optional)
-              </label>
-              <input
-                id="default-rest"
-                type="number"
-                value={defaultRestSeconds}
-                onChange={e => setDefaultRestSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="default-rounds" className="text-sm">
-                Rounds (optional)
-              </label>
-              <input
-                id="default-rounds"
-                type="number"
-                value={defaultRounds}
-                onChange={e => setDefaultRounds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
-              />
-            </div>
-          </div>
-        )}
+        {typeFields()}
       </div>
     </Sheet>
   )

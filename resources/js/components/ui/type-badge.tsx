@@ -1,12 +1,6 @@
 import { Badge } from './badge'
 import type { ExerciseType } from '@/api/types'
-
-const TYPE_LABELS: Record<ExerciseType, string> = {
-  resistance: 'Resistance',
-  timed_hold: 'Timed Hold',
-  distance: 'Distance',
-  interval: 'Interval',
-}
+import { EXERCISE_TYPES } from '@/lib/exercise-types'
 
 const TYPE_TONE: Record<ExerciseType, 'primary' | 'secondary' | 'accent' | 'neutral'> = {
   resistance: 'primary',
@@ -20,5 +14,5 @@ export interface TypeBadgeProps {
 }
 
 export function TypeBadge({ type }: TypeBadgeProps) {
-  return <Badge tone={TYPE_TONE[type] || 'neutral'}>{TYPE_LABELS[type]}</Badge>
+  return <Badge tone={TYPE_TONE[type] || 'neutral'}>{EXERCISE_TYPES[type].label}</Badge>
 }

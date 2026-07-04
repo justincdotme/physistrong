@@ -18,6 +18,8 @@ export interface EquipmentType {
 
 export type ExerciseType = 'resistance' | 'timed_hold' | 'distance' | 'interval'
 
+export type PrimaryMetric = 'weight' | 'reps' | 'duration' | 'distance' | 'completed_rounds'
+
 export interface Exercise {
   id: string
   userId: string | null
@@ -195,6 +197,7 @@ export interface ExerciseProgressData {
   volume: { date: string; value: number }[]
   records: ProgressRecord[]
   type: ExerciseType
+  primaryMetric: PrimaryMetric
 }
 
 export type TimeRange = '1M' | '3M' | '6M' | '1Y' | 'All'

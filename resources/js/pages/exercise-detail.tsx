@@ -9,9 +9,9 @@ import { TypeBadge } from '@/components/ui/type-badge'
 import { Badge } from '@/components/ui/badge'
 import { InlineEdit } from '@/components/ui/inline-edit'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
-import { formatDuration } from '@/lib/formatters'
 import {
   getExercise,
   updateExercise as updateExerciseApi,
@@ -108,21 +108,7 @@ export function ExerciseDetailPage() {
   }
 
   const isOwned = ex.userId !== null
-  const attrs: Array<[string, string]> = []
-
-  if (ex.type === 'resistance') {
-    attrs.push(['Bodyweight base', ex.bodyweightBase ? 'Yes' : 'No'])
-    attrs.push(['Allows added weight', ex.allowsAddedWeight ? 'Yes' : 'No'])
-    attrs.push(['Bilateral', ex.bilateral ? 'Yes' : 'No (single-arm/leg)'])
-  } else if (ex.type === 'timed_hold') {
-    if (ex.targetDurationSeconds) {
-      attrs.push(['Target duration', formatDuration(ex.targetDurationSeconds)])
-    }
-  } else if (ex.type === 'interval') {
-    attrs.push(['Default work', formatDuration(ex.defaultWorkSeconds)])
-    attrs.push(['Default rest', formatDuration(ex.defaultRestSeconds)])
-    attrs.push(['Default rounds', String(ex.defaultRounds || '—')])
-  }
+  const attrs = EXERCISE_TYPES[ex.type].attributeRows(ex)
 
   return (
     <div dusk="exercise-detail-page">
