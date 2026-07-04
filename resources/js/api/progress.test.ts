@@ -252,6 +252,26 @@ describe('transformProgressData', () => {
     expect(result.type).toBe('interval')
   })
 
+  it('passes the API primary_metric through to primaryMetric', () => {
+    const progress: RawProgressResponse = {
+      exercise_id: 1,
+      exercise_type: 'resistance',
+      range: '6m',
+      primary_metric: 'reps',
+      data_points: [],
+    }
+
+    const records: RawRecordsResponse = {
+      exercise_id: 1,
+      exercise_type: 'resistance',
+      records: {},
+    }
+
+    const result = transformProgressData(progress, records, 'imperial')
+
+    expect(result.primaryMetric).toBe('reps')
+  })
+
   it('handles unknown record keys with fallback label', () => {
     const progress: RawProgressResponse = {
       exercise_id: 1,

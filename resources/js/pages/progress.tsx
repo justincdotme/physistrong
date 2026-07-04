@@ -5,15 +5,10 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { ProgressPanel } from './exercise-progress'
 import { listExercises } from '@/api/exercises'
+import { TYPE_OPTIONS } from '@/lib/exercise-types'
 import type { TimeRange } from '@/api/types'
 
-const TYPES: Array<{ value: string; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'resistance', label: 'Resistance' },
-  { value: 'timed_hold', label: 'Hold' },
-  { value: 'distance', label: 'Distance' },
-  { value: 'interval', label: 'Interval' },
-]
+const TYPES = [{ value: 'all', label: 'All' }, ...TYPE_OPTIONS]
 
 const RANGES: Array<{ value: TimeRange; label: string }> = [
   { value: '1M', label: '1M' },

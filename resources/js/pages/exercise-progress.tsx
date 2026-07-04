@@ -7,9 +7,8 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { ProgressLineChart, VolumeBarChart } from '@/components/app/charts'
 import { useExerciseProgress } from '@/hooks/use-exercise-progress'
 import { useAuth } from '@/hooks/use-auth'
-import { unitLabel } from '@/lib/units'
+import { METRIC_DISPLAY } from '@/lib/exercise-types'
 import { getExercise } from '@/api/exercises'
-import { formatDuration } from '@/lib/formatters'
 import type { TimeRange } from '@/api/types'
 
 const RANGES: Array<{ value: TimeRange; label: string }> = [
@@ -32,24 +31,10 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
   if (!ex || !user || isLoading) return null
 
   const isResistance = ex.type === 'resistance'
-  const isHold = ex.type === 'timed_hold'
-  const weightUnit = unitLabel(user.measurementSystem, 'weight')
-  const distUnit = unitLabel(user.measurementSystem, 'distance')
-  const yLabel = isResistance
-    ? `Top set (${weightUnit})`
-    : isHold
-      ? 'Duration'
-      : ex.type === 'distance'
-        ? `Distance (${distUnit})`
-        : 'Rounds'
-  const valueFormatter = isHold ? (v: number) => formatDuration(Math.round(v)) : undefined
-  const unit = isResistance
-    ? weightUnit
-    : ex.type === 'distance'
-      ? distUnit
-      : ex.type === 'interval'
-        ? 'rounds'
-        : ''
+  const display = METRIC_DISPLAY[data.primaryMetric]
+  const yLabel = display.yLabel(user.measurementSystem)
+  const unit = display.unit(user.measurementSystem)
+  const valueFormatter = display.valueFormatter
 
   return (
     <>

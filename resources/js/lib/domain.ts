@@ -1,11 +1,4 @@
-import type { Exercise, EquipmentType, Workout, WorkoutEntry, ExerciseType } from '@/api/types'
-
-export const TYPE_LABELS: Record<ExerciseType, string> = {
-  resistance: 'Resistance',
-  timed_hold: 'Timed Hold',
-  distance: 'Distance / Time',
-  interval: 'Interval',
-}
+import type { Exercise, EquipmentType, Workout, WorkoutEntry } from '@/api/types'
 
 export function entryHasActual(e: WorkoutEntry): boolean {
   if (e.loadMetric || e.repMetric) {

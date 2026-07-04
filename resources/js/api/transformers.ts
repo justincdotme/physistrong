@@ -11,6 +11,7 @@ import type {
   TemplateExercise,
 } from '@/api/types'
 import type { MeasurementSystem } from '@/lib/units'
+import { assertNever } from '@/lib/utils'
 
 export interface RawUser {
   id: number
@@ -77,7 +78,7 @@ export function toExercise(raw: RawExercise): Exercise {
   const attrs = raw.type_attributes
   if (!attrs) return exercise
 
-  switch (raw.type) {
+  switch (exercise.type) {
     case 'resistance':
       exercise.bodyweightBase = attrs.bodyweight_base as boolean
       exercise.allowsAddedWeight = attrs.allows_added_weight as boolean
@@ -94,6 +95,8 @@ export function toExercise(raw: RawExercise): Exercise {
       exercise.defaultRestSeconds = (attrs.default_rest_seconds as number) ?? null
       exercise.defaultRounds = (attrs.default_rounds as number) ?? null
       break
+    default:
+      return assertNever(exercise.type)
   }
 
   return exercise

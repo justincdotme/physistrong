@@ -1,5 +1,12 @@
 import { api } from './client'
-import type { ExerciseProgressData, ExerciseType, ProgressPoint, ProgressRecord } from './types'
+import type {
+  ExerciseProgressData,
+  ExerciseType,
+  ProgressPoint,
+  ProgressRecord,
+  PrimaryMetric,
+} from './types'
+import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { formatDuration } from '@/lib/formatters'
 import { unitLabel } from '@/lib/units'
 import type { MeasurementSystem } from '@/lib/units'
@@ -109,6 +116,7 @@ export function transformProgressData(
     volume,
     records: recordsList,
     type: progress.exercise_type,
+    primaryMetric: progress.primary_metric as PrimaryMetric,
   }
 }
 
@@ -116,14 +124,7 @@ export function extractAllTimeBest(
   records: RawRecordsResponse,
   exerciseType: ExerciseType
 ): number | null {
-  const recordKeyMap: Record<ExerciseType, string> = {
-    resistance: 'reps',
-    timed_hold: 'duration',
-    distance: 'distance',
-    interval: 'completed_rounds',
-  }
-
-  const key = recordKeyMap[exerciseType]
+  const key = EXERCISE_TYPES[exerciseType].recordKey
   const record = records.records[key]
   return record?.value ?? null
 }

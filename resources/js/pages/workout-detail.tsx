@@ -22,6 +22,7 @@ import {
 import { toMetricsPayload } from '@/api/transformers'
 import type { CreateEntryPayload, AssignEntryPayload } from '@/api/workouts'
 import { fetchRecords, extractAllTimeBest } from '@/api/progress'
+import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { useAuth } from '@/hooks/use-auth'
 import { formatDuration } from '@/lib/formatters'
@@ -91,67 +92,11 @@ function buildBlocks(entries: WorkoutEntry[], groups: EntryGroup[]): Block[] {
 }
 
 function defaultEntryPayload(ex: Exercise, setOrder: number): CreateEntryPayload {
-  const base: CreateEntryPayload = {
+  return {
     exercise_id: Number(ex.id),
     set_order: setOrder,
-    metrics: {},
+    metrics: EXERCISE_TYPES[ex.type].defaultEntryMetrics(ex),
   }
-
-  if (ex.type === 'resistance') {
-    base.metrics = {
-      load: {
-        target_weight: null,
-        actual_weight: null,
-        bodyweight_only: !!ex.bodyweightBase,
-      },
-      reps: {
-        target_reps: null,
-        actual_reps: null,
-        to_failure: false,
-        failure_rep: null,
-      },
-    }
-  } else if (ex.type === 'timed_hold') {
-    base.metrics = {
-      duration: {
-        target_duration_seconds: null,
-        actual_duration_seconds: null,
-      },
-    }
-  } else if (ex.type === 'distance') {
-    base.metrics = {
-      distance: {
-        target_distance: null,
-        actual_distance: null,
-        lap_count: null,
-        stroke_count: null,
-      },
-      duration: {
-        target_duration_seconds: null,
-        actual_duration_seconds: null,
-      },
-    }
-  } else if (ex.type === 'interval') {
-    const n = ex.defaultRounds || 8
-    const rounds = Array.from({ length: n }, (_, k) => ({
-      round_number: k + 1,
-      actual_work_seconds: null,
-      actual_rest_seconds: null,
-      heart_rate_avg: null,
-      heart_rate_peak: null,
-    }))
-    base.metrics = {
-      interval_header: {
-        programmed_rounds: n,
-        completed_rounds: 0,
-        target_work_seconds: ex.defaultWorkSeconds || 60,
-        target_rest_seconds: ex.defaultRestSeconds || 60,
-        rounds,
-      },
-    }
-  }
-
-  return base
 }
 
 function ExerciseHeader({

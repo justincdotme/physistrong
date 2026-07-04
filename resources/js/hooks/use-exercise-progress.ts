@@ -9,6 +9,7 @@ const EMPTY: ExerciseProgressData = {
   volume: [],
   records: [],
   type: 'resistance',
+  primaryMetric: 'weight',
 }
 
 export function useExerciseProgress(exerciseId: string, range: TimeRange) {
