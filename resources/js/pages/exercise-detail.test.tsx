@@ -152,5 +152,34 @@ describe('ExerciseDetailPage', () => {
       const deleteButton = screen.getByRole('button', { name: /delete/i })
       expect(deleteButton).toBeDisabled()
     })
+
+    it('disables delete for an exercise with logged data but no workout/template usage', async () => {
+      const entryOnlyId = '9003'
+
+      server.use(
+        http.get(`/api/v1/exercises/${entryOnlyId}`, () =>
+          HttpResponse.json({
+            data: {
+              ...fixtureShowResistance.data,
+              id: entryOnlyId,
+              usage_count: 0,
+              has_logged_data: true,
+            },
+          })
+        )
+      )
+
+      renderWithProviders(<ExerciseDetailPage />, {
+        path: 'exercises/:id',
+        route: `/exercises/${entryOnlyId}`,
+      })
+
+      await screen.findByText(exerciseName)
+
+      // Entry-only usage: usage_count is 0 but has_logged_data is true, so
+      // deleting would 409. The guard must disable on the logged-data signal.
+      const deleteButton = screen.getByRole('button', { name: /delete/i })
+      expect(deleteButton).toBeDisabled()
+    })
   })
 })

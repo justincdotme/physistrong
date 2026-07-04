@@ -20,10 +20,7 @@ class StoreWorkoutEntryRequest extends FormRequest
         return array_merge([
             'exercise_id' => [
                 'required',
-                Rule::exists('exercises', 'id')->where(function ($query) {
-                    $query->whereNull('user_id')
-                        ->orWhere('user_id', $this->user()->id);
-                }),
+                Rule::exists('exercises', 'id')->where(Exercise::visibilityConstraint($this->user())),
             ],
             'set_order' => ['required', 'integer', 'min:0'],
             'notes' => ['sometimes', 'nullable', 'string'],

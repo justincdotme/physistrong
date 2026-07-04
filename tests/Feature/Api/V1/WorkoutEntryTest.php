@@ -49,7 +49,7 @@ class WorkoutEntryTest extends TestCase
         return $exercise;
     }
 
-    // -- Store --
+    // Store
 
     public function test_creates_entry_with_resistance_metrics(): void
     {
@@ -340,7 +340,7 @@ class WorkoutEntryTest extends TestCase
             ->assertJsonValidationErrors('set_order');
     }
 
-    // -- Index --
+    // Index
 
     public function test_lists_entries_for_workout(): void
     {
@@ -364,7 +364,7 @@ class WorkoutEntryTest extends TestCase
         $this->assertEquals(2, $response->json('data.2.set_order'));
     }
 
-    // -- Show --
+    // Show
 
     public function test_shows_single_entry_with_metrics(): void
     {
@@ -393,7 +393,7 @@ class WorkoutEntryTest extends TestCase
             ->assertJsonPath('data.metrics.load.actual_weight', '95.00');
     }
 
-    // -- Update --
+    // Update
 
     public function test_updates_entry_base_fields(): void
     {
@@ -498,7 +498,7 @@ class WorkoutEntryTest extends TestCase
         $this->assertDatabaseHas('log_rep_metrics', ['entry_id' => $entry->id]);
     }
 
-    // -- Destroy --
+    // Destroy
 
     public function test_deletes_entry(): void
     {
@@ -545,7 +545,7 @@ class WorkoutEntryTest extends TestCase
         $this->assertDatabaseMissing('log_rep_metrics', ['id' => $repMetric->id]);
     }
 
-    // -- Reorder --
+    // Reorder
 
     public function test_reorders_entries(): void
     {
@@ -669,7 +669,7 @@ class WorkoutEntryTest extends TestCase
         $this->assertDatabaseHas('workout_entries', ['id' => $entry3->id, 'set_order' => 2]);
     }
 
-    // -- Scoped Binding --
+    // Scoped Binding
 
     public function test_scoped_binding_rejects_entry_from_other_workout(): void
     {
@@ -689,7 +689,7 @@ class WorkoutEntryTest extends TestCase
             ->assertStatus(404);
     }
 
-    // -- Auth --
+    // Auth
 
     public function test_cannot_create_entry_on_other_users_workout(): void
     {
@@ -706,7 +706,23 @@ class WorkoutEntryTest extends TestCase
         ])->assertStatus(403);
     }
 
-    // -- Group Fields --
+    public function test_cannot_log_entry_against_another_users_exercise(): void
+    {
+        $owner = User::factory()->create();
+        $foreignExercise = $this->createExercise($owner, 'resistance');
+
+        $actor = User::factory()->create();
+        Passport::actingAs($actor);
+        $workout = Workout::factory()->create(['user_id' => $actor->id]);
+
+        $this->postJson("/api/v1/workouts/{$workout->id}/entries", [
+            'exercise_id' => $foreignExercise->id,
+            'set_order' => 0,
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors('exercise_id');
+    }
+
+    // Group Fields
 
     public function test_creates_entry_with_group_assignment(): void
     {

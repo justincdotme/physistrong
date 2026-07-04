@@ -17,7 +17,7 @@ class EquipmentTypePolicy
 
     public function view(User $user, EquipmentType $equipmentType): bool
     {
-        return $equipmentType->is_system || $equipmentType->user_id === $user->id;
+        return $equipmentType->isVisibleTo($user);
     }
 
     public function create(User $user): bool

@@ -8,7 +8,9 @@ use App\Models\EquipmentType;
 use App\Models\Exercise;
 use App\Models\User;
 use App\Models\Workout;
+use App\Models\WorkoutEntry;
 use App\Models\WorkoutTemplate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -367,6 +369,33 @@ class ExerciseTest extends TestCase
             ->assertStatus(403);
     }
 
+    #[DataProvider('exerciseTypeProvider')]
+    public function test_create_then_update_round_trip_per_type(string $type, array $typeAttributes): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user);
+
+        $created = $this->postJson('/api/v1/exercises', [
+            'name' => 'Round Trip',
+            'type' => $type,
+            'type_attributes' => $typeAttributes,
+        ])->assertStatus(201);
+
+        $response = $this->putJson("/api/v1/exercises/{$created->json('data.id')}", [
+            'name' => 'Round Trip',
+            'type_attributes' => $typeAttributes,
+        ])->assertOk();
+
+        foreach ($typeAttributes as $key => $value) {
+            $response->assertJsonPath("data.type_attributes.{$key}", $value);
+        }
+    }
+
+    public function test_lazy_loading_prevention_is_enabled_outside_production(): void
+    {
+        $this->assertTrue(Model::preventsLazyLoading());
+    }
+
     // Destroy
 
     public function test_deletes_own_exercise(): void
@@ -415,6 +444,34 @@ class ExerciseTest extends TestCase
         $this->deleteJson("/api/v1/exercises/{$exercise->id}")
             ->assertStatus(409);
 
+        $this->assertDatabaseHas('exercises', ['id' => $exercise->id]);
+    }
+
+    public function test_entry_only_usage_agrees_across_index_show_and_destroy(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Entry Only']);
+        Passport::actingAs($user);
+
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        WorkoutEntry::create([
+            'workout_id' => $workout->id,
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+
+        $row = collect($this->getJson('/api/v1/exercises')->assertOk()->json('data'))
+            ->firstWhere('id', $exercise->id);
+        $this->assertSame(0, $row['usage_count']);
+        $this->assertTrue($row['has_logged_data']);
+
+        $this->getJson("/api/v1/exercises/{$exercise->id}")
+            ->assertOk()
+            ->assertJsonPath('data.usage_count', 0)
+            ->assertJsonPath('data.has_logged_data', true);
+
+        $this->deleteJson("/api/v1/exercises/{$exercise->id}")
+            ->assertStatus(409);
         $this->assertDatabaseHas('exercises', ['id' => $exercise->id]);
     }
 

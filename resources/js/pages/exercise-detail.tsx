@@ -218,7 +218,7 @@ export function ExerciseDetailPage() {
 
       {isOwned &&
         (() => {
-          const inUse = ex.usageCount > 0
+          const inUse = ex.usageCount > 0 || ex.hasLoggedData
           return (
             <>
               <div className="flex items-center gap-2">
@@ -228,7 +228,13 @@ export function ExerciseDetailPage() {
                     if (!inUse) setDeleting(true)
                   }}
                   disabled={inUse}
-                  title={inUse ? `In use by ${ex.usageCount} workout(s)` : undefined}
+                  title={
+                    inUse
+                      ? ex.usageCount > 0
+                        ? `In use by ${ex.usageCount} workout(s)`
+                        : 'Has logged workout data'
+                      : undefined
+                  }
                   className={`inline-flex items-center gap-2 text-sm font-semibold px-3 h-11 rounded-lg ${
                     inUse
                       ? 'text-text-muted opacity-50 cursor-not-allowed'
