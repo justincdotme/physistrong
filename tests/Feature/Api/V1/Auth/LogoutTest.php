@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Api\V1\Auth;
 
 use App\Models\User;
-use App\Services\AuthTokenCookie;
+use App\Services\AuthTokenCookieService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -21,7 +21,7 @@ class LogoutTest extends TestCase
 
         $this->postJson('/api/v1/logout')
             ->assertNoContent()
-            ->assertCookieExpired(AuthTokenCookie::NAME);
+            ->assertCookieExpired(AuthTokenCookieService::NAME);
     }
 
     public function test_rejects_unauthenticated_request(): void

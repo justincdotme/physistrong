@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Services\TokenBlacklist;
+use App\Services\TokenBlacklistService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\Token;
@@ -25,7 +25,7 @@ class RebuildTokenBlacklistTest extends TestCase
 
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $this->assertTrue(app(TokenBlacklist::class)->has($token->getKey()));
+        $this->assertTrue(app(TokenBlacklistService::class)->has($token->getKey()));
     }
 
     public function test_skips_expired_revoked_tokens(): void
@@ -39,7 +39,7 @@ class RebuildTokenBlacklistTest extends TestCase
 
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $this->assertFalse(app(TokenBlacklist::class)->has($token->getKey()));
+        $this->assertFalse(app(TokenBlacklistService::class)->has($token->getKey()));
     }
 
     public function test_skips_unrevoked_tokens(): void
@@ -53,7 +53,7 @@ class RebuildTokenBlacklistTest extends TestCase
 
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $this->assertFalse(app(TokenBlacklist::class)->has($token->getKey()));
+        $this->assertFalse(app(TokenBlacklistService::class)->has($token->getKey()));
     }
 
     public function test_sets_ttl_to_remaining_token_lifetime(): void
@@ -90,7 +90,7 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $this->assertTrue(app(TokenBlacklist::class)->has($token->getKey()));
+        $this->assertTrue(app(TokenBlacklistService::class)->has($token->getKey()));
     }
 
     public function test_handles_mix_of_token_states(): void
@@ -114,7 +114,7 @@ class RebuildTokenBlacklistTest extends TestCase
 
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $blacklist = app(TokenBlacklist::class);
+        $blacklist = app(TokenBlacklistService::class);
         $this->assertTrue($blacklist->has($revokedUnexpired->getKey()));
         $this->assertFalse($blacklist->has($revokedExpired->getKey()));
         $this->assertFalse($blacklist->has($activeUnexpired->getKey()));

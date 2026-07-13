@@ -7,7 +7,7 @@ namespace App\Services;
 use DateTimeInterface;
 use Illuminate\Contracts\Cache\Repository as Cache;
 
-class TokenBlacklist
+class TokenBlacklistService
 {
     private const KEY_PREFIX = 'auth:revoked-jti:';
 

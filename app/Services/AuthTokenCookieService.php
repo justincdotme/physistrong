@@ -7,7 +7,7 @@ namespace App\Services;
 use DateTimeInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 
-class AuthTokenCookie
+class AuthTokenCookieService
 {
     public const NAME = 'ps_token';
 

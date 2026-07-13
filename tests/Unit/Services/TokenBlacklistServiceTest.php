@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Services\TokenBlacklist;
+use App\Services\TokenBlacklistService;
 use Tests\TestCase;
 
-class TokenBlacklistTest extends TestCase
+class TokenBlacklistServiceTest extends TestCase
 {
     public function test_expired_tokens_write_no_blacklist_entry(): void
     {
-        $blacklist = app(TokenBlacklist::class);
+        $blacklist = app(TokenBlacklistService::class);
 
         $blacklist->add('live-token-jti', now()->addDay());
         $blacklist->add('expired-token-jti', now()->subSecond());

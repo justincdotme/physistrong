@@ -446,24 +446,37 @@ export function WorkoutDetailPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
 
-  const pendingUpdates = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+  const pendingUpdates = useRef(
+    new Map<string, { timer: ReturnType<typeof setTimeout>; entry: WorkoutEntry }>()
+  )
+
+  const flushPendingUpdates = useCallback(() => {
+    const pending = pendingUpdates.current
+    pending.forEach(({ timer, entry }) => {
+      clearTimeout(timer)
+      updateEntry(workoutId, entry.id, { metrics: toMetricsPayload(entry) })
+    })
+    pending.clear()
+  }, [workoutId])
 
   useEffect(() => {
-    const timers = pendingUpdates.current
-    return () => {
-      timers.forEach(t => clearTimeout(t))
-    }
-  }, [])
+    return () => flushPendingUpdates()
+  }, [flushPendingUpdates])
 
   const invalidateWorkout = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: workoutQueries.detail(workoutId).queryKey })
   }, [queryClient, workoutId])
+
+  const invalidateWorkoutList = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: workoutQueries.base, exact: true })
+  }, [queryClient])
 
   const updateWorkoutMutation = useMutation({
     mutationFn: (payload: Parameters<typeof updateWorkoutApi>[1]) =>
       updateWorkoutApi(workoutId, payload),
     onSuccess: data => {
       queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
+      invalidateWorkoutList()
     },
     onError: () => toast('Could not save. Try again.', 'error'),
   })
@@ -486,6 +499,7 @@ export function WorkoutDetailPage() {
     },
     onSuccess: () => {
       invalidateWorkout()
+      invalidateWorkoutList()
       toast('Exercise added.')
     },
     onError: () => toast('Could not add exercise. Try again.', 'error'),
@@ -505,6 +519,7 @@ export function WorkoutDetailPage() {
           }
         }
       )
+      invalidateWorkoutList()
       toast('Exercise removed.')
     },
     onError: () => toast('Could not remove exercise. Try again.', 'error'),
@@ -519,7 +534,10 @@ export function WorkoutDetailPage() {
 
   const addSetMutation = useMutation({
     mutationFn: (payload: CreateEntryPayload) => createEntry(workoutId, payload),
-    onSuccess: invalidateWorkout,
+    onSuccess: () => {
+      invalidateWorkout()
+      invalidateWorkoutList()
+    },
     onError: () => toast('Could not add set. Try again.', 'error'),
   })
 
@@ -533,6 +551,7 @@ export function WorkoutDetailPage() {
           return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
         }
       )
+      invalidateWorkoutList()
     },
     onError: () => toast('Could not remove set. Try again.', 'error'),
   })
@@ -556,6 +575,10 @@ export function WorkoutDetailPage() {
           }
         }
       )
+    },
+    onError: () => {
+      toast('Could not save. Try again.', 'error')
+      invalidateWorkout()
     },
   })
 
@@ -614,7 +637,7 @@ export function WorkoutDetailPage() {
     (entryId: string, entry: WorkoutEntry) => {
       const pending = pendingUpdates.current
       const existing = pending.get(entryId)
-      if (existing) clearTimeout(existing)
+      if (existing) clearTimeout(existing.timer)
 
       const timer = setTimeout(() => {
         pending.delete(entryId)
@@ -623,7 +646,7 @@ export function WorkoutDetailPage() {
           payload: { metrics: toMetricsPayload(entry) },
         })
       }, 800)
-      pending.set(entryId, timer)
+      pending.set(entryId, { timer, entry })
     },
     [updateEntryMutation]
   )

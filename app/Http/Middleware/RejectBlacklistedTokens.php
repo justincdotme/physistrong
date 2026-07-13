@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\TokenBlacklist;
+use App\Services\TokenBlacklistService;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RejectBlacklistedTokens
 {
-    public function __construct(private TokenBlacklist $blacklist) {}
+    public function __construct(private TokenBlacklistService $blacklist) {}
 
     /**
      * @throws AuthenticationException

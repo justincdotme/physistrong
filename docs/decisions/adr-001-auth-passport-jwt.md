@@ -45,7 +45,7 @@ We will use Laravel Passport with OAuth2 + JWT for authentication.
 The JTI blacklist is implemented behind Laravel's cache layer rather
 than raw Redis commands:
 
-- `App\Services\TokenBlacklist` writes `auth:revoked-jti:{jti}`
+- `App\Services\TokenBlacklistService` writes `auth:revoked-jti:{jti}`
   entries through the default cache store with the entry expiry set
   to the token's `expires_at`. The deployed stack sets
   `CACHE_STORE=redis` (cache connection, Redis database 1), so
@@ -69,7 +69,7 @@ The blacklist is rebuildable from the database:
 
 - `php artisan auth:rebuild-token-blacklist` scans `oauth_access_tokens`
   for revoked, unexpired rows and re-adds each JTI through
-  `App\Services\TokenBlacklist`, deriving each entry's TTL from the
+  `App\Services\TokenBlacklistService`, deriving each entry's TTL from the
   token's remaining lifetime. The command is idempotent.
 - Run it after any Redis restart, flush, or cache-database wipe. It is
   also scheduled hourly (`routes/console.php`) as self-healing, so a
@@ -85,7 +85,7 @@ Web delivery is cookie-only as of PS-91:
   `ps_token` cookie flagged `HttpOnly`, `Secure`, and `SameSite=Lax`,
   path-scoped to `/api/v1`, with the cookie lifetime matching the token
   lifetime. The token no longer appears in any response body.
-  `App\Services\AuthTokenCookie` is the single source for the name,
+  `App\Services\AuthTokenCookieService` is the single source for the name,
   path, and flags; `App\Http\Responses\AuthTokenResponse` builds the
   login and register responses.
 - `App\Http\Middleware\AuthenticateViaTokenCookie` (prepended to the

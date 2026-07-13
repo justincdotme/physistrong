@@ -95,6 +95,7 @@ export function TemplateEditorPage() {
       attachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
       toast('Exercise added.')
     },
   })
@@ -104,6 +105,7 @@ export function TemplateEditorPage() {
       detachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
     },
   })
 
@@ -111,6 +113,7 @@ export function TemplateEditorPage() {
     mutationFn: ({ ids }: { ids: string[] }) => reorderExercisesApi(templateId ?? '', ids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
     },
   })
 
@@ -156,6 +159,7 @@ export function TemplateEditorPage() {
     mutationFn: (groupId: string) => deleteTemplateGroup(templateId ?? '', groupId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
       toast('Group removed.')
     },
     onError: () => toast('Could not ungroup. Try again.', 'error'),

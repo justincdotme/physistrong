@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\AuthTokenCookie;
+use App\Services\AuthTokenCookieService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +13,7 @@ class AuthenticateViaTokenCookie
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $token = $request->cookie(AuthTokenCookie::NAME);
+        $token = $request->cookie(AuthTokenCookieService::NAME);
 
         // The header always wins so bearer clients (curl, the future mobile
         // app) behave exactly as before the cookie existed.

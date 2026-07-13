@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Services\AuthTokenCookie;
-use App\Services\TokenBlacklist;
+use App\Services\AuthTokenCookieService;
+use App\Services\TokenBlacklistService;
 use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,7 +14,7 @@ use Laravel\Passport\AccessToken;
 
 class LogoutController extends Controller
 {
-    public function __invoke(Request $request, TokenBlacklist $blacklist): Response
+    public function __invoke(Request $request, TokenBlacklistService $blacklist): Response
     {
         $token = $request->user()->currentAccessToken();
 
@@ -30,6 +30,6 @@ class LogoutController extends Controller
             $token->revoke();
         }
 
-        return response()->noContent()->withCookie(AuthTokenCookie::expire());
+        return response()->noContent()->withCookie(AuthTokenCookieService::expire());
     }
 }

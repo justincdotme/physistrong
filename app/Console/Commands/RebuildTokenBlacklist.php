@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Services\TokenBlacklist;
+use App\Services\TokenBlacklistService;
 use Illuminate\Console\Command;
 use Laravel\Passport\Token;
 
@@ -14,7 +14,7 @@ class RebuildTokenBlacklist extends Command
 
     protected $description = 'Restore revoked-token blacklist entries from the database';
 
-    public function handle(TokenBlacklist $blacklist): int
+    public function handle(TokenBlacklistService $blacklist): int
     {
         $count = 0;
 

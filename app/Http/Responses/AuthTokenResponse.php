@@ -6,7 +6,7 @@ namespace App\Http\Responses;
 
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
-use App\Services\AuthTokenCookie;
+use App\Services\AuthTokenCookieService;
 use Illuminate\Http\JsonResponse;
 
 class AuthTokenResponse
@@ -17,6 +17,6 @@ class AuthTokenResponse
 
         return response()->json([
             'user' => new UserResource($user),
-        ], $status)->withCookie(AuthTokenCookie::issue($token->accessToken, now()->addSeconds($token->expiresIn)));
+        ], $status)->withCookie(AuthTokenCookieService::issue($token->accessToken, now()->addSeconds($token->expiresIn)));
     }
 }

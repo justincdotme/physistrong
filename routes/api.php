@@ -21,8 +21,6 @@ use App\Http\Controllers\Api\V1\WorkoutTemplateController;
 use App\Http\Middleware\RejectBlacklistedTokens;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/health', fn () => response()->json(['status' => 'ok']));
-
 // Login and forgot-password rate-limit in the controller (incremented on failure, reset on success) to allow legitimate retries; register and password reset use global middleware limits.
 Route::post('/register', RegisterController::class)->middleware('throttle:auth');
 Route::post('/login', LoginController::class);
