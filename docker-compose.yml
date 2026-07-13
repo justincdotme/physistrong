@@ -18,6 +18,7 @@ services:
       start_period: 20s
     networks:
       - app-network
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
@@ -29,6 +30,7 @@ services:
       start_period: 5s
     networks:
       - app-network
+    restart: unless-stopped
 
   # PHP services read all Laravel configuration from the bind-mounted .env. Do
   # not add config as `environment:` here: OS-level env vars override .env and
@@ -65,6 +67,7 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    restart: unless-stopped
 
   worker:
     build:
@@ -84,6 +87,7 @@ services:
         condition: service_started
     networks:
       - app-network
+    restart: unless-stopped
 
   scheduler:
     build:
@@ -103,6 +107,7 @@ services:
         condition: service_started
     networks:
       - app-network
+    restart: unless-stopped
 
   nginx:
     build:
@@ -120,6 +125,7 @@ services:
       - app
     networks:
       - app-network
+    restart: unless-stopped
 
   selenium:
     image: selenium/standalone-chrome:latest

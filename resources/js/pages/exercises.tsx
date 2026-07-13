@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { Search, Plus, Trash2 } from 'lucide-react'
+import { extractFieldErrors } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -12,12 +13,17 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Sheet } from '@/components/ui/sheet'
 import { Toggle } from '@/components/ui/toggle'
+import { useDeleteConfirm } from '@/hooks/use-delete-confirm'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import { assertNever } from '@/lib/utils'
 import { EXERCISE_TYPES, TYPE_OPTIONS } from '@/lib/exercise-types'
-import { listExercises, createExercise, deleteExercise as deleteExerciseApi } from '@/api/exercises'
-import { listEquipment } from '@/api/equipment'
+import {
+  exerciseQueries,
+  createExercise,
+  deleteExercise as deleteExerciseApi,
+} from '@/api/exercises'
+import { equipmentQueries } from '@/api/equipment'
 import type { Exercise, ExerciseType, EquipmentType } from '@/api/types'
 import type { CreateExercisePayload } from '@/api/exercises'
 
@@ -28,10 +34,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient()
   const { toast } = useApp()
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const [name, setName] = useState('')
   const [notes, setNotes] = useState('')
@@ -49,22 +52,16 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const createMutation = useMutation({
     mutationFn: createExercise,
     onSuccess: exercise => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise created.')
       onClose()
       navigate(`/exercises/${exercise.id}`)
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 422) {
-        const fieldErrors = error.response.data?.errors as Record<string, string[]> | undefined
-        if (fieldErrors) {
-          const mapped: Record<string, string> = {}
-          for (const [key, messages] of Object.entries(fieldErrors)) {
-            if (messages[0]) mapped[key] = messages[0]
-          }
-          setErrors(mapped)
-          return
-        }
+      const mapped = extractFieldErrors(error)
+      if (Object.keys(mapped).length) {
+        setErrors(mapped)
+        return
       }
       toast('Could not create exercise. Try again.', 'error')
     },
@@ -218,7 +215,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
     >
       <div className="flex flex-col gap-4">
         <div>
-          <label htmlFor="exercise-name" className="label-caps text-text-secondary block mb-1.5">
+          <label htmlFor="exercise-name" className="form-label">
             Name
           </label>
           <input
@@ -232,7 +229,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         <div>
-          <label htmlFor="exercise-notes" className="label-caps text-text-secondary block mb-1.5">
+          <label htmlFor="exercise-notes" className="form-label">
             Notes (optional)
           </label>
           <textarea
@@ -247,7 +244,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
 
         <div>
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label id="exercise-type-label" className="label-caps text-text-secondary block mb-1.5">
+          <label id="exercise-type-label" className="form-label">
             Type
           </label>
           <div
@@ -278,10 +275,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         <div>
-          <label
-            htmlFor="exercise-equipment"
-            className="label-caps text-text-secondary block mb-1.5"
-          >
+          <label htmlFor="exercise-equipment" className="form-label">
             Equipment
           </label>
           <select
@@ -310,20 +304,14 @@ export function ExercisesPage() {
   const queryClient = useQueryClient()
   const { toast } = useApp()
 
-  const { data: exercises = [], isLoading } = useQuery({
-    queryKey: ['exercises'],
-    queryFn: listExercises,
-  })
+  const { data: exercises = [], isLoading } = useQuery(exerciseQueries.list())
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const deleteMutation = useMutation({
     mutationFn: deleteExerciseApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise deleted.')
     },
     onError: error => {
@@ -335,11 +323,12 @@ export function ExercisesPage() {
     },
   })
 
+  const deleteConfirm = useDeleteConfirm<Exercise>(ex => deleteMutation.mutate(ex.id))
+
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
   const [equip, setEquip] = useState('all')
   const [showCreate, setShowCreate] = useState(false)
-  const [deleting, setDeleting] = useState<Exercise | null>(null)
 
   const filtered = exercises.filter(
     e =>
@@ -443,7 +432,7 @@ export function ExercisesPage() {
                       <button
                         onClick={e => {
                           e.stopPropagation()
-                          if (!inUse) setDeleting(ex)
+                          if (!inUse) deleteConfirm.request(ex)
                         }}
                         disabled={inUse}
                         title={
@@ -491,16 +480,13 @@ export function ExercisesPage() {
 
       {showCreate && <CreateExerciseSheet onClose={() => setShowCreate(false)} />}
       <ConfirmDialog
-        open={!!deleting}
+        {...deleteConfirm.dialogProps}
         title="Delete exercise?"
-        message={deleting ? `"${deleting.name}" will be removed from your catalog.` : ''}
-        onCancel={() => setDeleting(null)}
-        onConfirm={() => {
-          if (deleting) {
-            deleteMutation.mutate(deleting.id)
-            setDeleting(null)
-          }
-        }}
+        message={
+          deleteConfirm.target
+            ? `"${deleteConfirm.target.name}" will be removed from your catalog.`
+            : ''
+        }
       />
     </div>
   )

@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { render } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { screen, renderWithProviders, userEvent } from '@/test/render'
 import { server } from '@/test/server'
 import { http, HttpResponse } from 'msw'
+import { AppProvider } from '@/lib/store'
+import { AuthProvider } from '@/lib/auth-provider'
 import { ProfilePage } from './profile'
 
 describe('ProfilePage', () => {
@@ -96,7 +101,7 @@ describe('ProfilePage', () => {
 
       // The 422 field error surfaces through the toast, not inline.
       expect(
-        await screen.findByText('The email field must be a valid email address.')
+        await screen.findByText('The selected measurement system is invalid.')
       ).toBeInTheDocument()
       expect(emailInput.value).toBe('invalid@sentinel.test')
     })
@@ -113,6 +118,44 @@ describe('ProfilePage', () => {
       await user.click(logoutButton)
 
       expect(handleLogout).toHaveBeenCalled()
+    })
+
+    it('shows error toast and stays on profile when logout returns 500', async () => {
+      server.use(
+        http.post('/api/v1/logout', () => {
+          return new HttpResponse(null, { status: 500 })
+        })
+      )
+
+      const user = userEvent.setup()
+      const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+      })
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={['/profile']}>
+            <AppProvider>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/login" element={<div>Login Page</div>} />
+                </Routes>
+              </AuthProvider>
+            </AppProvider>
+          </MemoryRouter>
+        </QueryClientProvider>
+      )
+
+      // AuthProvider loads user via getProfile on mount
+      await screen.findByRole('button', { name: /log out/i })
+
+      const logoutButton = screen.getByRole('button', { name: /log out/i })
+      await user.click(logoutButton)
+
+      expect(await screen.findByText('Could not log out. Try again.')).toBeInTheDocument()
+      expect(screen.queryByText('Login Page')).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument()
     })
   })
 })

@@ -5,6 +5,7 @@ import { api } from '@/api/client'
 import { screen } from '@testing-library/react'
 import { renderWithProviders } from './render'
 import { server } from './server'
+import equipmentList from './mocks/fixtures/equipment/list.json'
 
 interface EquipmentType {
   id: number
@@ -51,8 +52,9 @@ describe('MSW infrastructure smoke test', () => {
 
     expect(screen.getByText('Loading equipment...')).toBeInTheDocument()
 
-    const barbeElement = await screen.findByText('barbell')
-    expect(barbeElement).toBeInTheDocument()
+    const firstEquipment = equipmentList.data[0]
+    if (!firstEquipment) throw new Error('equipment fixture is empty')
+    expect(await screen.findByText(firstEquipment.name)).toBeInTheDocument()
   })
 
   it('allows per-test handler overrides via server.use()', async () => {

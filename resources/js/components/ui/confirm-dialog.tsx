@@ -1,3 +1,4 @@
+import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from './button'
 
 export interface ConfirmDialogProps {
@@ -19,30 +20,40 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  if (!open) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="ps-backdrop absolute inset-0 bg-black/50"
-        role="presentation"
-        onClick={onCancel}
-        onKeyDown={e => {
-          if (e.key === 'Escape') onCancel()
-        }}
-      />
-      <div className="ps-card ps-page relative w-full max-w-[360px] p-5">
-        <h3 className="font-semibold text-base mb-1">{title}</h3>
-        {message && <p className="text-text-secondary text-sm mb-5">{message}</p>}
-        <div className="flex gap-2 justify-end">
-          <Button variant="secondary" size="sm" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button variant={destructive ? 'destructive' : 'primary'} size="sm" onClick={onConfirm}>
-            {confirmLabel}
-          </Button>
-        </div>
-      </div>
-    </div>
+    <Dialog.Root open={open} onOpenChange={v => !v && onCancel()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="ps-backdrop fixed inset-0 z-50 bg-black/50" />
+        <Dialog.Content
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ pointerEvents: 'none' }}
+        >
+          <div
+            className="ps-card ps-page relative w-full max-w-[360px] p-5"
+            style={{ pointerEvents: 'auto' }}
+          >
+            <Dialog.Title className="font-semibold text-base mb-1">{title}</Dialog.Title>
+            {message && (
+              <Dialog.Description className="text-text-secondary text-sm mb-5">
+                {message}
+              </Dialog.Description>
+            )}
+            <div className="flex gap-2 justify-end">
+              <Button variant="secondary" size="sm" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button
+                variant={destructive ? 'destructive' : 'primary'}
+                size="sm"
+                onClick={onConfirm}
+              >
+                {confirmLabel}
+              </Button>
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }

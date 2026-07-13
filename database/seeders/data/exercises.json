@@ -30,7 +30,7 @@
   {
     "name": "Ab Roller",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "ab roller",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -256,7 +256,7 @@
   {
     "name": "Atlas Stone Trainer",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "atlas stone",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -266,7 +266,7 @@
   {
     "name": "Atlas Stones",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "atlas stone",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -276,7 +276,7 @@
   {
     "name": "Axle Deadlift",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "log bar",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -316,7 +316,7 @@
   {
     "name": "Balance Board",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "balance board",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -656,7 +656,7 @@
   {
     "name": "Battling Ropes",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "battle rope",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -666,7 +666,7 @@
   {
     "name": "Bear Crawl Sled Drags",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -2032,7 +2032,7 @@
   {
     "name": "Dips - Chest Version",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "dip station",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": true,
@@ -2042,7 +2042,7 @@
   {
     "name": "Dips - Triceps Version",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "dip station",
     "attributes": {
       "bodyweight_base": true,
       "allows_added_weight": true,
@@ -3608,7 +3608,7 @@
   {
     "name": "Keg Load",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "keg",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -3794,7 +3794,7 @@
   {
     "name": "Knee/Hip Raise On Parallel Bars",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "parallel bars",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -4136,7 +4136,7 @@
   {
     "name": "Log Lift",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "log bar",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -5168,7 +5168,7 @@
   {
     "name": "Parallel Bar Dip",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "parallel bars",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": true,
@@ -5418,7 +5418,7 @@
   {
     "name": "Prowler Sprint",
     "type": "distance",
-    "equipment": null,
+    "equipment": "prowler sled",
     "attributes": {
       "tracks_elevation": false
     }
@@ -5824,7 +5824,7 @@
   {
     "name": "Ring Dips",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "dip station",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": true,
@@ -5884,7 +5884,7 @@
   {
     "name": "Rope Climb",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "rope",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -5904,7 +5904,7 @@
   {
     "name": "Rope Jumping",
     "type": "distance",
-    "equipment": null,
+    "equipment": "rope",
     "attributes": {
       "tracks_elevation": false
     }
@@ -5964,7 +5964,7 @@
   {
     "name": "Sandbag Load",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sandbag",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6676,7 +6676,7 @@
   {
     "name": "Sled Drag - Harness",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6686,7 +6686,7 @@
   {
     "name": "Sled Overhead Backward Walk",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6696,7 +6696,7 @@
   {
     "name": "Sled Overhead Triceps Extension",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6706,7 +6706,7 @@
   {
     "name": "Sled Push",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6716,7 +6716,7 @@
   {
     "name": "Sled Reverse Flye",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6726,7 +6726,7 @@
   {
     "name": "Sled Row",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -6736,7 +6736,7 @@
   {
     "name": "Sledgehammer Swings",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "sled",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -7912,7 +7912,7 @@
   {
     "name": "Tire Flip",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "tire",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -8398,7 +8398,7 @@
   {
     "name": "Wrist Roller",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "wrist roller",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,
@@ -8418,7 +8418,7 @@
   {
     "name": "Yoke Walk",
     "type": "resistance",
-    "equipment": null,
+    "equipment": "yoke",
     "attributes": {
       "bodyweight_base": false,
       "allows_added_weight": false,

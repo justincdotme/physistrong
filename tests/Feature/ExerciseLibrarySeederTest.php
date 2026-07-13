@@ -78,6 +78,78 @@ class ExerciseLibrarySeederTest extends TestCase
         );
     }
 
+    public function test_every_equipment_reference_resolves_to_a_catalog_entry(): void
+    {
+        $catalog = $this->fixtureEquipment();
+        $exercises = $this->fixtureExercises();
+
+        $unresolvedNames = [];
+        foreach ($exercises as $exercise) {
+            if ($exercise['equipment'] !== null && ! in_array($exercise['equipment'], $catalog, true)) {
+                $unresolvedNames[] = "{$exercise['name']} -> {$exercise['equipment']}";
+            }
+        }
+
+        $this->assertSame([], $unresolvedNames, 'exercises reference equipment types not in the catalog');
+    }
+
+    private const SPECIALTY_GEAR = [
+        'Sled Push' => 'sled',
+        'Sled Drag - Harness' => 'sled',
+        'Bear Crawl Sled Drags' => 'sled',
+        'Sled Overhead Triceps Extension' => 'sled',
+        'Sled Reverse Flye' => 'sled',
+        'Sled Row' => 'sled',
+        'Sledgehammer Swings' => 'sled',
+        'Sled Overhead Backward Walk' => 'sled',
+        'Dips - Chest Version' => 'dip station',
+        'Dips - Triceps Version' => 'dip station',
+        'Ring Dips' => 'dip station',
+        'Rope Climb' => 'rope',
+        'Rope Jumping' => 'rope',
+        'Atlas Stone Trainer' => 'atlas stone',
+        'Atlas Stones' => 'atlas stone',
+        'Log Lift' => 'log bar',
+        'Axle Deadlift' => 'log bar',
+        'Parallel Bar Dip' => 'parallel bars',
+        'Knee/Hip Raise On Parallel Bars' => 'parallel bars',
+        'Battling Ropes' => 'battle rope',
+        'Tire Flip' => 'tire',
+        'Sandbag Load' => 'sandbag',
+        'Keg Load' => 'keg',
+        'Yoke Walk' => 'yoke',
+        'Prowler Sprint' => 'prowler sled',
+        'Ab Roller' => 'ab roller',
+        'Wrist Roller' => 'wrist roller',
+        'Balance Board' => 'balance board',
+    ];
+
+    public function test_specialty_gear_exercises_resolve_to_correct_equipment(): void
+    {
+        $this->seedLibrary();
+
+        $equipmentIds = DB::table('equipment_types')
+            ->whereNull('user_id')
+            ->pluck('id', 'name');
+
+        $mismatches = [];
+        foreach (self::SPECIALTY_GEAR as $exerciseName => $equipmentName) {
+            $expectedId = $equipmentIds[$equipmentName] ?? null;
+            if ($expectedId === null) {
+                $mismatches[] = "equipment type '{$equipmentName}' missing from catalog";
+
+                continue;
+            }
+
+            $actualId = DB::table('exercises')->where('name', $exerciseName)->value('equipment_type_id');
+            if ($actualId !== $expectedId) {
+                $mismatches[] = "'{$exerciseName}' resolves to ".var_export($actualId, true).", expected '{$equipmentName}'";
+            }
+        }
+
+        $this->assertSame([], $mismatches);
+    }
+
     public function test_reseeding_is_idempotent(): void
     {
         $this->seedLibrary();

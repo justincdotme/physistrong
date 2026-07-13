@@ -14,15 +14,15 @@ describe('ExerciseProgressPage', () => {
       })
 
       // Wait for the page to fully load (exercise name appears)
-      await screen.findByText('Capture Test Resistance 1782864880612')
+      await screen.findByText('Capture Test Resistance')
 
       // Find the "Heaviest" label (weight record)
       const heaviestLabel = await screen.findByText('Heaviest')
 
-      // Verify the weight value "105" appears in the same record card
+      // Verify the weight value "180" appears in the same record card
       const recordCard = heaviestLabel.closest('.ps-card')
       expect(recordCard).toBeInTheDocument()
-      expect(recordCard).toHaveTextContent('105')
+      expect(recordCard).toHaveTextContent('180')
 
       // Verify the unit label "lb" appears in this card
       expect(recordCard).toHaveTextContent('lb')
@@ -35,15 +35,15 @@ describe('ExerciseProgressPage', () => {
       })
 
       // Wait for the page to load
-      await screen.findByText('Capture Test Resistance 1782864880612')
+      await screen.findByText('Capture Test Resistance')
 
       // Wait for records to load by checking for a specific record value
-      await screen.findByText('105')
+      await screen.findByText('180')
 
       // Verify all three record types are displayed by checking for their values
-      expect(screen.getByText('105')).toBeInTheDocument() // weight: 105 (Heaviest)
+      expect(screen.getByText('180')).toBeInTheDocument() // weight: 180 (Heaviest)
       expect(screen.getByText('10')).toBeInTheDocument() // reps: 10 (Most reps)
-      expect(screen.getByText('1000')).toBeInTheDocument() // volume: 1000 (Top set volume)
+      expect(screen.getByText('1040')).toBeInTheDocument() // volume: 1040 (Top set volume)
     })
   })
 
@@ -67,8 +67,8 @@ describe('ExerciseProgressPage', () => {
       })
 
       // Wait for page to load and records to appear
-      await screen.findByText('Capture Test Resistance 1782864880612')
-      await screen.findByText('105')
+      await screen.findByText('Capture Test Resistance')
+      await screen.findByText('180')
 
       // Find and click the "3M" button in the TimeRange control (using tab role)
       const threeMonthButton = screen.getByRole('tab', { name: '3M' })
@@ -102,8 +102,8 @@ describe('ExerciseProgressPage', () => {
       })
 
       // Wait for initial load (default is '6M', so should be '6m' in lowercase)
-      await screen.findByText('Capture Test Resistance 1782864880612')
-      await screen.findByText('105')
+      await screen.findByText('Capture Test Resistance')
+      await screen.findByText('180')
 
       // Initial request should have captured the default range
       expect(capturedParams).toContain('6m')

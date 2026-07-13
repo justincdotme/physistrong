@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (amended 2026-07-02 with PS-90 implementation notes, 2026-07-03 with PS-91 cookie delivery)
+Accepted (amended 2026-07-02 with PS-90 implementation notes, 2026-07-03 with PS-91 cookie delivery, 2026-07-13 with PS-124 blacklist rebuild)
 
 ## Date
 
@@ -62,6 +62,20 @@ than raw Redis commands:
   rebuilt from the database after a Redis flush (PS-124).
 - A Redis flush does not resurrect logged-out tokens today because
   the database `revoked` flag still rejects them.
+
+## Implementation Notes (2026-07-13, PS-124)
+
+The blacklist is rebuildable from the database:
+
+- `php artisan auth:rebuild-token-blacklist` scans `oauth_access_tokens`
+  for revoked, unexpired rows and re-adds each JTI through
+  `App\Services\TokenBlacklist`, deriving each entry's TTL from the
+  token's remaining lifetime. The command is idempotent.
+- Run it after any Redis restart, flush, or cache-database wipe. It is
+  also scheduled hourly (`routes/console.php`) as self-healing, so a
+  missed manual run heals within the hour.
+- This closes the prerequisite for removing Passport's per-request
+  database lookup; that removal remains future work.
 
 ## Implementation Notes (2026-07-03, PS-91)
 

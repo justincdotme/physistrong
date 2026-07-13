@@ -13,11 +13,11 @@ import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import {
-  getExercise,
+  exerciseQueries,
   updateExercise as updateExerciseApi,
   deleteExercise as deleteExerciseApi,
 } from '@/api/exercises'
-import { listEquipment } from '@/api/equipment'
+import { equipmentQueries } from '@/api/equipment'
 import type { UpdateExercisePayload } from '@/api/exercises'
 
 function AttrRow({ label, value }: { label: string; value: string }) {
@@ -37,18 +37,11 @@ export function ExerciseDetailPage() {
   const [deleting, setDeleting] = useState(false)
 
   const { data: ex, isLoading } = useQuery({
-    queryKey: ['exercises', id],
-    queryFn: () => {
-      if (!id) throw new Error('Exercise ID is required')
-      return getExercise(id)
-    },
+    ...exerciseQueries.detail(id ?? ''),
     enabled: !!id,
   })
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const updateMutation = useMutation({
     mutationFn: (payload: UpdateExercisePayload) => {
@@ -56,7 +49,7 @@ export function ExerciseDetailPage() {
       return updateExerciseApi(id, payload)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise updated.')
     },
     onError: () => {
@@ -70,7 +63,7 @@ export function ExerciseDetailPage() {
       return deleteExerciseApi(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise deleted.')
       navigate('/exercises')
     },

@@ -181,6 +181,113 @@ class TemplateEntryGroupTest extends TestCase
         ]);
     }
 
+    public function test_assign_exercises_rejects_nonexistent_exercise_id(): void
+    {
+        $user = User::factory()->create();
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $group = TemplateEntryGroup::create([
+            'template_id' => $template->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->postJson(
+            "/api/v1/templates/{$template->id}/groups/{$group->id}/exercises",
+            ['exercise_ids' => [999]]
+        )->assertStatus(422)
+            ->assertJsonValidationErrors('exercise_ids.0');
+    }
+
+    public function test_assign_exercises_rejects_exercise_from_another_template(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'Bench');
+        $template1 = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template2 = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template1->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $group = TemplateEntryGroup::create([
+            'template_id' => $template2->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->postJson(
+            "/api/v1/templates/{$template2->id}/groups/{$group->id}/exercises",
+            ['exercise_ids' => [$exercise->id]]
+        )->assertStatus(422)
+            ->assertJsonValidationErrors('exercise_ids.0');
+    }
+
+    public function test_assign_exercises_rejects_duplicate_ids(): void
+    {
+        $user = User::factory()->create();
+        $exercise = $this->createExercise($user, 'Bench');
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        $group = TemplateEntryGroup::create([
+            'template_id' => $template->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->postJson(
+            "/api/v1/templates/{$template->id}/groups/{$group->id}/exercises",
+            ['exercise_ids' => [$exercise->id, $exercise->id]]
+        )->assertStatus(422)
+            ->assertJsonValidationErrors('exercise_ids.0');
+    }
+
+    public function test_assign_exercises_succeeds_with_valid_subset(): void
+    {
+        $user = User::factory()->create();
+        $ex1 = $this->createExercise($user, 'Bench');
+        $ex2 = $this->createExercise($user, 'Row');
+        $ex3 = $this->createExercise($user, 'Curl');
+        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template->exercises()->attach($ex1->id, ['exercise_order' => 0]);
+        $template->exercises()->attach($ex2->id, ['exercise_order' => 1]);
+        $template->exercises()->attach($ex3->id, ['exercise_order' => 2]);
+
+        $group = TemplateEntryGroup::create([
+            'template_id' => $template->id,
+            'planned_rounds' => 3,
+            'rest_between_exercises_seconds' => 30,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->postJson(
+            "/api/v1/templates/{$template->id}/groups/{$group->id}/exercises",
+            ['exercise_ids' => [$ex1->id, $ex3->id]]
+        )->assertOk();
+
+        $this->assertDatabaseHas('template_exercises', [
+            'template_id' => $template->id,
+            'exercise_id' => $ex1->id,
+            'template_entry_group_id' => $group->id,
+        ]);
+
+        $this->assertDatabaseHas('template_exercises', [
+            'template_id' => $template->id,
+            'exercise_id' => $ex3->id,
+            'template_entry_group_id' => $group->id,
+        ]);
+
+        $this->assertDatabaseHas('template_exercises', [
+            'template_id' => $template->id,
+            'exercise_id' => $ex2->id,
+            'template_entry_group_id' => null,
+        ]);
+    }
+
     public function test_removes_exercise_from_group(): void
     {
         $user = User::factory()->create();

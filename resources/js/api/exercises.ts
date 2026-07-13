@@ -1,6 +1,28 @@
+import { queryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import { toExercise, type RawExercise } from './transformers'
+import { fetchRecords, fetchProgress } from './progress'
 import type { Exercise, ExerciseType } from './types'
+
+export const exerciseQueries = {
+  base: ['exercises'] as const,
+  list: () => queryOptions({ queryKey: ['exercises'] as const, queryFn: listExercises }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: ['exercises', id] as const,
+      queryFn: () => getExercise(id),
+    }),
+  records: (id: string) =>
+    queryOptions({
+      queryKey: ['exercises', id, 'records'] as const,
+      queryFn: () => fetchRecords(id),
+    }),
+  progress: (id: string, range: string) =>
+    queryOptions({
+      queryKey: ['exercises', id, 'progress', range] as const,
+      queryFn: () => fetchProgress(id, range),
+    }),
+}
 
 export interface CreateExercisePayload {
   name: string

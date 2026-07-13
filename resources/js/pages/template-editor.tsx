@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash2, Plus, Route, Check } from 'lucide-react'
 import type { WorkoutTemplate, TemplateExercise, TemplateEntryGroup } from '@/api/types'
 import {
-  getTemplate,
+  templateQueries,
   updateTemplate as updateTemplateApi,
   deleteTemplate as deleteTemplateApi,
   attachExercise as attachExerciseApi,
@@ -14,12 +14,17 @@ import {
   deleteTemplateGroup,
   assignExercisesToGroup,
 } from '@/api/templates'
-import { listEquipment } from '@/api/equipment'
+import { equipmentQueries } from '@/api/equipment'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import { formatDuration } from '@/lib/formatters'
 import type { Exercise } from '@/api/types'
-import { PageHeader, Button, Card, TypeBadge, InlineEdit, ConfirmDialog } from '@/components/ui'
+import { PageHeader } from '@/components/ui/page-header'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { TypeBadge } from '@/components/ui/type-badge'
+import { InlineEdit } from '@/components/ui/inline-edit'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { ReorderList } from '@/components/app/reorderable'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
 import { GroupSelectBanner } from '@/components/app/group-select-banner'
@@ -62,28 +67,24 @@ export function TemplateEditorPage() {
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
 
   const { data: tpl, isLoading } = useQuery({
-    queryKey: ['templates', templateId],
-    queryFn: () => getTemplate(templateId ?? ''),
+    ...templateQueries.detail(templateId ?? ''),
     enabled: !!templateId,
   })
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const updateNameMutation = useMutation({
     mutationFn: ({ name }: { name: string }) => updateTemplateApi(templateId ?? '', { name }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteTemplateApi(templateId ?? ''),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
       toast('Template deleted.')
       navigate('/workouts')
     },
@@ -93,7 +94,7 @@ export function TemplateEditorPage() {
     mutationFn: ({ exerciseId }: { exerciseId: string }) =>
       attachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       toast('Exercise added.')
     },
   })
@@ -102,14 +103,14 @@ export function TemplateEditorPage() {
     mutationFn: ({ exerciseId }: { exerciseId: string }) =>
       detachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
     },
   })
 
   const reorderMutation = useMutation({
     mutationFn: ({ ids }: { ids: string[] }) => reorderExercisesApi(templateId ?? '', ids),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
     },
   })
 
@@ -143,7 +144,7 @@ export function TemplateEditorPage() {
       return assignExercisesToGroup(templateId ?? '', newGroup.id, exerciseIds)
     },
     onSuccess: data => {
-      queryClient.setQueryData(['templates', templateId], data)
+      queryClient.setQueryData(templateQueries.detail(templateId ?? '').queryKey, data)
       setSelectMode(false)
       setSelected([])
       toast('Group created.')
@@ -154,7 +155,7 @@ export function TemplateEditorPage() {
   const ungroupMutation = useMutation({
     mutationFn: (groupId: string) => deleteTemplateGroup(templateId ?? '', groupId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       toast('Group removed.')
     },
     onError: () => toast('Could not ungroup. Try again.', 'error'),

@@ -8,7 +8,7 @@ import { ProgressLineChart, VolumeBarChart } from '@/components/app/charts'
 import { useExerciseProgress } from '@/hooks/use-exercise-progress'
 import { useAuth } from '@/hooks/use-auth'
 import { METRIC_DISPLAY } from '@/lib/exercise-types'
-import { getExercise } from '@/api/exercises'
+import { exerciseQueries } from '@/api/exercises'
 import type { TimeRange } from '@/api/types'
 
 const RANGES: Array<{ value: TimeRange; label: string }> = [
@@ -21,8 +21,7 @@ const RANGES: Array<{ value: TimeRange; label: string }> = [
 
 export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range: TimeRange }) {
   const { data: ex } = useQuery({
-    queryKey: ['exercises', exerciseId],
-    queryFn: () => getExercise(exerciseId),
+    ...exerciseQueries.detail(exerciseId),
     enabled: !!exerciseId,
   })
   const { data, isLoading } = useExerciseProgress(exerciseId, range)
@@ -115,11 +114,7 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
 export function ExerciseProgressPage() {
   const { id } = useParams<{ id: string }>()
   const { data: ex, isLoading } = useQuery({
-    queryKey: ['exercises', id],
-    queryFn: () => {
-      if (!id) throw new Error('Exercise ID is required')
-      return getExercise(id)
-    },
+    ...exerciseQueries.detail(id ?? ''),
     enabled: !!id,
   })
   const navigate = useNavigate()
@@ -147,7 +142,7 @@ export function ExerciseProgressPage() {
         subtitle="Progress"
       />
       <div className="mb-5" dusk="time-range-selector">
-        <span className="label-caps text-text-secondary block mb-1.5">Time Range</span>
+        <span className="form-label">Time Range</span>
         <SegmentedControl
           size="sm"
           value={range}

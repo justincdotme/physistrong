@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/use-auth'
-import { fetchProgress, fetchRecords, transformProgressData } from '@/api/progress'
+import { exerciseQueries } from '@/api/exercises'
+import { transformProgressData } from '@/api/progress'
 import type { ExerciseProgressData } from '@/api/types'
 import type { TimeRange } from '@/api/types'
 
@@ -16,14 +17,12 @@ export function useExerciseProgress(exerciseId: string, range: TimeRange) {
   const { user } = useAuth()
 
   const progressQuery = useQuery({
-    queryKey: ['exercises', exerciseId, 'progress', range],
-    queryFn: () => fetchProgress(exerciseId, range),
+    ...exerciseQueries.progress(exerciseId, range),
     enabled: !!exerciseId,
   })
 
   const recordsQuery = useQuery({
-    queryKey: ['exercises', exerciseId, 'records'],
-    queryFn: () => fetchRecords(exerciseId),
+    ...exerciseQueries.records(exerciseId),
     enabled: !!exerciseId,
   })
 

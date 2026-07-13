@@ -1,78 +1,118 @@
 {
   "data": {
-    "id": 29,
+    "id": 3,
     "name": "Capture Test Workout",
-    "date": "2026-06-16",
+    "date": "2026-06-20",
     "exhaustion": null,
     "soreness": null,
     "exercises": [],
     "groups": [],
     "entries": [
       {
-        "id": 19,
-        "workout_id": 29,
-        "exercise_id": 895,
+        "id": 8,
+        "workout_id": 3,
+        "exercise_id": 879,
         "set_order": 1,
         "entry_group_id": null,
         "group_round": null,
         "notes": "First set",
         "exercise": {
-          "id": 895,
-          "name": "Capture Test Resistance 1782864880612",
-          "type": "resistance"
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
         },
-        "metrics": [],
+        "metrics": {
+          "load": {
+            "target_weight": "135.00",
+            "actual_weight": null,
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 8,
+            "actual_reps": null,
+            "to_failure": false,
+            "failure_rep": null
+          }
+        },
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z"
       },
       {
-        "id": 20,
-        "workout_id": 29,
-        "exercise_id": 895,
+        "id": 9,
+        "workout_id": 3,
+        "exercise_id": 879,
         "set_order": 2,
         "entry_group_id": null,
         "group_round": null,
         "notes": "Second set",
         "exercise": {
-          "id": 895,
-          "name": "Capture Test Resistance 1782864880612",
-          "type": "resistance"
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
         },
-        "metrics": [],
+        "metrics": {
+          "load": {
+            "target_weight": "135.00",
+            "actual_weight": null,
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 8,
+            "actual_reps": null,
+            "to_failure": false,
+            "failure_rep": null
+          }
+        },
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z"
       },
       {
-        "id": 21,
-        "workout_id": 29,
-        "exercise_id": 896,
+        "id": 10,
+        "workout_id": 3,
+        "exercise_id": 880,
         "set_order": 3,
         "entry_group_id": null,
         "group_round": null,
         "notes": null,
         "exercise": {
-          "id": 896,
-          "name": "Capture Test Hold 1782864880612",
-          "type": "timed_hold"
+          "id": 880,
+          "name": "Capture Test Hold",
+          "type": "timed_hold",
+          "equipment_type_id": 33
         },
-        "metrics": [],
+        "metrics": {
+          "duration": {
+            "target_duration_seconds": 60,
+            "actual_duration_seconds": null
+          }
+        },
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z"
       },
       {
-        "id": 22,
-        "workout_id": 29,
-        "exercise_id": 897,
+        "id": 11,
+        "workout_id": 3,
+        "exercise_id": 881,
         "set_order": 4,
         "entry_group_id": null,
         "group_round": null,
         "notes": null,
         "exercise": {
-          "id": 897,
-          "name": "Capture Test Distance 1782864880612",
-          "type": "distance"
+          "id": 881,
+          "name": "Capture Test Distance",
+          "type": "distance",
+          "equipment_type_id": 33
         },
-        "metrics": [],
+        "metrics": {
+          "distance": {
+            "target_distance": "5.00",
+            "actual_distance": null,
+            "lap_count": null,
+            "stroke_count": null
+          }
+        },
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z"
       }

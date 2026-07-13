@@ -51,22 +51,17 @@ describe('ExerciseDetailPage', () => {
         route: `/exercises/${exerciseId}`,
       })
 
-      // Wait for the exercise to load
       await screen.findByText(exerciseName)
 
-      // Click the edit button (inline edit on the title)
       const editButton = screen.getByLabelText('Exercise name')
       await user.click(editButton)
 
-      // Find the input field and clear it, then type a new name
       const input = screen.getByDisplayValue(exerciseName)
       await user.clear(input)
       await user.type(input, 'Updated Exercise Name')
 
-      // Press Enter to commit
       await user.keyboard('{Enter}')
 
-      // Wait for the mutation to complete and verify the payload
       await waitFor(() => {
         expect(updateWasCalled).toBe(true)
         expect(capturedPayload).toEqual({
@@ -99,23 +94,19 @@ describe('ExerciseDetailPage', () => {
         additionalRoutes: [{ path: 'exercises', element: <div>Exercises list</div> }],
       })
 
-      // Wait for the exercise to load
       await screen.findByText(exerciseName)
 
-      // Click the delete button (the first one, which is in the toolbar)
+      // Multiple delete buttons exist; the toolbar's is first in DOM order.
       const deleteButtons = screen.getAllByRole('button', { name: /delete/i })
       const deleteButton = deleteButtons[0]
       if (!deleteButton) throw new Error('Delete button not found')
       await user.click(deleteButton)
 
-      // Find and click the confirm button in the dialog (the second Delete button)
-      const deleteButtonsForConfirm = screen.getAllByRole('button', { name: /delete/i })
-      const confirmButton = deleteButtonsForConfirm[1]
-      if (!confirmButton) throw new Error('Confirm button not found')
+      // The modal dialog hides outside content from the a11y tree, so only
+      // the dialog's own Delete button is visible to getByRole.
+      const confirmButton = screen.getByRole('button', { name: /delete/i })
       await user.click(confirmButton)
 
-      // Verify the delete mutation was called and the app navigated away
-      // from the now-deleted exercise's detail page.
       await waitFor(() => {
         expect(deleteWasCalled).toBe(true)
       })
@@ -145,10 +136,9 @@ describe('ExerciseDetailPage', () => {
         route: `/exercises/${inUseId}`,
       })
 
-      // Wait for the exercise to load
       await screen.findByText(exerciseName)
 
-      // The delete button should be disabled because usage_count > 0
+      // usage_count > 0 means the exercise is in use
       const deleteButton = screen.getByRole('button', { name: /delete/i })
       expect(deleteButton).toBeDisabled()
     })

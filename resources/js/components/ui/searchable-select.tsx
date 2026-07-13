@@ -14,6 +14,8 @@ interface SearchableSelectProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  searchPlaceholder?: string
+  emptyMessage?: string
   className?: string
 }
 
@@ -22,6 +24,8 @@ export function SearchableSelect({
   value,
   onChange,
   placeholder = 'Select...',
+  searchPlaceholder = 'Search...',
+  emptyMessage = 'No results found',
   className,
 }: SearchableSelectProps) {
   const [open, setOpen] = useState(false)
@@ -49,7 +53,7 @@ export function SearchableSelect({
             'ps-input w-full pl-3 pr-10 py-3 text-sm font-semibold text-left relative cursor-pointer',
             className
           )}
-          dusk="exercise-picker-trigger"
+          dusk="searchable-select-trigger"
         >
           <span className="block truncate">{selected?.label ?? placeholder}</span>
           <ChevronDown
@@ -76,17 +80,15 @@ export function SearchableSelect({
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Search exercises..."
+                placeholder={searchPlaceholder}
                 className="ps-input w-full pl-8 pr-3 py-2 text-sm"
-                dusk="exercise-search-input"
+                dusk="searchable-select-search-input"
               />
             </div>
           </div>
           <div className="max-h-60 overflow-y-auto p-1">
             {filtered.length === 0 ? (
-              <div className="py-3 px-2 text-sm text-text-muted text-center">
-                No exercises found
-              </div>
+              <div className="py-3 px-2 text-sm text-text-muted text-center">{emptyMessage}</div>
             ) : (
               filtered.map(o => (
                 <button

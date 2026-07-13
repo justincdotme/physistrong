@@ -1,3 +1,4 @@
+import { queryOptions, infiniteQueryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import {
   toWorkoutListItem,
@@ -8,6 +9,36 @@ import {
   type RawWorkoutEntry,
 } from './transformers'
 import type { Workout, WorkoutEntry, WorkoutListItem } from './types'
+
+/**
+ * Cache-update convention for mutations:
+ *
+ * - Mutations whose response contains the complete updated resource write it
+ *   into the cache with setQueryData on that resource's detail key.
+ * - Anything that changes a collection's membership or ordering invalidates
+ *   the base key.
+ * - When in doubt, invalidate.
+ */
+export const workoutQueries = {
+  base: ['workouts'] as const,
+  list: () =>
+    infiniteQueryOptions({
+      queryKey: ['workouts'] as const,
+      queryFn: ({ pageParam }) => listWorkouts(pageParam),
+      getNextPageParam: (last: PaginatedResponse) => last.nextPage,
+      initialPageParam: 1,
+    }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: ['workouts', id] as const,
+      queryFn: () => getWorkout(id),
+    }),
+  picker: () =>
+    queryOptions({
+      queryKey: ['workouts', 'picker'] as const,
+      queryFn: () => listWorkouts(1),
+    }),
+}
 
 export interface CreateWorkoutPayload {
   name: string

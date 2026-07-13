@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One-command bring-up: self-signed TLS, environment, dependencies, frontend
-# assets, and the full stack with the database migrated. Safe to re-run.
+# assets and the full stack with the database migrated. Safe to re-run.
 #
 #   ./init.sh physistrong.justinc.srv
 set -euo pipefail
@@ -44,7 +44,10 @@ set_env SESSION_DOMAIN "$DOMAIN"
 set_env SESSION_SECURE_COOKIE "true"
 set_env CORS_ALLOWED_ORIGINS "https://$DOMAIN"
 set_env NGINX_SERVER_NAME "$DOMAIN"
-echo "    pinned HTTPS settings for $DOMAIN"
+set_env APP_ENV "production"
+set_env APP_DEBUG "false"
+set_env LOG_LEVEL "info"
+echo "    pinned HTTPS and production settings for $DOMAIN"
 
 echo "==> Git identity"
 git_user=$(git config user.name 2>/dev/null || true)
@@ -69,6 +72,13 @@ if ! grep -qE '^APP_KEY=base64:' .env; then
   $COMPOSE run --rm --no-deps app php artisan key:generate
 fi
 
+echo "==> Passport keys"
+if [ -f storage/oauth-private.key ]; then
+  echo "    present, skipping"
+else
+  $COMPOSE run --rm --no-deps app php artisan passport:keys
+fi
+
 echo "==> Building frontend assets"
 docker run --rm \
   --user "$(id -u):$(id -g)" \
@@ -80,6 +90,15 @@ docker run --rm \
 echo "==> Starting the stack"
 $COMPOSE up -d
 $COMPOSE restart nginx
+
+echo "==> Reference data and OAuth client"
+$COMPOSE exec -T app php artisan db:seed --class="Database\\Seeders\\EquipmentTypeSeeder" --force
+$COMPOSE exec -T app php artisan db:seed --class="Database\\Seeders\\ExerciseLibrarySeeder" --force
+if $COMPOSE exec -T app php artisan tinker --execute='echo \Laravel\Passport\Client::where("revoked", false)->get()->contains(fn ($c) => in_array("personal_access", $c->grant_types ?? [])) ? "yes" : "no";' | grep -q yes; then
+  echo "    personal access client present, skipping"
+else
+  $COMPOSE exec -T app php artisan passport:client --personal --name "Physistrong" --provider=users --no-interaction
+fi
 
 echo
 echo "Physistrong is starting at https://$DOMAIN"

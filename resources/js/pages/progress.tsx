@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { ProgressPanel } from './exercise-progress'
-import { listExercises } from '@/api/exercises'
+import { exerciseQueries } from '@/api/exercises'
 import { TYPE_OPTIONS } from '@/lib/exercise-types'
 import type { TimeRange } from '@/api/types'
 
@@ -19,10 +19,7 @@ const RANGES: Array<{ value: TimeRange; label: string }> = [
 ]
 
 export function ProgressPage() {
-  const { data: exercises = [] } = useQuery({
-    queryKey: ['exercises'],
-    queryFn: listExercises,
-  })
+  const { data: exercises = [] } = useQuery(exerciseQueries.list())
 
   const [type, setType] = useState('all')
   const [range, setRange] = useState<TimeRange>('6M')
@@ -46,7 +43,7 @@ export function ProgressPage() {
       </div>
 
       <div className="mb-5" dusk="exercise-picker">
-        <span className="label-caps text-text-secondary block mb-1.5">Exercise</span>
+        <span className="form-label">Exercise</span>
         <SearchableSelect
           options={visible.map(e => ({
             value: e.id,
@@ -56,13 +53,15 @@ export function ProgressPage() {
           value={selected}
           onChange={v => setExId(v)}
           placeholder="Select an exercise..."
+          searchPlaceholder="Search exercises..."
+          emptyMessage="No exercises found"
         />
       </div>
 
       {selected ? (
         <>
           <div className="mb-5" dusk="time-range-selector">
-            <span className="label-caps text-text-secondary block mb-1.5">Time Range</span>
+            <span className="form-label">Time Range</span>
             <SegmentedControl
               size="sm"
               value={range}

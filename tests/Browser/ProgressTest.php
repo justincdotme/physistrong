@@ -76,9 +76,9 @@ it('defaults to the first exercise with logged data', function () {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
-            ->waitFor('@exercise-picker-trigger')
+            ->waitFor('@searchable-select-trigger')
             ->pause(1000)
-            ->assertSeeIn('@exercise-picker-trigger', 'Barbell Squat')
+            ->assertSeeIn('@searchable-select-trigger', 'Barbell Squat')
             ->screenshot('progress-smart-default');
     });
 });
@@ -90,9 +90,9 @@ it('shows "no data yet" for exercises without logged entries', function () {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
-            ->click('@exercise-picker-trigger')
-            ->waitFor('@exercise-search-input')
-            ->assertSee('no data yet')
+            ->click('@searchable-select-trigger')
+            ->waitFor('@searchable-select-search-input')
+            ->waitForText('no data yet')
             ->screenshot('progress-no-data-indicator');
     });
 });
@@ -104,9 +104,9 @@ it('filters exercises when typing in the search field', function () {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
-            ->click('@exercise-picker-trigger')
-            ->waitFor('@exercise-search-input')
-            ->type('@exercise-search-input', 'Barbell Squat')
+            ->click('@searchable-select-trigger')
+            ->waitFor('@searchable-select-search-input')
+            ->type('@searchable-select-search-input', 'Barbell Squat')
             ->pause(300)
             ->assertSee('Barbell Squat')
             ->assertDontSee('Plank')
@@ -136,15 +136,15 @@ it('updates the chart when selecting an exercise from search', function () {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
-            ->waitFor('@exercise-picker-trigger')
+            ->waitFor('@searchable-select-trigger')
             ->pause(1000)
-            ->click('@exercise-picker-trigger')
-            ->waitFor('@exercise-search-input')
-            ->type('@exercise-search-input', 'Dumbbell Bench Press')
+            ->click('@searchable-select-trigger')
+            ->waitFor('@searchable-select-search-input')
+            ->type('@searchable-select-search-input', 'Dumbbell Bench Press')
             ->pause(300)
             ->press('Dumbbell Bench Press')
             ->pause(500)
-            ->assertSeeIn('@exercise-picker-trigger', 'Dumbbell Bench Press')
+            ->assertSeeIn('@searchable-select-trigger', 'Dumbbell Bench Press')
             ->waitFor('@progress-chart')
             ->screenshot('progress-search-select');
     });

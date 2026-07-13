@@ -125,6 +125,10 @@ it('exercise detail displays at phone width', function () {
         $browser->resize(375, 812)
             ->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
+            // The sticky header and fixed bottom nav can both overlap the
+            // card's click point at phone height; center it between them.
+            ->script("document.querySelector('[dusk=\"exercise-list\"] > *:first-child').scrollIntoView({block: 'center'})");
+        $browser->pause(300)
             ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')

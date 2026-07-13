@@ -3,13 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query'
 import { Trash2, Flame, Target, Plus, Calendar, Route, Check } from 'lucide-react'
 import type { WorkoutEntry, EntryGroup, Exercise, EquipmentType, Workout } from '@/api/types'
-import { listExercises } from '@/api/exercises'
-import { listEquipment } from '@/api/equipment'
+import { exerciseQueries } from '@/api/exercises'
+import { equipmentQueries } from '@/api/equipment'
 import {
-  getWorkout,
+  workoutQueries,
   updateWorkout as updateWorkoutApi,
   deleteWorkout as deleteWorkoutApi,
   attachExercise,
+  detachExercise,
   reorderExercises,
   createEntry,
   updateEntry,
@@ -21,22 +22,20 @@ import {
 } from '@/api/workouts'
 import { toMetricsPayload } from '@/api/transformers'
 import type { CreateEntryPayload, AssignEntryPayload } from '@/api/workouts'
-import { fetchRecords, extractAllTimeBest } from '@/api/progress'
+import { extractAllTimeBest } from '@/api/progress'
 import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { useAuth } from '@/hooks/use-auth'
 import { formatDuration } from '@/lib/formatters'
 import { workoutCompletion, exerciseById, equipmentName, groupRoundProgress } from '@/lib/domain'
-import {
-  PageHeader,
-  Button,
-  Card,
-  TypeBadge,
-  CompletionBar,
-  InlineEdit,
-  ConfirmDialog,
-  RatingSlider,
-} from '@/components/ui'
+import { PageHeader } from '@/components/ui/page-header'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { TypeBadge } from '@/components/ui/type-badge'
+import { CompletionBar } from '@/components/ui/completion-bar'
+import { InlineEdit } from '@/components/ui/inline-edit'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { RatingSlider } from '@/components/ui/rating-slider'
 import { ReorderList } from '@/components/app/reorderable'
 import { EntryMetrics } from '@/components/app/metric-inputs'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
@@ -335,6 +334,7 @@ function ExerciseBlockCard({
   onPatchEntry,
   onRemoveSet,
   onAddSet,
+  onRemoveExercise,
 }: {
   block: Block
   exercise: Exercise
@@ -346,13 +346,26 @@ function ExerciseBlockCard({
   onPatchEntry: (entryId: string, patch: Partial<WorkoutEntry>) => void
   onRemoveSet: (entryId: string) => void
   onAddSet: () => void
+  onRemoveExercise: () => void
 }) {
   return (
     <Card dusk="exercise-section" className="p-4">
       <ExerciseHeader
         exercise={exercise}
         handle={handle}
-        controls={controls}
+        controls={
+          <div className="flex items-center gap-1">
+            {controls}
+            <button
+              onClick={onRemoveExercise}
+              aria-label="Remove exercise"
+              title="Remove exercise"
+              className="h-10 w-10 flex items-center justify-center rounded-lg text-text-muted hover:text-destructive hover:bg-surface-muted"
+            >
+              <Trash2 size={17} />
+            </button>
+          </div>
+        }
         equipmentList={equipmentList}
       />
       <ReorderList
@@ -396,47 +409,39 @@ export function WorkoutDetailPage() {
   const { user } = useAuth()
 
   const { data: workout, isLoading } = useQuery({
-    queryKey: ['workouts', workoutId],
-    queryFn: () => getWorkout(workoutId),
+    ...workoutQueries.detail(workoutId),
     enabled: !!workoutId,
   })
 
-  const { data: exercises = [] } = useQuery({
-    queryKey: ['exercises'],
-    queryFn: listExercises,
-  })
+  const { data: exercises = [] } = useQuery(exerciseQueries.list())
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const exerciseIdsInWorkout = workout ? [...new Set(workout.entries.map(e => e.exerciseId))] : []
 
   const recordsQueries = useQueries({
     queries: exerciseIdsInWorkout.map(exId => ({
-      queryKey: ['exercises', exId, 'records'],
-      queryFn: async () => {
-        const records = await fetchRecords(exId)
-        return { exerciseId: exId, records }
-      },
+      ...exerciseQueries.records(exId),
       enabled: !!workout,
       staleTime: 1000 * 60 * 5,
     })),
   })
 
+  // useQueries preserves input order, so result i belongs to exerciseIdsInWorkout[i].
   const allTimeBestMap = new Map<string, number | null>()
-  recordsQueries.forEach(q => {
-    if (q.data) {
-      const ex = exerciseById(exercises, q.data.exerciseId)
+  recordsQueries.forEach((q, i) => {
+    const exId = exerciseIdsInWorkout[i]
+    if (q.data && exId) {
+      const ex = exerciseById(exercises, exId)
       if (ex) {
-        allTimeBestMap.set(q.data.exerciseId, extractAllTimeBest(q.data.records, ex.type))
+        allTimeBestMap.set(exId, extractAllTimeBest(q.data, ex.type))
       }
     }
   })
 
   const [exercisePickerOpen, setExercisePickerOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [confirmRemoveExerciseId, setConfirmRemoveExerciseId] = useState<string | null>(null)
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
@@ -451,14 +456,14 @@ export function WorkoutDetailPage() {
   }, [])
 
   const invalidateWorkout = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] })
+    queryClient.invalidateQueries({ queryKey: workoutQueries.detail(workoutId).queryKey })
   }, [queryClient, workoutId])
 
   const updateWorkoutMutation = useMutation({
     mutationFn: (payload: Parameters<typeof updateWorkoutApi>[1]) =>
       updateWorkoutApi(workoutId, payload),
     onSuccess: data => {
-      queryClient.setQueryData(['workouts', workoutId], data)
+      queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
     },
     onError: () => toast('Could not save. Try again.', 'error'),
   })
@@ -466,7 +471,7 @@ export function WorkoutDetailPage() {
   const deleteWorkoutMutation = useMutation({
     mutationFn: () => deleteWorkoutApi(workoutId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+      queryClient.invalidateQueries({ queryKey: workoutQueries.base })
       toast('Workout deleted.')
       navigate('/workouts')
     },
@@ -486,10 +491,29 @@ export function WorkoutDetailPage() {
     onError: () => toast('Could not add exercise. Try again.', 'error'),
   })
 
+  const detachExerciseMutation = useMutation({
+    mutationFn: (exerciseId: string) => detachExercise(workoutId, exerciseId),
+    onSuccess: (_data, exerciseId) => {
+      queryClient.setQueryData(
+        workoutQueries.detail(workoutId).queryKey,
+        (old: Workout | undefined) => {
+          if (!old) return old
+          return {
+            ...old,
+            exercises: old.exercises.filter(e => e.id !== exerciseId),
+            entries: old.entries.filter(e => e.exerciseId !== exerciseId),
+          }
+        }
+      )
+      toast('Exercise removed.')
+    },
+    onError: () => toast('Could not remove exercise. Try again.', 'error'),
+  })
+
   const reorderExercisesMutation = useMutation({
     mutationFn: (ids: string[]) => reorderExercises(workoutId, ids),
     onSuccess: data => {
-      queryClient.setQueryData(['workouts', workoutId], data)
+      queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
     },
   })
 
@@ -502,10 +526,13 @@ export function WorkoutDetailPage() {
   const deleteEntryMutation = useMutation({
     mutationFn: (entryId: string) => deleteEntry(workoutId, entryId),
     onSuccess: (_data, entryId) => {
-      queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
-        if (!old) return old
-        return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
-      })
+      queryClient.setQueryData(
+        workoutQueries.detail(workoutId).queryKey,
+        (old: Workout | undefined) => {
+          if (!old) return old
+          return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
+        }
+      )
     },
     onError: () => toast('Could not remove set. Try again.', 'error'),
   })
@@ -519,13 +546,16 @@ export function WorkoutDetailPage() {
       payload: Parameters<typeof updateEntry>[2]
     }) => updateEntry(workoutId, entryId, payload),
     onSuccess: updatedEntry => {
-      queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
-        if (!old) return old
-        return {
-          ...old,
-          entries: old.entries.map(e => (e.id === updatedEntry.id ? updatedEntry : e)),
+      queryClient.setQueryData(
+        workoutQueries.detail(workoutId).queryKey,
+        (old: Workout | undefined) => {
+          if (!old) return old
+          return {
+            ...old,
+            entries: old.entries.map(e => (e.id === updatedEntry.id ? updatedEntry : e)),
+          }
         }
-      })
+      )
     },
   })
 
@@ -563,7 +593,7 @@ export function WorkoutDetailPage() {
       return assignEntries(workoutId, newGroup.id, assignments)
     },
     onSuccess: data => {
-      queryClient.setQueryData(['workouts', workoutId], data)
+      queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
       setSelectMode(false)
       setSelected([])
       toast('Group created.')
@@ -600,13 +630,14 @@ export function WorkoutDetailPage() {
 
   const patchEntry = useCallback(
     (entryId: string, patch: Partial<WorkoutEntry>) => {
-      const oldWorkout = queryClient.getQueryData<Workout>(['workouts', workoutId])
+      const detailKey = workoutQueries.detail(workoutId).queryKey
+      const oldWorkout = queryClient.getQueryData<Workout>(detailKey)
       if (!oldWorkout) return
 
       const updatedEntries = oldWorkout.entries.map(e =>
         e.id === entryId ? { ...e, ...patch } : e
       )
-      queryClient.setQueryData(['workouts', workoutId], {
+      queryClient.setQueryData(detailKey, {
         ...oldWorkout,
         entries: updatedEntries,
       })
@@ -657,13 +688,16 @@ export function WorkoutDetailPage() {
     const allEntries = next.flatMap(b => b.entries)
     const ids = allEntries.map(e => e.id)
 
-    queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
-      if (!old) return old
-      return {
-        ...old,
-        entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+    queryClient.setQueryData(
+      workoutQueries.detail(workoutId).queryKey,
+      (old: Workout | undefined) => {
+        if (!old) return old
+        return {
+          ...old,
+          entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+        }
       }
-    })
+    )
 
     const exerciseIds = collectReorderExerciseIds(next, workout.exercises)
     if (exerciseIds.length > 1) {
@@ -677,13 +711,16 @@ export function WorkoutDetailPage() {
     const allEntries = newBlocks.flatMap(b => b.entries)
     const ids = allEntries.map(e => e.id)
 
-    queryClient.setQueryData(['workouts', workoutId], (old: Workout | undefined) => {
-      if (!old) return old
-      return {
-        ...old,
-        entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+    queryClient.setQueryData(
+      workoutQueries.detail(workoutId).queryKey,
+      (old: Workout | undefined) => {
+        if (!old) return old
+        return {
+          ...old,
+          entries: allEntries.map((e, idx) => ({ ...e, setOrder: idx })),
+        }
       }
-    })
+    )
 
     reorderEntriesMutation.mutate(ids)
   }
@@ -839,6 +876,7 @@ export function WorkoutDetailPage() {
                 onPatchEntry={patchEntry}
                 onRemoveSet={handleRemoveSet}
                 onAddSet={() => handleAddSet(block)}
+                onRemoveExercise={() => setConfirmRemoveExerciseId(ex.id)}
               />
             )
           }}
@@ -901,6 +939,19 @@ export function WorkoutDetailPage() {
         message="This session and its logged sets will be removed."
         onCancel={() => setConfirmDeleteOpen(false)}
         onConfirm={() => deleteWorkoutMutation.mutate()}
+      />
+      <ConfirmDialog
+        open={confirmRemoveExerciseId !== null}
+        title="Remove exercise?"
+        message="All logged sets for this exercise in this workout will be removed."
+        confirmLabel="Remove"
+        onCancel={() => setConfirmRemoveExerciseId(null)}
+        onConfirm={() => {
+          if (confirmRemoveExerciseId) {
+            detachExerciseMutation.mutate(confirmRemoveExerciseId)
+          }
+          setConfirmRemoveExerciseId(null)
+        }}
       />
     </div>
   )

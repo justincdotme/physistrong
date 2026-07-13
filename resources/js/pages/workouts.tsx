@@ -1,19 +1,18 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import { Plus, BarChart3, Layers, Check } from 'lucide-react'
 import type { WorkoutListItem } from '@/api/types'
-import { listWorkouts, createWorkout } from '@/api/workouts'
+import { workoutQueries, createWorkout } from '@/api/workouts'
 import { useApp } from '@/lib/use-app'
 import { formatDate } from '@/lib/formatters'
-import {
-  PageHeader,
-  SectionHeading,
-  EmptyState,
-  CompletionBar,
-  Button,
-  Card,
-} from '@/components/ui'
+import { PageHeader } from '@/components/ui/page-header'
+import { SectionHeading } from '@/components/ui/section-heading'
+import { EmptyState } from '@/components/ui/empty-state'
+import { CompletionBar } from '@/components/ui/completion-bar'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { NewWorkoutWizard } from '@/components/app/pickers'
 
 function WorkoutCard({ workout }: { workout: WorkoutListItem }) {
@@ -64,20 +63,26 @@ export function WorkoutsPage() {
 
   const [wizardOpen, setWizardOpen] = useState(false)
 
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['workouts'],
-    queryFn: ({ pageParam }) => listWorkouts(pageParam),
-    getNextPageParam: last => last.nextPage,
-    initialPageParam: 1,
-  })
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+    workoutQueries.list()
+  )
 
   const workouts = data?.pages?.flatMap(p => p.items) ?? []
   const total = data?.pages?.[0]?.total ?? 0
 
+  const listRef = useRef<HTMLDivElement>(null)
+  const virtualizer = useWindowVirtualizer({
+    count: workouts.length,
+    estimateSize: () => 90,
+    overscan: 5,
+    gap: 12,
+    scrollMargin: listRef.current?.offsetTop ?? 0,
+  })
+
   const createMutation = useMutation({
     mutationFn: createWorkout,
     onSuccess: workout => {
-      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+      queryClient.invalidateQueries({ queryKey: workoutQueries.base })
       toast('Workout started.')
       navigate(`/workouts/${workout.id}`)
     },
@@ -133,10 +138,33 @@ export function WorkoutsPage() {
       <section>
         <SectionHeading>History</SectionHeading>
         {workouts.length ? (
-          <div className="flex flex-col gap-3" dusk="workout-history">
-            {workouts.map(w => (
-              <WorkoutCard key={w.id} workout={w} />
-            ))}
+          <>
+            <div
+              ref={listRef}
+              dusk="workout-history"
+              style={{ height: virtualizer.getTotalSize(), position: 'relative' }}
+            >
+              {virtualizer.getVirtualItems().map(virtualItem => {
+                const workout = workouts[virtualItem.index]
+                if (!workout) return null
+                return (
+                  <div
+                    key={workout.id}
+                    data-index={virtualItem.index}
+                    ref={virtualizer.measureElement}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${virtualItem.start - virtualizer.options.scrollMargin}px)`,
+                    }}
+                  >
+                    <WorkoutCard workout={workout} />
+                  </div>
+                )
+              })}
+            </div>
             {hasNextPage && (
               <Button
                 full
@@ -148,7 +176,7 @@ export function WorkoutsPage() {
                 {isFetchingNextPage ? 'Loading...' : 'Load More'}
               </Button>
             )}
-          </div>
+          </>
         ) : (
           <div dusk="workouts-empty">
             <EmptyState
@@ -172,13 +200,13 @@ export function WorkoutsPage() {
         onCreateEmpty={startEmpty}
         onCloneSuccess={workoutId => {
           setWizardOpen(false)
-          queryClient.invalidateQueries({ queryKey: ['workouts'] })
+          queryClient.invalidateQueries({ queryKey: workoutQueries.base })
           toast('Workout started from template.')
           navigate(`/workouts/${workoutId}`)
         }}
         onCopySuccess={workoutId => {
           setWizardOpen(false)
-          queryClient.invalidateQueries({ queryKey: ['workouts'] })
+          queryClient.invalidateQueries({ queryKey: workoutQueries.base })
           toast('Workout copied.')
           navigate(`/workouts/${workoutId}`)
         }}
