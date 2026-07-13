@@ -19,7 +19,7 @@ class ExerciseProgressService
         $primaryMetric = $this->resolvePrimaryMetric($exercise);
         $startDate = $this->resolveStartDate($range);
 
-        $allEntries = $this->queryDataPoints($exercise, $user, $primaryMetric, null);
+        $allEntries = $this->queryDataPoints($exercise, $user, $primaryMetric);
         $prEntryIds = $this->detectPRs($allEntries);
 
         $rangeEntries = $startDate
@@ -135,11 +135,10 @@ class ExerciseProgressService
         Exercise $exercise,
         User $user,
         string $primaryMetric,
-        ?Carbon $startDate,
     ): Collection {
         $config = $this->metricConfig($primaryMetric);
 
-        $query = DB::table('workout_entries')
+        return DB::table('workout_entries')
             ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
             ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
             ->where('workout_entries.exercise_id', $exercise->id)
@@ -151,17 +150,12 @@ class ExerciseProgressService
                 "{$config['table']}.{$config['column']} as value",
             ])
             ->orderBy('workouts.date')
-            ->orderBy('workout_entries.set_order');
-
-        if ($startDate) {
-            $query->where('workouts.date', '>=', $startDate->toDateString());
-        }
-
-        return $query->get()->map(fn ($row) => (object) [
-            'entry_id' => $row->entry_id,
-            'date' => Carbon::parse($row->date)->toDateString(),
-            'value' => $row->value,
-        ]);
+            ->orderBy('workout_entries.set_order')
+            ->get()->map(fn ($row) => (object) [
+                'entry_id' => $row->entry_id,
+                'date' => Carbon::parse($row->date)->toDateString(),
+                'value' => $row->value,
+            ]);
     }
 
     /** @return list<int> */

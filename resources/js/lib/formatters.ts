@@ -14,13 +14,6 @@ export function formatDate(iso: string): string {
   return `${MONTHS[month - 1]} ${parts[2]}, ${parts[0]}`
 }
 
-export function formatDateShort(iso: string): string {
-  if (!iso) return ''
-  const parts = iso.split('-').map(Number)
-  const month = parts[1] ?? 1
-  return `${MONTHS[month - 1]} ${parts[2]}`
-}
-
 export function formatDateCompact(iso: string): string {
   if (!iso) return ''
   const parts = iso.split('-')

@@ -62,7 +62,7 @@ function MetricField({
 
 function PRBadge() {
   return (
-    <Badge tone="accent" soft>
+    <Badge tone="accent">
       <Trophy size={11} />
       New PR
     </Badge>

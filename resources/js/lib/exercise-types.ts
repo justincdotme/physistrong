@@ -4,15 +4,10 @@ import type { MeasurementSystem } from '@/lib/units'
 import { unitLabel } from '@/lib/units'
 import { formatDuration } from '@/lib/formatters'
 
-// Metric identifiers as named in the backend metric enum.
-export type MetricDimension =
-  'load' | 'reps' | 'duration' | 'distance' | 'cardio_settings' | 'intensity' | 'interval_header'
-
 type EntryMetrics = CreateEntryPayload['metrics']
 
 export interface ExerciseTypeConfig {
   label: string
-  metrics: { required: MetricDimension[]; optional: MetricDimension[] }
   defaultEntryMetrics: (ex: Exercise) => EntryMetrics
   recordKey: string
   attributeKeys: readonly string[]
@@ -22,7 +17,6 @@ export interface ExerciseTypeConfig {
 export const EXERCISE_TYPES: Record<ExerciseType, ExerciseTypeConfig> = {
   resistance: {
     label: 'Resistance',
-    metrics: { required: ['load', 'reps'], optional: ['intensity'] },
     defaultEntryMetrics: ex => ({
       load: { target_weight: null, actual_weight: null, bodyweight_only: !!ex.bodyweightBase },
       reps: { target_reps: null, actual_reps: null, to_failure: false, failure_rep: null },
@@ -37,7 +31,6 @@ export const EXERCISE_TYPES: Record<ExerciseType, ExerciseTypeConfig> = {
   },
   timed_hold: {
     label: 'Timed Hold',
-    metrics: { required: ['duration'], optional: ['load', 'intensity'] },
     defaultEntryMetrics: () => ({
       duration: { target_duration_seconds: null, actual_duration_seconds: null },
     }),
@@ -50,7 +43,6 @@ export const EXERCISE_TYPES: Record<ExerciseType, ExerciseTypeConfig> = {
   },
   distance: {
     label: 'Distance / Time',
-    metrics: { required: ['distance'], optional: ['duration', 'cardio_settings', 'intensity'] },
     defaultEntryMetrics: () => ({
       distance: {
         target_distance: null,
@@ -66,10 +58,6 @@ export const EXERCISE_TYPES: Record<ExerciseType, ExerciseTypeConfig> = {
   },
   interval: {
     label: 'Interval',
-    metrics: {
-      required: ['interval_header'],
-      optional: ['cardio_settings', 'distance', 'intensity'],
-    },
     defaultEntryMetrics: ex => {
       const n = ex.defaultRounds || 8
       return {

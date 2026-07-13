@@ -43,23 +43,3 @@ export function equipmentName(equipment: EquipmentType[], id: string | null): st
   const eq = equipment.find(e => e.id === id)
   return eq ? eq.name : ''
 }
-
-export function exerciseUsageCount(workouts: Workout[], exerciseId: string): number {
-  return workouts.filter(w => w.entries.some(e => e.exerciseId === exerciseId)).length
-}
-
-export function equipmentUsageCount(exercises: Exercise[], equipmentId: string): number {
-  return exercises.filter(e => e.equipmentTypeId === equipmentId).length
-}
-
-export function bestWeight(workouts: Workout[], exerciseId: string): number | null {
-  let best = -Infinity
-  workouts.forEach(w =>
-    w.entries.forEach(e => {
-      if (e.exerciseId === exerciseId && e.loadMetric && e.loadMetric.actualWeight != null) {
-        best = Math.max(best, e.loadMetric.actualWeight)
-      }
-    })
-  )
-  return best === -Infinity ? null : best
-}
