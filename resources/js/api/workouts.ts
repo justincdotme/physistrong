@@ -11,13 +11,13 @@ import {
 import type { Workout, WorkoutEntry, WorkoutListItem } from './types'
 
 /**
- * Cache-update convention for mutations:
- *
- * - Mutations whose response contains the complete updated resource write it
- *   into the cache with setQueryData on that resource's detail key.
- * - Anything that changes a collection's membership or ordering invalidates
- *   the base key.
- * - When in doubt, invalidate.
+ * Cache-update strategy per mutation: prefer writing the server response
+ * into cache when the endpoint returns the full resource. Use optimistic
+ * writes that reconcile on success for latency-sensitive updates. Fall
+ * back to invalidation for void-response operations, but flush pending
+ * debounced entry updates first so the refetch does not overwrite
+ * optimistic state. Anything that changes list membership invalidates
+ * the base ['workouts'] key.
  */
 export const workoutQueries = {
   base: ['workouts'] as const,

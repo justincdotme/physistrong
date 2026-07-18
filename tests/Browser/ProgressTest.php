@@ -3,11 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\Exercise;
-use App\Models\LogLoadMetric;
-use App\Models\LogRepMetric;
 use App\Models\User;
 use App\Models\Workout;
-use App\Models\WorkoutEntry;
 use Laravel\Dusk\Browser;
 
 it('renders the progress page at desktop width', function () {
@@ -64,13 +61,12 @@ it('defaults to the first exercise with logged data', function () {
     ]);
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry->id, 'actual_weight' => 135, 'bodyweight_only' => false]);
-    LogRepMetric::create(['entry_id' => $entry->id, 'actual_reps' => 5]);
+    $entry->loadMetric()->create(['actual_weight' => 135, 'bodyweight_only' => false]);
+    $entry->repMetric()->create(['actual_reps' => 5]);
 
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);
@@ -124,13 +120,12 @@ it('updates the chart when selecting an exercise from search', function () {
         'date' => '2026-06-20',
     ]);
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry->id, 'actual_weight' => 185, 'bodyweight_only' => false]);
-    LogRepMetric::create(['entry_id' => $entry->id, 'actual_reps' => 8]);
+    $entry->loadMetric()->create(['actual_weight' => 185, 'bodyweight_only' => false]);
+    $entry->repMetric()->create(['actual_reps' => 8]);
 
     $this->browse(function (Browser $browser) use ($user) {
         $this->loginAs($browser, $user);

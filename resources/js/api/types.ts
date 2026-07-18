@@ -89,8 +89,8 @@ export interface IntervalHeader {
 
 export interface IntensityMetric {
   rpe: number | null
-  avgHr: number | null
-  maxHr: number | null
+  heartRateAvg: number | null
+  heartRatePeak: number | null
 }
 
 export interface WorkoutEntry {
@@ -121,7 +121,6 @@ export interface EntryGroup {
 
 export interface Workout {
   id: string
-  userId: string
   name: string
   date: string
   exhaustion: number | null
@@ -143,7 +142,6 @@ export interface WorkoutListItem {
 }
 
 export interface TemplateExercise {
-  id: string
   exerciseId: string
   name: string
   type: ExerciseType

@@ -21,8 +21,8 @@ The distance_unit clauses of:
 
 ADR-013 made the user's `measurement_system` the single unit authority:
 raw numbers in the database, display labels resolved by
-`MeasurementLabelService`, no conversion. Weight already worked this
-way. Distance did not: a hand-rolled `DistanceUnit` enum
+`MeasurementLabelService` (since removed; see the amendment below), no
+conversion. Weight already worked this way. Distance did not: a hand-rolled `DistanceUnit` enum
 (meters/kilometers/miles/yards) drove two per-record columns,
 `exercise_distance.distance_unit` and
 `log_distance_metrics.distance_unit`, a parallel unit vocabulary
@@ -32,7 +32,7 @@ The per-exercise column had also decayed: migration `2026_06_29_000001`
 downgraded it from a constrained enum to a nullable unconstrained
 string, the PS-80 UI work removed the selector that populated it, and
 the Store/Update exercise requests drifted (nullable vs required). The
-2026-07-02 backend review (Finding #3) surfaced this; the owner decided
+2026-07-02 backend review surfaced this; the owner decided
 to remove the per-record unit concept rather than re-harden it (PS-95).
 
 ---
@@ -50,6 +50,13 @@ measurement system, exactly like weight.
 - `MeasurementLabelService` (unchanged) resolves display labels from
   `measurement_system`: imperial shows mi, metric shows km. The SPA
   derives labels the same way (`unitLabel(system, 'distance')`).
+
+> Amended 2026-07-17 (PS-156): `MeasurementLabelService` and the
+> `php-unit-conversion/php-unit-conversion` dependency were removed.
+> `resources/js/lib/units.ts` (`unitLabel()`) is now the sole label
+> resolver, in the SPA rather than the API, covering weight and
+> distance. Distance values stay raw numbers reinterpreted by
+> `measurement_system`, unconverted, exactly as decided above.
 
 Out of scope: `log_distance_metrics.lap_count` / `stroke_count` and all
 other distance metric columns remain.

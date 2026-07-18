@@ -13,7 +13,6 @@ class LogIntervalRound extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'interval_header_id',
         'round_number',
         'actual_work_seconds',
         'actual_rest_seconds',

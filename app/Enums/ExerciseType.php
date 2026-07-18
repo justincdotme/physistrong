@@ -12,8 +12,9 @@ enum ExerciseType: string
     case Interval = 'interval';
 
     /**
-     * Expected dimensions per ADR-006. Documented mapping only: presence is
-     * never enforced because ad-hoc and template entries carry partial sets.
+     * Expected metric dimensions for each exercise type. Documented mapping
+     * only: presence is never enforced because ad-hoc and template entries
+     * carry partial sets.
      *
      * @return list<MetricDimension>
      */
@@ -48,6 +49,17 @@ enum ExerciseType: string
             self::TimedHold => 'timedHold',
             self::Distance => 'distance',
             self::Interval => 'interval',
+        };
+    }
+
+    /** @return list<string> */
+    public function childColumns(): array
+    {
+        return match ($this) {
+            self::Resistance => ['bodyweight_base', 'allows_added_weight', 'bilateral'],
+            self::TimedHold => ['target_duration_seconds'],
+            self::Distance => ['tracks_elevation'],
+            self::Interval => ['default_work_seconds', 'default_rest_seconds', 'default_rounds'],
         };
     }
 

@@ -6,12 +6,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Seeds the system exercise catalog from free-exercise-db (ADR-003, ADR-010).
+ * Seeds the system exercise catalog from free-exercise-db.
  *
- * Each exercise is a system row (null user_id) plus one Class Table Inheritance
- * child row keyed by type. Equipment is resolved from the system catalog by name.
- * Must run after EquipmentTypeSeeder. Upsert on (user_id, name) makes re-seeding
- * safe and preserves ids.
+ * Must run after EquipmentTypeSeeder. Upsert on (user_id, name) preserves ids
+ * across re-seeds.
  */
 class ExerciseLibrarySeeder extends Seeder
 {
@@ -43,14 +41,23 @@ class ExerciseLibrarySeeder extends Seeder
                 $equipmentName = $exercise['equipment'];
                 $equipmentTypeId = $equipmentName !== null ? ($equipmentIds[$equipmentName] ?? null) : null;
 
+                $existingExercise = DB::table('exercises')
+                    ->whereNull('user_id')
+                    ->where('name', $exercise['name'])
+                    ->exists();
+
+                $basePayload = [
+                    'type' => $exercise['type'],
+                    'equipment_type_id' => $equipmentTypeId,
+                    'updated_at' => $now,
+                ];
+                if (! $existingExercise) {
+                    $basePayload['created_at'] = $now;
+                }
+
                 DB::table('exercises')->updateOrInsert(
                     ['user_id' => null, 'name' => $exercise['name']],
-                    [
-                        'type' => $exercise['type'],
-                        'equipment_type_id' => $equipmentTypeId,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ],
+                    $basePayload,
                 );
 
                 $exerciseId = DB::table('exercises')
@@ -58,9 +65,18 @@ class ExerciseLibrarySeeder extends Seeder
                     ->where('name', $exercise['name'])
                     ->value('id');
 
+                $existingChild = DB::table(self::CHILD_TABLES[$exercise['type']])
+                    ->where('exercise_id', $exerciseId)
+                    ->exists();
+
+                $childPayload = $exercise['attributes'] + ['updated_at' => $now];
+                if (! $existingChild) {
+                    $childPayload['created_at'] = $now;
+                }
+
                 DB::table(self::CHILD_TABLES[$exercise['type']])->updateOrInsert(
                     ['exercise_id' => $exerciseId],
-                    $exercise['attributes'] + ['created_at' => $now, 'updated_at' => $now],
+                    $childPayload,
                 );
             }
         });

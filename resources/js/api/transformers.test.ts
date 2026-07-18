@@ -610,8 +610,8 @@ describe('toWorkoutEntry', () => {
         metrics: {
           intensity: {
             rpe: 8,
-            avg_hr: 145,
-            max_hr: 165,
+            heart_rate_avg: 145,
+            heart_rate_peak: 165,
           },
         },
         created_at: '2026-01-01T00:00:00.000000Z',
@@ -622,8 +622,8 @@ describe('toWorkoutEntry', () => {
 
       expect(result.intensityMetric).toEqual({
         rpe: 8,
-        avgHr: 145,
-        maxHr: 165,
+        heartRateAvg: 145,
+        heartRatePeak: 165,
       })
     })
   })
@@ -814,7 +814,6 @@ describe('toWorkout', () => {
 
     expect(result).toMatchObject({
       id: '43',
-      userId: '',
       name: 'Capture Test Show Workout',
       date: '2026-06-01',
       exhaustion: null,
@@ -987,7 +986,6 @@ describe('toWorkoutTemplate', () => {
 
     expect(result.exercises).toHaveLength(2)
     expect(result.exercises).toContainEqual({
-      id: '10',
       exerciseId: '10',
       name: 'Exercise A',
       type: 'resistance',
@@ -996,7 +994,6 @@ describe('toWorkoutTemplate', () => {
       groupId: null,
     })
     expect(result.exercises).toContainEqual({
-      id: '13',
       exerciseId: '13',
       name: 'Exercise D',
       type: 'interval',
@@ -1015,7 +1012,6 @@ describe('toWorkoutTemplate', () => {
     expect(group0?.restBetweenRoundsSeconds).toBe(60)
     expect(group0?.exercises).toHaveLength(2)
     expect(group0?.exercises).toContainEqual({
-      id: '11',
       exerciseId: '11',
       name: 'Exercise B',
       type: 'resistance',
@@ -1024,7 +1020,6 @@ describe('toWorkoutTemplate', () => {
       groupId: '5',
     })
     expect(group0?.exercises).toContainEqual({
-      id: '12',
       exerciseId: '12',
       name: 'Exercise C',
       type: 'distance',
@@ -1294,8 +1289,8 @@ describe('toMetricsPayload', () => {
       notes: 'felt good',
       intensityMetric: {
         rpe: 8,
-        avgHr: 145,
-        maxHr: 165,
+        heartRateAvg: 145,
+        heartRatePeak: 165,
       },
     }
 
@@ -1303,8 +1298,8 @@ describe('toMetricsPayload', () => {
 
     expect(result.intensity).toEqual({
       rpe: 8,
-      avg_hr: 145,
-      max_hr: 165,
+      heart_rate_avg: 145,
+      heart_rate_peak: 165,
     })
   })
 
@@ -1346,8 +1341,8 @@ describe('toMetricsPayload', () => {
       },
       intensityMetric: {
         rpe: 8,
-        avgHr: 145,
-        maxHr: 165,
+        heartRateAvg: 145,
+        heartRatePeak: 165,
       },
     }
 

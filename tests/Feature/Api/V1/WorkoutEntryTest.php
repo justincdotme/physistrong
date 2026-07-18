@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Api\V1;
 
+use App\Enums\ExerciseType;
 use App\Models\EntryGroup;
 use App\Models\Exercise;
 use App\Models\User;
@@ -17,44 +18,12 @@ class WorkoutEntryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
     // Store
 
     public function test_creates_entry_with_resistance_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -91,7 +60,7 @@ class WorkoutEntryTest extends TestCase
     public function test_creates_entry_with_duration_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $exercise = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -116,7 +85,7 @@ class WorkoutEntryTest extends TestCase
     public function test_creates_entry_with_distance_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'distance', ['name' => 'Run']);
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Run']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -141,7 +110,7 @@ class WorkoutEntryTest extends TestCase
     public function test_ignores_submitted_distance_unit_metric(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'distance', ['name' => 'Row']);
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Row']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -164,7 +133,7 @@ class WorkoutEntryTest extends TestCase
     public function test_creates_entry_with_interval_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'interval', ['name' => 'HIIT']);
+        $exercise = Exercise::factory()->interval()->create(['user_id' => $user->id, 'name' => 'HIIT']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -205,7 +174,7 @@ class WorkoutEntryTest extends TestCase
     public function test_creates_entry_without_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -240,7 +209,7 @@ class WorkoutEntryTest extends TestCase
     public function test_store_rejects_metric_not_allowed_for_exercise_type(string $type, string $metricKey): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, $type);
+        $exercise = Exercise::factory()->{ExerciseType::from($type)->childRelation()}()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -257,7 +226,7 @@ class WorkoutEntryTest extends TestCase
     public function test_store_accepts_optional_metric_for_exercise_type(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Weighted Plank']);
+        $exercise = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Weighted Plank']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -278,7 +247,7 @@ class WorkoutEntryTest extends TestCase
     public function test_store_rejects_unknown_metric_key(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -295,7 +264,7 @@ class WorkoutEntryTest extends TestCase
     public function test_update_rejects_metric_not_allowed_for_exercise_type(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -328,7 +297,7 @@ class WorkoutEntryTest extends TestCase
     public function test_validates_set_order_required(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -340,65 +309,12 @@ class WorkoutEntryTest extends TestCase
             ->assertJsonValidationErrors('set_order');
     }
 
-    // Index
-
-    public function test_lists_entries_for_workout(): void
-    {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
-
-        $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
-        $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 1]);
-        $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 2]);
-
-        Passport::actingAs($user);
-
-        $response = $this->getJson("/api/v1/workouts/{$workout->id}/entries");
-
-        $response->assertOk();
-        $this->assertCount(3, $response->json('data'));
-        $this->assertEquals(0, $response->json('data.0.set_order'));
-        $this->assertEquals(1, $response->json('data.1.set_order'));
-        $this->assertEquals(2, $response->json('data.2.set_order'));
-    }
-
-    // Show
-
-    public function test_shows_single_entry_with_metrics(): void
-    {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
-
-        $entry = $workout->entries()->create([
-            'exercise_id' => $exercise->id,
-            'set_order' => 0,
-        ]);
-
-        $entry->loadMetric()->create([
-            'target_weight' => 100,
-            'actual_weight' => 95,
-        ]);
-
-        Passport::actingAs($user);
-
-        $response = $this->getJson("/api/v1/workouts/{$workout->id}/entries/{$entry->id}");
-
-        $response->assertOk()
-            ->assertJsonPath('data.id', $entry->id)
-            ->assertJsonPath('data.metrics.load.target_weight', '100.00')
-            ->assertJsonPath('data.metrics.load.actual_weight', '95.00');
-    }
-
     // Update
 
     public function test_updates_entry_base_fields(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -421,7 +337,7 @@ class WorkoutEntryTest extends TestCase
     public function test_updates_entry_metrics_via_upsert(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -463,7 +379,7 @@ class WorkoutEntryTest extends TestCase
     public function test_adds_new_metric_on_update(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -503,7 +419,7 @@ class WorkoutEntryTest extends TestCase
     public function test_deletes_entry(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -523,7 +439,7 @@ class WorkoutEntryTest extends TestCase
     public function test_delete_cascades_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -550,7 +466,7 @@ class WorkoutEntryTest extends TestCase
     public function test_reorders_entries(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -583,7 +499,7 @@ class WorkoutEntryTest extends TestCase
     public function test_reorder_rejects_nonexistent_entry_id(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -604,7 +520,7 @@ class WorkoutEntryTest extends TestCase
     public function test_reorder_rejects_entry_from_other_workout(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $otherWorkout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -628,7 +544,7 @@ class WorkoutEntryTest extends TestCase
     public function test_reorder_rejects_duplicate_ids(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -649,7 +565,7 @@ class WorkoutEntryTest extends TestCase
     public function test_reorder_rejects_partial_id_list(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -671,10 +587,10 @@ class WorkoutEntryTest extends TestCase
 
     // Scoped Binding
 
-    public function test_scoped_binding_rejects_entry_from_other_workout(): void
+    public function test_update_returns_404_for_entry_from_other_workout(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         $workout1 = Workout::factory()->create(['user_id' => $user->id]);
         $workout1->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -685,8 +601,9 @@ class WorkoutEntryTest extends TestCase
 
         Passport::actingAs($user);
 
-        $this->getJson("/api/v1/workouts/{$workout2->id}/entries/{$entry1->id}")
-            ->assertStatus(404);
+        $this->putJson("/api/v1/workouts/{$workout2->id}/entries/{$entry1->id}", [
+            'set_order' => 0,
+        ])->assertStatus(404);
     }
 
     // Auth
@@ -695,7 +612,7 @@ class WorkoutEntryTest extends TestCase
     {
         $owner = User::factory()->create();
         $creator = User::factory()->create();
-        $exercise = $this->createExercise($creator, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $creator->id]);
         $workout = Workout::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($creator);
@@ -709,7 +626,7 @@ class WorkoutEntryTest extends TestCase
     public function test_cannot_log_entry_against_another_users_exercise(): void
     {
         $owner = User::factory()->create();
-        $foreignExercise = $this->createExercise($owner, 'resistance');
+        $foreignExercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id]);
 
         $actor = User::factory()->create();
         Passport::actingAs($actor);
@@ -727,7 +644,7 @@ class WorkoutEntryTest extends TestCase
     public function test_creates_entry_with_group_assignment(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -760,7 +677,7 @@ class WorkoutEntryTest extends TestCase
     public function test_updates_entry_group_assignment(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -788,7 +705,7 @@ class WorkoutEntryTest extends TestCase
     public function test_removes_entry_from_group_via_update(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 

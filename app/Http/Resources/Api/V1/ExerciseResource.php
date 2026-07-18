@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Resources\Api\V1;
 
 use App\Models\Exercise;
-use App\Repositories\ExerciseRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,12 +22,20 @@ class ExerciseResource extends JsonResource
             'user_id' => $this->user_id,
             'equipment_type_id' => $this->equipment_type_id,
             'equipment_type' => $this->whenLoaded('equipmentType', fn () => new EquipmentTypeResource($this->equipmentType)),
-            'type_attributes' => app(ExerciseRepository::class)->typeAttributes($this->resource),
+            'type_attributes' => $this->buildTypeAttributes(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'usage_count' => (int) ($this->getAttribute('workouts_count') ?? 0)
                 + (int) ($this->getAttribute('templates_count') ?? 0),
             'has_logged_data' => (bool) ($this->getAttribute('has_logged_data') ?? false),
         ];
+    }
+
+    /** @return array<string, mixed>|null */
+    private function buildTypeAttributes(): ?array
+    {
+        $child = $this->{$this->type->childRelation()};
+
+        return $child ? $child->only($this->type->childColumns()) : null;
     }
 }

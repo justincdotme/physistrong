@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { AxiosError, AxiosHeaders } from 'axios'
-import { extractFieldErrors, extractMessage } from './errors'
+import { extractFieldErrors, extractMessage, extractConflictMessage } from './errors'
 
 function make422(errors: Record<string, string[]>): AxiosError {
   const headers = new AxiosHeaders()
@@ -63,5 +63,26 @@ describe('extractMessage', () => {
   it('returns fallback when response has no message', () => {
     const error = makeAxiosError(500, {})
     expect(extractMessage(error)).toBe('Something went wrong. Try again.')
+  })
+})
+
+describe('extractConflictMessage', () => {
+  it('returns the server message for a 409 with message', () => {
+    const error = makeAxiosError(409, { message: 'Exercise is in use by 3 workouts.' })
+    expect(extractConflictMessage(error, 'Fallback')).toBe('Exercise is in use by 3 workouts.')
+  })
+
+  it('returns the fallback for a 409 without message', () => {
+    const error = makeAxiosError(409, {})
+    expect(extractConflictMessage(error, 'Resource is in use.')).toBe('Resource is in use.')
+  })
+
+  it('returns null for non-409 axios errors', () => {
+    const error = makeAxiosError(500, { message: 'Server error' })
+    expect(extractConflictMessage(error, 'Fallback')).toBeNull()
+  })
+
+  it('returns null for non-axios errors', () => {
+    expect(extractConflictMessage(new Error('network'), 'Fallback')).toBeNull()
   })
 })

@@ -13,7 +13,6 @@ class LogLoadMetric extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'target_weight',
         'actual_weight',
         'bodyweight_only',

@@ -457,7 +457,7 @@ async function captureWorkouts(exerciseIds) {
     metrics: {
       load: { target_weight: '185.00', actual_weight: '180.00', bodyweight_only: false },
       reps: { target_reps: 5, actual_reps: 5, to_failure: false, failure_rep: null },
-      intensity: { rpe: 8, avg_hr: null, max_hr: null },
+      intensity: { rpe: 8, heart_rate_avg: null, heart_rate_peak: null },
     },
   })
 

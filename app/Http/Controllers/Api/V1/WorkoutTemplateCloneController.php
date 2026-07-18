@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\CloneTemplateRequest;
+use App\Http\Requests\Api\V1\CloneWorkoutTemplateRequest;
 use App\Http\Resources\Api\V1\WorkoutResource;
 use App\Models\User;
 use App\Models\Workout;
@@ -14,13 +14,13 @@ use App\Services\WorkoutCloneService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 
-class TemplateCloneController extends Controller
+class WorkoutTemplateCloneController extends Controller
 {
     use AuthorizesRequests;
 
     public function __construct(private WorkoutCloneService $cloneService) {}
 
-    public function __invoke(CloneTemplateRequest $request, WorkoutTemplate $template): JsonResponse
+    public function __invoke(CloneWorkoutTemplateRequest $request, WorkoutTemplate $template): JsonResponse
     {
         $this->authorize('view', $template);
 

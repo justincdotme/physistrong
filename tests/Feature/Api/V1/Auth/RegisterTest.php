@@ -45,7 +45,7 @@ class RegisterTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonStructure([
-                'user' => ['id', 'email', 'first_name', 'last_name', 'measurement_system', 'theme'],
+                'data' => ['id', 'email', 'first_name', 'last_name', 'measurement_system', 'theme'],
             ])
             ->assertJsonMissingPath('token');
 

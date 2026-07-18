@@ -5,10 +5,6 @@ declare(strict_types=1);
 use App\Models\Exercise;
 use App\Models\User;
 use App\Models\Workout;
-use App\Models\WorkoutEntry;
-use App\Models\LogLoadMetric;
-use App\Models\LogRepMetric;
-use App\Models\LogDurationMetric;
 use Laravel\Dusk\Browser;
 
 it('renders the workout detail page at desktop width', function () {
@@ -86,28 +82,20 @@ it('displays exercises attached to workout', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $exercise = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $exercise->resistance()->create([]);
+    $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
 
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
 
-    LogLoadMetric::create([
-        'entry_id' => $entry->id,
+    $entry->loadMetric()->create([
         'actual_weight' => 225,
         'bodyweight_only' => false,
     ]);
-    LogRepMetric::create([
-        'entry_id' => $entry->id,
+    $entry->repMetric()->create([
         'actual_reps' => 5,
     ]);
 
@@ -124,38 +112,25 @@ it('displays multiple exercises in workout', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $squat = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $squat->resistance()->create([]);
-
-    $bench = Exercise::create([
-        'name' => 'Bench Press',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $bench->resistance()->create([]);
+    $squat = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
+    $bench = Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
 
     $workout->exercises()->attach($squat->id, ['exercise_order' => 1]);
     $workout->exercises()->attach($bench->id, ['exercise_order' => 2]);
 
-    $entry1 = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry1 = $workout->entries()->create([
         'exercise_id' => $squat->id,
         'set_order' => 0,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry1->id]);
-    LogRepMetric::create(['entry_id' => $entry1->id]);
+    $entry1->loadMetric()->create([]);
+    $entry1->repMetric()->create([]);
 
-    $entry2 = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry2 = $workout->entries()->create([
         'exercise_id' => $bench->id,
         'set_order' => 1,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry2->id]);
-    LogRepMetric::create(['entry_id' => $entry2->id]);
+    $entry2->loadMetric()->create([]);
+    $entry2->repMetric()->create([]);
 
     $this->browse(function (Browser $browser) use ($user, $workout) {
         $this->loginAs($browser, $user);
@@ -171,28 +146,20 @@ it('displays entry rows with metric inputs for resistance exercises', function (
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $exercise = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $exercise->resistance()->create([]);
+    $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
 
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
 
-    LogLoadMetric::create([
-        'entry_id' => $entry->id,
+    $entry->loadMetric()->create([
         'target_weight' => 225,
         'actual_weight' => null,
     ]);
-    LogRepMetric::create([
-        'entry_id' => $entry->id,
+    $entry->repMetric()->create([
         'target_reps' => 5,
         'actual_reps' => null,
     ]);
@@ -209,23 +176,16 @@ it('displays entry rows for timed hold exercises', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $exercise = Exercise::create([
-        'name' => 'Plank Hold',
-        'type' => 'timed_hold',
-        'user_id' => null,
-    ]);
-    $exercise->timedHold()->create([]);
+    $exercise = Exercise::factory()->timedHold()->create(['name' => 'Plank Hold']);
 
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
 
-    LogDurationMetric::create([
-        'entry_id' => $entry->id,
+    $entry->durationMetric()->create([
         'target_duration_seconds' => 60,
     ]);
 
@@ -256,23 +216,17 @@ it('metric inputs are accessible at phone width', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $exercise = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $exercise->resistance()->create([]);
+    $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
 
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
 
-    LogLoadMetric::create(['entry_id' => $entry->id]);
-    LogRepMetric::create(['entry_id' => $entry->id]);
+    $entry->loadMetric()->create([]);
+    $entry->repMetric()->create([]);
 
     $this->browse(function (Browser $browser) use ($user, $workout) {
         $this->loginAs($browser, $user);
@@ -288,19 +242,8 @@ it('displays entry group for superset exercises', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $squat = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $squat->resistance()->create([]);
-
-    $bench = Exercise::create([
-        'name' => 'Bench Press',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $bench->resistance()->create([]);
+    $squat = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
+    $bench = Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
 
     $workout->exercises()->attach($squat->id, ['exercise_order' => 1]);
     $workout->exercises()->attach($bench->id, ['exercise_order' => 2]);
@@ -312,25 +255,23 @@ it('displays entry group for superset exercises', function () {
         'rest_between_rounds_seconds' => 180,
     ]);
 
-    $entry1 = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry1 = $workout->entries()->create([
         'exercise_id' => $squat->id,
         'entry_group_id' => $group->id,
         'group_round' => 1,
         'set_order' => 0,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry1->id]);
-    LogRepMetric::create(['entry_id' => $entry1->id]);
+    $entry1->loadMetric()->create([]);
+    $entry1->repMetric()->create([]);
 
-    $entry2 = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry2 = $workout->entries()->create([
         'exercise_id' => $bench->id,
         'entry_group_id' => $group->id,
         'group_round' => 1,
         'set_order' => 1,
     ]);
-    LogLoadMetric::create(['entry_id' => $entry2->id]);
-    LogRepMetric::create(['entry_id' => $entry2->id]);
+    $entry2->loadMetric()->create([]);
+    $entry2->repMetric()->create([]);
 
     $this->browse(function (Browser $browser) use ($user, $workout) {
         $this->loginAs($browser, $user);
@@ -361,28 +302,19 @@ it('displays completion percentage', function () {
     $user = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $exercise = Exercise::create([
-        'name' => 'Barbell Squat',
-        'type' => 'resistance',
-        'user_id' => null,
-    ]);
-    $exercise->resistance()->create([]);
+    $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
 
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    // Create an entry with actual values to show completion
-    $entry = WorkoutEntry::create([
-        'workout_id' => $workout->id,
+    $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
         'set_order' => 0,
     ]);
 
-    LogLoadMetric::create([
-        'entry_id' => $entry->id,
+    $entry->loadMetric()->create([
         'actual_weight' => 225,
     ]);
-    LogRepMetric::create([
-        'entry_id' => $entry->id,
+    $entry->repMetric()->create([
         'actual_reps' => 5,
     ]);
 

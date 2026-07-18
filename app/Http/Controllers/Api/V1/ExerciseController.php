@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\ExerciseType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\IndexExerciseRequest;
 use App\Http\Requests\Api\V1\StoreExerciseRequest;
 use App\Http\Requests\Api\V1\UpdateExerciseRequest;
 use App\Http\Resources\Api\V1\ExerciseResource;
@@ -13,7 +14,6 @@ use App\Models\Exercise;
 use App\Repositories\ExerciseRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -29,20 +29,22 @@ class ExerciseController extends Controller
         return [...ExerciseType::childRelations(), 'equipmentType'];
     }
 
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(IndexExerciseRequest $request): AnonymousResourceCollection
     {
         $query = Exercise::visibleTo($request->user())->withUsage();
+        $validated = $request->validated();
 
-        if ($request->has('type')) {
-            $query->where('type', $request->input('type'));
+        if (isset($validated['type'])) {
+            $query->where('type', $validated['type']);
         }
 
-        if ($request->has('equipment_type_id')) {
-            $query->where('equipment_type_id', $request->input('equipment_type_id'));
+        if (isset($validated['equipment_type_id'])) {
+            $query->where('equipment_type_id', $validated['equipment_type_id']);
         }
 
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->input('search').'%');
+        if (isset($validated['search'])) {
+            $search = addcslashes($validated['search'], '%_\\');
+            $query->whereRaw('name LIKE ? ESCAPE ?', ['%'.$search.'%', '\\']);
         }
 
         return ExerciseResource::collection(
@@ -76,7 +78,11 @@ class ExerciseController extends Controller
 
         $this->exercises->update($exercise, $request->validated());
 
-        return new ExerciseResource($exercise->load($this->eagerLoad()));
+        $exercise->load($this->eagerLoad())
+            ->loadCount(['workouts', 'templates'])
+            ->loadExists(['entries as has_logged_data']);
+
+        return new ExerciseResource($exercise);
     }
 
     public function destroy(Exercise $exercise): Response|JsonResponse

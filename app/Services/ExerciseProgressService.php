@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\DB;
 
 class ExerciseProgressService
 {
+    /** @var array<string, array{table: string, column: string, cast: string}> */
+    private const METRIC_MAP = [
+        'weight' => ['table' => 'log_load_metrics', 'column' => 'actual_weight', 'cast' => 'float'],
+        'reps' => ['table' => 'log_rep_metrics', 'column' => 'actual_reps', 'cast' => 'int'],
+        'duration' => ['table' => 'log_duration_metrics', 'column' => 'actual_duration_seconds', 'cast' => 'int'],
+        'distance' => ['table' => 'log_distance_metrics', 'column' => 'actual_distance', 'cast' => 'float'],
+        'completed_rounds' => ['table' => 'log_interval_headers', 'column' => 'completed_rounds', 'cast' => 'int'],
+    ];
+
     /** @return array<string, mixed> */
     public function getProgressData(Exercise $exercise, User $user, string $range): array
     {
@@ -29,7 +38,7 @@ class ExerciseProgressService
         $dataPoints = $rangeEntries->map(fn ($row) => [
             'entry_id' => (int) $row->entry_id,
             'date' => $row->date,
-            'value' => $this->castMetricValue($row->value, $primaryMetric),
+            'value' => $this->castValue($row->value, $primaryMetric),
             'is_pr' => in_array((int) $row->entry_id, $prEntryIds, true),
         ])->values()->all();
 
@@ -57,13 +66,13 @@ class ExerciseProgressService
             $primaryMetric = $this->resolvePrimaryMetric($exercise);
 
             if ($primaryMetric === 'weight') {
-                $best = $this->findBest($exercise, $user, 'log_load_metrics', 'actual_weight');
+                $best = $this->findBest($exercise, $user, 'weight');
                 if ($best) {
                     $records['weight'] = $best;
                 }
             }
 
-            $best = $this->findBest($exercise, $user, 'log_rep_metrics', 'actual_reps');
+            $best = $this->findBest($exercise, $user, 'reps');
             if ($best) {
                 $records['reps'] = $best;
             }
@@ -75,21 +84,21 @@ class ExerciseProgressService
         }
 
         if ($exercise->type === ExerciseType::TimedHold) {
-            $best = $this->findBest($exercise, $user, 'log_duration_metrics', 'actual_duration_seconds');
+            $best = $this->findBest($exercise, $user, 'duration');
             if ($best) {
                 $records['duration'] = $best;
             }
         }
 
         if ($exercise->type === ExerciseType::Distance) {
-            $best = $this->findBest($exercise, $user, 'log_distance_metrics', 'actual_distance');
+            $best = $this->findBest($exercise, $user, 'distance');
             if ($best) {
                 $records['distance'] = $best;
             }
         }
 
         if ($exercise->type === ExerciseType::Interval) {
-            $best = $this->findBest($exercise, $user, 'log_interval_headers', 'completed_rounds');
+            $best = $this->findBest($exercise, $user, 'completed_rounds');
             if ($best) {
                 $records['completed_rounds'] = $best;
             }
@@ -201,21 +210,23 @@ class ExerciseProgressService
         ])->all();
     }
 
-    /** @return array{value: mixed, entry_id: int, date: string}|null */
-    private function findBest(Exercise $exercise, User $user, string $table, string $column): ?array
+    /** @return array{value: float|int, entry_id: int, date: string}|null */
+    private function findBest(Exercise $exercise, User $user, string $metric): ?array
     {
+        $config = $this->metricConfig($metric);
+
         $result = DB::table('workout_entries')
             ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
-            ->join($table, "{$table}.entry_id", '=', 'workout_entries.id')
+            ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
             ->where('workout_entries.exercise_id', $exercise->id)
             ->where('workouts.user_id', $user->id)
-            ->whereNotNull("{$table}.{$column}")
+            ->whereNotNull("{$config['table']}.{$config['column']}")
             ->select([
                 'workout_entries.id as entry_id',
                 'workouts.date',
-                "{$table}.{$column} as value",
+                "{$config['table']}.{$config['column']} as value",
             ])
-            ->orderByDesc("{$table}.{$column}")
+            ->orderByDesc("{$config['table']}.{$config['column']}")
             ->orderBy('workouts.date')
             ->first();
 
@@ -224,7 +235,7 @@ class ExerciseProgressService
         }
 
         return [
-            'value' => $this->castRecordValue($result->value, $column),
+            'value' => $this->castValue($result->value, $metric),
             'entry_id' => (int) $result->entry_id,
             'date' => Carbon::parse($result->date)->toDateString(),
         ];
@@ -257,31 +268,14 @@ class ExerciseProgressService
         ];
     }
 
-    /** @return array{table: string, column: string} */
-    private function metricConfig(string $primaryMetric): array
+    /** @return array{table: string, column: string, cast: string} */
+    protected function metricConfig(string $metric): array
     {
-        return match ($primaryMetric) {
-            'weight' => ['table' => 'log_load_metrics', 'column' => 'actual_weight'],
-            'reps' => ['table' => 'log_rep_metrics', 'column' => 'actual_reps'],
-            'duration' => ['table' => 'log_duration_metrics', 'column' => 'actual_duration_seconds'],
-            'distance' => ['table' => 'log_distance_metrics', 'column' => 'actual_distance'],
-            default => ['table' => 'log_interval_headers', 'column' => 'completed_rounds'],
-        };
+        return self::METRIC_MAP[$metric] ?? throw new \InvalidArgumentException("Unknown metric: {$metric}");
     }
 
-    private function castMetricValue(mixed $value, string $primaryMetric): float|int
+    private function castValue(mixed $value, string $metric): float|int
     {
-        return match ($primaryMetric) {
-            'weight', 'distance' => (float) $value,
-            default => (int) $value,
-        };
-    }
-
-    private function castRecordValue(mixed $value, string $column): float|int
-    {
-        return match ($column) {
-            'actual_weight', 'actual_distance' => (float) $value,
-            default => (int) $value,
-        };
+        return $this->metricConfig($metric)['cast'] === 'float' ? (float) $value : (int) $value;
     }
 }

@@ -39,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        RateLimiter::for('password-forgot', fn (Request $request) => Limit::perHour(3)->by($request->ip()));
     }
 }

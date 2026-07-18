@@ -1,7 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { http, HttpResponse } from 'msw'
-import { screen, renderWithProviders, userEvent, waitFor } from '@/test/render'
+import { QueryClient, QueryClientProvider, useInfiniteQuery } from '@tanstack/react-query'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { render, fireEvent } from '@testing-library/react'
+import { screen, renderWithProviders, userEvent, waitFor, testUser } from '@/test/render'
 import { server } from '@/test/server'
+import { AppProvider } from '@/lib/store'
+import { AuthContext } from '@/lib/auth-context'
+import { workoutQueries } from '@/api/workouts'
 import { WorkoutDetailPage } from './workout-detail'
 import { collectReorderExerciseIds } from './workout-detail.utils'
 
@@ -196,13 +202,30 @@ describe('remove exercise', () => {
 
   it('calls DELETE and removes the exercise block on confirm', async () => {
     let deletedUrl: string | null = null
+    let detached = false
     server.use(
+      http.get('/api/v1/workouts/:id', () => {
+        if (detached) {
+          return HttpResponse.json({
+            data: {
+              ...twoExerciseWorkout.data,
+              exercises: twoExerciseWorkout.data.exercises.filter(e => e.id !== 1),
+              entries: twoExerciseWorkout.data.entries.filter(e => e.exercise_id !== 1),
+            },
+          })
+        }
+        return HttpResponse.json(twoExerciseWorkout)
+      }),
       http.delete('/api/v1/workouts/:id/exercises/:exerciseId', ({ request }) => {
         deletedUrl = new URL(request.url).pathname
+        detached = true
         return new HttpResponse(null, { status: 204 })
       })
     )
-    renderWithTwoExercises()
+    renderWithProviders(<WorkoutDetailPage />, {
+      path: 'workouts/:id',
+      route: '/workouts/43',
+    })
 
     await clickFirstRemoveExercise()
 
@@ -250,5 +273,189 @@ describe('collectReorderExerciseIds', () => {
       '1',
       '2',
     ])
+  })
+})
+
+describe('entry update error handling', () => {
+  it('shows error toast and refetches cache when entry PUT fails', { timeout: 15000 }, async () => {
+    server.use(
+      http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+      http.put('/api/v1/workouts/:id/entries/:entryId', () => {
+        return HttpResponse.json({ message: 'Server error' }, { status: 500 })
+      })
+    )
+    renderWithProviders(<WorkoutDetailPage />, {
+      path: 'workouts/:id',
+      route: '/workouts/43',
+    })
+
+    // The second entry (Ab Crunch Machine) has actual_reps: 10
+    const repsInputs = await screen.findAllByDisplayValue('10')
+    const repsInput = repsInputs[0]
+    if (!repsInput) throw new Error('Reps input not found')
+    fireEvent.change(repsInput, { target: { value: '15' } })
+
+    // The 800ms debounce fires, PUT returns 500, onError toasts and invalidates
+    await waitFor(
+      () => {
+        expect(screen.getByText('Could not save. Try again.')).toBeInTheDocument()
+      },
+      { timeout: 5000 }
+    )
+
+    // After error, invalidation refetches and original value (10) returns
+    await waitFor(() => {
+      expect(screen.getAllByDisplayValue('10').length).toBeGreaterThan(0)
+    })
+  })
+
+  it(
+    'flushes pending entry updates through the mutation on unmount',
+    { timeout: 15000 },
+    async () => {
+      let putFired = false
+      server.use(
+        http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+        http.put('/api/v1/workouts/:id/entries/:entryId', () => {
+          putFired = true
+          return HttpResponse.json({
+            data: twoExerciseWorkout.data.entries[1],
+          })
+        })
+      )
+      const { unmount } = renderWithProviders(<WorkoutDetailPage />, {
+        path: 'workouts/:id',
+        route: '/workouts/43',
+      })
+
+      const repsInputs = await screen.findAllByDisplayValue('10')
+      const repsInput = repsInputs[0]
+      if (!repsInput) throw new Error('Reps input not found')
+      await userEvent.clear(repsInput)
+      await userEvent.type(repsInput, '12')
+
+      // Unmount before the 800ms debounce fires
+      unmount()
+
+      // The flush-on-unmount should have fired the PUT
+      await waitFor(() => {
+        expect(putFired).toBe(true)
+      })
+    }
+  )
+})
+
+// Subscribes to the workouts list query so invalidation triggers a refetch
+function ListObserver() {
+  useInfiniteQuery(workoutQueries.list())
+  return null
+}
+
+function renderDetailWithListObserver(workoutId: string) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  })
+  const auth = {
+    user: testUser,
+    isLoading: false,
+    setUser: vi.fn(),
+    handleLogout: vi.fn(),
+  }
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[`/workouts/${workoutId}`]}>
+        <AuthContext.Provider value={auth}>
+          <AppProvider>
+            <ListObserver />
+            <Routes>
+              <Route path="workouts/:id" element={<WorkoutDetailPage />} />
+            </Routes>
+          </AppProvider>
+        </AuthContext.Provider>
+      </MemoryRouter>
+    </QueryClientProvider>
+  )
+}
+
+describe('list cache invalidation', () => {
+  it('invalidates the workouts list after a workout name edit', { timeout: 15000 }, async () => {
+    let listFetchCount = 0
+    server.use(
+      http.get('/api/v1/workouts', () => {
+        listFetchCount++
+        return HttpResponse.json({
+          data: [],
+          meta: { current_page: 1, last_page: 1, total: 0 },
+        })
+      }),
+      http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+      http.put('/api/v1/workouts/:id', async ({ request }) => {
+        await request.json()
+        return HttpResponse.json({
+          data: {
+            ...twoExerciseWorkout.data,
+            name: 'Renamed Workout',
+          },
+        })
+      })
+    )
+    renderDetailWithListObserver('43')
+
+    await screen.findByText('Test Workout')
+    const fetchesBeforeEdit = listFetchCount
+
+    const nameButton = screen.getByText('Test Workout')
+    await userEvent.click(nameButton)
+    const input = await screen.findByDisplayValue('Test Workout')
+    await userEvent.tripleClick(input)
+    await userEvent.keyboard('Renamed Workout')
+    await userEvent.tab()
+
+    await waitFor(() => {
+      expect(listFetchCount).toBeGreaterThan(fetchesBeforeEdit)
+    })
+  })
+
+  it('invalidates the workouts list after detaching an exercise', { timeout: 15000 }, async () => {
+    let listFetchCount = 0
+    let detached = false
+    server.use(
+      http.get('/api/v1/workouts', () => {
+        listFetchCount++
+        return HttpResponse.json({
+          data: [],
+          meta: { current_page: 1, last_page: 1, total: 0 },
+        })
+      }),
+      http.get('/api/v1/workouts/:id', () => {
+        if (detached) {
+          return HttpResponse.json({
+            data: {
+              ...twoExerciseWorkout.data,
+              exercises: twoExerciseWorkout.data.exercises.filter(e => e.id !== 1),
+              entries: twoExerciseWorkout.data.entries.filter(e => e.exercise_id !== 1),
+            },
+          })
+        }
+        return HttpResponse.json(twoExerciseWorkout)
+      }),
+      http.delete('/api/v1/workouts/:id/exercises/:exerciseId', () => {
+        detached = true
+        return new HttpResponse(null, { status: 204 })
+      })
+    )
+    renderDetailWithListObserver('43')
+
+    await screen.findByText('3/4 Sit-Up')
+    const fetchesBeforeDetach = listFetchCount
+
+    const [button] = await screen.findAllByRole('button', { name: 'Remove exercise' })
+    if (button) await userEvent.click(button)
+    const removeBtn = await screen.findByRole('button', { name: 'Remove' })
+    await userEvent.click(removeBtn)
+
+    await waitFor(() => {
+      expect(listFetchCount).toBeGreaterThan(fetchesBeforeDetach)
+    })
   })
 })

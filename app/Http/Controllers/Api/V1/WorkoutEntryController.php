@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\MetricDimension;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\ReorderEntriesRequest;
+use App\Http\Requests\Api\V1\ReorderWorkoutEntriesRequest;
 use App\Http\Requests\Api\V1\StoreWorkoutEntryRequest;
 use App\Http\Requests\Api\V1\UpdateWorkoutEntryRequest;
 use App\Http\Resources\Api\V1\WorkoutEntryResource;
@@ -14,7 +14,6 @@ use App\Models\Workout;
 use App\Models\WorkoutEntry;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -22,18 +21,6 @@ use Illuminate\Support\Facades\DB;
 class WorkoutEntryController extends Controller
 {
     use AuthorizesRequests;
-
-    public function index(Request $request, Workout $workout): AnonymousResourceCollection
-    {
-        $this->authorize('view', $workout);
-
-        $entries = $workout->entries()
-            ->with(WorkoutEntry::metricRelations())
-            ->orderBy('set_order')
-            ->get();
-
-        return WorkoutEntryResource::collection($entries);
-    }
 
     public function store(StoreWorkoutEntryRequest $request, Workout $workout): JsonResponse
     {
@@ -63,15 +50,6 @@ class WorkoutEntryController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(Workout $workout, WorkoutEntry $entry): WorkoutEntryResource
-    {
-        $this->authorize('view', $workout);
-
-        $entry->load(WorkoutEntry::metricRelations());
-
-        return new WorkoutEntryResource($entry);
-    }
-
     public function update(UpdateWorkoutEntryRequest $request, Workout $workout, WorkoutEntry $entry): WorkoutEntryResource
     {
         $this->authorize('update', $workout);
@@ -99,12 +77,12 @@ class WorkoutEntryController extends Controller
         return response()->noContent();
     }
 
-    public function reorder(ReorderEntriesRequest $request, Workout $workout): AnonymousResourceCollection
+    public function reorder(ReorderWorkoutEntriesRequest $request, Workout $workout): AnonymousResourceCollection
     {
         $this->authorize('update', $workout);
 
         DB::transaction(function () use ($request, $workout) {
-            Workout::whereKey($workout->id)->lockForUpdate()->first();
+            Workout::whereKeyLocked($workout->id)->first();
 
             $ids = $request->validated('ids');
             foreach ($ids as $index => $id) {

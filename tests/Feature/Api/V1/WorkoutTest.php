@@ -15,39 +15,7 @@ class WorkoutTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
-    // -- Store --
+    // Store
 
     public function test_creates_workout(): void
     {
@@ -111,7 +79,7 @@ class WorkoutTest extends TestCase
         ])->assertStatus(201);
     }
 
-    // -- Index --
+    // Index
 
     public function test_lists_own_workouts_paginated(): void
     {
@@ -135,7 +103,7 @@ class WorkoutTest extends TestCase
     public function test_lists_workouts_with_entry_counts(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -174,12 +142,12 @@ class WorkoutTest extends TestCase
             ->assertJsonPath('data.0.completed_entries_count', 2);
     }
 
-    // -- Show --
+    // Show
 
     public function test_shows_workout_with_exercises_and_entries(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -221,7 +189,7 @@ class WorkoutTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Update --
+    // Update
 
     public function test_updates_workout(): void
     {
@@ -246,7 +214,7 @@ class WorkoutTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Destroy --
+    // Destroy
 
     public function test_deletes_workout(): void
     {
@@ -263,7 +231,7 @@ class WorkoutTest extends TestCase
     public function test_delete_cascades_entries_and_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -287,7 +255,7 @@ class WorkoutTest extends TestCase
         $this->assertDatabaseMissing('log_load_metrics', ['id' => $metric->id]);
     }
 
-    // -- Auth --
+    // Auth
 
     public function test_unauthenticated_cannot_access_workouts(): void
     {
@@ -301,7 +269,7 @@ class WorkoutTest extends TestCase
     public function test_metric_response_contains_only_declared_columns(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 

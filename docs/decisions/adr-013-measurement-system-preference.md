@@ -42,6 +42,13 @@ to a unit label using the `php-unit-conversion/php-unit-conversion`
 library. The service is the single point of truth for all unit label
 resolution.
 
+> Amended 2026-07-17 (PS-156): `MeasurementLabelService` and the
+> `php-unit-conversion/php-unit-conversion` dependency were removed.
+> `resources/js/lib/units.ts` (`unitLabel()`) is the current label
+> resolver, covering weight and distance. Speed in the table below
+> was dead code and was removed with the service. Values remain raw
+> numbers, unconverted, per the decision above.
+
 ### Measurement dimension table
 
 Derived from a codebase audit of exercise types (ADR-003), composable
@@ -94,6 +101,11 @@ per-entry attribute that records what unit a specific value was logged in.
 measurement_system (enum: 'imperial', 'metric', NOT NULL, DEFAULT 'imperial')
 ```
 
+> Amended 2026-07-17 (PS-156): the column is a plain string, not a
+> database-level enum, and carries no default.
+> `App\Enums\MeasurementSystem` validates and casts it at the
+> application layer; the field is required at registration.
+
 No `weight_unit` or `distance_unit` columns on the users table.
 
 ---
@@ -119,9 +131,9 @@ No `weight_unit` or `distance_unit` columns on the users table.
 ## Related Decisions
 
 - **ADR-003** (exercise definitions) `exercise_distance.distance_unit`
-  unchanged
+  dropped (amended 2026-07-17, PS-156), see [ADR-014](adr-014-unitless-distance-values.md)
 - **ADR-006** (composable metrics) `log_distance_metrics.distance_unit`
-  unchanged
+  dropped (amended 2026-07-17, PS-156), see [ADR-014](adr-014-unitless-distance-values.md)
 - **ADR-008** (API format) API responses include measurement_system on
   user resource
 

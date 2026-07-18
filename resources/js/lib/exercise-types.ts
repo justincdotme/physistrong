@@ -3,6 +3,7 @@ import type { CreateEntryPayload } from '@/api/workouts'
 import type { MeasurementSystem } from '@/lib/units'
 import { unitLabel } from '@/lib/units'
 import { formatDuration } from '@/lib/formatters'
+import { assertNever } from '@/lib/utils'
 
 type EntryMetrics = CreateEntryPayload['metrics']
 
@@ -114,4 +115,51 @@ export const METRIC_DISPLAY: Record<
     unit: s => unitLabel(s, 'distance'),
   },
   completed_rounds: { yLabel: () => 'Rounds', unit: () => 'rounds' },
+}
+
+interface TypeAttributesFormState {
+  bodyweight: boolean
+  addedWeight: boolean
+  bilateral: boolean
+  targetDurationSeconds: string
+  defaultWorkSeconds: string
+  defaultRestSeconds: string
+  defaultRounds: string
+}
+
+export function buildTypeAttributes(
+  type: ExerciseType,
+  form: TypeAttributesFormState
+): Record<string, unknown> {
+  const attrs: Record<string, unknown> = {}
+
+  switch (type) {
+    case 'resistance':
+      attrs.bodyweight_base = form.bodyweight
+      attrs.allows_added_weight = form.addedWeight
+      attrs.bilateral = form.bilateral
+      break
+    case 'timed_hold':
+      if (form.targetDurationSeconds) {
+        attrs.target_duration_seconds = parseInt(form.targetDurationSeconds)
+      }
+      break
+    case 'distance':
+      break
+    case 'interval':
+      if (form.defaultWorkSeconds) {
+        attrs.default_work_seconds = parseInt(form.defaultWorkSeconds)
+      }
+      if (form.defaultRestSeconds) {
+        attrs.default_rest_seconds = parseInt(form.defaultRestSeconds)
+      }
+      if (form.defaultRounds) {
+        attrs.default_rounds = parseInt(form.defaultRounds)
+      }
+      break
+    default:
+      assertNever(type)
+  }
+
+  return attrs
 }

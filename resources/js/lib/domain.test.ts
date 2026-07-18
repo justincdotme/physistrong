@@ -160,7 +160,6 @@ describe('workoutCompletion', () => {
       'empty entries array',
       {
         id: 'w1',
-        userId: 'u1',
         name: 'Test',
         date: '2026-06-30',
         exhaustion: null,
@@ -178,7 +177,6 @@ describe('workoutCompletion', () => {
   it('returns 0 when no entries have actual values', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -212,7 +210,6 @@ describe('workoutCompletion', () => {
   it('returns 1 when all entries have actual values', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -248,7 +245,6 @@ describe('workoutCompletion', () => {
   it('calculates partial completion ratio correctly', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -292,7 +288,6 @@ describe('workoutCompletion', () => {
   it('handles 2 of 4 entries completed (0.5)', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,

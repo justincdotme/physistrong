@@ -12,49 +12,17 @@ use Laravel\Passport\Passport;
 use Tests\TestCase;
 use App\Models\EntryGroup;
 
-class TemplateCloneTest extends TestCase
+class WorkoutTemplateCloneTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
-    // -- Clone --
+    // Clone
 
     public function test_clones_template_to_workout(): void
     {
         $user = User::factory()->create();
-        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
-        $exercise2 = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
+        $exercise2 = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
 
         $template = WorkoutTemplate::factory()->create([
             'user_id' => $user->id,
@@ -98,8 +66,8 @@ class TemplateCloneTest extends TestCase
     public function test_clone_creates_one_entry_per_exercise(): void
     {
         $user = User::factory()->create();
-        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Squat']);
-        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Deadlift']);
+        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Squat']);
+        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Deadlift']);
 
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
@@ -148,7 +116,7 @@ class TemplateCloneTest extends TestCase
     public function test_cloned_workout_is_independent_of_template(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -197,8 +165,8 @@ class TemplateCloneTest extends TestCase
     public function test_clone_creates_entry_groups_from_template_groups(): void
     {
         $user = User::factory()->create();
-        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
-        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Barbell Row']);
+        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
+        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Barbell Row']);
 
         $template = WorkoutTemplate::factory()->create([
             'user_id' => $user->id,
@@ -243,8 +211,8 @@ class TemplateCloneTest extends TestCase
     public function test_clone_expands_grouped_exercises_into_round_entries(): void
     {
         $user = User::factory()->create();
-        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
-        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Barbell Row']);
+        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
+        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Barbell Row']);
 
         $template = WorkoutTemplate::factory()->create([
             'user_id' => $user->id,
@@ -312,10 +280,10 @@ class TemplateCloneTest extends TestCase
     public function test_clone_interleaves_standalone_and_grouped_entries(): void
     {
         $user = User::factory()->create();
-        $squat = $this->createExercise($user, 'resistance', ['name' => 'Squat']);
-        $bench = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
-        $row = $this->createExercise($user, 'resistance', ['name' => 'Row']);
-        $plank = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $squat = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Squat']);
+        $bench = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
+        $row = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
+        $plank = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
 
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
@@ -398,7 +366,7 @@ class TemplateCloneTest extends TestCase
     public function test_clone_response_includes_groups(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
 
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $templateGroup = $template->groups()->create([

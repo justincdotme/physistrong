@@ -20,37 +20,6 @@ class ExerciseTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-        array $typeAttributes = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-        };
-
-        $exercise->$childRelation()->create(array_merge($defaults, $typeAttributes));
-
-        return $exercise;
-    }
-
     // Index
 
     public function test_lists_system_and_own_exercises(): void
@@ -58,9 +27,9 @@ class ExerciseTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create();
 
-        $this->createExercise(null, 'resistance', ['name' => 'System Bench Press']);
-        $this->createExercise($user, 'resistance', ['name' => 'My Custom Exercise']);
-        $this->createExercise($other, 'resistance', ['name' => 'Other User Exercise']);
+        Exercise::factory()->resistance()->create(['name' => 'System Bench Press']);
+        Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'My Custom Exercise']);
+        Exercise::factory()->resistance()->create(['user_id' => $other->id, 'name' => 'Other User Exercise']);
 
         Passport::actingAs($user);
 
@@ -77,8 +46,8 @@ class ExerciseTest extends TestCase
     public function test_filters_exercises_by_type(): void
     {
         $user = User::factory()->create();
-        $this->createExercise(null, 'resistance', ['name' => 'Bench Press']);
-        $this->createExercise(null, 'distance', ['name' => 'Treadmill Run']);
+        Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
+        Exercise::factory()->distance()->create(['name' => 'Treadmill Run']);
 
         Passport::actingAs($user);
 
@@ -96,8 +65,8 @@ class ExerciseTest extends TestCase
         $dumbbell = EquipmentType::create(['name' => 'dumbbell', 'user_id' => null, 'is_system' => true]);
 
         $user = User::factory()->create();
-        $this->createExercise(null, 'resistance', ['name' => 'Barbell Curl', 'equipment_type_id' => $barbell->id]);
-        $this->createExercise(null, 'resistance', ['name' => 'Dumbbell Curl', 'equipment_type_id' => $dumbbell->id]);
+        Exercise::factory()->resistance()->create(['name' => 'Barbell Curl', 'equipment_type_id' => $barbell->id]);
+        Exercise::factory()->resistance()->create(['name' => 'Dumbbell Curl', 'equipment_type_id' => $dumbbell->id]);
 
         Passport::actingAs($user);
 
@@ -112,8 +81,8 @@ class ExerciseTest extends TestCase
     public function test_searches_exercises_by_name(): void
     {
         $user = User::factory()->create();
-        $this->createExercise(null, 'resistance', ['name' => 'Bench Press']);
-        $this->createExercise(null, 'resistance', ['name' => 'Deadlift']);
+        Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
+        Exercise::factory()->resistance()->create(['name' => 'Deadlift']);
 
         Passport::actingAs($user);
 
@@ -125,16 +94,50 @@ class ExerciseTest extends TestCase
         $this->assertFalse($names->contains('Deadlift'));
     }
 
+    public function test_rejects_garbage_exercise_type(): void
+    {
+        Passport::actingAs(User::factory()->create());
+
+        $this->getJson('/api/v1/exercises?type=garbage')
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('type');
+    }
+
+    public function test_rejects_empty_exercise_type(): void
+    {
+        Passport::actingAs(User::factory()->create());
+
+        $this->getJson('/api/v1/exercises?type=')
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('type');
+    }
+
+    public function test_search_escapes_like_wildcards(): void
+    {
+        $user = User::factory()->create();
+        Exercise::factory()->resistance()->create(['name' => '100% Effort']);
+        Exercise::factory()->resistance()->create(['name' => '100 Pushups']);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/v1/exercises?search=100%25');
+
+        $response->assertOk();
+        $names = collect($response->json('data'))->pluck('name');
+        $this->assertTrue($names->contains('100% Effort'));
+        $this->assertFalse($names->contains('100 Pushups'));
+    }
+
     // Show
 
     public function test_shows_exercise_with_type_attributes(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise(null, 'resistance', ['name' => 'Pull-up'], [
+        $exercise = Exercise::factory()->resistance([
             'bodyweight_base' => true,
             'allows_added_weight' => true,
             'bilateral' => true,
-        ]);
+        ])->create(['name' => 'Pull-up']);
 
         Passport::actingAs($user);
 
@@ -151,7 +154,7 @@ class ExerciseTest extends TestCase
     public function test_cannot_view_other_users_exercise(): void
     {
         $owner = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance', ['name' => 'Secret Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id, 'name' => 'Secret Exercise']);
 
         Passport::actingAs(User::factory()->create());
 
@@ -255,7 +258,7 @@ class ExerciseTest extends TestCase
 
     public function test_allows_same_name_as_system_exercise(): void
     {
-        $this->createExercise(null, 'resistance', ['name' => 'Bench Press']);
+        Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
         $user = User::factory()->create();
         Passport::actingAs($user);
 
@@ -268,7 +271,7 @@ class ExerciseTest extends TestCase
     public function test_rejects_duplicate_name_for_same_user(): void
     {
         $user = User::factory()->create();
-        $this->createExercise($user, 'resistance', ['name' => 'My Exercise']);
+        Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'My Exercise']);
         Passport::actingAs($user);
 
         $this->postJson('/api/v1/exercises', [
@@ -324,7 +327,7 @@ class ExerciseTest extends TestCase
     public function test_updates_own_exercise(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Old Name']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Old Name']);
         Passport::actingAs($user);
 
         $this->putJson("/api/v1/exercises/{$exercise->id}", ['name' => 'New Name'])
@@ -335,9 +338,9 @@ class ExerciseTest extends TestCase
     public function test_updates_type_specific_attributes(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Pull-up'], [
+        $exercise = Exercise::factory()->resistance([
             'bodyweight_base' => false,
-        ]);
+        ])->create(['user_id' => $user->id, 'name' => 'Pull-up']);
         Passport::actingAs($user);
 
         $this->putJson("/api/v1/exercises/{$exercise->id}", [
@@ -350,7 +353,7 @@ class ExerciseTest extends TestCase
 
     public function test_cannot_update_system_exercise(): void
     {
-        $exercise = $this->createExercise(null, 'resistance', ['name' => 'System Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['name' => 'System Exercise']);
 
         Passport::actingAs(User::factory()->create());
 
@@ -361,12 +364,33 @@ class ExerciseTest extends TestCase
     public function test_cannot_update_other_users_exercise(): void
     {
         $owner = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance', ['name' => 'Their Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id, 'name' => 'Their Exercise']);
 
         Passport::actingAs(User::factory()->create());
 
         $this->putJson("/api/v1/exercises/{$exercise->id}", ['name' => 'Stolen'])
             ->assertStatus(403);
+    }
+
+    public function test_update_returns_truthful_usage_counts(): void
+    {
+        $user = User::factory()->create();
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'In Use Exercise']);
+        Passport::actingAs($user);
+
+        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+        WorkoutEntry::create([
+            'workout_id' => $workout->id,
+            'exercise_id' => $exercise->id,
+            'set_order' => 0,
+        ]);
+
+        $response = $this->putJson("/api/v1/exercises/{$exercise->id}", ['name' => 'In Use Exercise']);
+
+        $response->assertOk()
+            ->assertJsonPath('data.usage_count', 1)
+            ->assertJsonPath('data.has_logged_data', true);
     }
 
     #[DataProvider('exerciseTypeProvider')]
@@ -401,7 +425,7 @@ class ExerciseTest extends TestCase
     public function test_deletes_own_exercise(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'To Delete']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'To Delete']);
         Passport::actingAs($user);
 
         $this->deleteJson("/api/v1/exercises/{$exercise->id}")
@@ -413,7 +437,7 @@ class ExerciseTest extends TestCase
 
     public function test_cannot_delete_system_exercise(): void
     {
-        $exercise = $this->createExercise(null, 'resistance', ['name' => 'System Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['name' => 'System Exercise']);
 
         Passport::actingAs(User::factory()->create());
 
@@ -424,7 +448,7 @@ class ExerciseTest extends TestCase
     public function test_cannot_delete_other_users_exercise(): void
     {
         $owner = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance', ['name' => 'Their Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id, 'name' => 'Their Exercise']);
 
         Passport::actingAs(User::factory()->create());
 
@@ -435,7 +459,7 @@ class ExerciseTest extends TestCase
     public function test_returns_409_when_deleting_exercise_in_use_by_workout(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'In Use']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'In Use']);
         Passport::actingAs($user);
 
         $workout = Workout::factory()->create(['user_id' => $user->id]);
@@ -450,7 +474,7 @@ class ExerciseTest extends TestCase
     public function test_entry_only_usage_agrees_across_index_show_and_destroy(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Entry Only']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Entry Only']);
         Passport::actingAs($user);
 
         $workout = Workout::factory()->create(['user_id' => $user->id]);
@@ -478,7 +502,7 @@ class ExerciseTest extends TestCase
     public function test_cannot_delete_exercise_referenced_by_template(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
+import { useApp } from '@/lib/use-app'
 import { todayISO, formatDate } from '@/lib/formatters'
 import { TYPE_OPTIONS } from '@/lib/exercise-types'
 
@@ -99,6 +100,7 @@ export function NewWorkoutWizard({
   onCloneSuccess,
   onCopySuccess,
 }: NewWorkoutWizardProps) {
+  const { toast } = useApp()
   const [step, setStep] = useState<
     'method' | 'details' | 'template-picker' | 'template-date' | 'workout-picker' | 'workout-date'
   >('method')
@@ -121,6 +123,7 @@ export function NewWorkoutWizard({
       onClose()
       onCloneSuccess?.(workout.id)
     },
+    onError: () => toast('Could not create workout from template. Try again.', 'error'),
   })
 
   const copyMutation = useMutation({
@@ -130,6 +133,7 @@ export function NewWorkoutWizard({
       onClose()
       onCopySuccess?.(workout.id)
     },
+    onError: () => toast('Could not copy workout. Try again.', 'error'),
   })
 
   useEffect(() => {

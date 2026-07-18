@@ -26,7 +26,7 @@ class ExerciseLibrarySeederTest extends TestCase
         $fixture = $this->fixtureExercises();
         $this->assertSame(count($fixture), DB::table('exercises')->count());
 
-        // Seeded exercises are system-owned (ADR-010).
+        // Seeded exercises are system-owned.
         $this->assertSame(0, DB::table('exercises')->whereNotNull('user_id')->count());
 
         $expectedByType = $this->countByType($fixture);
@@ -158,6 +158,70 @@ class ExerciseLibrarySeederTest extends TestCase
         $this->seedLibrary();
 
         $this->assertSame($before, $this->tableCounts());
+    }
+
+    public function test_equipment_type_seeder_preserves_created_at_on_reseed(): void
+    {
+        $this->seed(EquipmentTypeSeeder::class);
+
+        $firstRow = DB::table('equipment_types')->whereNull('user_id')->first();
+        $this->assertNotNull($firstRow);
+
+        $originalCreatedAt = $firstRow->created_at;
+        $backdatedCreatedAt = now()->subYear();
+
+        DB::table('equipment_types')
+            ->where('id', $firstRow->id)
+            ->update(['created_at' => $backdatedCreatedAt, 'is_system' => false]);
+
+        $this->seed(EquipmentTypeSeeder::class);
+
+        $afterReseed = DB::table('equipment_types')->where('id', $firstRow->id)->first();
+        $this->assertSame(
+            $backdatedCreatedAt->toDateTimeString(),
+            $afterReseed->created_at,
+            'created_at must not drift on reseed',
+        );
+        $this->assertTrue((bool) $afterReseed->is_system, 'mutable field is_system must still update');
+    }
+
+    public function test_exercise_library_seeder_preserves_created_at_on_reseed(): void
+    {
+        $this->seedLibrary();
+
+        $exerciseWithEquipment = DB::table('exercises')
+            ->whereNull('user_id')
+            ->whereNotNull('equipment_type_id')
+            ->first();
+        $this->assertNotNull($exerciseWithEquipment, 'need an exercise with equipment to test mutable field update');
+
+        $backdatedCreatedAt = now()->subYear();
+
+        DB::table('exercises')
+            ->where('id', $exerciseWithEquipment->id)
+            ->update(['created_at' => $backdatedCreatedAt, 'equipment_type_id' => null]);
+
+        $childTable = self::CHILD_TABLES[$exerciseWithEquipment->type];
+        DB::table($childTable)
+            ->where('exercise_id', $exerciseWithEquipment->id)
+            ->update(['created_at' => $backdatedCreatedAt]);
+
+        $this->seed(ExerciseLibrarySeeder::class);
+
+        $afterReseed = DB::table('exercises')->where('id', $exerciseWithEquipment->id)->first();
+        $this->assertSame(
+            $backdatedCreatedAt->toDateTimeString(),
+            $afterReseed->created_at,
+            'exercise base created_at must not drift on reseed',
+        );
+        $this->assertNotNull($afterReseed->equipment_type_id, 'mutable field equipment_type_id must still update');
+
+        $afterReseedChild = DB::table($childTable)->where('exercise_id', $exerciseWithEquipment->id)->first();
+        $this->assertSame(
+            $backdatedCreatedAt->toDateTimeString(),
+            $afterReseedChild->created_at,
+            'child table created_at must not drift on reseed',
+        );
     }
 
     private function seedLibrary(): void

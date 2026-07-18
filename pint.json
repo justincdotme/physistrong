@@ -6,6 +6,9 @@
     ],
     "rules": {
         "@PSR12": true,
-        "no_trailing_comma_in_singleline": false
+        "no_trailing_comma_in_singleline": false,
+        "ordered_imports": {
+            "sort_algorithm": "alpha"
+        }
     }
 }

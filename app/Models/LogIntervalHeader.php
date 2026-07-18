@@ -14,7 +14,6 @@ class LogIntervalHeader extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'programmed_rounds',
         'completed_rounds',
         'target_work_seconds',

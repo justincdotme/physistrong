@@ -33,7 +33,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonStructure(['user'])
+            ->assertJsonStructure(['data'])
             ->assertJsonMissingPath('token');
 
         $this->assertIssuesAuthTokenCookie($response);

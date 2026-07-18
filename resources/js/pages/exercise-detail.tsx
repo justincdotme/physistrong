@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { Trash2 } from 'lucide-react'
+import { extractConflictMessage } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Card } from '@/components/ui/card'
 import { TypeBadge } from '@/components/ui/type-badge'
@@ -68,8 +68,9 @@ export function ExerciseDetailPage() {
       navigate('/exercises')
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Exercise is in use.', 'error')
+      const conflictMsg = extractConflictMessage(error, 'Exercise is in use.')
+      if (conflictMsg) {
+        toast(conflictMsg, 'error')
       } else {
         toast('Could not delete. Try again.', 'error')
       }

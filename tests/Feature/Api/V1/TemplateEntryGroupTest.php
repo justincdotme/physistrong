@@ -16,19 +16,6 @@ class TemplateEntryGroupTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(User $user, string $name = 'Test Exercise'): Exercise
-    {
-        $exercise = Exercise::create([
-            'name' => $name,
-            'type' => 'resistance',
-            'user_id' => $user->id,
-        ]);
-
-        $exercise->resistance()->create([]);
-
-        return $exercise;
-    }
-
     public function test_creates_template_group(): void
     {
         $user = User::factory()->create();
@@ -103,7 +90,7 @@ class TemplateEntryGroupTest extends TestCase
     public function test_delete_group_nulls_exercise_pivot_fk(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'Bench Press');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $group = TemplateEntryGroup::create([
             'template_id' => $template->id,
@@ -147,8 +134,8 @@ class TemplateEntryGroupTest extends TestCase
     public function test_assigns_exercises_to_group(): void
     {
         $user = User::factory()->create();
-        $ex1 = $this->createExercise($user, 'Bench');
-        $ex2 = $this->createExercise($user, 'Row');
+        $ex1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
+        $ex2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($ex1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($ex2->id, ['exercise_order' => 1]);
@@ -203,7 +190,7 @@ class TemplateEntryGroupTest extends TestCase
     public function test_assign_exercises_rejects_exercise_from_another_template(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'Bench');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $template1 = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template2 = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template1->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -226,7 +213,7 @@ class TemplateEntryGroupTest extends TestCase
     public function test_assign_exercises_rejects_duplicate_ids(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'Bench');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -248,9 +235,9 @@ class TemplateEntryGroupTest extends TestCase
     public function test_assign_exercises_succeeds_with_valid_subset(): void
     {
         $user = User::factory()->create();
-        $ex1 = $this->createExercise($user, 'Bench');
-        $ex2 = $this->createExercise($user, 'Row');
-        $ex3 = $this->createExercise($user, 'Curl');
+        $ex1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
+        $ex2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
+        $ex3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Curl']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($ex1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($ex2->id, ['exercise_order' => 1]);
@@ -284,36 +271,6 @@ class TemplateEntryGroupTest extends TestCase
         $this->assertDatabaseHas('template_exercises', [
             'template_id' => $template->id,
             'exercise_id' => $ex2->id,
-            'template_entry_group_id' => null,
-        ]);
-    }
-
-    public function test_removes_exercise_from_group(): void
-    {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'Bench');
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
-        $group = TemplateEntryGroup::create([
-            'template_id' => $template->id,
-            'planned_rounds' => 2,
-            'rest_between_exercises_seconds' => 0,
-        ]);
-        $template->exercises()->attach($exercise->id, [
-            'exercise_order' => 0,
-            'template_entry_group_id' => $group->id,
-        ]);
-
-        Passport::actingAs($user);
-
-        $response = $this->deleteJson(
-            "/api/v1/templates/{$template->id}/groups/{$group->id}/exercises/{$exercise->id}"
-        );
-
-        $response->assertOk();
-
-        $this->assertDatabaseHas('template_exercises', [
-            'template_id' => $template->id,
-            'exercise_id' => $exercise->id,
             'template_entry_group_id' => null,
         ]);
     }

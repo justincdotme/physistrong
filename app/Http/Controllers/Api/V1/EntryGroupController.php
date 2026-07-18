@@ -7,11 +7,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AssignGroupEntriesRequest;
 use App\Http\Requests\Api\V1\StoreEntryGroupRequest;
-use App\Http\Requests\Api\V1\UpdateEntryGroupRequest;
 use App\Http\Resources\Api\V1\WorkoutResource;
 use App\Models\EntryGroup;
 use App\Models\Workout;
-use App\Models\WorkoutEntry;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -34,24 +32,9 @@ class EntryGroupController extends Controller
             ->setStatusCode(201);
     }
 
-    public function update(UpdateEntryGroupRequest $request, Workout $workout, EntryGroup $group): WorkoutResource
-    {
-        $this->authorize('update', $workout);
-
-        abort_if($group->workout_id !== $workout->id, 404);
-
-        $group->update($request->validated());
-
-        $workout->load(Workout::detailRelations());
-
-        return new WorkoutResource($workout);
-    }
-
     public function destroy(Workout $workout, EntryGroup $group): Response
     {
         $this->authorize('update', $workout);
-
-        abort_if($group->workout_id !== $workout->id, 404);
 
         // Clear group_round before delete; FK ON DELETE SET NULL handles entry_group_id
         $group->entries()->update(['group_round' => null]);
@@ -64,8 +47,6 @@ class EntryGroupController extends Controller
     {
         $this->authorize('update', $workout);
 
-        abort_if($group->workout_id !== $workout->id, 404);
-
         DB::transaction(function () use ($request, $workout, $group) {
             foreach ($request->validated('entries') as $assignment) {
                 $workout->entries()
@@ -76,23 +57,6 @@ class EntryGroupController extends Controller
                     ]);
             }
         });
-
-        $workout->load(Workout::detailRelations());
-
-        return new WorkoutResource($workout);
-    }
-
-    public function removeEntry(Workout $workout, EntryGroup $group, WorkoutEntry $entry): WorkoutResource
-    {
-        $this->authorize('update', $workout);
-
-        abort_if($group->workout_id !== $workout->id, 404);
-        abort_if($entry->workout_id !== $workout->id, 404);
-
-        $entry->update([
-            'entry_group_id' => null,
-            'group_round' => null,
-        ]);
 
         $workout->load(Workout::detailRelations());
 

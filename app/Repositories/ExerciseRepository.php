@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Enums\ExerciseType;
 use App\Models\Exercise;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -39,40 +38,11 @@ class ExerciseRepository
             );
 
             if (isset($validated['type_attributes'])) {
-                $exercise->{$exercise->type->childRelation()}
-                    ->update($validated['type_attributes']);
+                $exercise->{$exercise->type->childRelation()}()
+                    ->updateOrCreate([], $validated['type_attributes']);
             }
 
             return $exercise;
         });
-    }
-
-    /** @return array<string, mixed>|null */
-    public function typeAttributes(Exercise $exercise): ?array
-    {
-        $child = $exercise->{$exercise->type->childRelation()};
-
-        if ($child === null) {
-            return null;
-        }
-
-        return match ($exercise->type) {
-            ExerciseType::Resistance => [
-                'bodyweight_base' => $child->bodyweight_base,
-                'allows_added_weight' => $child->allows_added_weight,
-                'bilateral' => $child->bilateral,
-            ],
-            ExerciseType::TimedHold => [
-                'target_duration_seconds' => $child->target_duration_seconds,
-            ],
-            ExerciseType::Distance => [
-                'tracks_elevation' => $child->tracks_elevation,
-            ],
-            ExerciseType::Interval => [
-                'default_work_seconds' => $child->default_work_seconds,
-                'default_rest_seconds' => $child->default_rest_seconds,
-                'default_rounds' => $child->default_rounds,
-            ],
-        };
     }
 }

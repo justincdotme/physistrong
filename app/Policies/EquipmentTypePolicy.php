@@ -10,19 +10,9 @@ use Illuminate\Auth\Access\Response;
 
 class EquipmentTypePolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
     public function view(User $user, EquipmentType $equipmentType): bool
     {
         return $equipmentType->isVisibleTo($user);
-    }
-
-    public function create(User $user): bool
-    {
-        return true;
     }
 
     public function update(User $user, EquipmentType $equipmentType): Response

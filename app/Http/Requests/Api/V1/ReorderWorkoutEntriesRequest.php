@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class ReorderEntriesRequest extends FormRequest
+class ReorderWorkoutEntriesRequest extends FormRequest
 {
     /** @return array<string, mixed> */
     public function rules(): array

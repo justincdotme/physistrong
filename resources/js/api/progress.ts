@@ -1,4 +1,3 @@
-import { api } from './client'
 import type {
   ExerciseProgressData,
   ExerciseType,
@@ -43,22 +42,6 @@ export interface RawRecordsResponse {
   exercise_id: number
   exercise_type: ExerciseType
   records: Record<string, RawRecordEntry>
-}
-
-export async function fetchProgress(
-  exerciseId: string,
-  range: string
-): Promise<RawProgressResponse> {
-  const apiRange = range.toLowerCase()
-  const { data } = await api.get(`/exercises/${exerciseId}/progress`, {
-    params: { range: apiRange },
-  })
-  return data.data as RawProgressResponse
-}
-
-export async function fetchRecords(exerciseId: string): Promise<RawRecordsResponse> {
-  const { data } = await api.get(`/exercises/${exerciseId}/records`)
-  return data.data as RawRecordsResponse
 }
 
 export function transformProgressData(

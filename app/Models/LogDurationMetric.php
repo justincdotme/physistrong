@@ -13,7 +13,6 @@ class LogDurationMetric extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'target_duration_seconds',
         'actual_duration_seconds',
     ];

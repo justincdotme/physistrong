@@ -1,7 +1,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { Dumbbell, Plus, Trash2 } from 'lucide-react'
+import { extractConflictMessage } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -25,6 +25,9 @@ export function EquipmentPage() {
       queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Equipment added.')
     },
+    onError: () => {
+      toast('Could not create equipment. Try again.', 'error')
+    },
   })
 
   const deleteMutation = useMutation({
@@ -34,8 +37,9 @@ export function EquipmentPage() {
       toast('Equipment deleted.')
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Equipment is in use.', 'error')
+      const conflictMsg = extractConflictMessage(error, 'Equipment is in use.')
+      if (conflictMsg) {
+        toast(conflictMsg, 'error')
       } else {
         toast('Could not delete. Try again.', 'error')
       }

@@ -20,7 +20,7 @@ Physistrong is being rebuilt as a self-hosted fitness tracking app on Laravel 13
 
 The legacy application used a development branch of tymon/jwt-auth, which lacked proper OAuth2 client management and refresh token handling. The new architecture must support:
 
-- Token revocation without database lookups per request
+- Token revocation without database lookups per request (deferred, not yet the runtime behavior; see Implementation Notes below)
 - Portable tokens suitable for mobile clients
 - Payload claims for authorization decisions
 - Separate delivery mechanisms optimized for browser and mobile security models
@@ -141,7 +141,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 ## Pros
 
 - Stateless authentication reduces session storage overhead and enables horizontal scaling without sticky sessions
-- JTI-based blacklist provides efficient token revocation without requiring a database lookup per request
+- JTI-based blacklist provides efficient token revocation without requiring a database lookup per request (for the blacklist check itself; Passport's separate DB revocation check still runs per request, see Implementation Notes below)
 - Redis-backed TTL management prevents unbounded blacklist growth; entries automatically expire matching token lifetime
 - Dual delivery mechanism (HTTP-only cookie for web, response body for mobile) optimizes security for each client type
 - Adds OAuth2 client management and scope-based access control out of the box, supporting future mobile clients and third-party integrations
@@ -160,7 +160,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 
 ### Positive
 
-- Token payload can carry authorization claims (roles, permissions, user metadata), enabling faster authorization decisions without additional database queries
+- Token payload can carry authorization claims (roles, permissions, user metadata), enabling faster authorization decisions without additional database queries (for permission lookups specifically; the revocation check still queries the database per request, see Implementation Notes below)
 - Mobile clients can securely store JWTs on device and reuse them across app sessions without server-side session state
 - API can be scaled horizontally without sticky sessions or distributed session caching
 - Future Android/React Native client and third-party OAuth2 clients can reuse the same authentication infrastructure

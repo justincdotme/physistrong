@@ -15,7 +15,8 @@ Accepted
 
 Workout templates are an MVP requirement (PS-54). Users save reusable
 routines and create workout instances from them. The same clone-and-detach
-principle applies to the copy workout feature (PS-52, deferred).
+principle applies to the copy workout feature (PS-52, implemented; see
+Amendment below).
 
 ---
 
@@ -49,7 +50,8 @@ After cloning, the workout has no reference to the template. Editing the
 template later does not affect existing workouts, and deleting the template
 does not affect them either.
 
-The copy workout feature (PS-52, deferred) follows the same principle:
+The copy workout feature (PS-52, implemented; see Amendment below)
+follows the same principle:
 clone the workout's structure into a new independent workout.
 
 ### Template structure
@@ -121,13 +123,44 @@ nullable `template_entry_group_id` FK.
 
 ---
 
+## Amendment: Copy Workout Implemented
+
+**Date:** 2026-07-17
+
+**Amended by:** PS-156 (documentation drift found during a codebase audit)
+
+Copy workout, noted above as deferred (PS-52), shipped.
+`App\Services\WorkoutCloneService` is shared by both flows:
+`fromTemplate()` clones a template into a workout (this ADR's original
+scope), `fromWorkout()` clones an existing workout into a new
+independent one via `POST /workouts/{workout}/copy`. Both follow the
+same clone-and-detach principle: the result carries no FK back to its
+source.
+
+---
+
+## Amendment: Pivot Table Naming Convention
+
+**Date:** 2026-07-17
+
+**Amended by:** PS-141 (naming convention for future pivot tables)
+
+Future pivot tables use a domain-plural name, matching
+`template_exercises` above rather than Laravel's default
+alphabetical-singular convention. `exercise_workout` (the workout's
+exercise pivot, referenced in Decision above) predates this
+convention and keeps its existing name.
+
+---
+
 ## Consequences
 
 ### Positive
 - Clean separation: templates and workouts are independent entities
 - Deleting a template never affects existing workouts
 - No orphan references or cascade complexity
-- Same clone-and-detach pattern works for copy workout (PS-52)
+- Same clone-and-detach pattern works for copy workout (PS-52),
+  implemented via the shared `WorkoutCloneService`
 
 ### Negative
 - Template tables partially mirror workout structure (exercises pivot,

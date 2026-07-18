@@ -17,38 +17,6 @@ class WorkoutCopyTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
     private function createWorkoutWithExercises(User $user, array $exercises): Workout
     {
         $workout = Workout::create([
@@ -71,7 +39,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copies_workout_with_new_date(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $workout = $this->createWorkoutWithExercises($user, [$exercise]);
 
         Passport::actingAs($user);
@@ -90,7 +58,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_allows_name_override(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = $this->createWorkoutWithExercises($user, [$exercise]);
 
         Passport::actingAs($user);
@@ -107,8 +75,8 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_preserves_exercise_order(): void
     {
         $user = User::factory()->create();
-        $ex1 = $this->createExercise($user, 'resistance', ['name' => 'Squat']);
-        $ex2 = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $ex1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Squat']);
+        $ex2 = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
         $workout = $this->createWorkoutWithExercises($user, [$ex1, $ex2]);
 
         Passport::actingAs($user);
@@ -134,8 +102,8 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_clones_entry_groups(): void
     {
         $user = User::factory()->create();
-        $ex1 = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
-        $ex2 = $this->createExercise($user, 'resistance', ['name' => 'Row']);
+        $ex1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
+        $ex2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
 
         $workout = Workout::create([
             'name' => 'Superset Day',
@@ -200,7 +168,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_clones_metric_targets_and_nulls_actuals(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Squat']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Squat']);
 
         $workout = Workout::create([
             'name' => 'Leg Day',
@@ -254,7 +222,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_clones_cardio_settings(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'distance', ['name' => 'Treadmill Run']);
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Treadmill Run']);
 
         $workout = Workout::create([
             'name' => 'Cardio Day',
@@ -295,7 +263,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_clones_interval_header_without_rounds(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'interval', ['name' => 'HIIT Sprint']);
+        $exercise = Exercise::factory()->interval()->create(['user_id' => $user->id, 'name' => 'HIIT Sprint']);
 
         $workout = Workout::create([
             'name' => 'Interval Day',
@@ -346,7 +314,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_skips_intensity_metrics(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Deadlift']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Deadlift']);
 
         $workout = Workout::create([
             'name' => 'Heavy Day',
@@ -362,8 +330,8 @@ class WorkoutCopyTest extends TestCase
 
         $entry->intensityMetric()->create([
             'rpe' => 9,
-            'avg_hr' => 155,
-            'max_hr' => 178,
+            'heart_rate_avg' => 155,
+            'heart_rate_peak' => 178,
         ]);
 
         Passport::actingAs($user);
@@ -382,7 +350,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_preserves_entry_notes(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
 
         $workout = Workout::create([
             'name' => 'Push Day',
@@ -414,7 +382,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_does_not_carry_exhaustion_or_soreness(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         $workout = Workout::create([
             'name' => 'Hard Session',
@@ -444,7 +412,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copied_workout_is_independent_of_source(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = $this->createWorkoutWithExercises($user, [$exercise]);
 
         Passport::actingAs($user);
@@ -467,7 +435,7 @@ class WorkoutCopyTest extends TestCase
     {
         $owner = User::factory()->create();
         $other = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id]);
         $workout = $this->createWorkoutWithExercises($owner, [$exercise]);
 
         Passport::actingAs($other);
@@ -480,7 +448,7 @@ class WorkoutCopyTest extends TestCase
     public function test_copy_validates_date_required(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = $this->createWorkoutWithExercises($user, [$exercise]);
 
         Passport::actingAs($user);

@@ -450,19 +450,6 @@ export function WorkoutDetailPage() {
     new Map<string, { timer: ReturnType<typeof setTimeout>; entry: WorkoutEntry }>()
   )
 
-  const flushPendingUpdates = useCallback(() => {
-    const pending = pendingUpdates.current
-    pending.forEach(({ timer, entry }) => {
-      clearTimeout(timer)
-      updateEntry(workoutId, entry.id, { metrics: toMetricsPayload(entry) })
-    })
-    pending.clear()
-  }, [workoutId])
-
-  useEffect(() => {
-    return () => flushPendingUpdates()
-  }, [flushPendingUpdates])
-
   const invalidateWorkout = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: workoutQueries.detail(workoutId).queryKey })
   }, [queryClient, workoutId])
@@ -506,19 +493,12 @@ export function WorkoutDetailPage() {
   })
 
   const detachExerciseMutation = useMutation({
-    mutationFn: (exerciseId: string) => detachExercise(workoutId, exerciseId),
-    onSuccess: (_data, exerciseId) => {
-      queryClient.setQueryData(
-        workoutQueries.detail(workoutId).queryKey,
-        (old: Workout | undefined) => {
-          if (!old) return old
-          return {
-            ...old,
-            exercises: old.exercises.filter(e => e.id !== exerciseId),
-            entries: old.entries.filter(e => e.exerciseId !== exerciseId),
-          }
-        }
-      )
+    mutationFn: async (exerciseId: string) => {
+      await flushPendingUpdates()
+      return detachExercise(workoutId, exerciseId)
+    },
+    onSuccess: () => {
+      invalidateWorkout()
       invalidateWorkoutList()
       toast('Exercise removed.')
     },
@@ -530,6 +510,10 @@ export function WorkoutDetailPage() {
     onSuccess: data => {
       queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
     },
+    onError: () => {
+      toast('Could not reorder exercises. Try again.', 'error')
+      invalidateWorkout()
+    },
   })
 
   const addSetMutation = useMutation({
@@ -539,21 +523,6 @@ export function WorkoutDetailPage() {
       invalidateWorkoutList()
     },
     onError: () => toast('Could not add set. Try again.', 'error'),
-  })
-
-  const deleteEntryMutation = useMutation({
-    mutationFn: (entryId: string) => deleteEntry(workoutId, entryId),
-    onSuccess: (_data, entryId) => {
-      queryClient.setQueryData(
-        workoutQueries.detail(workoutId).queryKey,
-        (old: Workout | undefined) => {
-          if (!old) return old
-          return { ...old, entries: old.entries.filter(e => e.id !== entryId) }
-        }
-      )
-      invalidateWorkoutList()
-    },
-    onError: () => toast('Could not remove set. Try again.', 'error'),
   })
 
   const updateEntryMutation = useMutation({
@@ -582,9 +551,44 @@ export function WorkoutDetailPage() {
     },
   })
 
+  const flushPendingUpdates = useCallback(() => {
+    const pending = pendingUpdates.current
+    const flushes = Array.from(pending.values()).map(({ timer, entry }) => {
+      clearTimeout(timer)
+      return updateEntryMutation.mutateAsync({
+        entryId: entry.id,
+        payload: { metrics: toMetricsPayload(entry) },
+      })
+    })
+    pending.clear()
+    return Promise.allSettled(flushes)
+  }, [updateEntryMutation])
+
+  useEffect(() => {
+    return () => {
+      void flushPendingUpdates()
+    }
+  }, [flushPendingUpdates])
+
+  const deleteEntryMutation = useMutation({
+    mutationFn: async (entryId: string) => {
+      await flushPendingUpdates()
+      return deleteEntry(workoutId, entryId)
+    },
+    onSuccess: () => {
+      invalidateWorkout()
+      invalidateWorkoutList()
+    },
+    onError: () => toast('Could not remove set. Try again.', 'error'),
+  })
+
   const reorderEntriesMutation = useMutation({
     mutationFn: (ids: string[]) => reorderEntries(workoutId, ids),
     onSuccess: invalidateWorkout,
+    onError: () => {
+      toast('Could not reorder sets. Try again.', 'error')
+      invalidateWorkout()
+    },
   })
 
   const createGroupMutation = useMutation({
@@ -654,6 +658,7 @@ export function WorkoutDetailPage() {
   const patchEntry = useCallback(
     (entryId: string, patch: Partial<WorkoutEntry>) => {
       const detailKey = workoutQueries.detail(workoutId).queryKey
+      queryClient.cancelQueries({ queryKey: detailKey })
       const oldWorkout = queryClient.getQueryData<Workout>(detailKey)
       if (!oldWorkout) return
 

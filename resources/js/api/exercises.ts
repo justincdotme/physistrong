@@ -1,8 +1,8 @@
 import { queryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import { toExercise, type RawExercise } from './transformers'
-import { fetchRecords, fetchProgress } from './progress'
 import type { Exercise, ExerciseType } from './types'
+import type { RawProgressResponse, RawRecordsResponse } from './progress'
 
 export const exerciseQueries = {
   base: ['exercises'] as const,
@@ -64,4 +64,20 @@ export async function updateExercise(
 
 export async function deleteExercise(id: string): Promise<void> {
   await api.delete(`/exercises/${id}`)
+}
+
+export async function fetchProgress(
+  exerciseId: string,
+  range: string
+): Promise<RawProgressResponse> {
+  const apiRange = range.toLowerCase()
+  const { data } = await api.get(`/exercises/${exerciseId}/progress`, {
+    params: { range: apiRange },
+  })
+  return data.data as RawProgressResponse
+}
+
+export async function fetchRecords(exerciseId: string): Promise<RawRecordsResponse> {
+  const { data } = await api.get(`/exercises/${exerciseId}/records`)
+  return data.data as RawRecordsResponse
 }

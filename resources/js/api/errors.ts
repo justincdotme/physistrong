@@ -18,3 +18,8 @@ export function extractMessage(error: unknown): string {
   }
   return 'Something went wrong. Try again.'
 }
+
+export function extractConflictMessage(error: unknown, fallback: string): string | null {
+  if (!isAxiosError(error) || error.response?.status !== 409) return null
+  return (error.response.data?.message as string | undefined) ?? fallback
+}

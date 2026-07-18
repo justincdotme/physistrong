@@ -19,8 +19,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["resources/js/*"]
-    }
+    },
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["resources/js", "resources/js/dusk.d.ts"],
-  "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
+  "include": ["resources/js", "resources/js/dusk.d.ts"]
 }

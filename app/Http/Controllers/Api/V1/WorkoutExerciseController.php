@@ -26,9 +26,7 @@ class WorkoutExerciseController extends Controller
         $exerciseId = $request->validated('exercise_id');
 
         $attached = DB::transaction(function () use ($workout, $exerciseId): bool {
-            // Discarded read: holding the parent row serializes concurrent
-            // attach/reorder so two attaches cannot compute the same max order.
-            Workout::whereKey($workout->id)->lockForUpdate()->first();
+            Workout::whereKeyLocked($workout->id)->first();
 
             if ($workout->exercises()->where('exercises.id', $exerciseId)->exists()) {
                 return false;
@@ -70,7 +68,7 @@ class WorkoutExerciseController extends Controller
         $this->authorize('update', $workout);
 
         DB::transaction(function () use ($request, $workout) {
-            Workout::whereKey($workout->id)->lockForUpdate()->first();
+            Workout::whereKeyLocked($workout->id)->first();
 
             $ids = $request->validated('ids');
             foreach ($ids as $index => $id) {

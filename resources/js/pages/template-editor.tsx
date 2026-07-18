@@ -42,7 +42,7 @@ function buildBlocks(tpl: WorkoutTemplate): TemplateBlock[] {
   tpl.exercises.forEach(te =>
     blocks.push({
       kind: 'exercise',
-      id: `b-${te.id}`,
+      id: `b-${te.exerciseId}`,
       te,
       order: te.exerciseOrder,
     })
@@ -79,6 +79,7 @@ export function TemplateEditorPage() {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base })
     },
+    onError: () => toast('Could not rename template. Try again.', 'error'),
   })
 
   const deleteMutation = useMutation({
@@ -88,6 +89,7 @@ export function TemplateEditorPage() {
       toast('Template deleted.')
       navigate('/workouts')
     },
+    onError: () => toast('Could not delete template. Try again.', 'error'),
   })
 
   const attachMutation = useMutation({
@@ -98,6 +100,7 @@ export function TemplateEditorPage() {
       queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
       toast('Exercise added.')
     },
+    onError: () => toast('Could not add exercise. Try again.', 'error'),
   })
 
   const detachMutation = useMutation({
@@ -107,6 +110,7 @@ export function TemplateEditorPage() {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
     },
+    onError: () => toast('Could not remove exercise. Try again.', 'error'),
   })
 
   const reorderMutation = useMutation({
@@ -114,6 +118,10 @@ export function TemplateEditorPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+    },
+    onError: () => {
+      toast('Could not reorder exercises. Try again.', 'error')
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
     },
   })
 
@@ -331,7 +339,7 @@ export function TemplateEditorPage() {
                     </div>
                     <div className="flex flex-col gap-2.5">
                       {g.exercises.map(te => (
-                        <div key={te.id} className="flex items-center gap-2">
+                        <div key={te.exerciseId} className="flex items-center gap-2">
                           <div className="min-w-0 flex-1">
                             <div className="font-semibold text-sm truncate">{te.name}</div>
                             <div className="text-[12px] text-text-secondary">

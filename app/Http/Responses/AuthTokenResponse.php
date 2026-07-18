@@ -16,7 +16,7 @@ class AuthTokenResponse
         $token = $user->createToken('auth');
 
         return response()->json([
-            'user' => new UserResource($user),
+            'data' => new UserResource($user),
         ], $status)->withCookie(AuthTokenCookieService::issue($token->accessToken, now()->addSeconds($token->expiresIn)));
     }
 }

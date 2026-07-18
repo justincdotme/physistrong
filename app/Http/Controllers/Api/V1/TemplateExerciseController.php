@@ -28,9 +28,7 @@ class TemplateExerciseController extends Controller
         $exerciseId = $request->validated('exercise_id');
 
         $attached = DB::transaction(function () use ($template, $exerciseId): bool {
-            // Discarded read: holding the parent row serializes concurrent
-            // attach/reorder so two attaches cannot compute the same max order.
-            WorkoutTemplate::whereKey($template->id)->lockForUpdate()->first();
+            WorkoutTemplate::whereKeyLocked($template->id)->first();
 
             if ($template->exercises()->where('exercises.id', $exerciseId)->exists()) {
                 return false;
@@ -71,7 +69,7 @@ class TemplateExerciseController extends Controller
         $this->authorize('update', $template);
 
         DB::transaction(function () use ($request, $template) {
-            WorkoutTemplate::whereKey($template->id)->lockForUpdate()->first();
+            WorkoutTemplate::whereKeyLocked($template->id)->first();
 
             /** @var array<int, int> $ids */
             $ids = $request->validated('ids');

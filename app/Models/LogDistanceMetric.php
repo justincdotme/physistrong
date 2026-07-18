@@ -13,7 +13,6 @@ class LogDistanceMetric extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'target_distance',
         'actual_distance',
         'lap_count',

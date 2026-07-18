@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AssignTemplateGroupExercisesRequest;
 use App\Http\Requests\Api\V1\StoreTemplateEntryGroupRequest;
 use App\Http\Resources\Api\V1\WorkoutTemplateResource;
-use App\Models\Exercise;
 use App\Models\TemplateEntryGroup;
 use App\Models\WorkoutTemplate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -38,8 +37,6 @@ class TemplateEntryGroupController extends Controller
     {
         $this->authorize('update', $template);
 
-        abort_if($group->template_id !== $template->id, 404);
-
         $group->delete();
 
         return response()->noContent();
@@ -52,31 +49,11 @@ class TemplateEntryGroupController extends Controller
     ): WorkoutTemplateResource {
         $this->authorize('update', $template);
 
-        abort_if($group->template_id !== $template->id, 404);
-
         foreach ($request->validated('exercise_ids') as $exerciseId) {
             $template->exercises()->updateExistingPivot($exerciseId, [
                 'template_entry_group_id' => $group->id,
             ]);
         }
-
-        $template->load(self::TEMPLATE_EAGER_LOAD);
-
-        return new WorkoutTemplateResource($template);
-    }
-
-    public function removeExercise(
-        WorkoutTemplate $template,
-        TemplateEntryGroup $group,
-        Exercise $exercise
-    ): WorkoutTemplateResource {
-        $this->authorize('update', $template);
-
-        abort_if($group->template_id !== $template->id, 404);
-
-        $template->exercises()->updateExistingPivot($exercise->id, [
-            'template_entry_group_id' => null,
-        ]);
 
         $template->load(self::TEMPLATE_EAGER_LOAD);
 

@@ -16,39 +16,7 @@ class EntryGroupTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
-    // -- Store --
+    // Store
 
     public function test_creates_entry_group(): void
     {
@@ -138,72 +106,7 @@ class EntryGroupTest extends TestCase
             ->assertJsonValidationErrors('planned_rounds');
     }
 
-    // -- Update --
-
-    public function test_updates_entry_group(): void
-    {
-        $user = User::factory()->create();
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'name' => 'Old Name',
-            'planned_rounds' => 2,
-            'rest_between_exercises_seconds' => 0,
-        ]);
-
-        Passport::actingAs($user);
-
-        $response = $this->putJson("/api/v1/workouts/{$workout->id}/groups/{$group->id}", [
-            'name' => 'New Name',
-            'planned_rounds' => 4,
-            'rest_between_exercises_seconds' => 45,
-            'rest_between_rounds_seconds' => 90,
-        ]);
-
-        $response->assertOk()
-            ->assertJsonPath('data.groups.0.name', 'New Name')
-            ->assertJsonPath('data.groups.0.planned_rounds', 4)
-            ->assertJsonPath('data.groups.0.rest_between_exercises_seconds', 45)
-            ->assertJsonPath('data.groups.0.rest_between_rounds_seconds', 90);
-    }
-
-    public function test_cannot_update_group_on_other_users_workout(): void
-    {
-        $owner = User::factory()->create();
-        $other = User::factory()->create();
-        $workout = Workout::factory()->create(['user_id' => $owner->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
-            'rest_between_exercises_seconds' => 0,
-        ]);
-
-        Passport::actingAs($other);
-
-        $this->putJson("/api/v1/workouts/{$workout->id}/groups/{$group->id}", [
-            'name' => 'Hacked',
-        ])->assertStatus(403);
-    }
-
-    public function test_update_returns_404_for_group_from_other_workout(): void
-    {
-        $user = User::factory()->create();
-        $workout1 = Workout::factory()->create(['user_id' => $user->id]);
-        $workout2 = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout1->id,
-            'planned_rounds' => 2,
-            'rest_between_exercises_seconds' => 0,
-        ]);
-
-        Passport::actingAs($user);
-
-        $this->putJson("/api/v1/workouts/{$workout2->id}/groups/{$group->id}", [
-            'name' => 'Cross-workout',
-        ])->assertStatus(404);
-    }
-
-    // -- Destroy --
+    // Destroy
 
     public function test_deletes_entry_group(): void
     {
@@ -223,10 +126,29 @@ class EntryGroupTest extends TestCase
         $this->assertDatabaseMissing('entry_groups', ['id' => $group->id]);
     }
 
+    public function test_destroy_returns_404_for_group_from_other_workout(): void
+    {
+        $user = User::factory()->create();
+        $workout1 = Workout::factory()->create(['user_id' => $user->id]);
+        $workout2 = Workout::factory()->create(['user_id' => $user->id]);
+        $group = EntryGroup::create([
+            'workout_id' => $workout1->id,
+            'planned_rounds' => 2,
+            'rest_between_exercises_seconds' => 0,
+        ]);
+
+        Passport::actingAs($user);
+
+        $this->deleteJson("/api/v1/workouts/{$workout2->id}/groups/{$group->id}")
+            ->assertStatus(404);
+
+        $this->assertDatabaseHas('entry_groups', ['id' => $group->id]);
+    }
+
     public function test_delete_group_preserves_entries_with_null_fk(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -274,13 +196,13 @@ class EntryGroupTest extends TestCase
         $this->assertDatabaseMissing('entry_groups', ['id' => $group->id]);
     }
 
-    // -- Assign Entries --
+    // Assign Entries
 
     public function test_assigns_entries_to_group(): void
     {
         $user = User::factory()->create();
-        $exercise1 = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
-        $exercise2 = $this->createExercise($user, 'resistance', ['name' => 'Row']);
+        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
+        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
@@ -338,7 +260,7 @@ class EntryGroupTest extends TestCase
     public function test_assign_rejects_nonexistent_entry_id(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
@@ -362,7 +284,7 @@ class EntryGroupTest extends TestCase
     public function test_assign_rejects_entry_from_other_workout(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $otherWorkout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -393,7 +315,7 @@ class EntryGroupTest extends TestCase
     public function test_assign_rejects_duplicate_entry_ids(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $entry = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
@@ -420,7 +342,7 @@ class EntryGroupTest extends TestCase
     public function test_assign_allows_partial_subset_of_entries(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -448,44 +370,7 @@ class EntryGroupTest extends TestCase
         $this->assertDatabaseHas('workout_entries', ['id' => $entry3->id, 'entry_group_id' => null]);
     }
 
-    // -- Remove Entry --
-
-    public function test_removes_entry_from_group(): void
-    {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
-
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
-            'rest_between_exercises_seconds' => 0,
-        ]);
-
-        $entry = $workout->entries()->create([
-            'exercise_id' => $exercise->id,
-            'set_order' => 0,
-            'entry_group_id' => $group->id,
-            'group_round' => 1,
-        ]);
-
-        Passport::actingAs($user);
-
-        $response = $this->deleteJson(
-            "/api/v1/workouts/{$workout->id}/groups/{$group->id}/entries/{$entry->id}"
-        );
-
-        $response->assertOk();
-
-        $this->assertDatabaseHas('workout_entries', [
-            'id' => $entry->id,
-            'entry_group_id' => null,
-            'group_round' => null,
-        ]);
-    }
-
-    // -- Response Integration --
+    // Response Integration
 
     public function test_workout_show_includes_groups(): void
     {
@@ -513,7 +398,7 @@ class EntryGroupTest extends TestCase
     public function test_entry_response_includes_group_fields(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
@@ -542,7 +427,7 @@ class EntryGroupTest extends TestCase
     public function test_standalone_entry_has_null_group_fields(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 

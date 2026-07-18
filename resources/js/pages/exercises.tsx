@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { Search, Plus, Trash2 } from 'lucide-react'
-import { extractFieldErrors } from '@/api/errors'
+import { extractFieldErrors, extractConflictMessage } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -17,7 +16,7 @@ import { useDeleteConfirm } from '@/hooks/use-delete-confirm'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import { assertNever } from '@/lib/utils'
-import { EXERCISE_TYPES, TYPE_OPTIONS } from '@/lib/exercise-types'
+import { TYPE_OPTIONS, buildTypeAttributes } from '@/lib/exercise-types'
 import {
   exerciseQueries,
   createExercise,
@@ -73,42 +72,20 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
 
     setErrors({})
 
-    const typeAttributes: Record<string, unknown> = {}
-
-    switch (type) {
-      case 'resistance':
-        typeAttributes.bodyweight_base = bodyweight
-        typeAttributes.allows_added_weight = addedWeight
-        typeAttributes.bilateral = bilateral
-        break
-      case 'timed_hold':
-        if (targetDurationSeconds) {
-          typeAttributes.target_duration_seconds = parseInt(targetDurationSeconds)
-        }
-        break
-      case 'distance':
-        break
-      case 'interval':
-        if (defaultWorkSeconds) {
-          typeAttributes.default_work_seconds = parseInt(defaultWorkSeconds)
-        }
-        if (defaultRestSeconds) {
-          typeAttributes.default_rest_seconds = parseInt(defaultRestSeconds)
-        }
-        if (defaultRounds) {
-          typeAttributes.default_rounds = parseInt(defaultRounds)
-        }
-        break
-      default:
-        assertNever(type)
-    }
-
     const payload: CreateExercisePayload = {
       name: trimmed,
       type,
       equipment_type_id: equip ? Number(equip) : null,
       notes: notes.trim() || null,
-      type_attributes: typeAttributes,
+      type_attributes: buildTypeAttributes(type, {
+        bodyweight,
+        addedWeight,
+        bilateral,
+        targetDurationSeconds,
+        defaultWorkSeconds,
+        defaultRestSeconds,
+        defaultRounds,
+      }),
     }
 
     createMutation.mutate(payload)
@@ -252,15 +229,17 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
             role="group"
             aria-labelledby="exercise-type-label"
           >
-            {(['resistance', 'timed_hold', 'distance', 'interval'] as ExerciseType[]).map(t => (
+            {TYPE_OPTIONS.map(opt => (
               <button
-                key={t}
-                onClick={() => setType(t)}
+                key={opt.value}
+                onClick={() => setType(opt.value)}
                 className={`px-3 py-2.5 rounded-lg text-sm font-semibold border text-left ${
-                  type === t ? 'border-transparent' : 'border-border-strong text-text-secondary'
+                  type === opt.value
+                    ? 'border-transparent'
+                    : 'border-border-strong text-text-secondary'
                 }`}
                 style={
-                  type === t
+                  type === opt.value
                     ? {
                         background: 'var(--color-primary)',
                         color: 'white',
@@ -268,7 +247,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
                     : undefined
                 }
               >
-                {EXERCISE_TYPES[t].label}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -315,8 +294,9 @@ export function ExercisesPage() {
       toast('Exercise deleted.')
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Exercise is in use.', 'error')
+      const conflictMsg = extractConflictMessage(error, 'Exercise is in use.')
+      if (conflictMsg) {
+        toast(conflictMsg, 'error')
       } else {
         toast('Could not delete. Try again.', 'error')
       }

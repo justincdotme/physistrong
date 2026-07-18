@@ -17,37 +17,6 @@ class ExerciseProgressTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-        array $typeAttributes = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-        };
-
-        $exercise->$childRelation()->create(array_merge($defaults, $typeAttributes));
-
-        return $exercise;
-    }
-
     /** @return array{entry: WorkoutEntry, workout: Workout} */
     private function createEntryWithMetrics(
         User $user,
@@ -86,12 +55,12 @@ class ExerciseProgressTest extends TestCase
         return ['entry' => $entry, 'workout' => $workout];
     }
 
-    // -- Progress: Resistance --
+    // Progress: Resistance
 
     public function test_progress_returns_resistance_data_points(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'load' => ['actual_weight' => 135.00],
@@ -119,12 +88,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.data_points.1.value', 145.0);
     }
 
-    // -- Progress: Timed Hold --
+    // Progress: Timed Hold
 
     public function test_progress_returns_timed_hold_data_points(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $exercise = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'duration' => ['actual_duration_seconds' => 60],
@@ -144,12 +113,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.data_points.1.value', 90);
     }
 
-    // -- Progress: Distance --
+    // Progress: Distance
 
     public function test_progress_returns_distance_data_points(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'distance', ['name' => 'Treadmill Run']);
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Treadmill Run']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'distance' => ['actual_distance' => 3.10],
@@ -169,12 +138,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.data_points.1.value', 5.0);
     }
 
-    // -- Progress: Interval --
+    // Progress: Interval
 
     public function test_progress_returns_interval_data_points(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'interval', ['name' => 'HIIT']);
+        $exercise = Exercise::factory()->interval()->create(['user_id' => $user->id, 'name' => 'HIIT']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'interval_header' => ['completed_rounds' => 6, 'programmed_rounds' => 8],
@@ -194,12 +163,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.data_points.1.value', 8);
     }
 
-    // -- Progress: No volume key for non-resistance --
+    // Progress: No volume key for non-resistance
 
     public function test_progress_omits_volume_for_non_resistance(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Plank']);
+        $exercise = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'duration' => ['actual_duration_seconds' => 60],
@@ -213,12 +182,12 @@ class ExerciseProgressTest extends TestCase
         $this->assertArrayNotHasKey('volume', $response->json('data'));
     }
 
-    // -- PR Detection --
+    // PR Detection
 
     public function test_progress_flags_prs_on_new_maxes(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Squat']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Squat']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
             'load' => ['actual_weight' => 135.00],
@@ -251,7 +220,7 @@ class ExerciseProgressTest extends TestCase
     public function test_pr_detection_uses_all_time_history_not_just_range(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Deadlift']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Deadlift']);
 
         $this->createEntryWithMetrics($user, $exercise, Carbon::now()->subDays(60)->toDateString(), [
             'load' => ['actual_weight' => 200.00],
@@ -288,12 +257,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.data_points.1.is_pr', true);
     }
 
-    // -- Time Range Filtering --
+    // Time Range Filtering
 
     public function test_progress_filters_by_1m_range(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Curl']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Curl']);
 
         $this->createEntryWithMetrics(
             $user,
@@ -321,7 +290,7 @@ class ExerciseProgressTest extends TestCase
     public function test_progress_returns_all_data_for_all_range(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Press']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Press']);
 
         $this->createEntryWithMetrics(
             $user,
@@ -347,7 +316,7 @@ class ExerciseProgressTest extends TestCase
     public function test_progress_defaults_to_all_when_range_omitted(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Lat Pull']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Lat Pull']);
 
         $this->createEntryWithMetrics(
             $user,
@@ -365,12 +334,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonCount(1, 'data.data_points');
     }
 
-    // -- Volume --
+    // Volume
 
     public function test_progress_includes_volume_for_resistance(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Press Volume']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press Volume']);
 
         $workout = Workout::factory()->create([
             'user_id' => $user->id,
@@ -403,12 +372,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.volume.0.total_volume', 2590.0);
     }
 
-    // -- Records: Resistance --
+    // Records: Resistance
 
     public function test_records_returns_resistance_bests(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Records']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Records']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
             'load' => ['actual_weight' => 135.00],
@@ -436,12 +405,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.records.volume.entry_id', $r1['entry']->id);
     }
 
-    // -- Records: Timed Hold --
+    // Records: Timed Hold
 
     public function test_records_returns_timed_hold_bests(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'timed_hold', ['name' => 'Plank Records']);
+        $exercise = Exercise::factory()->timedHold()->create(['user_id' => $user->id, 'name' => 'Plank Records']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
             'duration' => ['actual_duration_seconds' => 60],
@@ -459,12 +428,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.records.duration.entry_id', $r2['entry']->id);
     }
 
-    // -- Records: Distance --
+    // Records: Distance
 
     public function test_records_returns_distance_bests(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'distance', ['name' => 'Rowing Records']);
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Rowing Records']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
             'distance' => ['actual_distance' => 2.00],
@@ -482,12 +451,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.records.distance.entry_id', $r2['entry']->id);
     }
 
-    // -- Records: Interval --
+    // Records: Interval
 
     public function test_records_returns_interval_bests(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'interval', ['name' => 'Tabata Records']);
+        $exercise = Exercise::factory()->interval()->create(['user_id' => $user->id, 'name' => 'Tabata Records']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-04-01', [
             'interval_header' => ['completed_rounds' => 4, 'programmed_rounds' => 8],
@@ -505,17 +474,14 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.records.completed_rounds.entry_id', $r2['entry']->id);
     }
 
-    // -- Bodyweight Exercises --
+    // Bodyweight Exercises
 
     public function test_progress_uses_reps_as_primary_metric_for_bodyweight_only(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise(
-            $user,
-            'resistance',
-            ['name' => 'Push-ups'],
-            ['bodyweight_base' => true, 'allows_added_weight' => false],
-        );
+        $exercise = Exercise::factory()->resistance([
+            'bodyweight_base' => true, 'allows_added_weight' => false,
+        ])->create(['user_id' => $user->id, 'name' => 'Push-ups']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'load' => ['actual_weight' => 0, 'bodyweight_only' => true],
@@ -540,12 +506,9 @@ class ExerciseProgressTest extends TestCase
     public function test_progress_uses_weight_for_weighted_bodyweight_exercise(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise(
-            $user,
-            'resistance',
-            ['name' => 'Weighted Pull-ups'],
-            ['bodyweight_base' => true, 'allows_added_weight' => true],
-        );
+        $exercise = Exercise::factory()->resistance([
+            'bodyweight_base' => true, 'allows_added_weight' => true,
+        ])->create(['user_id' => $user->id, 'name' => 'Weighted Pull-ups']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'load' => ['actual_weight' => 25.00],
@@ -564,12 +527,9 @@ class ExerciseProgressTest extends TestCase
     public function test_records_omits_weight_record_for_bodyweight_only(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise(
-            $user,
-            'resistance',
-            ['name' => 'Push-ups Records'],
-            ['bodyweight_base' => true, 'allows_added_weight' => false],
-        );
+        $exercise = Exercise::factory()->resistance([
+            'bodyweight_base' => true, 'allows_added_weight' => false,
+        ])->create(['user_id' => $user->id, 'name' => 'Push-ups Records']);
 
         $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'load' => ['actual_weight' => 0, 'bodyweight_only' => true],
@@ -586,12 +546,12 @@ class ExerciseProgressTest extends TestCase
         $response->assertJsonPath('data.records.reps.value', 25);
     }
 
-    // -- Authorization --
+    // Authorization
 
     public function test_progress_returns_401_for_unauthenticated(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all")
             ->assertUnauthorized();
@@ -601,7 +561,7 @@ class ExerciseProgressTest extends TestCase
     {
         $owner = User::factory()->create();
         $other = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance', ['name' => 'Private Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id, 'name' => 'Private Exercise']);
 
         Passport::actingAs($other);
 
@@ -613,7 +573,7 @@ class ExerciseProgressTest extends TestCase
     {
         $user = User::factory()->create();
         $other = User::factory()->create();
-        $exercise = $this->createExercise(null, 'resistance', ['name' => 'System Bench']);
+        $exercise = Exercise::factory()->resistance()->create(['name' => 'System Bench']);
 
         $r1 = $this->createEntryWithMetrics($user, $exercise, '2026-05-01', [
             'load' => ['actual_weight' => 135.00],
@@ -638,7 +598,7 @@ class ExerciseProgressTest extends TestCase
     {
         $owner = User::factory()->create();
         $other = User::factory()->create();
-        $exercise = $this->createExercise($owner, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($other);
 
@@ -646,12 +606,12 @@ class ExerciseProgressTest extends TestCase
             ->assertForbidden();
     }
 
-    // -- Edge Cases --
+    // Edge Cases
 
     public function test_progress_returns_empty_data_points_for_no_entries(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'New Exercise']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'New Exercise']);
 
         Passport::actingAs($user);
 
@@ -664,7 +624,7 @@ class ExerciseProgressTest extends TestCase
     public function test_progress_excludes_entries_with_null_actuals(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Null']);
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Null']);
 
         $workout = Workout::factory()->create(['user_id' => $user->id, 'date' => '2026-05-01']);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -691,7 +651,7 @@ class ExerciseProgressTest extends TestCase
     public function test_records_returns_empty_for_no_entries(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -704,7 +664,7 @@ class ExerciseProgressTest extends TestCase
     public function test_progress_returns_422_for_invalid_range(): void
     {
         $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 

@@ -66,8 +66,8 @@ enum MetricDimension: string
             ],
             self::Intensity => [
                 'rpe' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
-                'avg_hr' => ['sometimes', 'nullable', 'integer', 'min:0'],
-                'max_hr' => ['sometimes', 'nullable', 'integer', 'min:0'],
+                'heart_rate_avg' => ['sometimes', 'nullable', 'integer', 'min:0'],
+                'heart_rate_peak' => ['sometimes', 'nullable', 'integer', 'min:0'],
             ],
             self::IntervalHeader => [
                 'programmed_rounds' => ['sometimes', 'nullable', 'integer', 'min:1'],
@@ -112,7 +112,7 @@ enum MetricDimension: string
             self::Duration => ['target_duration_seconds', 'actual_duration_seconds'],
             self::Distance => ['target_distance', 'actual_distance', 'lap_count', 'stroke_count'],
             self::CardioSettings => ['resistance_level', 'incline', 'speed', 'cadence'],
-            self::Intensity => ['rpe', 'avg_hr', 'max_hr'],
+            self::Intensity => ['rpe', 'heart_rate_avg', 'heart_rate_peak'],
             self::IntervalHeader => ['programmed_rounds', 'completed_rounds', 'target_work_seconds', 'target_rest_seconds'],
         };
     }

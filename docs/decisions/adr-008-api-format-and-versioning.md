@@ -29,8 +29,11 @@ app at launch). Not Inertia.js (doesn't produce a standalone API, and the
 mobile app needs one).
 
 Resource responses return flat JSON objects with the entity's attributes.
-Collection responses include pagination metadata. Error responses use a
-consistent structure with status code and message.
+Collection responses include pagination metadata (amended 2026-07-17,
+PS-156: only the `/workouts` collection paginates; exercises, equipment
+types, and templates return full collections, bounded per-user
+catalogs). Error responses use a consistent structure with status code
+and message.
 
 ### Versioning: /v1/ prefix
 

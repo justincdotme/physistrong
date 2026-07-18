@@ -10,19 +10,9 @@ use Illuminate\Auth\Access\Response;
 
 class ExercisePolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
     public function view(User $user, Exercise $exercise): bool
     {
         return $exercise->isVisibleTo($user);
-    }
-
-    public function create(User $user): bool
-    {
-        return true;
     }
 
     public function update(User $user, Exercise $exercise): Response

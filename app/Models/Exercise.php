@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Enums\ExerciseType;
 use Closure;
+use Database\Factories\ExerciseFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,6 +21,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Exercise extends Model
 {
+    /** @use HasFactory<ExerciseFactory> */
+    use HasFactory;
+
     /** @var list<string> */
     protected $fillable = [
         'name',

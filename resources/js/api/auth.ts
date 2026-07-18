@@ -23,13 +23,13 @@ interface RegisterPayload {
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const { data } = await api.post('/login', payload)
   markAuthenticated()
-  return { user: toUser(data.user) }
+  return { user: toUser(data.data) }
 }
 
 export async function register(payload: RegisterPayload): Promise<AuthResponse> {
   const { data } = await api.post('/register', payload)
   markAuthenticated()
-  return { user: toUser(data.user) }
+  return { user: toUser(data.data) }
 }
 
 export async function logout(): Promise<void> {

@@ -70,53 +70,6 @@ class EquipmentTypeTest extends TestCase
             ->assertJsonValidationErrors('name');
     }
 
-    public function test_shows_single_equipment_type(): void
-    {
-        $this->seedSystemTypes();
-        $user = User::factory()->create();
-        Passport::actingAs($user);
-
-        $type = EquipmentType::where('name', 'barbell')->first();
-
-        $this->getJson("/api/v1/equipment-types/{$type->id}")
-            ->assertOk()
-            ->assertJsonPath('data.name', 'barbell');
-    }
-
-    public function test_updates_own_custom_type(): void
-    {
-        $user = User::factory()->create();
-        $type = EquipmentType::create(['name' => 'Old Name', 'user_id' => $user->id, 'is_system' => false]);
-        Passport::actingAs($user);
-
-        $this->putJson("/api/v1/equipment-types/{$type->id}", ['name' => 'New Name'])
-            ->assertOk()
-            ->assertJsonPath('data.name', 'New Name');
-    }
-
-    public function test_cannot_update_system_type(): void
-    {
-        $this->seedSystemTypes();
-        $user = User::factory()->create();
-        Passport::actingAs($user);
-
-        $type = EquipmentType::where('name', 'barbell')->first();
-
-        $this->putJson("/api/v1/equipment-types/{$type->id}", ['name' => 'Renamed'])
-            ->assertStatus(403);
-    }
-
-    public function test_cannot_update_other_users_type(): void
-    {
-        $other = User::factory()->create();
-        $type = EquipmentType::create(['name' => 'Their Gear', 'user_id' => $other->id, 'is_system' => false]);
-
-        Passport::actingAs(User::factory()->create());
-
-        $this->putJson("/api/v1/equipment-types/{$type->id}", ['name' => 'Stolen'])
-            ->assertStatus(403);
-    }
-
     public function test_deletes_unused_custom_type(): void
     {
         $user = User::factory()->create();

@@ -13,7 +13,6 @@ class LogRepMetric extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'target_reps',
         'actual_reps',
         'to_failure',

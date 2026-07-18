@@ -13,7 +13,6 @@ class LogCardioSetting extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'resistance_level',
         'incline',
         'speed',

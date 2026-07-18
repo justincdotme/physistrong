@@ -13,10 +13,9 @@ class LogIntensityMetric extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'rpe',
-        'avg_hr',
-        'max_hr',
+        'heart_rate_avg',
+        'heart_rate_peak',
     ];
 
     /** @return BelongsTo<WorkoutEntry, $this> */

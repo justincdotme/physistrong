@@ -1,11 +1,17 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { http, HttpResponse } from 'msw'
-import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { vi } from 'vitest'
+import { render } from '@testing-library/react'
+import { renderWithProviders, screen, userEvent, waitFor, testUser } from '@/test/render'
 import { server } from '@/test/server'
+import { AppProvider } from '@/lib/store'
+import { AuthContext } from '@/lib/auth-context'
+import { templateQueries } from '@/api/templates'
 import { TemplateEditorPage } from './template-editor'
 import type { RawWorkoutTemplate } from '@/api/transformers'
 
-// Raw template response with exercises for testing
 const rawTemplateWithExercises: RawWorkoutTemplate = {
   id: 2,
   name: 'Capture Test Template 1782864881129',
@@ -35,7 +41,6 @@ const rawTemplateWithExercises: RawWorkoutTemplate = {
 
 describe('TemplateEditorPage', () => {
   beforeEach(() => {
-    // Override the template GET handler to return our fixture with exercises
     server.use(
       http.get('/api/v1/templates/:id', () => HttpResponse.json({ data: rawTemplateWithExercises }))
     )
@@ -48,19 +53,15 @@ describe('TemplateEditorPage', () => {
         route: '/templates/2',
       })
 
-      // Wait for template name to render in the inline edit
       const templateName = await screen.findByText('Capture Test Template 1782864881129')
       expect(templateName).toBeInTheDocument()
 
-      // Verify first exercise renders
       const exercise1 = await screen.findByText('Barbell Back Squat')
       expect(exercise1).toBeInTheDocument()
 
-      // Verify second exercise renders
       const exercise2 = await screen.findByText('Bench Press')
       expect(exercise2).toBeInTheDocument()
 
-      // Verify equipment names render
       const barbeDisc = await screen.findByText('barbell')
       expect(barbeDisc).toBeInTheDocument()
 
@@ -75,12 +76,10 @@ describe('TemplateEditorPage', () => {
       let deletedExerciseId: string | null = null
       let currentTemplate = { ...rawTemplateWithExercises }
 
-      // Override handlers to track deletion and update the template state
       server.use(
         http.get('/api/v1/templates/:id', () => HttpResponse.json({ data: currentTemplate })),
         http.delete('/api/v1/templates/:templateId/exercises/:exerciseId', ({ params }) => {
           deletedExerciseId = params.exerciseId as string
-          // Update the current template by removing the deleted exercise
           currentTemplate = {
             ...currentTemplate,
             exercises: currentTemplate.exercises.filter(e => e.id !== Number(params.exerciseId)),
@@ -94,33 +93,96 @@ describe('TemplateEditorPage', () => {
         route: '/templates/2',
       })
 
-      // Wait for exercises to render
       const exercise1 = await screen.findByText('Barbell Back Squat')
       expect(exercise1).toBeInTheDocument()
 
-      // Find and click the remove button for the first exercise
-      // The remove button is near the exercise name
       const removeButtons = screen.getAllByLabelText('Remove from template')
       expect(removeButtons.length).toBeGreaterThan(0)
 
-      // Click the first remove button
       const removeButton = removeButtons[0]
       if (!removeButton) throw new Error('Remove button not found')
       await user.click(removeButton)
 
-      // Verify the delete request was made with correct exercise ID
       await waitFor(() => {
-        // The page passes exerciseId from the TemplateExercise.exerciseId which maps to raw.id
         expect(deletedExerciseId).toBe('101')
       })
 
-      // Verify the first exercise is removed from the DOM
       await waitFor(() => {
         expect(screen.queryByText('Barbell Back Squat')).not.toBeInTheDocument()
       })
 
-      // Verify the second exercise still exists
       expect(screen.getByText('Bench Press')).toBeInTheDocument()
     })
   })
+
+  describe('list cache invalidation', () => {
+    it(
+      'invalidates the templates list after detaching an exercise',
+      { timeout: 15000 },
+      async () => {
+        let listFetchCount = 0
+        let currentTemplate = { ...rawTemplateWithExercises }
+
+        server.use(
+          http.get('/api/v1/templates', () => {
+            listFetchCount++
+            return HttpResponse.json({ data: [] })
+          }),
+          http.get('/api/v1/templates/:id', () => HttpResponse.json({ data: currentTemplate })),
+          http.delete('/api/v1/templates/:templateId/exercises/:exerciseId', ({ params }) => {
+            currentTemplate = {
+              ...currentTemplate,
+              exercises: currentTemplate.exercises.filter(e => e.id !== Number(params.exerciseId)),
+            }
+            return new HttpResponse(null, { status: 204 })
+          })
+        )
+
+        renderEditorWithListObserver('2')
+
+        await screen.findByText('Barbell Back Squat')
+        const fetchesBeforeDetach = listFetchCount
+
+        const removeButtons = screen.getAllByLabelText('Remove from template')
+        const removeButton = removeButtons[0]
+        if (!removeButton) throw new Error('Remove button not found')
+        await userEvent.click(removeButton)
+
+        await waitFor(() => {
+          expect(listFetchCount).toBeGreaterThan(fetchesBeforeDetach)
+        })
+      }
+    )
+  })
 })
+
+function TemplateListObserver() {
+  useQuery(templateQueries.list())
+  return null
+}
+
+function renderEditorWithListObserver(templateId: string) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  })
+  const auth = {
+    user: testUser,
+    isLoading: false,
+    setUser: vi.fn(),
+    handleLogout: vi.fn(),
+  }
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[`/templates/${templateId}`]}>
+        <AuthContext.Provider value={auth}>
+          <AppProvider>
+            <TemplateListObserver />
+            <Routes>
+              <Route path="templates/:id" element={<TemplateEditorPage />} />
+            </Routes>
+          </AppProvider>
+        </AuthContext.Provider>
+      </MemoryRouter>
+    </QueryClientProvider>
+  )
+}
