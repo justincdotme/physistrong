@@ -28,10 +28,67 @@ set_env() {
 }
 
 echo "==> TLS certificate"
+TLS_CHOICE=1
 if [ -f docker/nginx/certs/dev.crt ]; then
   echo "    present, skipping (delete docker/nginx/certs to renew)"
 else
-  docker/nginx/generate-certs.sh "$DOMAIN"
+  if [ -t 0 ]; then
+    echo ""
+    echo "    TLS is strongly recommended. Even a self-signed certificate protects"
+    echo "    session cookies and API traffic on your network."
+    echo ""
+    echo "    How would you like to handle TLS?"
+    echo "      1) Generate a self-signed certificate (recommended)"
+    echo "      2) Use your own certificate and key files"
+    echo "      3) No TLS — serve over HTTP on port 80"
+    echo ""
+    while :; do
+      printf "    Choice [1]: "
+      read -r TLS_CHOICE
+      TLS_CHOICE="${TLS_CHOICE:-1}"
+      case "$TLS_CHOICE" in
+        1|2|3) break ;;
+        *) echo "    Enter 1, 2 or 3." ;;
+      esac
+    done
+  fi
+  case "$TLS_CHOICE" in
+    1)
+      docker/nginx/generate-certs.sh "$DOMAIN"
+      ;;
+    2)
+      while :; do
+        printf "    Path to certificate file (PEM): "
+        read -r TLS_CERT_SRC
+        printf "    Path to private key file: "
+        read -r TLS_KEY_SRC
+        if [ -f "$TLS_CERT_SRC" ] && [ -r "$TLS_CERT_SRC" ] \
+          && [ -f "$TLS_KEY_SRC" ] && [ -r "$TLS_KEY_SRC" ]; then
+          break
+        fi
+        echo "    Certificate or key not found or unreadable; try again."
+      done
+      mkdir -p docker/nginx/certs
+      # Key lands first: the skip-check above keys on dev.crt, so an
+      # interrupted copy must never leave a crt without its key.
+      cp "$TLS_KEY_SRC" docker/nginx/certs/dev.key
+      cp "$TLS_CERT_SRC" docker/nginx/certs/dev.crt
+      echo "    installed certificate and key into docker/nginx/certs/"
+      ;;
+    3)
+      echo "    WARNING: Running without TLS. Session cookies will be sent in"
+      echo "    cleartext. This is not recommended for any network you do not"
+      echo "    fully control."
+      ;;
+  esac
+fi
+
+if [ "$TLS_CHOICE" = 3 ]; then
+  SCHEME=http
+  SECURE_COOKIE=false
+else
+  SCHEME=https
+  SECURE_COOKIE=true
 fi
 
 echo "==> Environment"
@@ -39,15 +96,19 @@ if [ ! -f .env ]; then
   cp .env.example .env
   echo "    created .env from .env.example"
 fi
-set_env APP_URL "https://$DOMAIN"
+set_env APP_URL "$SCHEME://$DOMAIN"
 set_env SESSION_DOMAIN "$DOMAIN"
-set_env SESSION_SECURE_COOKIE "true"
-set_env CORS_ALLOWED_ORIGINS "https://$DOMAIN"
+set_env SESSION_SECURE_COOKIE "$SECURE_COOKIE"
+set_env CORS_ALLOWED_ORIGINS "$SCHEME://$DOMAIN"
 set_env NGINX_SERVER_NAME "$DOMAIN"
 set_env APP_ENV "production"
 set_env APP_DEBUG "false"
 set_env LOG_LEVEL "info"
-echo "    pinned HTTPS and production settings for $DOMAIN"
+if [ "$SCHEME" = https ]; then
+  echo "    pinned HTTPS and production settings for $DOMAIN"
+else
+  echo "    pinned HTTP and production settings for $DOMAIN"
+fi
 
 echo "==> Git identity"
 git_user=$(git config user.name 2>/dev/null || true)
@@ -101,6 +162,18 @@ else
 fi
 
 echo
-echo "Physistrong is starting at https://$DOMAIN"
-echo "The certificate is self-signed; accept the browser warning or trust"
-echo "docker/nginx/certs/dev.crt on your clients."
+echo "Physistrong is starting at $SCHEME://$DOMAIN"
+case "$TLS_CHOICE" in
+  2)
+    echo "The certificate was provided externally; replace"
+    echo "docker/nginx/certs/dev.crt and dev.key to renew it."
+    ;;
+  3)
+    echo "Serving over plain HTTP; re-run init.sh and pick a TLS option"
+    echo "to enable HTTPS."
+    ;;
+  *)
+    echo "The certificate is self-signed; accept the browser warning or trust"
+    echo "docker/nginx/certs/dev.crt on your clients."
+    ;;
+esac
