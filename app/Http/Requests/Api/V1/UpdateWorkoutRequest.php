@@ -12,10 +12,10 @@ class UpdateWorkoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'date' => ['sometimes', 'date'],
+            'name'       => ['sometimes', 'string', 'max:255'],
+            'date'       => ['sometimes', 'date'],
             'exhaustion' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
-            'soreness' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
+            'soreness'   => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
         ];
     }
 }

@@ -20,14 +20,18 @@ trait ValidatesExerciseAttributes
         ];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @param ExerciseType|null $type
+     *
+     * @return array<string, mixed>
+     */
     protected function typeRulesFor(?ExerciseType $type): array
     {
         return match ($type) {
             ExerciseType::Resistance => [
-                'type_attributes.bodyweight_base' => ['boolean'],
+                'type_attributes.bodyweight_base'     => ['boolean'],
                 'type_attributes.allows_added_weight' => ['boolean'],
-                'type_attributes.bilateral' => ['boolean'],
+                'type_attributes.bilateral'           => ['boolean'],
             ],
             ExerciseType::TimedHold => [
                 'type_attributes.target_duration_seconds' => ['nullable', 'integer', 'min:1'],
@@ -38,7 +42,7 @@ trait ValidatesExerciseAttributes
             ExerciseType::Interval => [
                 'type_attributes.default_work_seconds' => ['nullable', 'integer', 'min:1'],
                 'type_attributes.default_rest_seconds' => ['nullable', 'integer', 'min:1'],
-                'type_attributes.default_rounds' => ['nullable', 'integer', 'min:1'],
+                'type_attributes.default_rounds'       => ['nullable', 'integer', 'min:1'],
             ],
             null => [],
         };

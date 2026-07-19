@@ -48,10 +48,10 @@ class UserTest extends TestCase
         Passport::actingAs($user);
 
         $this->putJson('/api/v1/user', [
-            'first_name' => 'Updated',
-            'last_name' => 'Name',
+            'first_name'         => 'Updated',
+            'last_name'          => 'Name',
             'measurement_system' => 'metric',
-            'theme' => 'dark',
+            'theme'              => 'dark',
         ])->assertOk()
             ->assertJsonPath('data.first_name', 'Updated')
             ->assertJsonPath('data.measurement_system', 'metric')
@@ -75,7 +75,7 @@ class UserTest extends TestCase
         Passport::actingAs($user);
 
         $this->putJson('/api/v1/user', [
-            'email' => 'mine@example.com',
+            'email'      => 'mine@example.com',
             'first_name' => 'Updated',
         ])->assertOk();
     }
@@ -86,7 +86,7 @@ class UserTest extends TestCase
         Passport::actingAs($user);
 
         $this->putJson('/api/v1/user', [
-            'password' => 'newpassword',
+            'password'              => 'newpassword',
             'password_confirmation' => 'newpassword',
         ])->assertStatus(422)
             ->assertJsonValidationErrors('current_password');
@@ -98,8 +98,8 @@ class UserTest extends TestCase
         Passport::actingAs($user);
 
         $this->putJson('/api/v1/user', [
-            'current_password' => 'oldpassword',
-            'password' => 'newpassword',
+            'current_password'      => 'oldpassword',
+            'password'              => 'newpassword',
             'password_confirmation' => 'newpassword',
         ])->assertOk();
 
@@ -112,8 +112,8 @@ class UserTest extends TestCase
         Passport::actingAs($user);
 
         $this->putJson('/api/v1/user', [
-            'current_password' => 'wrongpassword',
-            'password' => 'newpassword',
+            'current_password'      => 'wrongpassword',
+            'password'              => 'newpassword',
             'password_confirmation' => 'newpassword',
         ])->assertStatus(422)
             ->assertJsonValidationErrors('current_password');

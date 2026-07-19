@@ -5,14 +5,14 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
-it('renders and tests profile page', function () {
+it('renders and tests profile page', function (): void {
     $user = User::factory()->create([
         'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
+        'last_name'  => 'User',
+        'email'      => 'test@example.com',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
 
         // Desktop
@@ -46,10 +46,10 @@ it('renders and tests profile page', function () {
     });
 });
 
-it('logout button redirects to login page', function () {
+it('logout button redirects to login page', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/profile')
             ->waitFor('@logout-btn')

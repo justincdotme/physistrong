@@ -15,13 +15,13 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'last_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'unique:users,email,'.$this->user()->id],
+            'first_name'         => ['sometimes', 'nullable', 'string', 'max:255'],
+            'last_name'          => ['sometimes', 'nullable', 'string', 'max:255'],
+            'email'              => ['sometimes', 'email', 'unique:users,email,' . $this->user()->id],
             'measurement_system' => ['sometimes', new Enum(MeasurementSystem::class)],
-            'theme' => ['sometimes', new Enum(ThemePreference::class)],
-            'current_password' => ['required_with:password', 'current_password:api'],
-            'password' => ['sometimes', 'string', 'min:6', 'confirmed'],
+            'theme'              => ['sometimes', new Enum(ThemePreference::class)],
+            'current_password'   => ['required_with:password', 'current_password:api'],
+            'password'           => ['sometimes', 'string', 'min:6', 'confirmed'],
         ];
     }
 }

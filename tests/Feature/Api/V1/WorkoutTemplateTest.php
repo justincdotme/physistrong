@@ -23,7 +23,7 @@ class WorkoutTemplateTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->postJson('/api/v1/templates', [
-            'name' => 'Push Day',
+            'name'  => 'Push Day',
             'notes' => 'Chest and shoulders',
         ]);
 
@@ -32,7 +32,7 @@ class WorkoutTemplateTest extends TestCase
             ->assertJsonPath('data.notes', 'Chest and shoulders');
 
         $this->assertDatabaseHas('workout_templates', [
-            'name' => 'Push Day',
+            'name'    => 'Push Day',
             'user_id' => $user->id,
         ]);
     }
@@ -65,7 +65,7 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_lists_own_templates(): void
     {
-        $user = User::factory()->create();
+        $user  = User::factory()->create();
         $other = User::factory()->create();
 
         WorkoutTemplate::factory(3)->create(['user_id' => $user->id]);
@@ -83,7 +83,7 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_shows_template_with_exercises(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
@@ -102,8 +102,8 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_cannot_view_other_users_template(): void
     {
-        $owner = User::factory()->create();
-        $viewer = User::factory()->create();
+        $owner    = User::factory()->create();
+        $viewer   = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($viewer);
@@ -116,7 +116,7 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_updates_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Old Name']);
         Passport::actingAs($user);
 
@@ -127,8 +127,8 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_cannot_update_other_users_template(): void
     {
-        $owner = User::factory()->create();
-        $updater = User::factory()->create();
+        $owner    = User::factory()->create();
+        $updater  = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($updater);
@@ -141,7 +141,7 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_deletes_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         Passport::actingAs($user);
 
@@ -153,12 +153,12 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_delete_cascades_exercises_and_groups(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $group = $template->groups()->create([
-            'name' => 'Superset',
+            'name'           => 'Superset',
             'planned_rounds' => 3,
         ]);
 

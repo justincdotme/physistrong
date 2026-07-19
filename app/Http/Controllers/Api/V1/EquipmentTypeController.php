@@ -18,6 +18,11 @@ class EquipmentTypeController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $types = EquipmentType::withCount('exercises as usage_count')
@@ -28,11 +33,16 @@ class EquipmentTypeController extends Controller
         return EquipmentTypeResource::collection($types);
     }
 
+    /**
+     * @param StoreEquipmentTypeRequest $request
+     *
+     * @return JsonResponse
+     */
     public function store(StoreEquipmentTypeRequest $request): JsonResponse
     {
         $type = EquipmentType::create([
-            'name' => $request->validated('name'),
-            'user_id' => $request->user()->id,
+            'name'      => $request->validated('name'),
+            'user_id'   => $request->user()->id,
             'is_system' => false,
         ]);
 
@@ -41,6 +51,11 @@ class EquipmentTypeController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param EquipmentType $equipmentType
+     *
+     * @return Response|JsonResponse
+     */
     public function destroy(EquipmentType $equipmentType): Response|JsonResponse
     {
         $this->authorize('delete', $equipmentType);

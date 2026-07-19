@@ -15,12 +15,17 @@ class EquipmentType extends Model
     /** @var list<string> */
     protected $fillable = ['name', 'user_id', 'is_system'];
 
-    /** @return array<string, string> */
-    protected function casts(): array
+    /**
+     * System rows are visible to all users; user rows only to their owner.
+     * Query closure and instance predicate must change together.
+     *
+     * @param User $user
+     *
+     * @return Closure
+     */
+    public static function visibilityConstraint(User $user): Closure
     {
-        return [
-            'is_system' => 'boolean',
-        ];
+        return fn ($query) => $query->where('is_system', true)->orWhere('user_id', $user->id);
     }
 
     /** @return BelongsTo<User, $this> */
@@ -36,16 +41,9 @@ class EquipmentType extends Model
     }
 
     /**
-     * System rows are visible to all users; user rows only to their owner.
-     * Query closure and instance predicate must change together.
-     */
-    public static function visibilityConstraint(User $user): Closure
-    {
-        return fn ($query) => $query->where('is_system', true)->orWhere('user_id', $user->id);
-    }
-
-    /**
-     * @param  Builder<EquipmentType>  $query
+     * @param Builder<EquipmentType> $query
+     * @param User                   $user
+     *
      * @return Builder<EquipmentType>
      */
     public function scopeVisibleTo(Builder $query, User $user): Builder
@@ -53,8 +51,21 @@ class EquipmentType extends Model
         return $query->where(static::visibilityConstraint($user));
     }
 
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
     public function isVisibleTo(User $user): bool
     {
         return $this->is_system || $this->user_id === $user->id;
+    }
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'is_system' => 'boolean',
+        ];
     }
 }

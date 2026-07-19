@@ -19,9 +19,9 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_attaches_exercise_to_workout(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -34,17 +34,17 @@ class WorkoutExerciseTest extends TestCase
             ->assertJsonPath('data.exercises.0.name', 'Bench Press');
 
         $this->assertDatabaseHas('exercise_workout', [
-            'workout_id' => $workout->id,
-            'exercise_id' => $exercise->id,
+            'workout_id'     => $workout->id,
+            'exercise_id'    => $exercise->id,
             'exercise_order' => 0,
         ]);
     }
 
     public function test_rejects_duplicate_exercise_attachment(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         Passport::actingAs($user);
@@ -56,11 +56,11 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_auto_assigns_exercise_order(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -77,27 +77,27 @@ class WorkoutExerciseTest extends TestCase
         ])->assertStatus(201);
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise1->id,
+            'exercise_id'    => $exercise1->id,
             'exercise_order' => 0,
         ]);
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise2->id,
+            'exercise_id'    => $exercise2->id,
             'exercise_order' => 1,
         ]);
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise3->id,
+            'exercise_id'    => $exercise3->id,
             'exercise_order' => 2,
         ]);
     }
 
     public function test_validates_exercise_belongs_to_user_or_system(): void
     {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
+        $user          = User::factory()->create();
+        $otherUser     = User::factory()->create();
         $otherExercise = Exercise::factory()->resistance()->create(['user_id' => $otherUser->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout       = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -117,9 +117,9 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_detaches_exercise_from_workout(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         Passport::actingAs($user);
@@ -128,21 +128,21 @@ class WorkoutExerciseTest extends TestCase
             ->assertNoContent();
 
         $this->assertDatabaseMissing('exercise_workout', [
-            'workout_id' => $workout->id,
+            'workout_id'  => $workout->id,
             'exercise_id' => $exercise->id,
         ]);
     }
 
     public function test_detach_cascades_entries_and_metrics(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         $entry = $workout->entries()->create([
             'exercise_id' => $exercise->id,
-            'set_order' => 0,
+            'set_order'   => 0,
         ]);
 
         $metric = $entry->loadMetric()->create([
@@ -168,11 +168,11 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_reorders_exercises(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
 
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
@@ -185,27 +185,27 @@ class WorkoutExerciseTest extends TestCase
         ])->assertOk();
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise3->id,
+            'exercise_id'    => $exercise3->id,
             'exercise_order' => 0,
         ]);
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise1->id,
+            'exercise_id'    => $exercise1->id,
             'exercise_order' => 1,
         ]);
 
         $this->assertDatabaseHas('exercise_workout', [
-            'exercise_id' => $exercise2->id,
+            'exercise_id'    => $exercise2->id,
             'exercise_order' => 2,
         ]);
     }
 
     public function test_reorder_rejects_nonexistent_exercise_id(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
 
@@ -222,11 +222,11 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_reorder_rejects_exercise_attached_to_other_workout(): void
     {
-        $user = User::factory()->create();
-        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
-        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $unattached = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Elsewhere']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $user         = User::factory()->create();
+        $exercise1    = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
+        $exercise2    = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
+        $unattached   = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Elsewhere']);
+        $workout      = Workout::factory()->create(['user_id' => $user->id]);
         $otherWorkout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
@@ -245,10 +245,10 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_reorder_rejects_duplicate_exercise_ids(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
 
@@ -265,11 +265,11 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_reorder_rejects_partial_exercise_id_list(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
         $workout->exercises()->attach($exercise3->id, ['exercise_order' => 2]);
@@ -290,10 +290,10 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_cannot_attach_to_other_users_workout(): void
     {
-        $owner = User::factory()->create();
+        $owner    = User::factory()->create();
         $attacher = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $attacher->id]);
-        $workout = Workout::factory()->create(['user_id' => $owner->id]);
+        $workout  = Workout::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($attacher);
 
@@ -304,10 +304,10 @@ class WorkoutExerciseTest extends TestCase
 
     public function test_cannot_detach_from_other_users_workout(): void
     {
-        $owner = User::factory()->create();
+        $owner    = User::factory()->create();
         $detacher = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id]);
-        $workout = Workout::factory()->create(['user_id' => $owner->id]);
+        $workout  = Workout::factory()->create(['user_id' => $owner->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         Passport::actingAs($detacher);

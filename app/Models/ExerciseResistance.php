@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExerciseResistance extends Model
 {
+    /** @var string */
     protected $table = 'exercise_resistance';
 
     /** @var list<string> */
@@ -18,19 +19,19 @@ class ExerciseResistance extends Model
         'bilateral',
     ];
 
-    /** @return array<string, string> */
-    protected function casts(): array
-    {
-        return [
-            'bodyweight_base' => 'boolean',
-            'allows_added_weight' => 'boolean',
-            'bilateral' => 'boolean',
-        ];
-    }
-
     /** @return BelongsTo<Exercise, $this> */
     public function exercise(): BelongsTo
     {
         return $this->belongsTo(Exercise::class);
+    }
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'bodyweight_base'     => 'boolean',
+            'allows_added_weight' => 'boolean',
+            'bilateral'           => 'boolean',
+        ];
     }
 }

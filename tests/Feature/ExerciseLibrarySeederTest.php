@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use Database\Seeders\EquipmentTypeSeeder;
@@ -15,8 +17,39 @@ class ExerciseLibrarySeederTest extends TestCase
     private const CHILD_TABLES = [
         'resistance' => 'exercise_resistance',
         'timed_hold' => 'exercise_timed_hold',
-        'distance' => 'exercise_distance',
-        'interval' => 'exercise_interval',
+        'distance'   => 'exercise_distance',
+        'interval'   => 'exercise_interval',
+    ];
+
+    private const SPECIALTY_GEAR = [
+        'Sled Push'                       => 'sled',
+        'Sled Drag - Harness'             => 'sled',
+        'Bear Crawl Sled Drags'           => 'sled',
+        'Sled Overhead Triceps Extension' => 'sled',
+        'Sled Reverse Flye'               => 'sled',
+        'Sled Row'                        => 'sled',
+        'Sledgehammer Swings'             => 'sled',
+        'Sled Overhead Backward Walk'     => 'sled',
+        'Dips - Chest Version'            => 'dip station',
+        'Dips - Triceps Version'          => 'dip station',
+        'Ring Dips'                       => 'dip station',
+        'Rope Climb'                      => 'rope',
+        'Rope Jumping'                    => 'rope',
+        'Atlas Stone Trainer'             => 'atlas stone',
+        'Atlas Stones'                    => 'atlas stone',
+        'Log Lift'                        => 'log bar',
+        'Axle Deadlift'                   => 'log bar',
+        'Parallel Bar Dip'                => 'parallel bars',
+        'Knee/Hip Raise On Parallel Bars' => 'parallel bars',
+        'Battling Ropes'                  => 'battle rope',
+        'Tire Flip'                       => 'tire',
+        'Sandbag Load'                    => 'sandbag',
+        'Keg Load'                        => 'keg',
+        'Yoke Walk'                       => 'yoke',
+        'Prowler Sprint'                  => 'prowler sled',
+        'Ab Roller'                       => 'ab roller',
+        'Wrist Roller'                    => 'wrist roller',
+        'Balance Board'                   => 'balance board',
     ];
 
     public function test_seeds_full_catalog_across_all_cti_types(): void
@@ -80,10 +113,11 @@ class ExerciseLibrarySeederTest extends TestCase
 
     public function test_every_equipment_reference_resolves_to_a_catalog_entry(): void
     {
-        $catalog = $this->fixtureEquipment();
+        $catalog   = $this->fixtureEquipment();
         $exercises = $this->fixtureExercises();
 
         $unresolvedNames = [];
+
         foreach ($exercises as $exercise) {
             if ($exercise['equipment'] !== null && ! in_array($exercise['equipment'], $catalog, true)) {
                 $unresolvedNames[] = "{$exercise['name']} -> {$exercise['equipment']}";
@@ -92,37 +126,6 @@ class ExerciseLibrarySeederTest extends TestCase
 
         $this->assertSame([], $unresolvedNames, 'exercises reference equipment types not in the catalog');
     }
-
-    private const SPECIALTY_GEAR = [
-        'Sled Push' => 'sled',
-        'Sled Drag - Harness' => 'sled',
-        'Bear Crawl Sled Drags' => 'sled',
-        'Sled Overhead Triceps Extension' => 'sled',
-        'Sled Reverse Flye' => 'sled',
-        'Sled Row' => 'sled',
-        'Sledgehammer Swings' => 'sled',
-        'Sled Overhead Backward Walk' => 'sled',
-        'Dips - Chest Version' => 'dip station',
-        'Dips - Triceps Version' => 'dip station',
-        'Ring Dips' => 'dip station',
-        'Rope Climb' => 'rope',
-        'Rope Jumping' => 'rope',
-        'Atlas Stone Trainer' => 'atlas stone',
-        'Atlas Stones' => 'atlas stone',
-        'Log Lift' => 'log bar',
-        'Axle Deadlift' => 'log bar',
-        'Parallel Bar Dip' => 'parallel bars',
-        'Knee/Hip Raise On Parallel Bars' => 'parallel bars',
-        'Battling Ropes' => 'battle rope',
-        'Tire Flip' => 'tire',
-        'Sandbag Load' => 'sandbag',
-        'Keg Load' => 'keg',
-        'Yoke Walk' => 'yoke',
-        'Prowler Sprint' => 'prowler sled',
-        'Ab Roller' => 'ab roller',
-        'Wrist Roller' => 'wrist roller',
-        'Balance Board' => 'balance board',
-    ];
 
     public function test_specialty_gear_exercises_resolve_to_correct_equipment(): void
     {
@@ -133,8 +136,10 @@ class ExerciseLibrarySeederTest extends TestCase
             ->pluck('id', 'name');
 
         $mismatches = [];
+
         foreach (self::SPECIALTY_GEAR as $exerciseName => $equipmentName) {
             $expectedId = $equipmentIds[$equipmentName] ?? null;
+
             if ($expectedId === null) {
                 $mismatches[] = "equipment type '{$equipmentName}' missing from catalog";
 
@@ -142,8 +147,9 @@ class ExerciseLibrarySeederTest extends TestCase
             }
 
             $actualId = DB::table('exercises')->where('name', $exerciseName)->value('equipment_type_id');
+
             if ($actualId !== $expectedId) {
-                $mismatches[] = "'{$exerciseName}' resolves to ".var_export($actualId, true).", expected '{$equipmentName}'";
+                $mismatches[] = "'{$exerciseName}' resolves to " . var_export($actualId, true) . ", expected '{$equipmentName}'";
             }
         }
 
@@ -167,7 +173,6 @@ class ExerciseLibrarySeederTest extends TestCase
         $firstRow = DB::table('equipment_types')->whereNull('user_id')->first();
         $this->assertNotNull($firstRow);
 
-        $originalCreatedAt = $firstRow->created_at;
         $backdatedCreatedAt = now()->subYear();
 
         DB::table('equipment_types')
@@ -236,12 +241,12 @@ class ExerciseLibrarySeederTest extends TestCase
     private function tableCounts(): array
     {
         return [
-            'equipment_types' => DB::table('equipment_types')->count(),
-            'exercises' => DB::table('exercises')->count(),
+            'equipment_types'     => DB::table('equipment_types')->count(),
+            'exercises'           => DB::table('exercises')->count(),
             'exercise_resistance' => DB::table('exercise_resistance')->count(),
             'exercise_timed_hold' => DB::table('exercise_timed_hold')->count(),
-            'exercise_distance' => DB::table('exercise_distance')->count(),
-            'exercise_interval' => DB::table('exercise_interval')->count(),
+            'exercise_distance'   => DB::table('exercise_distance')->count(),
+            'exercise_interval'   => DB::table('exercise_interval')->count(),
         ];
     }
 
@@ -266,12 +271,14 @@ class ExerciseLibrarySeederTest extends TestCase
     }
 
     /**
-     * @param  list<array{name: string, type: string, equipment: string|null, attributes: array<string, mixed>}>  $exercises
+     * @param list<array{name: string, type: string, equipment: string|null, attributes: array<string, mixed>}> $exercises
+     *
      * @return array<string, int>
      */
     private function countByType(array $exercises): array
     {
         $counts = [];
+
         foreach ($exercises as $exercise) {
             $counts[$exercise['type']] = ($counts[$exercise['type']] ?? 0) + 1;
         }

@@ -13,7 +13,7 @@ class AssignGroupEntriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'entries' => ['required', 'array', 'min:1'],
+            'entries'            => ['required', 'array', 'min:1'],
             'entries.*.entry_id' => [
                 'required',
                 'integer',

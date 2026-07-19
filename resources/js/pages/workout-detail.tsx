@@ -455,7 +455,7 @@ export function WorkoutDetailPage() {
   }, [queryClient, workoutId])
 
   const invalidateWorkoutList = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: workoutQueries.base, exact: true })
+    queryClient.invalidateQueries({ queryKey: workoutQueries.lists })
   }, [queryClient])
 
   const updateWorkoutMutation = useMutation({
@@ -487,6 +487,7 @@ export function WorkoutDetailPage() {
     onSuccess: () => {
       invalidateWorkout()
       invalidateWorkoutList()
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise added.')
     },
     onError: () => toast('Could not add exercise. Try again.', 'error'),
@@ -500,6 +501,7 @@ export function WorkoutDetailPage() {
     onSuccess: () => {
       invalidateWorkout()
       invalidateWorkoutList()
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise removed.')
     },
     onError: () => toast('Could not remove exercise. Try again.', 'error'),
@@ -509,6 +511,7 @@ export function WorkoutDetailPage() {
     mutationFn: (ids: string[]) => reorderExercises(workoutId, ids),
     onSuccess: data => {
       queryClient.setQueryData(workoutQueries.detail(workoutId).queryKey, data)
+      invalidateWorkoutList()
     },
     onError: () => {
       toast('Could not reorder exercises. Try again.', 'error')
@@ -534,6 +537,8 @@ export function WorkoutDetailPage() {
       payload: Parameters<typeof updateEntry>[2]
     }) => updateEntry(workoutId, entryId, payload),
     onSuccess: updatedEntry => {
+      // A newer local edit is pending; skip this stale server response.
+      if (pendingUpdates.current.has(updatedEntry.id)) return
       queryClient.setQueryData(
         workoutQueries.detail(workoutId).queryKey,
         (old: Workout | undefined) => {
@@ -544,6 +549,7 @@ export function WorkoutDetailPage() {
           }
         }
       )
+      invalidateWorkoutList()
     },
     onError: () => {
       toast('Could not save. Try again.', 'error')
@@ -564,11 +570,16 @@ export function WorkoutDetailPage() {
     return Promise.allSettled(flushes)
   }, [updateEntryMutation])
 
+  const flushRef = useRef(flushPendingUpdates)
+  useEffect(() => {
+    flushRef.current = flushPendingUpdates
+  })
+
   useEffect(() => {
     return () => {
-      void flushPendingUpdates()
+      void flushRef.current()
     }
-  }, [flushPendingUpdates])
+  }, [])
 
   const deleteEntryMutation = useMutation({
     mutationFn: async (entryId: string) => {
@@ -966,7 +977,10 @@ export function WorkoutDetailPage() {
         title="Delete workout?"
         message="This session and its logged sets will be removed."
         onCancel={() => setConfirmDeleteOpen(false)}
-        onConfirm={() => deleteWorkoutMutation.mutate()}
+        onConfirm={() => {
+          setConfirmDeleteOpen(false)
+          deleteWorkoutMutation.mutate()
+        }}
       />
       <ConfirmDialog
         open={confirmRemoveExerciseId !== null}

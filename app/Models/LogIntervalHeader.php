@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LogIntervalHeader extends Model
 {
+    /** @var string */
     protected $table = 'log_interval_headers';
 
     /** @var list<string> */

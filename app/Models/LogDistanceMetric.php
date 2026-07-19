@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogDistanceMetric extends Model
 {
+    /** @var string */
     protected $table = 'log_distance_metrics';
 
     /** @var list<string> */
@@ -19,6 +20,12 @@ class LogDistanceMetric extends Model
         'stroke_count',
     ];
 
+    /** @return BelongsTo<WorkoutEntry, $this> */
+    public function entry(): BelongsTo
+    {
+        return $this->belongsTo(WorkoutEntry::class);
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {
@@ -26,11 +33,5 @@ class LogDistanceMetric extends Model
             'target_distance' => 'decimal:2',
             'actual_distance' => 'decimal:2',
         ];
-    }
-
-    /** @return BelongsTo<WorkoutEntry, $this> */
-    public function entry(): BelongsTo
-    {
-        return $this->belongsTo(WorkoutEntry::class);
     }
 }

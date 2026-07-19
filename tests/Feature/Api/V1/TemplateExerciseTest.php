@@ -19,7 +19,7 @@ class TemplateExerciseTest extends TestCase
 
     public function test_attaches_exercise_to_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
@@ -34,15 +34,15 @@ class TemplateExerciseTest extends TestCase
             ->assertJsonPath('data.exercises.0.name', 'Bench Press');
 
         $this->assertDatabaseHas('template_exercises', [
-            'template_id' => $template->id,
-            'exercise_id' => $exercise->id,
+            'template_id'    => $template->id,
+            'exercise_id'    => $exercise->id,
             'exercise_order' => 0,
         ]);
     }
 
     public function test_rejects_duplicate_exercise_attachment(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -56,11 +56,11 @@ class TemplateExerciseTest extends TestCase
 
     public function test_auto_assigns_exercise_order(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template  = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -77,27 +77,27 @@ class TemplateExerciseTest extends TestCase
         ])->assertStatus(201);
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise1->id,
+            'exercise_id'    => $exercise1->id,
             'exercise_order' => 0,
         ]);
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise2->id,
+            'exercise_id'    => $exercise2->id,
             'exercise_order' => 1,
         ]);
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise3->id,
+            'exercise_id'    => $exercise3->id,
             'exercise_order' => 2,
         ]);
     }
 
     public function test_validates_exercise_belongs_to_user_or_system(): void
     {
-        $user = User::factory()->create();
-        $otherUser = User::factory()->create();
+        $user          = User::factory()->create();
+        $otherUser     = User::factory()->create();
         $otherExercise = Exercise::factory()->resistance()->create(['user_id' => $otherUser->id]);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template      = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
@@ -117,7 +117,7 @@ class TemplateExerciseTest extends TestCase
 
     public function test_detaches_exercise_from_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -137,11 +137,11 @@ class TemplateExerciseTest extends TestCase
 
     public function test_reorders_exercises(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template  = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
@@ -154,27 +154,27 @@ class TemplateExerciseTest extends TestCase
         ])->assertOk();
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise3->id,
+            'exercise_id'    => $exercise3->id,
             'exercise_order' => 0,
         ]);
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise1->id,
+            'exercise_id'    => $exercise1->id,
             'exercise_order' => 1,
         ]);
 
         $this->assertDatabaseHas('template_exercises', [
-            'exercise_id' => $exercise2->id,
+            'exercise_id'    => $exercise2->id,
             'exercise_order' => 2,
         ]);
     }
 
     public function test_reorder_rejects_nonexistent_exercise_id(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template  = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
 
@@ -191,11 +191,11 @@ class TemplateExerciseTest extends TestCase
 
     public function test_reorder_rejects_exercise_attached_to_other_template(): void
     {
-        $user = User::factory()->create();
-        $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
-        $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $unattached = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Elsewhere']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $user          = User::factory()->create();
+        $exercise1     = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
+        $exercise2     = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
+        $unattached    = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Elsewhere']);
+        $template      = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $otherTemplate = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
@@ -214,10 +214,10 @@ class TemplateExerciseTest extends TestCase
 
     public function test_reorder_rejects_duplicate_exercise_ids(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template  = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
 
@@ -234,11 +234,11 @@ class TemplateExerciseTest extends TestCase
 
     public function test_reorder_rejects_partial_exercise_id_list(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 1']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 2']);
         $exercise3 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Exercise 3']);
-        $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
+        $template  = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $template->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
         $template->exercises()->attach($exercise3->id, ['exercise_order' => 2]);
@@ -259,7 +259,7 @@ class TemplateExerciseTest extends TestCase
 
     public function test_cannot_attach_to_other_users_template(): void
     {
-        $owner = User::factory()->create();
+        $owner    = User::factory()->create();
         $attacher = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $attacher->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);
@@ -273,7 +273,7 @@ class TemplateExerciseTest extends TestCase
 
     public function test_cannot_detach_from_other_users_template(): void
     {
-        $owner = User::factory()->create();
+        $owner    = User::factory()->create();
         $detacher = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $owner->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);

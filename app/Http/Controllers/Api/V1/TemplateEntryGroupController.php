@@ -13,6 +13,7 @@ use App\Models\WorkoutTemplate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class TemplateEntryGroupController extends Controller
 {
@@ -20,6 +21,12 @@ class TemplateEntryGroupController extends Controller
 
     private const TEMPLATE_EAGER_LOAD = ['exercises', 'groups'];
 
+    /**
+     * @param StoreTemplateEntryGroupRequest $request
+     * @param WorkoutTemplate                $template
+     *
+     * @return JsonResponse
+     */
     public function store(StoreTemplateEntryGroupRequest $request, WorkoutTemplate $template): JsonResponse
     {
         $this->authorize('update', $template);
@@ -33,6 +40,12 @@ class TemplateEntryGroupController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param WorkoutTemplate    $template
+     * @param TemplateEntryGroup $group
+     *
+     * @return Response
+     */
     public function destroy(WorkoutTemplate $template, TemplateEntryGroup $group): Response
     {
         $this->authorize('update', $template);
@@ -42,18 +55,27 @@ class TemplateEntryGroupController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * @param AssignTemplateGroupExercisesRequest $request
+     * @param WorkoutTemplate                     $template
+     * @param TemplateEntryGroup                  $group
+     *
+     * @return WorkoutTemplateResource
+     */
     public function assignExercises(
         AssignTemplateGroupExercisesRequest $request,
         WorkoutTemplate $template,
-        TemplateEntryGroup $group
+        TemplateEntryGroup $group,
     ): WorkoutTemplateResource {
         $this->authorize('update', $template);
 
-        foreach ($request->validated('exercise_ids') as $exerciseId) {
-            $template->exercises()->updateExistingPivot($exerciseId, [
-                'template_entry_group_id' => $group->id,
-            ]);
-        }
+        DB::transaction(function () use ($request, $template, $group): void {
+            foreach ($request->validated('exercise_ids') as $exerciseId) {
+                $template->exercises()->updateExistingPivot($exerciseId, [
+                    'template_entry_group_id' => $group->id,
+                ]);
+            }
+        });
 
         $template->load(self::TEMPLATE_EAGER_LOAD);
 

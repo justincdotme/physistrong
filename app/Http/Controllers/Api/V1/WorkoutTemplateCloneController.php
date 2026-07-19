@@ -18,8 +18,15 @@ class WorkoutTemplateCloneController extends Controller
 {
     use AuthorizesRequests;
 
+    /** @param WorkoutCloneService $cloneService */
     public function __construct(private WorkoutCloneService $cloneService) {}
 
+    /**
+     * @param CloneWorkoutTemplateRequest $request
+     * @param WorkoutTemplate             $template
+     *
+     * @return JsonResponse
+     */
     public function __invoke(CloneWorkoutTemplateRequest $request, WorkoutTemplate $template): JsonResponse
     {
         $this->authorize('view', $template);

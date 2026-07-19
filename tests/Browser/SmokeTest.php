@@ -5,8 +5,8 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
-it('renders the login page', function () {
-    $this->browse(function (Browser $browser) {
+it('renders the login page', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/login')
             ->waitForText('Welcome back')
             ->assertSee('Log In')
@@ -14,10 +14,10 @@ it('renders the login page', function () {
     });
 });
 
-it('renders the app shell after login', function () {
+it('renders the app shell after login', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->assertVisible('@app-shell')
             ->screenshot('smoke-shell');

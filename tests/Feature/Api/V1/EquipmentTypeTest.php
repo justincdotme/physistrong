@@ -6,20 +6,15 @@ namespace Tests\Feature\Api\V1;
 
 use App\Models\EquipmentType;
 use App\Models\User;
+use Database\Seeders\EquipmentTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
-use Database\Seeders\EquipmentTypeSeeder;
 
 class EquipmentTypeTest extends TestCase
 {
     use RefreshDatabase;
-
-    private function seedSystemTypes(): void
-    {
-        $this->seed(EquipmentTypeSeeder::class);
-    }
 
     public function test_lists_system_and_own_custom_types(): void
     {
@@ -53,8 +48,8 @@ class EquipmentTypeTest extends TestCase
             ->assertJsonPath('data.is_system', false);
 
         $this->assertDatabaseHas('equipment_types', [
-            'name' => 'Trap Bar',
-            'user_id' => $user->id,
+            'name'      => 'Trap Bar',
+            'user_id'   => $user->id,
             'is_system' => false,
         ]);
     }
@@ -88,12 +83,12 @@ class EquipmentTypeTest extends TestCase
         $type = EquipmentType::create(['name' => 'In Use', 'user_id' => $user->id, 'is_system' => false]);
 
         DB::table('exercises')->insert([
-            'name' => 'Test Exercise',
-            'type' => 'resistance',
-            'user_id' => $user->id,
+            'name'              => 'Test Exercise',
+            'type'              => 'resistance',
+            'user_id'           => $user->id,
             'equipment_type_id' => $type->id,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at'        => now(),
+            'updated_at'        => now(),
         ]);
 
         Passport::actingAs($user);
@@ -120,5 +115,10 @@ class EquipmentTypeTest extends TestCase
     {
         $this->getJson('/api/v1/equipment-types')->assertStatus(401);
         $this->postJson('/api/v1/equipment-types', ['name' => 'Nope'])->assertStatus(401);
+    }
+
+    private function seedSystemTypes(): void
+    {
+        $this->seed(EquipmentTypeSeeder::class);
     }
 }

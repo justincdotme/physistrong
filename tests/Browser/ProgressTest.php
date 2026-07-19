@@ -7,10 +7,10 @@ use App\Models\User;
 use App\Models\Workout;
 use Laravel\Dusk\Browser;
 
-it('renders the progress page at desktop width', function () {
+it('renders the progress page at desktop width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/progress')
@@ -21,10 +21,10 @@ it('renders the progress page at desktop width', function () {
     });
 });
 
-it('renders the progress page at tablet width', function () {
+it('renders the progress page at tablet width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/progress')
@@ -35,10 +35,10 @@ it('renders the progress page at tablet width', function () {
     });
 });
 
-it('renders the progress page at phone width', function () {
+it('renders the progress page at phone width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/progress')
@@ -49,26 +49,26 @@ it('renders the progress page at phone width', function () {
     });
 });
 
-it('defaults to the first exercise with logged data', function () {
+it('defaults to the first exercise with logged data', function (): void {
     $user = User::factory()->create();
 
     $exercise = Exercise::where('name', 'Barbell Squat')->whereNull('user_id')->first();
 
     $workout = Workout::create([
         'user_id' => $user->id,
-        'name' => 'Test Workout',
-        'date' => '2026-06-15',
+        'name'    => 'Test Workout',
+        'date'    => '2026-06-15',
     ]);
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
     $entry->loadMetric()->create(['actual_weight' => 135, 'bodyweight_only' => false]);
     $entry->repMetric()->create(['actual_reps' => 5]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
@@ -79,10 +79,10 @@ it('defaults to the first exercise with logged data', function () {
     });
 });
 
-it('shows "no data yet" for exercises without logged entries', function () {
+it('shows "no data yet" for exercises without logged entries', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
@@ -93,10 +93,10 @@ it('shows "no data yet" for exercises without logged entries', function () {
     });
 });
 
-it('filters exercises when typing in the search field', function () {
+it('filters exercises when typing in the search field', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
@@ -110,24 +110,24 @@ it('filters exercises when typing in the search field', function () {
     });
 });
 
-it('updates the chart when selecting an exercise from search', function () {
+it('updates the chart when selecting an exercise from search', function (): void {
     $user = User::factory()->create();
 
     $exercise = Exercise::where('name', 'Dumbbell Bench Press')->whereNull('user_id')->first();
-    $workout = Workout::create([
+    $workout  = Workout::create([
         'user_id' => $user->id,
-        'name' => 'Bench Day',
-        'date' => '2026-06-20',
+        'name'    => 'Bench Day',
+        'date'    => '2026-06-20',
     ]);
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
     $entry->loadMetric()->create(['actual_weight' => 185, 'bodyweight_only' => false]);
     $entry->repMetric()->create(['actual_reps' => 8]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
@@ -145,10 +145,10 @@ it('updates the chart when selecting an exercise from search', function () {
     });
 });
 
-it('shows the time range label on the progress page', function () {
+it('shows the time range label on the progress page', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/progress')
             ->waitFor('@progress-page')
@@ -158,11 +158,11 @@ it('shows the time range label on the progress page', function () {
     });
 });
 
-it('shows the time range label on the exercise progress page', function () {
-    $user = User::factory()->create();
+it('shows the time range label on the exercise progress page', function (): void {
+    $user     = User::factory()->create();
     $exercise = Exercise::where('name', 'Barbell Squat')->whereNull('user_id')->first();
 
-    $this->browse(function (Browser $browser) use ($user, $exercise) {
+    $this->browse(function (Browser $browser) use ($user, $exercise): void {
         $this->loginAs($browser, $user);
         $browser->visit("/exercises/{$exercise->id}/progress")
             ->waitFor('@exercise-progress-page')

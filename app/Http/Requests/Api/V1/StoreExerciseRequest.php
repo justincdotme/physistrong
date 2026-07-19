@@ -23,10 +23,10 @@ class StoreExerciseRequest extends FormRequest
                 'max:255',
                 Rule::unique('exercises')->where('user_id', $this->user()->id),
             ],
-            'type' => ['required', Rule::enum(ExerciseType::class)],
+            'type'              => ['required', Rule::enum(ExerciseType::class)],
             'equipment_type_id' => $this->equipmentTypeRule(),
-            'notes' => ['nullable', 'string'],
-            'type_attributes' => ['sometimes', 'array'],
+            'notes'             => ['nullable', 'string'],
+            'type_attributes'   => ['sometimes', 'array'],
         ], $this->typeRulesFor(ExerciseType::tryFrom((string) $this->input('type'))));
     }
 }

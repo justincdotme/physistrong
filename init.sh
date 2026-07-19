@@ -2,7 +2,7 @@
 # One-command bring-up: self-signed TLS, environment, dependencies, frontend
 # assets and the full stack with the database migrated. Safe to re-run.
 #
-#   ./init.sh physistrong.justinc.srv
+#   ./init.sh 192.168.1.50
 set -euo pipefail
 
 cd "$(dirname "$0")"

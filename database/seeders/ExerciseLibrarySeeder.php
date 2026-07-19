@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -17,13 +19,15 @@ class ExerciseLibrarySeeder extends Seeder
     private const CHILD_TABLES = [
         'resistance' => 'exercise_resistance',
         'timed_hold' => 'exercise_timed_hold',
-        'distance' => 'exercise_distance',
-        'interval' => 'exercise_interval',
+        'distance'   => 'exercise_distance',
+        'interval'   => 'exercise_interval',
     ];
 
+    /** @return void */
     public function run(): void
     {
         $exercises = $this->load();
+
         if ($exercises === []) {
             return;
         }
@@ -38,7 +42,7 @@ class ExerciseLibrarySeeder extends Seeder
 
         DB::transaction(function () use ($exercises, $equipmentIds, $now): void {
             foreach ($exercises as $exercise) {
-                $equipmentName = $exercise['equipment'];
+                $equipmentName   = $exercise['equipment'];
                 $equipmentTypeId = $equipmentName !== null ? ($equipmentIds[$equipmentName] ?? null) : null;
 
                 $existingExercise = DB::table('exercises')
@@ -47,10 +51,11 @@ class ExerciseLibrarySeeder extends Seeder
                     ->exists();
 
                 $basePayload = [
-                    'type' => $exercise['type'],
+                    'type'              => $exercise['type'],
                     'equipment_type_id' => $equipmentTypeId,
-                    'updated_at' => $now,
+                    'updated_at'        => $now,
                 ];
+
                 if (! $existingExercise) {
                     $basePayload['created_at'] = $now;
                 }
@@ -70,6 +75,7 @@ class ExerciseLibrarySeeder extends Seeder
                     ->exists();
 
                 $childPayload = $exercise['attributes'] + ['updated_at' => $now];
+
                 if (! $existingChild) {
                     $childPayload['created_at'] = $now;
                 }
@@ -87,7 +93,7 @@ class ExerciseLibrarySeeder extends Seeder
      */
     private function load(): array
     {
-        $path = database_path('seeders/data/exercises.json');
+        $path    = database_path('seeders/data/exercises.json');
         $decoded = json_decode((string) file_get_contents($path), true);
 
         if (! is_array($decoded)) {

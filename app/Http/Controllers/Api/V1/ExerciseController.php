@@ -21,17 +21,17 @@ class ExerciseController extends Controller
 {
     use AuthorizesRequests;
 
+    /** @param ExerciseRepository $exercises */
     public function __construct(private ExerciseRepository $exercises) {}
 
-    /** @return list<string> */
-    private function eagerLoad(): array
-    {
-        return [...ExerciseType::childRelations(), 'equipmentType'];
-    }
-
+    /**
+     * @param IndexExerciseRequest $request
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(IndexExerciseRequest $request): AnonymousResourceCollection
     {
-        $query = Exercise::visibleTo($request->user())->withUsage();
+        $query     = Exercise::visibleTo($request->user())->withUsage();
         $validated = $request->validated();
 
         if (isset($validated['type'])) {
@@ -44,14 +44,19 @@ class ExerciseController extends Controller
 
         if (isset($validated['search'])) {
             $search = addcslashes($validated['search'], '%_\\');
-            $query->whereRaw('name LIKE ? ESCAPE ?', ['%'.$search.'%', '\\']);
+            $query->whereRaw('name LIKE ? ESCAPE ?', ['%' . $search . '%', '\\']);
         }
 
         return ExerciseResource::collection(
-            $query->with($this->eagerLoad())->orderBy('name')->get()
+            $query->with($this->eagerLoad())->orderBy('name')->get(),
         );
     }
 
+    /**
+     * @param StoreExerciseRequest $request
+     *
+     * @return JsonResponse
+     */
     public function store(StoreExerciseRequest $request): JsonResponse
     {
         $exercise = $this->exercises->create($request->user(), $request->validated());
@@ -61,6 +66,11 @@ class ExerciseController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param Exercise $exercise
+     *
+     * @return ExerciseResource
+     */
     public function show(Exercise $exercise): ExerciseResource
     {
         $this->authorize('view', $exercise);
@@ -72,6 +82,12 @@ class ExerciseController extends Controller
         return new ExerciseResource($exercise);
     }
 
+    /**
+     * @param UpdateExerciseRequest $request
+     * @param Exercise              $exercise
+     *
+     * @return ExerciseResource
+     */
     public function update(UpdateExerciseRequest $request, Exercise $exercise): ExerciseResource
     {
         $this->authorize('update', $exercise);
@@ -85,6 +101,11 @@ class ExerciseController extends Controller
         return new ExerciseResource($exercise);
     }
 
+    /**
+     * @param Exercise $exercise
+     *
+     * @return Response|JsonResponse
+     */
     public function destroy(Exercise $exercise): Response|JsonResponse
     {
         $this->authorize('delete', $exercise);
@@ -98,5 +119,11 @@ class ExerciseController extends Controller
         $exercise->delete();
 
         return response()->noContent();
+    }
+
+    /** @return list<string> */
+    private function eagerLoad(): array
+    {
+        return [...ExerciseType::childRelations(), 'equipmentType'];
     }
 }

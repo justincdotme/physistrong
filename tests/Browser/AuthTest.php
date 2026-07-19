@@ -5,8 +5,8 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
-it('renders the login page and checks form elements are visible', function () {
-    $this->browse(function (Browser $browser) {
+it('renders the login page and checks form elements are visible', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/login')
             ->waitFor('@login-form')
             ->assertSee('Welcome back')
@@ -19,8 +19,8 @@ it('renders the login page and checks form elements are visible', function () {
     });
 });
 
-it('renders the login page at phone width', function () {
-    $this->browse(function (Browser $browser) {
+it('renders the login page at phone width', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->resize(375, 812)
             ->visit('/login')
             ->waitFor('@login-form')
@@ -32,14 +32,14 @@ it('renders the login page at phone width', function () {
     });
 });
 
-it('logs in with valid credentials and redirects to workouts', function () {
-    $email = 'logintest-'.time().'@example.com';
-    $user = User::factory()->create([
-        'email' => $email,
+it('logs in with valid credentials and redirects to workouts', function (): void {
+    $email = 'logintest-' . time() . '@example.com';
+    $user  = User::factory()->create([
+        'email'    => $email,
         'password' => bcrypt('password123'),
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $browser->visit('/login')
             ->waitFor('@login-form')
             ->type('input[name="email"]', $user->email)
@@ -50,9 +50,8 @@ it('logs in with valid credentials and redirects to workouts', function () {
     });
 });
 
-
-it('redirects unauthenticated user from workouts to login', function () {
-    $this->browse(function (Browser $browser) {
+it('redirects unauthenticated user from workouts to login', function (): void {
+    $this->browse(function (Browser $browser): void {
         // The guard redirect now waits on the boot-time auth probe, so give the
         // first cold page load a bigger budget than Dusk's 5-second default.
         $browser->visit('/workouts')
@@ -61,8 +60,8 @@ it('redirects unauthenticated user from workouts to login', function () {
     });
 });
 
-it('renders the register page with measurement system picker', function () {
-    $this->browse(function (Browser $browser) {
+it('renders the register page with measurement system picker', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/register')
             ->assertSee('Create your account')
             ->assertSee('Start tracking every set.')
@@ -79,9 +78,8 @@ it('renders the register page with measurement system picker', function () {
     });
 });
 
-
-it('shows error when passwords do not match on register', function () {
-    $this->browse(function (Browser $browser) {
+it('shows error when passwords do not match on register', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/register')
             ->type('input[name="first_name"]', 'Test')
             ->type('input[name="last_name"]', 'User')
@@ -94,8 +92,8 @@ it('shows error when passwords do not match on register', function () {
     });
 });
 
-it('renders the forgot password page', function () {
-    $this->browse(function (Browser $browser) {
+it('renders the forgot password page', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/password/reset')
             ->assertSee('Reset password')
             ->assertSee("We'll email you a reset link.")
@@ -105,10 +103,10 @@ it('renders the forgot password page', function () {
     });
 });
 
-it('keeps the auth cookie out of document.cookie and dead after logout', function () {
+it('keeps the auth cookie out of document.cookie and dead after logout', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
 
         // HttpOnly plus the /api/v1 path scope keep the token invisible to scripts.

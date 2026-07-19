@@ -343,6 +343,46 @@ describe('entry update error handling', () => {
       })
     }
   )
+
+  it('respects the debounce interval before firing entry updates', { timeout: 15000 }, async () => {
+    vi.useFakeTimers()
+    try {
+      let putCount = 0
+      server.use(
+        http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+        http.put('/api/v1/workouts/:id/entries/:entryId', () => {
+          putCount++
+          return HttpResponse.json({ data: twoExerciseWorkout.data.entries[1] })
+        })
+      )
+
+      renderWithProviders(<WorkoutDetailPage />, {
+        path: 'workouts/:id',
+        route: '/workouts/43',
+      })
+
+      await vi.waitFor(() => {
+        expect(screen.getAllByDisplayValue('10').length).toBeGreaterThan(0)
+      })
+
+      // Reset after initial render so we only count PUTs from the change
+      putCount = 0
+
+      const repsInput = screen.getAllByDisplayValue('10')[0]
+      if (!repsInput) throw new Error('Reps input not found')
+      fireEvent.change(repsInput, { target: { value: '15' } })
+
+      // Well under the 800ms debounce: no PUT should have fired
+      await vi.advanceTimersByTimeAsync(400)
+      expect(putCount).toBe(0)
+
+      // Past the 800ms debounce: exactly one PUT
+      await vi.advanceTimersByTimeAsync(401)
+      expect(putCount).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
 
 // Subscribes to the workouts list query so invalidation triggers a refetch
@@ -458,4 +498,75 @@ describe('list cache invalidation', () => {
       expect(listFetchCount).toBeGreaterThan(fetchesBeforeDetach)
     })
   })
+
+  it('invalidates the workouts list after an entry metric edit', { timeout: 15000 }, async () => {
+    let listFetchCount = 0
+    server.use(
+      http.get('/api/v1/workouts', () => {
+        listFetchCount++
+        return HttpResponse.json({
+          data: [],
+          meta: { current_page: 1, last_page: 1, total: 0 },
+        })
+      }),
+      http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+      http.put('/api/v1/workouts/:id/entries/:entryId', () => {
+        return HttpResponse.json({ data: twoExerciseWorkout.data.entries[1] })
+      })
+    )
+    renderDetailWithListObserver('43')
+
+    await screen.findByText('Test Workout')
+    const fetchesBeforeEdit = listFetchCount
+
+    const repsInputs = screen.getAllByDisplayValue('10')
+    const repsInput = repsInputs[0]
+    if (!repsInput) throw new Error('Reps input not found')
+    fireEvent.change(repsInput, { target: { value: '15' } })
+
+    await waitFor(
+      () => {
+        expect(listFetchCount).toBeGreaterThan(fetchesBeforeEdit)
+      },
+      { timeout: 5000 }
+    )
+  })
+})
+
+describe('delete workout dialog', () => {
+  it(
+    'closes the dialog on confirm so a rapid second click cannot fire a duplicate DELETE',
+    { timeout: 15000 },
+    async () => {
+      let deleteCount = 0
+      server.use(
+        http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+        http.delete('/api/v1/workouts/:id', () => {
+          deleteCount++
+          return new HttpResponse(null, { status: 204 })
+        })
+      )
+      renderWithProviders(<WorkoutDetailPage />, {
+        path: 'workouts/:id',
+        route: '/workouts/43',
+        additionalRoutes: [{ path: 'workouts', element: <div>Workouts list</div> }],
+      })
+
+      const deleteBtn = await screen.findByRole('button', { name: 'Delete workout' })
+      await userEvent.click(deleteBtn)
+
+      expect(await screen.findByText('Delete workout?')).toBeInTheDocument()
+
+      const confirmBtn = await screen.findByRole('button', { name: 'Delete' })
+      await userEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Delete workout?')).not.toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(deleteCount).toBe(1)
+      })
+    }
+  )
 })

@@ -19,6 +19,12 @@ class EntryGroupController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * @param StoreEntryGroupRequest $request
+     * @param Workout                $workout
+     *
+     * @return JsonResponse
+     */
     public function store(StoreEntryGroupRequest $request, Workout $workout): JsonResponse
     {
         $this->authorize('update', $workout);
@@ -32,28 +38,43 @@ class EntryGroupController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param Workout    $workout
+     * @param EntryGroup $group
+     *
+     * @return Response
+     */
     public function destroy(Workout $workout, EntryGroup $group): Response
     {
         $this->authorize('update', $workout);
 
-        // Clear group_round before delete; FK ON DELETE SET NULL handles entry_group_id
-        $group->entries()->update(['group_round' => null]);
-        $group->delete();
+        DB::transaction(function () use ($group): void {
+            // Clear group_round before delete; FK ON DELETE SET NULL handles entry_group_id
+            $group->entries()->update(['group_round' => null]);
+            $group->delete();
+        });
 
         return response()->noContent();
     }
 
+    /**
+     * @param AssignGroupEntriesRequest $request
+     * @param Workout                   $workout
+     * @param EntryGroup                $group
+     *
+     * @return WorkoutResource
+     */
     public function assignEntries(AssignGroupEntriesRequest $request, Workout $workout, EntryGroup $group): WorkoutResource
     {
         $this->authorize('update', $workout);
 
-        DB::transaction(function () use ($request, $workout, $group) {
+        DB::transaction(function () use ($request, $workout, $group): void {
             foreach ($request->validated('entries') as $assignment) {
                 $workout->entries()
                     ->where('id', $assignment['entry_id'])
                     ->update([
                         'entry_group_id' => $group->id,
-                        'group_round' => $assignment['group_round'],
+                        'group_round'    => $assignment['group_round'],
                     ]);
             }
         });

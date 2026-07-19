@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -8,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 /** Upserts system equipment types so ids stay stable across re-seeds. */
 class EquipmentTypeSeeder extends Seeder
 {
+    /** @return void */
     public function run(): void
     {
         $now = now();
@@ -19,6 +22,7 @@ class EquipmentTypeSeeder extends Seeder
                 ->exists();
 
             $payload = ['is_system' => true, 'updated_at' => $now];
+
             if (! $existing) {
                 $payload['created_at'] = $now;
             }
@@ -35,7 +39,7 @@ class EquipmentTypeSeeder extends Seeder
      */
     private function catalog(): array
     {
-        $path = database_path('seeders/data/equipment_types.json');
+        $path  = database_path('seeders/data/equipment_types.json');
         $names = json_decode((string) file_get_contents($path), true);
 
         if (! is_array($names)) {

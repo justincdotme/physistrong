@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
 {
+    /**
+     * @param ForgotPasswordRequest $request
+     *
+     * @return JsonResponse
+     */
     public function __invoke(ForgotPasswordRequest $request): JsonResponse
     {
         Password::sendResetLink($request->validated());

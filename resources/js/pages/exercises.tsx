@@ -52,6 +52,7 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
     mutationFn: createExercise,
     onSuccess: exercise => {
       queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise created.')
       onClose()
       navigate(`/exercises/${exercise.id}`)
@@ -291,6 +292,7 @@ export function ExercisesPage() {
     mutationFn: deleteExerciseApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise deleted.')
     },
     onError: error => {

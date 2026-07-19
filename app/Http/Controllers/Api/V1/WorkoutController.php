@@ -20,14 +20,19 @@ class WorkoutController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $workouts = Workout::where('user_id', $request->user()->id)
             ->with('exercises')
             ->withCount([
                 'entries',
-                'entries as completed_entries_count' => function ($query) {
-                    $query->where(function ($q) {
+                'entries as completed_entries_count' => function ($query): void {
+                    $query->where(function ($q): void {
                         $q->whereHas('loadMetric', fn ($s) => $s->whereNotNull('actual_weight'))
                             ->orWhereHas('repMetric', fn ($s) => $s->whereNotNull('actual_reps'))
                             ->orWhereHas('durationMetric', fn ($s) => $s->whereNotNull('actual_duration_seconds'))
@@ -42,14 +47,19 @@ class WorkoutController extends Controller
         return WorkoutListResource::collection($workouts);
     }
 
+    /**
+     * @param StoreWorkoutRequest $request
+     *
+     * @return JsonResponse
+     */
     public function store(StoreWorkoutRequest $request): JsonResponse
     {
         $workout = Workout::create([
-            'name' => $request->validated('name'),
-            'user_id' => $request->user()->id,
-            'date' => $request->validated('date'),
+            'name'       => $request->validated('name'),
+            'user_id'    => $request->user()->id,
+            'date'       => $request->validated('date'),
             'exhaustion' => $request->validated('exhaustion'),
-            'soreness' => $request->validated('soreness'),
+            'soreness'   => $request->validated('soreness'),
         ]);
 
         $workout->load(Workout::detailRelations());
@@ -59,6 +69,11 @@ class WorkoutController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param Workout $workout
+     *
+     * @return WorkoutResource
+     */
     public function show(Workout $workout): WorkoutResource
     {
         $this->authorize('view', $workout);
@@ -68,6 +83,12 @@ class WorkoutController extends Controller
         return new WorkoutResource($workout);
     }
 
+    /**
+     * @param UpdateWorkoutRequest $request
+     * @param Workout              $workout
+     *
+     * @return WorkoutResource
+     */
     public function update(UpdateWorkoutRequest $request, Workout $workout): WorkoutResource
     {
         $this->authorize('update', $workout);
@@ -78,6 +99,11 @@ class WorkoutController extends Controller
         return new WorkoutResource($workout);
     }
 
+    /**
+     * @param Workout $workout
+     *
+     * @return Response
+     */
     public function destroy(Workout $workout): Response
     {
         $this->authorize('delete', $workout);

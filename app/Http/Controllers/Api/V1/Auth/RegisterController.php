@@ -13,6 +13,11 @@ use Illuminate\Http\JsonResponse;
 
 class RegisterController extends Controller
 {
+    /**
+     * @param RegisterRequest $request
+     *
+     * @return JsonResponse
+     */
     public function __invoke(RegisterRequest $request): JsonResponse
     {
         $user = User::create($request->validated());

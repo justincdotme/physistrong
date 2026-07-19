@@ -10,10 +10,17 @@ use Laravel\Passport\Token;
 
 class RebuildTokenBlacklist extends Command
 {
+    /** @var string */
     protected $signature = 'auth:rebuild-token-blacklist';
 
+    /** @var string */
     protected $description = 'Restore revoked-token blacklist entries from the database';
 
+    /**
+     * @param TokenBlacklistService $blacklist
+     *
+     * @return integer
+     */
     public function handle(TokenBlacklistService $blacklist): int
     {
         $count = 0;

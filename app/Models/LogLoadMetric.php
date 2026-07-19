@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogLoadMetric extends Model
 {
+    /** @var string */
     protected $table = 'log_load_metrics';
 
     /** @var list<string> */
@@ -18,19 +19,19 @@ class LogLoadMetric extends Model
         'bodyweight_only',
     ];
 
+    /** @return BelongsTo<WorkoutEntry, $this> */
+    public function entry(): BelongsTo
+    {
+        return $this->belongsTo(WorkoutEntry::class);
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {
         return [
             'bodyweight_only' => 'boolean',
-            'target_weight' => 'decimal:2',
-            'actual_weight' => 'decimal:2',
+            'target_weight'   => 'decimal:2',
+            'actual_weight'   => 'decimal:2',
         ];
-    }
-
-    /** @return BelongsTo<WorkoutEntry, $this> */
-    public function entry(): BelongsTo
-    {
-        return $this->belongsTo(WorkoutEntry::class);
     }
 }

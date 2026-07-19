@@ -11,6 +11,12 @@ use Illuminate\Http\JsonResponse;
 
 class AuthTokenResponse
 {
+    /**
+     * @param User    $user
+     * @param integer $status
+     *
+     * @return JsonResponse
+     */
     public static function make(User $user, int $status = 200): JsonResponse
     {
         $token = $user->createToken('auth');

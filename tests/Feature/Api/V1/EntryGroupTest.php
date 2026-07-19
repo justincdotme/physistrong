@@ -20,32 +20,32 @@ class EntryGroupTest extends TestCase
 
     public function test_creates_entry_group(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
         $response = $this->postJson("/api/v1/workouts/{$workout->id}/groups", [
-            'name' => 'Chest/Back Superset',
-            'planned_rounds' => 3,
+            'name'                           => 'Chest/Back Superset',
+            'planned_rounds'                 => 3,
             'rest_between_exercises_seconds' => 30,
-            'rest_between_rounds_seconds' => 60,
+            'rest_between_rounds_seconds'    => 60,
         ]);
 
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('entry_groups', [
-            'workout_id' => $workout->id,
-            'name' => 'Chest/Back Superset',
-            'planned_rounds' => 3,
+            'workout_id'                     => $workout->id,
+            'name'                           => 'Chest/Back Superset',
+            'planned_rounds'                 => 3,
             'rest_between_exercises_seconds' => 30,
-            'rest_between_rounds_seconds' => 60,
+            'rest_between_rounds_seconds'    => 60,
         ]);
     }
 
     public function test_creates_entry_group_with_defaults(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
@@ -55,23 +55,23 @@ class EntryGroupTest extends TestCase
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('entry_groups', [
-            'workout_id' => $workout->id,
-            'name' => null,
-            'planned_rounds' => 1,
+            'workout_id'                     => $workout->id,
+            'name'                           => null,
+            'planned_rounds'                 => 1,
             'rest_between_exercises_seconds' => 0,
-            'rest_between_rounds_seconds' => null,
+            'rest_between_rounds_seconds'    => null,
         ]);
     }
 
     public function test_store_returns_workout_with_groups(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
 
         $response = $this->postJson("/api/v1/workouts/{$workout->id}/groups", [
-            'name' => 'Push Circuit',
+            'name'           => 'Push Circuit',
             'planned_rounds' => 2,
         ]);
 
@@ -82,8 +82,8 @@ class EntryGroupTest extends TestCase
 
     public function test_cannot_create_group_on_other_users_workout(): void
     {
-        $owner = User::factory()->create();
-        $other = User::factory()->create();
+        $owner   = User::factory()->create();
+        $other   = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($other);
@@ -95,7 +95,7 @@ class EntryGroupTest extends TestCase
 
     public function test_validates_planned_rounds_minimum(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
 
         Passport::actingAs($user);
@@ -110,11 +110,11 @@ class EntryGroupTest extends TestCase
 
     public function test_deletes_entry_group(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+        $group   = EntryGroup::create([
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
@@ -128,12 +128,12 @@ class EntryGroupTest extends TestCase
 
     public function test_destroy_returns_404_for_group_from_other_workout(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $workout1 = Workout::factory()->create(['user_id' => $user->id]);
         $workout2 = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout1->id,
-            'planned_rounds' => 2,
+        $group    = EntryGroup::create([
+            'workout_id'                     => $workout1->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
@@ -147,22 +147,22 @@ class EntryGroupTest extends TestCase
 
     public function test_delete_group_preserves_entries_with_null_fk(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
         $entry = $workout->entries()->create([
-            'exercise_id' => $exercise->id,
-            'set_order' => 0,
+            'exercise_id'    => $exercise->id,
+            'set_order'      => 0,
             'entry_group_id' => $group->id,
-            'group_round' => 1,
+            'group_round'    => 1,
         ]);
 
         Passport::actingAs($user);
@@ -172,19 +172,19 @@ class EntryGroupTest extends TestCase
 
         $this->assertDatabaseMissing('entry_groups', ['id' => $group->id]);
         $this->assertDatabaseHas('workout_entries', [
-            'id' => $entry->id,
+            'id'             => $entry->id,
             'entry_group_id' => null,
-            'group_round' => null,
+            'group_round'    => null,
         ]);
     }
 
     public function test_workout_delete_cascades_groups(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+        $group   = EntryGroup::create([
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
@@ -200,10 +200,10 @@ class EntryGroupTest extends TestCase
 
     public function test_assigns_entries_to_group(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $exercise1 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
         $exercise2 = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Row']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout   = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise1->id, ['exercise_order' => 0]);
         $workout->exercises()->attach($exercise2->id, ['exercise_order' => 1]);
 
@@ -211,8 +211,8 @@ class EntryGroupTest extends TestCase
         $entry2 = $workout->entries()->create(['exercise_id' => $exercise2->id, 'set_order' => 1]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 30,
         ]);
 
@@ -228,25 +228,25 @@ class EntryGroupTest extends TestCase
         $response->assertOk();
 
         $this->assertDatabaseHas('workout_entries', [
-            'id' => $entry1->id,
+            'id'             => $entry1->id,
             'entry_group_id' => $group->id,
-            'group_round' => 1,
+            'group_round'    => 1,
         ]);
 
         $this->assertDatabaseHas('workout_entries', [
-            'id' => $entry2->id,
+            'id'             => $entry2->id,
             'entry_group_id' => $group->id,
-            'group_round' => 1,
+            'group_round'    => 1,
         ]);
     }
 
     public function test_assign_validates_entries_required(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
-        $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+        $group   = EntryGroup::create([
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
@@ -259,15 +259,15 @@ class EntryGroupTest extends TestCase
 
     public function test_assign_rejects_nonexistent_entry_id(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 30,
         ]);
 
@@ -283,17 +283,17 @@ class EntryGroupTest extends TestCase
 
     public function test_assign_rejects_entry_from_other_workout(): void
     {
-        $user = User::factory()->create();
-        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $user         = User::factory()->create();
+        $exercise     = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
+        $workout      = Workout::factory()->create(['user_id' => $user->id]);
         $otherWorkout = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $otherWorkout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $foreignEntry = $otherWorkout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 30,
         ]);
 
@@ -307,22 +307,22 @@ class EntryGroupTest extends TestCase
             ->assertJsonValidationErrors('entries.0.entry_id');
 
         $this->assertDatabaseHas('workout_entries', [
-            'id' => $foreignEntry->id,
+            'id'             => $foreignEntry->id,
             'entry_group_id' => null,
         ]);
     }
 
     public function test_assign_rejects_duplicate_entry_ids(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $entry = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 30,
         ]);
 
@@ -341,9 +341,9 @@ class EntryGroupTest extends TestCase
 
     public function test_assign_allows_partial_subset_of_entries(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         $entry1 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 0]);
@@ -351,8 +351,8 @@ class EntryGroupTest extends TestCase
         $entry3 = $workout->entries()->create(['exercise_id' => $exercise->id, 'set_order' => 2]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 30,
         ]);
 
@@ -374,14 +374,14 @@ class EntryGroupTest extends TestCase
 
     public function test_workout_show_includes_groups(): void
     {
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $workout = Workout::factory()->create(['user_id' => $user->id]);
         EntryGroup::create([
-            'workout_id' => $workout->id,
-            'name' => 'Push/Pull',
-            'planned_rounds' => 3,
+            'workout_id'                     => $workout->id,
+            'name'                           => 'Push/Pull',
+            'planned_rounds'                 => 3,
             'rest_between_exercises_seconds' => 30,
-            'rest_between_rounds_seconds' => 60,
+            'rest_between_rounds_seconds'    => 60,
         ]);
 
         Passport::actingAs($user);
@@ -397,22 +397,22 @@ class EntryGroupTest extends TestCase
 
     public function test_entry_response_includes_group_fields(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench']);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         $group = EntryGroup::create([
-            'workout_id' => $workout->id,
-            'planned_rounds' => 2,
+            'workout_id'                     => $workout->id,
+            'planned_rounds'                 => 2,
             'rest_between_exercises_seconds' => 0,
         ]);
 
         $workout->entries()->create([
-            'exercise_id' => $exercise->id,
-            'set_order' => 0,
+            'exercise_id'    => $exercise->id,
+            'set_order'      => 0,
             'entry_group_id' => $group->id,
-            'group_round' => 1,
+            'group_round'    => 1,
         ]);
 
         Passport::actingAs($user);
@@ -426,14 +426,14 @@ class EntryGroupTest extends TestCase
 
     public function test_standalone_entry_has_null_group_fields(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
-        $workout = Workout::factory()->create(['user_id' => $user->id]);
+        $workout  = Workout::factory()->create(['user_id' => $user->id]);
         $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
 
         $workout->entries()->create([
             'exercise_id' => $exercise->id,
-            'set_order' => 0,
+            'set_order'   => 0,
         ]);
 
         Passport::actingAs($user);

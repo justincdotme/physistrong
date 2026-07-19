@@ -7,11 +7,11 @@ use App\Models\User;
 use App\Models\Workout;
 use Laravel\Dusk\Browser;
 
-it('renders the workout detail page at desktop width', function () {
-    $user = User::factory()->create();
+it('renders the workout detail page at desktop width', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit("/workouts/{$workout->id}")
@@ -21,11 +21,11 @@ it('renders the workout detail page at desktop width', function () {
     });
 });
 
-it('renders the workout detail page at tablet width', function () {
-    $user = User::factory()->create();
+it('renders the workout detail page at tablet width', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit("/workouts/{$workout->id}")
@@ -35,11 +35,11 @@ it('renders the workout detail page at tablet width', function () {
     });
 });
 
-it('renders the workout detail page at phone width', function () {
-    $user = User::factory()->create();
+it('renders the workout detail page at phone width', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit("/workouts/{$workout->id}")
@@ -49,14 +49,14 @@ it('renders the workout detail page at phone width', function () {
     });
 });
 
-it('displays workout name', function () {
-    $user = User::factory()->create();
+it('displays workout name', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Leg Day Workout',
+        'name'    => 'Leg Day Workout',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@workout-detail-page')
@@ -65,11 +65,11 @@ it('displays workout name', function () {
     });
 });
 
-it('displays add exercise button', function () {
-    $user = User::factory()->create();
+it('displays add exercise button', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@add-exercise-btn')
@@ -78,8 +78,8 @@ it('displays add exercise button', function () {
     });
 });
 
-it('displays exercises attached to workout', function () {
-    $user = User::factory()->create();
+it('displays exercises attached to workout', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -88,18 +88,18 @@ it('displays exercises attached to workout', function () {
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
 
     $entry->loadMetric()->create([
-        'actual_weight' => 225,
+        'actual_weight'   => 225,
         'bodyweight_only' => false,
     ]);
     $entry->repMetric()->create([
         'actual_reps' => 5,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@exercise-section')
@@ -108,8 +108,8 @@ it('displays exercises attached to workout', function () {
     });
 });
 
-it('displays multiple exercises in workout', function () {
-    $user = User::factory()->create();
+it('displays multiple exercises in workout', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $squat = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -120,19 +120,19 @@ it('displays multiple exercises in workout', function () {
 
     $entry1 = $workout->entries()->create([
         'exercise_id' => $squat->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
     $entry1->loadMetric()->create([]);
     $entry1->repMetric()->create([]);
 
     $entry2 = $workout->entries()->create([
         'exercise_id' => $bench->id,
-        'set_order' => 1,
+        'set_order'   => 1,
     ]);
     $entry2->loadMetric()->create([]);
     $entry2->repMetric()->create([]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@exercise-section')
@@ -142,8 +142,8 @@ it('displays multiple exercises in workout', function () {
     });
 });
 
-it('displays entry rows with metric inputs for resistance exercises', function () {
-    $user = User::factory()->create();
+it('displays entry rows with metric inputs for resistance exercises', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -152,7 +152,7 @@ it('displays entry rows with metric inputs for resistance exercises', function (
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
 
     $entry->loadMetric()->create([
@@ -164,7 +164,7 @@ it('displays entry rows with metric inputs for resistance exercises', function (
         'actual_reps' => null,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@entry-row')
@@ -172,8 +172,8 @@ it('displays entry rows with metric inputs for resistance exercises', function (
     });
 });
 
-it('displays entry rows for timed hold exercises', function () {
-    $user = User::factory()->create();
+it('displays entry rows for timed hold exercises', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $exercise = Exercise::factory()->timedHold()->create(['name' => 'Plank Hold']);
@@ -182,14 +182,14 @@ it('displays entry rows for timed hold exercises', function () {
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
 
     $entry->durationMetric()->create([
         'target_duration_seconds' => 60,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@entry-row')
@@ -198,11 +198,11 @@ it('displays entry rows for timed hold exercises', function () {
     });
 });
 
-it('back button navigates to workouts list', function () {
-    $user = User::factory()->create();
+it('back button navigates to workouts list', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@workout-detail-page')
@@ -212,8 +212,8 @@ it('back button navigates to workouts list', function () {
     });
 });
 
-it('metric inputs are accessible at phone width', function () {
-    $user = User::factory()->create();
+it('metric inputs are accessible at phone width', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -222,13 +222,13 @@ it('metric inputs are accessible at phone width', function () {
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
 
     $entry->loadMetric()->create([]);
     $entry->repMetric()->create([]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit("/workouts/{$workout->id}")
@@ -238,8 +238,8 @@ it('metric inputs are accessible at phone width', function () {
     });
 });
 
-it('displays entry group for superset exercises', function () {
-    $user = User::factory()->create();
+it('displays entry group for superset exercises', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $squat = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -249,31 +249,31 @@ it('displays entry group for superset exercises', function () {
     $workout->exercises()->attach($bench->id, ['exercise_order' => 2]);
 
     $group = $workout->groups()->create([
-        'name' => 'Lower Power',
-        'planned_rounds' => 3,
+        'name'                           => 'Lower Power',
+        'planned_rounds'                 => 3,
         'rest_between_exercises_seconds' => 60,
-        'rest_between_rounds_seconds' => 180,
+        'rest_between_rounds_seconds'    => 180,
     ]);
 
     $entry1 = $workout->entries()->create([
-        'exercise_id' => $squat->id,
+        'exercise_id'    => $squat->id,
         'entry_group_id' => $group->id,
-        'group_round' => 1,
-        'set_order' => 0,
+        'group_round'    => 1,
+        'set_order'      => 0,
     ]);
     $entry1->loadMetric()->create([]);
     $entry1->repMetric()->create([]);
 
     $entry2 = $workout->entries()->create([
-        'exercise_id' => $bench->id,
+        'exercise_id'    => $bench->id,
         'entry_group_id' => $group->id,
-        'group_round' => 1,
-        'set_order' => 1,
+        'group_round'    => 1,
+        'set_order'      => 1,
     ]);
     $entry2->loadMetric()->create([]);
     $entry2->repMetric()->create([]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@entry-group')
@@ -282,15 +282,15 @@ it('displays entry group for superset exercises', function () {
     });
 });
 
-it('displays workout date', function () {
-    $user = User::factory()->create();
+it('displays workout date', function (): void {
+    $user     = User::factory()->create();
     $testDate = '2026-06-15';
-    $workout = Workout::factory()->create([
+    $workout  = Workout::factory()->create([
         'user_id' => $user->id,
-        'date' => $testDate,
+        'date'    => $testDate,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout, $testDate) {
+    $this->browse(function (Browser $browser) use ($user, $workout, $testDate): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@workout-detail-page')
@@ -298,8 +298,8 @@ it('displays workout date', function () {
     });
 });
 
-it('displays completion percentage', function () {
-    $user = User::factory()->create();
+it('displays completion percentage', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);
 
     $exercise = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
@@ -308,7 +308,7 @@ it('displays completion percentage', function () {
 
     $entry = $workout->entries()->create([
         'exercise_id' => $exercise->id,
-        'set_order' => 0,
+        'set_order'   => 0,
     ]);
 
     $entry->loadMetric()->create([
@@ -318,7 +318,7 @@ it('displays completion percentage', function () {
         'actual_reps' => 5,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit("/workouts/{$workout->id}")
             ->waitFor('@workout-detail-page')

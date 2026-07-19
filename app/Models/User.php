@@ -42,10 +42,10 @@ class User extends Authenticatable implements OAuthenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'  => 'datetime',
+            'password'           => 'hashed',
             'measurement_system' => MeasurementSystem::class,
-            'theme' => ThemePreference::class,
+            'theme'              => ThemePreference::class,
         ];
     }
 }

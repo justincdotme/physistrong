@@ -37,4 +37,14 @@ class AuthTokenCookieServiceTest extends TestCase
         $this->assertTrue($cookie->isSecure());
         $this->assertSame(Cookie::SAMESITE_LAX, $cookie->getSameSite());
     }
+
+    public function test_secure_flag_follows_session_config_for_http_deploys(): void
+    {
+        config(['session.secure' => false]);
+
+        $cookie = AuthTokenCookieService::issue('jwt-value', Carbon::parse('2026-08-02 12:00:00', 'UTC'));
+
+        $this->assertFalse($cookie->isSecure());
+        $this->assertTrue($cookie->isHttpOnly());
+    }
 }

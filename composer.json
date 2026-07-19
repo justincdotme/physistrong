@@ -23,7 +23,9 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.7",
         "pestphp/pest-plugin-laravel": "^4.1",
-        "phpunit/phpunit": "^12.5.12"
+        "phpunit/phpunit": "^12.5.12",
+        "slevomat/coding-standard": "^8.30",
+        "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -54,6 +56,20 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "lint": "vendor/bin/pint --test",
+        "lint:fix": "vendor/bin/pint",
+        "sniff": "vendor/bin/phpcs",
+        "sniff:fix": "vendor/bin/phpcbf",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "check": [
+            "@lint",
+            "@sniff",
+            "@analyse"
+        ],
+        "fix": [
+            "@lint:fix",
+            "@sniff:fix"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -83,6 +99,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }

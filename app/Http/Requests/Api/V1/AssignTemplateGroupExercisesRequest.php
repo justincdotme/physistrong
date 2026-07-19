@@ -13,7 +13,7 @@ class AssignTemplateGroupExercisesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'exercise_ids' => ['required', 'array', 'min:1'],
+            'exercise_ids'   => ['required', 'array', 'min:1'],
             'exercise_ids.*' => [
                 'required',
                 'integer',

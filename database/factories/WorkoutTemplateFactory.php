@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\User;
@@ -14,7 +16,7 @@ class WorkoutTemplateFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => fake()->words(3, true),
+            'name'    => fake()->words(3, true),
         ];
     }
 }

@@ -17,8 +17,15 @@ class ExerciseProgressController extends Controller
 {
     use AuthorizesRequests;
 
+    /** @param ExerciseProgressService $progressService */
     public function __construct(private ExerciseProgressService $progressService) {}
 
+    /**
+     * @param ExerciseProgressRequest $request
+     * @param Exercise                $exercise
+     *
+     * @return JsonResponse
+     */
     public function progress(ExerciseProgressRequest $request, Exercise $exercise): JsonResponse
     {
         $this->authorize('view', $exercise);
@@ -35,6 +42,12 @@ class ExerciseProgressController extends Controller
         return response()->json(['data' => $data], 200, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 
+    /**
+     * @param Request  $request
+     * @param Exercise $exercise
+     *
+     * @return JsonResponse
+     */
     public function records(Request $request, Exercise $exercise): JsonResponse
     {
         $this->authorize('view', $exercise);

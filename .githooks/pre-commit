@@ -2,6 +2,7 @@
 set -e
 
 vendor/bin/pint --test
+vendor/bin/phpcs
 vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
 APP_ENV=testing DB_CONNECTION=sqlite DB_DATABASE=:memory: \

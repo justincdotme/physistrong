@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogDurationMetric extends Model
 {
+    /** @var string */
     protected $table = 'log_duration_metrics';
 
     /** @var list<string> */

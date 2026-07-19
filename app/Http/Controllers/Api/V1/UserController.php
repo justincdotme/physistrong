@@ -11,11 +11,21 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * @param Request $request
+     *
+     * @return UserResource
+     */
     public function show(Request $request): UserResource
     {
         return new UserResource($request->user());
     }
 
+    /**
+     * @param UpdateUserRequest $request
+     *
+     * @return UserResource
+     */
     public function update(UpdateUserRequest $request): UserResource
     {
         $user = $request->user();

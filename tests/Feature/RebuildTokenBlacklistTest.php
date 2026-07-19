@@ -19,7 +19,7 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->freezeTime();
 
         $token = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => now()->addDays(15),
         ]);
 
@@ -33,7 +33,7 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->freezeTime();
 
         $token = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => now()->subMinute(),
         ]);
 
@@ -47,7 +47,7 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->freezeTime();
 
         $token = $this->createToken([
-            'revoked' => false,
+            'revoked'    => false,
             'expires_at' => now()->addDays(15),
         ]);
 
@@ -63,13 +63,13 @@ class RebuildTokenBlacklistTest extends TestCase
         $expiresAt = now()->addDays(10);
 
         $token = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => $expiresAt,
         ]);
 
         $this->artisan('auth:rebuild-token-blacklist')->assertSuccessful();
 
-        $key = 'auth:revoked-jti:'.$token->getKey();
+        $key = 'auth:revoked-jti:' . $token->getKey();
 
         $this->travelTo($expiresAt->copy()->subMinute());
         $this->assertTrue(Cache::has($key));
@@ -83,7 +83,7 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->freezeTime();
 
         $token = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => now()->addDays(15),
         ]);
 
@@ -98,17 +98,17 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->freezeTime();
 
         $revokedUnexpired = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => now()->addDays(15),
         ]);
 
         $revokedExpired = $this->createToken([
-            'revoked' => true,
+            'revoked'    => true,
             'expires_at' => now()->subDay(),
         ]);
 
         $activeUnexpired = $this->createToken([
-            'revoked' => false,
+            'revoked'    => false,
             'expires_at' => now()->addDays(15),
         ]);
 
@@ -120,13 +120,14 @@ class RebuildTokenBlacklistTest extends TestCase
         $this->assertFalse($blacklist->has($activeUnexpired->getKey()));
     }
 
+    /** @param array<string, mixed> $attributes */
     private function createToken(array $attributes): Token
     {
         return Token::forceCreate([
-            'id' => fake()->uuid(),
-            'user_id' => 1,
-            'client_id' => fake()->uuid(),
-            'revoked' => $attributes['revoked'],
+            'id'         => fake()->uuid(),
+            'user_id'    => 1,
+            'client_id'  => fake()->uuid(),
+            'revoked'    => $attributes['revoked'],
             'expires_at' => $attributes['expires_at'],
         ]);
     }

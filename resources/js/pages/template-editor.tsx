@@ -14,6 +14,7 @@ import {
   deleteTemplateGroup,
   assignExercisesToGroup,
 } from '@/api/templates'
+import { exerciseQueries } from '@/api/exercises'
 import { equipmentQueries } from '@/api/equipment'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
@@ -98,6 +99,7 @@ export function TemplateEditorPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise added.')
     },
     onError: () => toast('Could not add exercise. Try again.', 'error'),
@@ -109,6 +111,7 @@ export function TemplateEditorPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
     },
     onError: () => toast('Could not remove exercise. Try again.', 'error'),
   })
@@ -447,7 +450,10 @@ export function TemplateEditorPage() {
         title="Delete template?"
         message={`"${tpl.name}" will be removed.`}
         onCancel={() => setConfirmDeleteOpen(false)}
-        onConfirm={() => deleteMutation.mutate()}
+        onConfirm={() => {
+          setConfirmDeleteOpen(false)
+          deleteMutation.mutate()
+        }}
       />
       <GroupConfigSheet
         open={groupSheetOpen}

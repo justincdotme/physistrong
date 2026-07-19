@@ -50,6 +50,7 @@ export function ExerciseDetailPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise updated.')
     },
     onError: () => {
@@ -64,6 +65,7 @@ export function ExerciseDetailPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise deleted.')
       navigate('/exercises')
     },

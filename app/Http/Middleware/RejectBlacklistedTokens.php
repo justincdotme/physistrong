@@ -13,9 +13,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RejectBlacklistedTokens
 {
+    /**
+     * @param TokenBlacklistService $blacklist
+     */
     public function __construct(private TokenBlacklistService $blacklist) {}
 
     /**
+     * @param Request $request
+     * @param Closure $next
+     *
+     * @return Response
+     *
      * @throws AuthenticationException
      */
     public function handle(Request $request, Closure $next): Response
@@ -25,7 +33,7 @@ class RejectBlacklistedTokens
         $jti = $token instanceof AccessToken ? $token->oauth_access_token_id : null;
 
         if (is_string($jti) && $this->blacklist->has($jti)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException;
         }
 
         return $next($request);

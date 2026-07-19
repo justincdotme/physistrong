@@ -6,11 +6,11 @@ use App\Models\User;
 use App\Models\WorkoutTemplate;
 use Laravel\Dusk\Browser;
 
-it('renders the template editor page at desktop width', function () {
-    $user = User::factory()->create();
+it('renders the template editor page at desktop width', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create();
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit("/templates/{$template->id}")
@@ -22,11 +22,11 @@ it('renders the template editor page at desktop width', function () {
     });
 });
 
-it('renders the template editor page at tablet width', function () {
-    $user = User::factory()->create();
+it('renders the template editor page at tablet width', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create();
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit("/templates/{$template->id}")
@@ -38,11 +38,11 @@ it('renders the template editor page at tablet width', function () {
     });
 });
 
-it('renders the template editor page at phone width', function () {
-    $user = User::factory()->create();
+it('renders the template editor page at phone width', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create();
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit("/templates/{$template->id}")
@@ -54,11 +54,11 @@ it('renders the template editor page at phone width', function () {
     });
 });
 
-it('displays template name inline edit control', function () {
-    $user = User::factory()->create();
+it('displays template name inline edit control', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create(['name' => 'Upper Body']);
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->visit("/templates/{$template->id}")
             ->waitFor('@template-name')
@@ -67,11 +67,11 @@ it('displays template name inline edit control', function () {
     });
 });
 
-it('displays add exercise button', function () {
-    $user = User::factory()->create();
+it('displays add exercise button', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create();
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->visit("/templates/{$template->id}")
             ->waitFor('@add-template-exercise-btn')
@@ -80,11 +80,11 @@ it('displays add exercise button', function () {
     });
 });
 
-it('displays empty state when no exercises', function () {
-    $user = User::factory()->create();
+it('displays empty state when no exercises', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->for($user)->create();
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->visit("/templates/{$template->id}")
             ->waitFor('@template-editor-page')

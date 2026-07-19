@@ -23,7 +23,7 @@ class CookieAuthenticationTest extends TestCase
 
     public function test_authenticates_with_only_the_token_cookie(): void
     {
-        $user = User::factory()->create();
+        $user  = User::factory()->create();
         $token = $user->createToken('auth')->accessToken;
 
         $this->withCredentials()
@@ -62,7 +62,7 @@ class CookieAuthenticationTest extends TestCase
     public function test_logout_expires_the_cookie_and_rejects_the_replayed_token(): void
     {
         User::factory()->create([
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
 

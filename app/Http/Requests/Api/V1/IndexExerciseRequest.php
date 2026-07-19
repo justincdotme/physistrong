@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 
 class IndexExerciseRequest extends FormRequest
 {
+    /** @return boolean */
     public function authorize(): bool
     {
         return true;
@@ -19,9 +20,9 @@ class IndexExerciseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['sometimes', Rule::enum(ExerciseType::class)],
+            'type'              => ['sometimes', Rule::enum(ExerciseType::class)],
             'equipment_type_id' => ['sometimes', 'integer'],
-            'search' => ['sometimes', 'string', 'max:255'],
+            'search'            => ['sometimes', 'string', 'max:255'],
         ];
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExerciseInterval extends Model
 {
+    /** @var string */
     protected $table = 'exercise_interval';
 
     /** @var list<string> */

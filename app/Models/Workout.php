@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\LocksForReorder;
+use App\Models\Pivots\ExerciseWorkoutPivot;
+use Database\Factories\WorkoutFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Pivots\ExerciseWorkoutPivot;
-use Database\Factories\WorkoutFactory;
 use Illuminate\Support\Carbon;
 
 /** @property Carbon $date */
@@ -31,14 +31,18 @@ class Workout extends Model
         'soreness',
     ];
 
-    /** @return array<string, string> */
-    protected function casts(): array
+    /** @return list<string> */
+    public static function detailRelations(): array
     {
-        return [
-            'date' => 'date',
-            'exhaustion' => 'integer',
-            'soreness' => 'integer',
-        ];
+        $entryMetrics = array_map(
+            fn (string $r) => "entries.{$r}",
+            WorkoutEntry::metricRelations(),
+        );
+
+        return array_merge(
+            ['exercises', 'groups', 'entries.exercise'],
+            $entryMetrics,
+        );
     }
 
     /** @return BelongsTo<User, $this> */
@@ -68,17 +72,13 @@ class Workout extends Model
         return $this->hasMany(EntryGroup::class);
     }
 
-    /** @return list<string> */
-    public static function detailRelations(): array
+    /** @return array<string, string> */
+    protected function casts(): array
     {
-        $entryMetrics = array_map(
-            fn (string $r) => "entries.{$r}",
-            WorkoutEntry::metricRelations()
-        );
-
-        return array_merge(
-            ['exercises', 'groups', 'entries.exercise'],
-            $entryMetrics
-        );
+        return [
+            'date'       => 'date',
+            'exhaustion' => 'integer',
+            'soreness'   => 'integer',
+        ];
     }
 }

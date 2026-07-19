@@ -21,9 +21,10 @@ import type { Workout, WorkoutEntry, WorkoutListItem } from './types'
  */
 export const workoutQueries = {
   base: ['workouts'] as const,
+  lists: ['workouts', 'list'] as const,
   list: () =>
     infiniteQueryOptions({
-      queryKey: ['workouts'] as const,
+      queryKey: ['workouts', 'list'] as const,
       queryFn: ({ pageParam }) => listWorkouts(pageParam),
       getNextPageParam: (last: PaginatedResponse) => last.nextPage,
       initialPageParam: 1,
@@ -35,7 +36,7 @@ export const workoutQueries = {
     }),
   picker: () =>
     queryOptions({
-      queryKey: ['workouts', 'picker'] as const,
+      queryKey: ['workouts', 'list', 'picker'] as const,
       queryFn: () => listWorkouts(1),
     }),
 }

@@ -19,7 +19,7 @@ trait CreatesPassportToken
     protected function loginAndReadTokenCookie(string $email, string $password): string
     {
         $cookie = $this->postJson('/api/v1/login', [
-            'email' => $email,
+            'email'    => $email,
             'password' => $password,
         ])->getCookie(AuthTokenCookieService::NAME, decrypt: false);
 
