@@ -1,10 +1,10 @@
 import { type FormEvent, type ReactNode, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { isAxiosError } from 'axios'
 import { Button } from '@/components/ui/button'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { useAuth } from '@/hooks/use-auth'
 import { login, register, forgotPassword, resetPassword } from '@/api/auth'
+import { extractFieldErrors, extractMessage } from '@/api/errors'
 
 interface AuthLayoutProps {
   title: string
@@ -62,7 +62,7 @@ export function Field({
 }: FieldProps) {
   return (
     <label className="block">
-      <span className="label-caps text-text-secondary block mb-1.5">{label}</span>
+      <span className="form-label">{label}</span>
       <input
         type={type}
         name={name}
@@ -75,25 +75,6 @@ export function Field({
       {error && <p className="text-destructive text-xs mt-1">{error}</p>}
     </label>
   )
-}
-
-function extractFieldErrors(error: unknown): Record<string, string> {
-  if (!isAxiosError(error) || error.response?.status !== 422) return {}
-  const fieldErrors = error.response.data?.errors as Record<string, string[]> | undefined
-  if (!fieldErrors) return {}
-  const result: Record<string, string> = {}
-  for (const [key, messages] of Object.entries(fieldErrors)) {
-    const first = messages[0]
-    if (first) result[key] = first
-  }
-  return result
-}
-
-function extractMessage(error: unknown): string {
-  if (isAxiosError(error) && error.response?.data?.message) {
-    return error.response.data.message as string
-  }
-  return 'Something went wrong. Try again.'
 }
 
 export function LoginPage() {

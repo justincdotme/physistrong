@@ -12,10 +12,10 @@ class StoreTemplateEntryGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'planned_rounds' => ['sometimes', 'integer', 'min:1'],
+            'name'                           => ['sometimes', 'nullable', 'string', 'max:255'],
+            'planned_rounds'                 => ['sometimes', 'integer', 'min:1'],
             'rest_between_exercises_seconds' => ['sometimes', 'integer', 'min:0'],
-            'rest_between_rounds_seconds' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'rest_between_rounds_seconds'    => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 }

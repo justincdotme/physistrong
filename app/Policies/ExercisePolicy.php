@@ -10,21 +10,23 @@ use Illuminate\Auth\Access\Response;
 
 class ExercisePolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
+    /**
+     * @param User     $user
+     * @param Exercise $exercise
+     *
+     * @return boolean
+     */
     public function view(User $user, Exercise $exercise): bool
     {
         return $exercise->isVisibleTo($user);
     }
 
-    public function create(User $user): bool
-    {
-        return true;
-    }
-
+    /**
+     * @param User     $user
+     * @param Exercise $exercise
+     *
+     * @return Response
+     */
     public function update(User $user, Exercise $exercise): Response
     {
         if ($exercise->user_id === null) {
@@ -36,6 +38,12 @@ class ExercisePolicy
             : Response::deny();
     }
 
+    /**
+     * @param User     $user
+     * @param Exercise $exercise
+     *
+     * @return Response
+     */
     public function delete(User $user, Exercise $exercise): Response
     {
         if ($exercise->user_id === null) {

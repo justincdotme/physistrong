@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -37,7 +39,7 @@ return [
     | Passport Database Connection
     |--------------------------------------------------------------------------
     |
-    | By default, Passport's models will utilize your application's default
+    | By default, Passport's models will use your application's default
     | database connection. If you wish to use a different connection you
     | may specify the configured name of the database connection here.
     |

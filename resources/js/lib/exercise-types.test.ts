@@ -1,31 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { EXERCISE_TYPES, METRIC_DISPLAY } from './exercise-types'
-import type { Exercise, ExerciseType } from '@/api/types'
-
-const sample = (type: ExerciseType): Exercise => ({
-  id: '1',
-  userId: null,
-  name: 'sample',
-  type,
-  equipmentTypeId: null,
-  notes: null,
-  usageCount: 0,
-  hasLoggedData: false,
-})
-
-describe('EXERCISE_TYPES defaultEntryMetrics stays within allowedMetrics', () => {
-  it.each(Object.keys(EXERCISE_TYPES) as ExerciseType[])(
-    'default payload keys for %s stay within the allowed metrics the backend accepts',
-    type => {
-      const cfg = EXERCISE_TYPES[type]
-      const allowed = new Set<string>([...cfg.metrics.required, ...cfg.metrics.optional])
-      const metrics = cfg.defaultEntryMetrics(sample(type)) as Record<string, unknown>
-      for (const key of Object.keys(metrics)) {
-        expect(allowed.has(key), `${type} default emits disallowed metric "${key}"`).toBe(true)
-      }
-    }
-  )
-})
+import { METRIC_DISPLAY, buildTypeAttributes } from './exercise-types'
+import type { ExerciseType } from '@/api/types'
 
 describe('METRIC_DISPLAY', () => {
   it('labels reps (not weight) when the API resolves primary_metric to reps', () => {
@@ -37,5 +12,116 @@ describe('METRIC_DISPLAY', () => {
   it('labels weight for weighted resistance', () => {
     expect(METRIC_DISPLAY.weight.unit('imperial')).toBe('lb')
     expect(METRIC_DISPLAY.weight.unit('metric')).toBe('kg')
+  })
+})
+
+interface CreateFormState {
+  type: ExerciseType
+  bodyweight: boolean
+  addedWeight: boolean
+  bilateral: boolean
+  targetDurationSeconds: string
+  defaultWorkSeconds: string
+  defaultRestSeconds: string
+  defaultRounds: string
+}
+
+describe('buildTypeAttributes', () => {
+  it('builds resistance attributes from form state', () => {
+    const form: CreateFormState = {
+      type: 'resistance',
+      bodyweight: true,
+      addedWeight: false,
+      bilateral: true,
+      targetDurationSeconds: '',
+      defaultWorkSeconds: '',
+      defaultRestSeconds: '',
+      defaultRounds: '',
+    }
+    const result = buildTypeAttributes('resistance', form)
+    expect(result).toEqual({
+      bodyweight_base: true,
+      allows_added_weight: false,
+      bilateral: true,
+    })
+  })
+
+  it('builds timed_hold attributes with target duration', () => {
+    const form: CreateFormState = {
+      type: 'timed_hold',
+      bodyweight: false,
+      addedWeight: true,
+      bilateral: true,
+      targetDurationSeconds: '90',
+      defaultWorkSeconds: '',
+      defaultRestSeconds: '',
+      defaultRounds: '',
+    }
+    const result = buildTypeAttributes('timed_hold', form)
+    expect(result).toEqual({ target_duration_seconds: 90 })
+  })
+
+  it('builds timed_hold attributes without target duration when empty', () => {
+    const form: CreateFormState = {
+      type: 'timed_hold',
+      bodyweight: false,
+      addedWeight: true,
+      bilateral: true,
+      targetDurationSeconds: '',
+      defaultWorkSeconds: '',
+      defaultRestSeconds: '',
+      defaultRounds: '',
+    }
+    const result = buildTypeAttributes('timed_hold', form)
+    expect(result).toEqual({})
+  })
+
+  it('builds distance attributes as empty object', () => {
+    const form: CreateFormState = {
+      type: 'distance',
+      bodyweight: false,
+      addedWeight: true,
+      bilateral: true,
+      targetDurationSeconds: '',
+      defaultWorkSeconds: '',
+      defaultRestSeconds: '',
+      defaultRounds: '',
+    }
+    const result = buildTypeAttributes('distance', form)
+    expect(result).toEqual({})
+  })
+
+  it('builds interval attributes with all fields', () => {
+    const form: CreateFormState = {
+      type: 'interval',
+      bodyweight: false,
+      addedWeight: true,
+      bilateral: true,
+      targetDurationSeconds: '',
+      defaultWorkSeconds: '45',
+      defaultRestSeconds: '15',
+      defaultRounds: '10',
+    }
+    const result = buildTypeAttributes('interval', form)
+    expect(result).toEqual({
+      default_work_seconds: 45,
+      default_rest_seconds: 15,
+      default_rounds: 10,
+    })
+  })
+
+  it('builds interval attributes with partial fields', () => {
+    const form: CreateFormState = {
+      type: 'interval',
+      bodyweight: false,
+      addedWeight: true,
+      bilateral: true,
+      targetDurationSeconds: '',
+      defaultWorkSeconds: '30',
+      defaultRestSeconds: '',
+      defaultRounds: '',
+    }
+    const result = buildTypeAttributes('interval', form)
+    expect(result).toEqual({ default_work_seconds: 30 })
   })
 })

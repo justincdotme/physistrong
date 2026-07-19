@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash2, Plus, Route, Check } from 'lucide-react'
 import type { WorkoutTemplate, TemplateExercise, TemplateEntryGroup } from '@/api/types'
 import {
-  getTemplate,
+  templateQueries,
   updateTemplate as updateTemplateApi,
   deleteTemplate as deleteTemplateApi,
   attachExercise as attachExerciseApi,
@@ -14,12 +14,18 @@ import {
   deleteTemplateGroup,
   assignExercisesToGroup,
 } from '@/api/templates'
-import { listEquipment } from '@/api/equipment'
+import { exerciseQueries } from '@/api/exercises'
+import { equipmentQueries } from '@/api/equipment'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import { formatDuration } from '@/lib/formatters'
 import type { Exercise } from '@/api/types'
-import { PageHeader, Button, Card, TypeBadge, InlineEdit, ConfirmDialog } from '@/components/ui'
+import { PageHeader } from '@/components/ui/page-header'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { TypeBadge } from '@/components/ui/type-badge'
+import { InlineEdit } from '@/components/ui/inline-edit'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { ReorderList } from '@/components/app/reorderable'
 import { ExercisePicker, GroupConfigSheet } from '@/components/app/pickers'
 import { GroupSelectBanner } from '@/components/app/group-select-banner'
@@ -37,7 +43,7 @@ function buildBlocks(tpl: WorkoutTemplate): TemplateBlock[] {
   tpl.exercises.forEach(te =>
     blocks.push({
       kind: 'exercise',
-      id: `b-${te.id}`,
+      id: `b-${te.exerciseId}`,
       te,
       order: te.exerciseOrder,
     })
@@ -60,56 +66,68 @@ export function TemplateEditorPage() {
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
+  const [deleted, setDeleted] = useState(false)
 
   const { data: tpl, isLoading } = useQuery({
-    queryKey: ['templates', templateId],
-    queryFn: () => getTemplate(templateId ?? ''),
-    enabled: !!templateId,
+    ...templateQueries.detail(templateId ?? ''),
+    enabled: !!templateId && !deleted,
   })
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const updateNameMutation = useMutation({
     mutationFn: ({ name }: { name: string }) => updateTemplateApi(templateId ?? '', { name }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
     },
+    onError: () => toast('Could not rename template. Try again.', 'error'),
   })
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteTemplateApi(templateId ?? ''),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      setDeleted(true)
+      queryClient.removeQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
       toast('Template deleted.')
       navigate('/workouts')
     },
+    onError: () => toast('Could not delete template. Try again.', 'error'),
   })
 
   const attachMutation = useMutation({
     mutationFn: ({ exerciseId }: { exerciseId: string }) =>
       attachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       toast('Exercise added.')
     },
+    onError: () => toast('Could not add exercise. Try again.', 'error'),
   })
 
   const detachMutation = useMutation({
     mutationFn: ({ exerciseId }: { exerciseId: string }) =>
       detachExerciseApi(templateId ?? '', exerciseId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
     },
+    onError: () => toast('Could not remove exercise. Try again.', 'error'),
   })
 
   const reorderMutation = useMutation({
     mutationFn: ({ ids }: { ids: string[] }) => reorderExercisesApi(templateId ?? '', ids),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
+    },
+    onError: () => {
+      toast('Could not reorder exercises. Try again.', 'error')
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
     },
   })
 
@@ -143,7 +161,7 @@ export function TemplateEditorPage() {
       return assignExercisesToGroup(templateId ?? '', newGroup.id, exerciseIds)
     },
     onSuccess: data => {
-      queryClient.setQueryData(['templates', templateId], data)
+      queryClient.setQueryData(templateQueries.detail(templateId ?? '').queryKey, data)
       setSelectMode(false)
       setSelected([])
       toast('Group created.')
@@ -154,7 +172,8 @@ export function TemplateEditorPage() {
   const ungroupMutation = useMutation({
     mutationFn: (groupId: string) => deleteTemplateGroup(templateId ?? '', groupId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates', templateId] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base, exact: true })
       toast('Group removed.')
     },
     onError: () => toast('Could not ungroup. Try again.', 'error'),
@@ -326,7 +345,7 @@ export function TemplateEditorPage() {
                     </div>
                     <div className="flex flex-col gap-2.5">
                       {g.exercises.map(te => (
-                        <div key={te.id} className="flex items-center gap-2">
+                        <div key={te.exerciseId} className="flex items-center gap-2">
                           <div className="min-w-0 flex-1">
                             <div className="font-semibold text-sm truncate">{te.name}</div>
                             <div className="text-[12px] text-text-secondary">
@@ -434,7 +453,10 @@ export function TemplateEditorPage() {
         title="Delete template?"
         message={`"${tpl.name}" will be removed.`}
         onCancel={() => setConfirmDeleteOpen(false)}
-        onConfirm={() => deleteMutation.mutate()}
+        onConfirm={() => {
+          setConfirmDeleteOpen(false)
+          deleteMutation.mutate()
+        }}
       />
       <GroupConfigSheet
         open={groupSheetOpen}

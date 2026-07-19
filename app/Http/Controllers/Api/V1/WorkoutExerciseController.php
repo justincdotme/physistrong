@@ -19,6 +19,12 @@ class WorkoutExerciseController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * @param AttachExerciseRequest $request
+     * @param Workout               $workout
+     *
+     * @return JsonResponse
+     */
     public function attach(AttachExerciseRequest $request, Workout $workout): JsonResponse
     {
         $this->authorize('update', $workout);
@@ -26,9 +32,7 @@ class WorkoutExerciseController extends Controller
         $exerciseId = $request->validated('exercise_id');
 
         $attached = DB::transaction(function () use ($workout, $exerciseId): bool {
-            // Discarded read: holding the parent row serializes concurrent
-            // attach/reorder so two attaches cannot compute the same max order.
-            Workout::whereKey($workout->id)->lockForUpdate()->first();
+            Workout::whereKeyLocked($workout->id)->first();
 
             if ($workout->exercises()->where('exercises.id', $exerciseId)->exists()) {
                 return false;
@@ -55,24 +59,39 @@ class WorkoutExerciseController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param Workout  $workout
+     * @param Exercise $exercise
+     *
+     * @return Response
+     */
     public function detach(Workout $workout, Exercise $exercise): Response
     {
         $this->authorize('update', $workout);
 
-        $workout->entries()->where('exercise_id', $exercise->id)->delete();
-        $workout->exercises()->detach($exercise->id);
+        DB::transaction(function () use ($workout, $exercise): void {
+            $workout->entries()->where('exercise_id', $exercise->id)->delete();
+            $workout->exercises()->detach($exercise->id);
+        });
 
         return response()->noContent();
     }
 
+    /**
+     * @param ReorderWorkoutExercisesRequest $request
+     * @param Workout                        $workout
+     *
+     * @return WorkoutResource
+     */
     public function reorder(ReorderWorkoutExercisesRequest $request, Workout $workout): WorkoutResource
     {
         $this->authorize('update', $workout);
 
-        DB::transaction(function () use ($request, $workout) {
-            Workout::whereKey($workout->id)->lockForUpdate()->first();
+        DB::transaction(function () use ($request, $workout): void {
+            Workout::whereKeyLocked($workout->id)->first();
 
             $ids = $request->validated('ids');
+
             foreach ($ids as $index => $id) {
                 $workout->exercises()->updateExistingPivot($id, ['exercise_order' => $index]);
             }

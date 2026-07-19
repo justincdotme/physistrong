@@ -26,35 +26,22 @@ class RegisterTest extends TestCase
         $this->setUpPassport();
     }
 
-    /** @return array<string, mixed> */
-    private function validPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'email' => 'new@example.com',
-            'password' => 'secret123',
-            'password_confirmation' => 'secret123',
-            'measurement_system' => 'imperial',
-            'first_name' => 'Jane',
-            'last_name' => 'Doe',
-        ], $overrides);
-    }
-
     public function test_registers_user_and_sets_the_token_cookie(): void
     {
         $response = $this->postJson('/api/v1/register', $this->validPayload());
 
         $response->assertStatus(201)
             ->assertJsonStructure([
-                'user' => ['id', 'email', 'first_name', 'last_name', 'measurement_system', 'theme'],
+                'data' => ['id', 'email', 'first_name', 'last_name', 'measurement_system', 'theme'],
             ])
             ->assertJsonMissingPath('token');
 
         $this->assertIssuesAuthTokenCookie($response);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'new@example.com',
+            'email'      => 'new@example.com',
             'first_name' => 'Jane',
-            'last_name' => 'Doe',
+            'last_name'  => 'Doe',
         ]);
 
         $user = User::where('email', 'new@example.com')->first();
@@ -98,7 +85,7 @@ class RegisterTest extends TestCase
     public function test_password_minimum_length(): void
     {
         $this->postJson('/api/v1/register', $this->validPayload([
-            'password' => 'short',
+            'password'              => 'short',
             'password_confirmation' => 'short',
         ]))->assertStatus(422)
             ->assertJsonValidationErrors('password');
@@ -118,7 +105,7 @@ class RegisterTest extends TestCase
     {
         $response = $this->postJson('/api/v1/register', $this->validPayload([
             'first_name' => null,
-            'last_name' => null,
+            'last_name'  => null,
         ]));
 
         $response->assertStatus(201);
@@ -142,5 +129,22 @@ class RegisterTest extends TestCase
         }
 
         $this->postJson('/api/v1/register', [])->assertStatus(429);
+    }
+
+    /**
+     * @param array<string, mixed> $overrides
+     *
+     * @return array<string, mixed>
+     */
+    private function validPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'email'                 => 'new@example.com',
+            'password'              => 'secret123',
+            'password_confirmation' => 'secret123',
+            'measurement_system'    => 'imperial',
+            'first_name'            => 'Jane',
+            'last_name'             => 'Doe',
+        ], $overrides);
     }
 }

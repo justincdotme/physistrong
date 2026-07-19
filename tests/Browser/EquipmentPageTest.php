@@ -5,10 +5,10 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
-it('renders and tests equipment page', function () {
+it('renders and tests equipment page', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
 
         // Desktop
@@ -41,10 +41,10 @@ it('renders and tests equipment page', function () {
     });
 });
 
-it('disables delete button for system equipment types', function () {
+it('disables delete button for system equipment types', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/equipment')
             ->waitFor('@equipment-page')

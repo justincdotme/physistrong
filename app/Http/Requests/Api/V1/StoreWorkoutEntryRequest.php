@@ -22,18 +22,19 @@ class StoreWorkoutEntryRequest extends FormRequest
                 'required',
                 Rule::exists('exercises', 'id')->where(Exercise::visibilityConstraint($this->user())),
             ],
-            'set_order' => ['required', 'integer', 'min:0'],
-            'notes' => ['sometimes', 'nullable', 'string'],
+            'set_order'      => ['required', 'integer', 'min:0'],
+            'notes'          => ['sometimes', 'nullable', 'string'],
             'entry_group_id' => [
                 'sometimes',
                 'nullable',
                 Rule::exists('entry_groups', 'id')->where('workout_id', $this->route('workout')->id),
             ],
             'group_round' => ['sometimes', 'nullable', 'integer', 'min:1'],
-            'metrics' => ['sometimes', 'array'],
+            'metrics'     => ['sometimes', 'array'],
         ], $this->metricRules());
     }
 
+    /** @return ExerciseType|null */
     protected function metricExerciseType(): ?ExerciseType
     {
         return Exercise::find($this->input('exercise_id'))?->type;

@@ -18,6 +18,7 @@ services:
       start_period: 20s
     networks:
       - app-network
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
@@ -29,6 +30,7 @@ services:
       start_period: 5s
     networks:
       - app-network
+    restart: unless-stopped
 
   # PHP services read all Laravel configuration from the bind-mounted .env. Do
   # not add config as `environment:` here: OS-level env vars override .env and
@@ -65,6 +67,7 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    restart: unless-stopped
 
   worker:
     build:
@@ -84,6 +87,7 @@ services:
         condition: service_started
     networks:
       - app-network
+    restart: unless-stopped
 
   scheduler:
     build:
@@ -103,6 +107,7 @@ services:
         condition: service_started
     networks:
       - app-network
+    restart: unless-stopped
 
   nginx:
     build:
@@ -110,16 +115,19 @@ services:
       dockerfile: docker/nginx/Dockerfile
     environment:
       SERVER_NAME: ${NGINX_SERVER_NAME:-_}
+      TLS_CERT_FILE: ${TLS_CERT_FILE:-dev.crt}
+      TLS_KEY_FILE: ${TLS_KEY_FILE:-dev.key}
     ports:
       - "${NGINX_HTTP_PORT:-80}:80"
       - "${NGINX_HTTPS_PORT:-443}:443"
     volumes:
       - .:/var/www/html
-      - ./docker/nginx/certs:/etc/nginx/certs:ro
+      - ${TLS_CERTS_DIR:-./docker/nginx/certs}:/etc/nginx/certs:ro
     depends_on:
       - app
     networks:
       - app-network
+    restart: unless-stopped
 
   selenium:
     image: selenium/standalone-chrome:latest

@@ -1,14 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import type { WorkoutEntry, Workout, EquipmentType, Exercise } from '@/api/types'
-import {
-  entryHasActual,
-  workoutCompletion,
-  equipmentName,
-  exerciseUsageCount,
-  equipmentUsageCount,
-  bestWeight,
-  groupRoundProgress,
-} from './domain'
+import type { WorkoutEntry, Workout, EquipmentType } from '@/api/types'
+import { entryHasActual, workoutCompletion, equipmentName, groupRoundProgress } from './domain'
 
 describe('entryHasActual', () => {
   it.each([
@@ -168,7 +160,6 @@ describe('workoutCompletion', () => {
       'empty entries array',
       {
         id: 'w1',
-        userId: 'u1',
         name: 'Test',
         date: '2026-06-30',
         exhaustion: null,
@@ -186,7 +177,6 @@ describe('workoutCompletion', () => {
   it('returns 0 when no entries have actual values', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -220,7 +210,6 @@ describe('workoutCompletion', () => {
   it('returns 1 when all entries have actual values', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -256,7 +245,6 @@ describe('workoutCompletion', () => {
   it('calculates partial completion ratio correctly', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -300,7 +288,6 @@ describe('workoutCompletion', () => {
   it('handles 2 of 4 entries completed (0.5)', () => {
     const workout: Workout = {
       id: 'w1',
-      userId: 'u1',
       name: 'Test',
       date: '2026-06-30',
       exhaustion: null,
@@ -378,590 +365,6 @@ describe('equipmentName', () => {
 
   it('returns empty string when equipment array is empty and id provided', () => {
     expect(equipmentName([], 'eq1')).toBe('')
-  })
-})
-
-describe('exerciseUsageCount', () => {
-  it('returns 0 when exercise not used in any workout', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(exerciseUsageCount(workouts, 'e2')).toBe(0)
-  })
-
-  it('counts workout containing the exercise', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(exerciseUsageCount(workouts, 'e1')).toBe(1)
-  })
-
-  it('does not double-count if exercise appears multiple times in one workout', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-          {
-            id: '2',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 2,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(exerciseUsageCount(workouts, 'e1')).toBe(1)
-  })
-
-  it('counts across multiple workouts', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-      {
-        id: 'w2',
-        userId: 'u1',
-        name: 'Workout 2',
-        date: '2026-06-29',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '2',
-            workoutId: 'w2',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-      {
-        id: 'w3',
-        userId: 'u1',
-        name: 'Workout 3',
-        date: '2026-06-28',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '3',
-            workoutId: 'w3',
-            exerciseId: 'e2',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(exerciseUsageCount(workouts, 'e1')).toBe(2)
-    expect(exerciseUsageCount(workouts, 'e2')).toBe(1)
-  })
-})
-
-describe('equipmentUsageCount', () => {
-  it('returns 0 when no exercises use the equipment', () => {
-    const exercises: Exercise[] = [
-      {
-        id: 'e1',
-        userId: 'u1',
-        name: 'Bench Press',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-    ]
-    expect(equipmentUsageCount(exercises, 'eq2')).toBe(0)
-  })
-
-  it('counts exercises using the equipment', () => {
-    const exercises: Exercise[] = [
-      {
-        id: 'e1',
-        userId: 'u1',
-        name: 'Bench Press',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-      {
-        id: 'e2',
-        userId: 'u1',
-        name: 'Dumbbell Curl',
-        type: 'resistance',
-        equipmentTypeId: 'eq2',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-    ]
-    expect(equipmentUsageCount(exercises, 'eq1')).toBe(1)
-    expect(equipmentUsageCount(exercises, 'eq2')).toBe(1)
-  })
-
-  it('counts multiple exercises using the same equipment', () => {
-    const exercises: Exercise[] = [
-      {
-        id: 'e1',
-        userId: 'u1',
-        name: 'Dumbbell Curl',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-      {
-        id: 'e2',
-        userId: 'u1',
-        name: 'Dumbbell Press',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-      {
-        id: 'e3',
-        userId: 'u1',
-        name: 'Dumbbell Flye',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-    ]
-    expect(equipmentUsageCount(exercises, 'eq1')).toBe(3)
-  })
-
-  it('ignores bodyweight exercises with null equipmentTypeId', () => {
-    const exercises: Exercise[] = [
-      {
-        id: 'e1',
-        userId: 'u1',
-        name: 'Push-up',
-        type: 'resistance',
-        equipmentTypeId: null,
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-      {
-        id: 'e2',
-        userId: 'u1',
-        name: 'Dumbbell Curl',
-        type: 'resistance',
-        equipmentTypeId: 'eq1',
-        notes: null,
-        usageCount: 0,
-        hasLoggedData: false,
-      },
-    ]
-    expect(equipmentUsageCount(exercises, 'eq1')).toBe(1)
-  })
-})
-
-describe('bestWeight', () => {
-  it('returns null when no workouts', () => {
-    expect(bestWeight([], 'e1')).toBe(null)
-  })
-
-  it('returns null when exercise not found in any workout', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e2')).toBe(null)
-  })
-
-  it('returns null when exercise found but has no load metric', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            durationMetric: { actualDurationSeconds: 60, targetDurationSeconds: null },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(null)
-  })
-
-  it('returns null when exercise has load metric but no actual weight', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: null, targetWeight: 185, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(null)
-  })
-
-  it('returns the weight from single entry', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(185)
-  })
-
-  it('returns maximum weight from multiple entries in one workout', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185, targetWeight: null, bodyweightOnly: false },
-          },
-          {
-            id: '2',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 2,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 195, targetWeight: null, bodyweightOnly: false },
-          },
-          {
-            id: '3',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 3,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 190, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(195)
-  })
-
-  it('returns maximum weight across multiple workouts', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-      {
-        id: 'w2',
-        userId: 'u1',
-        name: 'Workout 2',
-        date: '2026-06-29',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '2',
-            workoutId: 'w2',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 205, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-      {
-        id: 'w3',
-        userId: 'u1',
-        name: 'Workout 3',
-        date: '2026-06-28',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '3',
-            workoutId: 'w3',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 195, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(205)
-  })
-
-  it('ignores entries for different exercises', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185, targetWeight: null, bodyweightOnly: false },
-          },
-          {
-            id: '2',
-            workoutId: 'w1',
-            exerciseId: 'e2',
-            setOrder: 2,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 95, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(185)
-    expect(bestWeight(workouts, 'e2')).toBe(95)
-  })
-
-  it('handles decimal weights', () => {
-    const workouts: Workout[] = [
-      {
-        id: 'w1',
-        userId: 'u1',
-        name: 'Workout 1',
-        date: '2026-06-30',
-        exhaustion: null,
-        soreness: null,
-        exercises: [],
-        entries: [
-          {
-            id: '1',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 1,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185.5, targetWeight: null, bodyweightOnly: false },
-          },
-          {
-            id: '2',
-            workoutId: 'w1',
-            exerciseId: 'e1',
-            setOrder: 2,
-            entryGroupId: null,
-            groupRound: null,
-            notes: null,
-            loadMetric: { actualWeight: 185.75, targetWeight: null, bodyweightOnly: false },
-          },
-        ],
-        entryGroups: [],
-      },
-    ]
-    expect(bestWeight(workouts, 'e1')).toBe(185.75)
   })
 })
 
@@ -1063,10 +466,17 @@ describe('groupRoundProgress', () => {
     expect(result.displayRound).toBe(3)
   })
 
-  it('handles empty array with plannedRounds', () => {
+  it('does not mark empty rounds as complete', () => {
     const result = groupRoundProgress([], 3)
     expect(result.rounds).toBe(3)
-    expect(result.completedRounds).toEqual([1, 2, 3])
-    expect(result.displayRound).toBe(3)
+    expect(result.completedRounds).toEqual([])
+    expect(result.displayRound).toBe(1)
+  })
+
+  it('only marks rounds that have entries with actuals as complete', () => {
+    const entries: WorkoutEntry[] = [complete(1), complete(1)]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.completedRounds).toEqual([1])
+    expect(result.displayRound).toBe(2)
   })
 })

@@ -1,7 +1,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { Dumbbell, Plus, Trash2 } from 'lucide-react'
+import { extractConflictMessage } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -9,44 +9,47 @@ import { Card } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Sheet } from '@/components/ui/sheet'
 import { EmptyState } from '@/components/ui/empty-state'
+import { useDeleteConfirm } from '@/hooks/use-delete-confirm'
 import { useApp } from '@/lib/use-app'
-import { listEquipment, createEquipment, deleteEquipment } from '@/api/equipment'
+import { equipmentQueries, createEquipment, deleteEquipment } from '@/api/equipment'
 import type { EquipmentType } from '@/api/types'
 
 export function EquipmentPage() {
   const queryClient = useQueryClient()
   const { toast } = useApp()
-  const { data: equipment = [], isLoading } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [], isLoading } = useQuery(equipmentQueries.list())
 
   const createMutation = useMutation({
     mutationFn: createEquipment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['equipment'] })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Equipment added.')
+    },
+    onError: () => {
+      toast('Could not create equipment. Try again.', 'error')
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteEquipment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['equipment'] })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Equipment deleted.')
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Equipment is in use.', 'error')
+      const conflictMsg = extractConflictMessage(error, 'Equipment is in use.')
+      if (conflictMsg) {
+        toast(conflictMsg, 'error')
       } else {
         toast('Could not delete. Try again.', 'error')
       }
     },
   })
 
+  const deleteConfirm = useDeleteConfirm<EquipmentType>(eq => deleteMutation.mutate(eq.id))
+
   const [addOpen, setAddOpen] = useState(false)
   const [name, setName] = useState('')
-  const [deleteTarget, setDeleteTarget] = useState<EquipmentType | null>(null)
 
   const handleCreate = () => {
     const trimmed = name.trim()
@@ -54,12 +57,6 @@ export function EquipmentPage() {
     createMutation.mutate(trimmed)
     setName('')
     setAddOpen(false)
-  }
-
-  const handleDelete = () => {
-    if (!deleteTarget) return
-    deleteMutation.mutate(deleteTarget.id)
-    setDeleteTarget(null)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -136,7 +133,7 @@ export function EquipmentPage() {
                 </Badge>
                 <button
                   onClick={() => {
-                    if (canDelete) setDeleteTarget(eq)
+                    if (canDelete) deleteConfirm.request(eq)
                   }}
                   disabled={!canDelete}
                   title={deleteReason}
@@ -165,7 +162,7 @@ export function EquipmentPage() {
           </Button>
         }
       >
-        <label htmlFor="equipment-name" className="label-caps text-text-secondary block mb-1.5">
+        <label htmlFor="equipment-name" className="form-label">
           Name
         </label>
         <input
@@ -179,11 +176,9 @@ export function EquipmentPage() {
       </Sheet>
 
       <ConfirmDialog
-        open={!!deleteTarget}
+        {...deleteConfirm.dialogProps}
         title="Delete equipment?"
-        message={deleteTarget ? `"${deleteTarget.name}" will be removed.` : ''}
-        onCancel={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        message={deleteConfirm.target ? `"${deleteConfirm.target.name}" will be removed.` : ''}
       />
     </div>
   )

@@ -8,8 +8,7 @@ export function Toaster() {
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-none fixed left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2"
-      style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 84px)' }}
+      className="pointer-events-none fixed left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2 bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] md:bottom-6"
     >
       {toasts.map(t => (
         <div

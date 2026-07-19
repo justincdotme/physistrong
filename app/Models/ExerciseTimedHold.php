@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExerciseTimedHold extends Model
 {
+    /** @var string */
     protected $table = 'exercise_timed_hold';
 
     /** @var list<string> */

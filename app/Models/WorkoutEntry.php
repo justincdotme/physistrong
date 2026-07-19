@@ -21,6 +21,17 @@ class WorkoutEntry extends Model
         'notes',
     ];
 
+    /** @return list<string> */
+    public static function metricRelations(): array
+    {
+        return array_map(
+            fn (MetricDimension $d) => $d === MetricDimension::IntervalHeader
+                ? 'intervalHeader.rounds'
+                : $d->relation(),
+            MetricDimension::cases(),
+        );
+    }
+
     /** @return BelongsTo<Workout, $this> */
     public function workout(): BelongsTo
     {
@@ -79,16 +90,5 @@ class WorkoutEntry extends Model
     public function intensityMetric(): HasOne
     {
         return $this->hasOne(LogIntensityMetric::class, 'entry_id');
-    }
-
-    /** @return list<string> */
-    public static function metricRelations(): array
-    {
-        return array_map(
-            fn (MetricDimension $d) => $d === MetricDimension::IntervalHeader
-                ? 'intervalHeader.rounds'
-                : $d->relation(),
-            MetricDimension::cases()
-        );
     }
 }

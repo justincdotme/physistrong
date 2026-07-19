@@ -7,20 +7,34 @@ namespace App\Services;
 use DateTimeInterface;
 use Illuminate\Contracts\Cache\Repository as Cache;
 
-class TokenBlacklist
+class TokenBlacklistService
 {
     private const KEY_PREFIX = 'auth:revoked-jti:';
 
+    /**
+     * @param Cache $cache
+     */
     public function __construct(private Cache $cache) {}
 
+    /**
+     * @param string            $jti
+     * @param DateTimeInterface $expiresAt
+     *
+     * @return void
+     */
     public function add(string $jti, DateTimeInterface $expiresAt): void
     {
         // put() with a past expiry stores nothing, so expired tokens never create entries
-        $this->cache->put(self::KEY_PREFIX.$jti, true, $expiresAt);
+        $this->cache->put(self::KEY_PREFIX . $jti, true, $expiresAt);
     }
 
+    /**
+     * @param string $jti
+     *
+     * @return boolean
+     */
     public function has(string $jti): bool
     {
-        return $this->cache->has(self::KEY_PREFIX.$jti);
+        return $this->cache->has(self::KEY_PREFIX . $jti);
     }
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { Trash2 } from 'lucide-react'
+import { extractConflictMessage } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Card } from '@/components/ui/card'
 import { TypeBadge } from '@/components/ui/type-badge'
@@ -13,11 +13,11 @@ import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import {
-  getExercise,
+  exerciseQueries,
   updateExercise as updateExerciseApi,
   deleteExercise as deleteExerciseApi,
 } from '@/api/exercises'
-import { listEquipment } from '@/api/equipment'
+import { equipmentQueries } from '@/api/equipment'
 import type { UpdateExercisePayload } from '@/api/exercises'
 
 function AttrRow({ label, value }: { label: string; value: string }) {
@@ -35,20 +35,14 @@ export function ExerciseDetailPage() {
   const queryClient = useQueryClient()
   const { toast } = useApp()
   const [deleting, setDeleting] = useState(false)
+  const [deleted, setDeleted] = useState(false)
 
   const { data: ex, isLoading } = useQuery({
-    queryKey: ['exercises', id],
-    queryFn: () => {
-      if (!id) throw new Error('Exercise ID is required')
-      return getExercise(id)
-    },
-    enabled: !!id,
+    ...exerciseQueries.detail(id ?? ''),
+    enabled: !!id && !deleted,
   })
 
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
 
   const updateMutation = useMutation({
     mutationFn: (payload: UpdateExercisePayload) => {
@@ -56,7 +50,8 @@ export function ExerciseDetailPage() {
       return updateExerciseApi(id, payload)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise updated.')
     },
     onError: () => {
@@ -70,13 +65,17 @@ export function ExerciseDetailPage() {
       return deleteExerciseApi(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      setDeleted(true)
+      queryClient.removeQueries({ queryKey: exerciseQueries.detail(id ?? '').queryKey })
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise deleted.')
       navigate('/exercises')
     },
     onError: error => {
-      if (isAxiosError(error) && error.response?.status === 409) {
-        toast(error.response.data?.message ?? 'Exercise is in use.', 'error')
+      const conflictMsg = extractConflictMessage(error, 'Exercise is in use.')
+      if (conflictMsg) {
+        toast(conflictMsg, 'error')
       } else {
         toast('Could not delete. Try again.', 'error')
       }

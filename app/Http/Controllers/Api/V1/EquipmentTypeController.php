@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\StoreEquipmentTypeRequest;
-use App\Http\Requests\Api\V1\UpdateEquipmentTypeRequest;
 use App\Http\Resources\Api\V1\EquipmentTypeResource;
 use App\Models\EquipmentType;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -14,12 +13,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 class EquipmentTypeController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $types = EquipmentType::withCount('exercises as usage_count')
@@ -30,11 +33,16 @@ class EquipmentTypeController extends Controller
         return EquipmentTypeResource::collection($types);
     }
 
+    /**
+     * @param StoreEquipmentTypeRequest $request
+     *
+     * @return JsonResponse
+     */
     public function store(StoreEquipmentTypeRequest $request): JsonResponse
     {
         $type = EquipmentType::create([
-            'name' => $request->validated('name'),
-            'user_id' => $request->user()->id,
+            'name'      => $request->validated('name'),
+            'user_id'   => $request->user()->id,
             'is_system' => false,
         ]);
 
@@ -43,33 +51,16 @@ class EquipmentTypeController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(EquipmentType $equipmentType): EquipmentTypeResource
-    {
-        $this->authorize('view', $equipmentType);
-
-        $equipmentType->loadCount('exercises as usage_count');
-
-        return new EquipmentTypeResource($equipmentType);
-    }
-
-    public function update(UpdateEquipmentTypeRequest $request, EquipmentType $equipmentType): EquipmentTypeResource
-    {
-        $this->authorize('update', $equipmentType);
-
-        $equipmentType->update($request->validated());
-
-        return new EquipmentTypeResource($equipmentType);
-    }
-
+    /**
+     * @param EquipmentType $equipmentType
+     *
+     * @return Response|JsonResponse
+     */
     public function destroy(EquipmentType $equipmentType): Response|JsonResponse
     {
         $this->authorize('delete', $equipmentType);
 
-        $inUse = DB::table('exercises')
-            ->where('equipment_type_id', $equipmentType->id)
-            ->exists();
-
-        if ($inUse) {
+        if ($equipmentType->exercises()->exists()) {
             return response()->json([
                 'message' => 'Equipment type is in use by exercises.',
             ], 409);

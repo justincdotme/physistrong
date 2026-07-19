@@ -1,54 +1,49 @@
 {
   "data": {
-    "id": 43,
+    "id": 2,
     "name": "Capture Test Show Workout",
     "date": "2026-06-01",
     "exhaustion": null,
     "soreness": null,
     "exercises": [
       {
-        "id": 906,
-        "name": "Capture Test Show Bench",
+        "id": 879,
+        "name": "Capture Test Resistance",
         "type": "resistance",
-        "equipment_type_id": null,
-        "exercise_order": 0,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z"
+        "equipment_type_id": 33,
+        "exercise_order": 0
       },
       {
-        "id": 907,
-        "name": "Capture Test Show Intervals",
+        "id": 882,
+        "name": "Capture Test Interval",
         "type": "interval",
-        "equipment_type_id": null,
-        "exercise_order": 1,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z"
+        "equipment_type_id": 33,
+        "exercise_order": 1
       }
     ],
     "groups": [
       {
-        "id": 4,
+        "id": 1,
         "name": "Superset A",
         "planned_rounds": 3,
         "rest_between_exercises_seconds": 30,
-        "rest_between_rounds_seconds": 90,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z"
+        "rest_between_rounds_seconds": 90
       }
     ],
     "entries": [
       {
-        "id": 41,
-        "workout_id": 43,
-        "exercise_id": 906,
+        "id": 5,
+        "workout_id": 2,
+        "exercise_id": 879,
         "set_order": 0,
-        "entry_group_id": 4,
+        "entry_group_id": 1,
         "group_round": 1,
         "notes": null,
         "exercise": {
-          "id": 906,
-          "name": "Capture Test Show Bench",
-          "type": "resistance"
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
         },
         "metrics": {
           "load": {
@@ -67,17 +62,18 @@
         "updated_at": "2026-01-01T00:00:00.000000Z"
       },
       {
-        "id": 42,
-        "workout_id": 43,
-        "exercise_id": 907,
+        "id": 6,
+        "workout_id": 2,
+        "exercise_id": 882,
         "set_order": 1,
         "entry_group_id": null,
         "group_round": null,
         "notes": null,
         "exercise": {
-          "id": 907,
-          "name": "Capture Test Show Intervals",
-          "type": "interval"
+          "id": 882,
+          "name": "Capture Test Interval",
+          "type": "interval",
+          "equipment_type_id": 33
         },
         "metrics": {
           "interval_header": {
@@ -121,22 +117,35 @@
         "updated_at": "2026-01-01T00:00:00.000000Z"
       },
       {
-        "id": 43,
-        "workout_id": 43,
-        "exercise_id": 906,
+        "id": 7,
+        "workout_id": 2,
+        "exercise_id": 879,
         "set_order": 2,
         "entry_group_id": null,
         "group_round": null,
         "notes": null,
         "exercise": {
-          "id": 906,
-          "name": "Capture Test Show Bench",
-          "type": "resistance"
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
         },
         "metrics": {
-          "duration": {
-            "target_duration_seconds": 120,
-            "actual_duration_seconds": 115
+          "load": {
+            "target_weight": "185.00",
+            "actual_weight": "180.00",
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 5,
+            "actual_reps": 5,
+            "to_failure": false,
+            "failure_rep": null
+          },
+          "intensity": {
+            "rpe": 8,
+            "heart_rate_avg": null,
+            "heart_rate_peak": null
           }
         },
         "created_at": "2026-01-01T00:00:00.000000Z",

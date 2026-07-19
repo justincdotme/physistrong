@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Models\User;
 use Laravel\Dusk\Browser;
 
-it('shows desktop sidebar nav at desktop width', function () {
+it('shows desktop sidebar nav at desktop width', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -19,9 +19,9 @@ it('shows desktop sidebar nav at desktop width', function () {
     });
 });
 
-it('displays all four nav items in desktop sidebar', function () {
+it('displays all four nav items in desktop sidebar', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -33,12 +33,12 @@ it('displays all four nav items in desktop sidebar', function () {
     });
 });
 
-it('shows profile avatar in desktop sidebar', function () {
+it('shows profile avatar in desktop sidebar', function (): void {
     $user = User::factory()->create([
         'first_name' => 'John',
-        'last_name' => 'Doe',
+        'last_name'  => 'Doe',
     ]);
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -49,9 +49,9 @@ it('shows profile avatar in desktop sidebar', function () {
     });
 });
 
-it('shows mobile nav at tablet breakpoint', function () {
+it('shows mobile nav at tablet breakpoint', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/workouts')
@@ -62,9 +62,9 @@ it('shows mobile nav at tablet breakpoint', function () {
     });
 });
 
-it('shows mobile layout at phone width', function () {
+it('shows mobile layout at phone width', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -76,12 +76,12 @@ it('shows mobile layout at phone width', function () {
     });
 });
 
-it('displays logo and profile in mobile top bar', function () {
+it('displays logo and profile in mobile top bar', function (): void {
     $user = User::factory()->create([
         'first_name' => 'Jane',
-        'last_name' => 'Smith',
+        'last_name'  => 'Smith',
     ]);
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -93,9 +93,9 @@ it('displays logo and profile in mobile top bar', function () {
     });
 });
 
-it('displays four nav items in mobile bottom tab bar', function () {
+it('displays four nav items in mobile bottom tab bar', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -108,9 +108,9 @@ it('displays four nav items in mobile bottom tab bar', function () {
     });
 });
 
-it('navigates to exercises from desktop nav', function () {
+it('navigates to exercises from desktop nav', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -121,9 +121,9 @@ it('navigates to exercises from desktop nav', function () {
     });
 });
 
-it('navigates to equipment from desktop nav', function () {
+it('navigates to equipment from desktop nav', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -134,9 +134,9 @@ it('navigates to equipment from desktop nav', function () {
     });
 });
 
-it('navigates to progress from desktop nav', function () {
+it('navigates to progress from desktop nav', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -147,9 +147,9 @@ it('navigates to progress from desktop nav', function () {
     });
 });
 
-it('navigates to exercises from mobile bottom nav', function () {
+it('navigates to exercises from mobile bottom nav', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -160,9 +160,9 @@ it('navigates to exercises from mobile bottom nav', function () {
     });
 });
 
-it('navigates to equipment from mobile bottom nav', function () {
+it('navigates to equipment from mobile bottom nav', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -173,9 +173,9 @@ it('navigates to equipment from mobile bottom nav', function () {
     });
 });
 
-it('navigates to profile from desktop profile link', function () {
+it('navigates to profile from desktop profile link', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -186,9 +186,9 @@ it('navigates to profile from desktop profile link', function () {
     });
 });
 
-it('navigates to profile from mobile profile link', function () {
+it('navigates to profile from mobile profile link', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -199,9 +199,9 @@ it('navigates to profile from mobile profile link', function () {
     });
 });
 
-it('navigates to workouts from logo in desktop sidebar', function () {
+it('navigates to workouts from logo in desktop sidebar', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/exercises')
@@ -212,9 +212,9 @@ it('navigates to workouts from logo in desktop sidebar', function () {
     });
 });
 
-it('navigates to workouts from logo in mobile top bar', function () {
+it('navigates to workouts from logo in mobile top bar', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/exercises')
@@ -225,9 +225,9 @@ it('navigates to workouts from logo in mobile top bar', function () {
     });
 });
 
-it('logs out from profile page and redirects to login', function () {
+it('logs out from profile page and redirects to login', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/profile')
@@ -238,9 +238,9 @@ it('logs out from profile page and redirects to login', function () {
     });
 });
 
-it('maintains nav state when navigating between sections at desktop', function () {
+it('maintains nav state when navigating between sections at desktop', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -255,9 +255,9 @@ it('maintains nav state when navigating between sections at desktop', function (
     });
 });
 
-it('maintains nav state when navigating between sections on mobile', function () {
+it('maintains nav state when navigating between sections on mobile', function (): void {
     $user = User::factory()->create();
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')

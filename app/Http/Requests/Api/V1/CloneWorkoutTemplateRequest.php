@@ -6,7 +6,7 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CloneTemplateRequest extends FormRequest
+class CloneWorkoutTemplateRequest extends FormRequest
 {
     /** @return array<string, mixed> */
     public function rules(): array

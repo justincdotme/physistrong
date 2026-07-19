@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/ui/button'
 
 interface GroupSelectBannerProps {
   selectedCount: number

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogIntervalRound extends Model
 {
+    /** @var string */
     protected $table = 'log_interval_rounds';
 
     /** @var list<string> */
     protected $fillable = [
-        'interval_header_id',
         'round_number',
         'actual_work_seconds',
         'actual_rest_seconds',

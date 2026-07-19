@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\LocksForReorder;
 use App\Models\Pivots\TemplateExercisePivot;
 use Database\Factories\WorkoutTemplateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,8 @@ class WorkoutTemplate extends Model
 {
     /** @use HasFactory<WorkoutTemplateFactory> */
     use HasFactory;
+
+    use LocksForReorder;
 
     /** @var list<string> */
     protected $fillable = [

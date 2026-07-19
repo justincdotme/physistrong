@@ -7,10 +7,10 @@ use App\Models\Workout;
 use App\Models\WorkoutTemplate;
 use Laravel\Dusk\Browser;
 
-it('renders the workouts page at desktop width', function () {
+it('renders the workouts page at desktop width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/workouts')
@@ -23,10 +23,10 @@ it('renders the workouts page at desktop width', function () {
     });
 });
 
-it('renders the workouts page at tablet width', function () {
+it('renders the workouts page at tablet width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/workouts')
@@ -36,10 +36,10 @@ it('renders the workouts page at tablet width', function () {
     });
 });
 
-it('renders the workouts page at phone width', function () {
+it('renders the workouts page at phone width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/workouts')
@@ -51,10 +51,10 @@ it('renders the workouts page at phone width', function () {
     });
 });
 
-it('shows empty state when no workouts exist', function () {
+it('shows empty state when no workouts exist', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -65,11 +65,11 @@ it('shows empty state when no workouts exist', function () {
     });
 });
 
-it('shows workout count when workouts exist', function () {
+it('shows workout count when workouts exist', function (): void {
     $user = User::factory()->create();
     Workout::factory(3)->create(['user_id' => $user->id]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')
@@ -78,14 +78,14 @@ it('shows workout count when workouts exist', function () {
     });
 });
 
-it('displays workout history list', function () {
+it('displays workout history list', function (): void {
     $user = User::factory()->create();
-    $workout = Workout::factory()->create([
+    Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Chest Day',
+        'name'    => 'Chest Day',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')
@@ -94,18 +94,18 @@ it('displays workout history list', function () {
     });
 });
 
-it('displays multiple workouts in history', function () {
+it('displays multiple workouts in history', function (): void {
     $user = User::factory()->create();
     Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Leg Day',
+        'name'    => 'Leg Day',
     ]);
     Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Back Day',
+        'name'    => 'Back Day',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')
@@ -115,10 +115,10 @@ it('displays multiple workouts in history', function () {
     });
 });
 
-it('has create workout button', function () {
+it('has create workout button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -128,10 +128,10 @@ it('has create workout button', function () {
     });
 });
 
-it('has view progress button', function () {
+it('has view progress button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -140,10 +140,10 @@ it('has view progress button', function () {
     });
 });
 
-it('has a templates button', function () {
+it('has a templates button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -152,10 +152,10 @@ it('has a templates button', function () {
     });
 });
 
-it('navigates to the templates page from the templates button', function () {
+it('navigates to the templates page from the templates button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -165,14 +165,14 @@ it('navigates to the templates page from the templates button', function () {
     });
 });
 
-it('does not list templates on the workouts page', function () {
+it('does not list templates on the workouts page', function (): void {
     $user = User::factory()->create();
     WorkoutTemplate::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Upper Body',
+        'name'    => 'Upper Body',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -182,22 +182,22 @@ it('does not list templates on the workouts page', function () {
     });
 });
 
-it('redirects unauthenticated user from workouts to login', function () {
-    $this->browse(function (Browser $browser) {
+it('redirects unauthenticated user from workouts to login', function (): void {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/workouts')
             ->waitForLocation('/login')
             ->assertPathIs('/login');
     });
 });
 
-it('navigates to workout detail when clicking a workout card', function () {
-    $user = User::factory()->create();
+it('navigates to workout detail when clicking a workout card', function (): void {
+    $user    = User::factory()->create();
     $workout = Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Test Workout',
+        'name'    => 'Test Workout',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $workout) {
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')
@@ -207,10 +207,10 @@ it('navigates to workout detail when clicking a workout card', function () {
     });
 });
 
-it('navigates to view progress page when clicking view progress button', function () {
+it('navigates to view progress page when clicking view progress button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workouts-page')
@@ -220,14 +220,14 @@ it('navigates to view progress page when clicking view progress button', functio
     });
 });
 
-it('shows workout date in history', function () {
+it('shows workout date in history', function (): void {
     $user = User::factory()->create();
-    $workout = Workout::factory()->create([
+    Workout::factory()->create([
         'user_id' => $user->id,
-        'date' => '2024-06-15',
+        'date'    => '2024-06-15',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')
@@ -235,14 +235,14 @@ it('shows workout date in history', function () {
     });
 });
 
-it('shows completion status for completed workouts', function () {
+it('shows completion status for completed workouts', function (): void {
     $user = User::factory()->create();
     Workout::factory()->create([
         'user_id' => $user->id,
-        'name' => 'Complete Workout',
+        'name'    => 'Complete Workout',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/workouts')
             ->waitFor('@workout-history')

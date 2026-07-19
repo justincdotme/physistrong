@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /** @property int $exercise_order */
 class ExerciseWorkoutPivot extends Pivot
 {
+    /** @var boolean */
     public $timestamps = false;
 
+    /** @var string */
     protected $table = 'exercise_workout';
 }

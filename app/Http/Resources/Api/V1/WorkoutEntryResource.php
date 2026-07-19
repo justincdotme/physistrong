@@ -20,21 +20,25 @@ class WorkoutEntryResource extends JsonResource
         'heart_rate_peak',
     ];
 
-    /** @return array<string, mixed> */
+    /**
+     * @param Request $request
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'workout_id' => $this->workout_id,
-            'exercise_id' => $this->exercise_id,
-            'set_order' => $this->set_order,
+            'id'             => $this->id,
+            'workout_id'     => $this->workout_id,
+            'exercise_id'    => $this->exercise_id,
+            'set_order'      => $this->set_order,
             'entry_group_id' => $this->entry_group_id,
-            'group_round' => $this->group_round,
-            'notes' => $this->notes,
-            'exercise' => $this->whenLoaded('exercise', fn () => new ExerciseSummaryResource($this->exercise)),
-            'metrics' => $this->metricData(),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'group_round'    => $this->group_round,
+            'notes'          => $this->notes,
+            'exercise'       => $this->whenLoaded('exercise', fn () => new ExerciseSummaryResource($this->exercise)),
+            'metrics'        => $this->metricData(),
+            'created_at'     => $this->created_at,
+            'updated_at'     => $this->updated_at,
         ];
     }
 
@@ -54,7 +58,7 @@ class WorkoutEntryResource extends JsonResource
 
             if ($dimension === MetricDimension::IntervalHeader && $this->intervalHeader->relationLoaded('rounds')) {
                 $payload['rounds'] = $this->intervalHeader->rounds->map(
-                    fn ($round) => $round->only(self::ROUND_COLUMNS)
+                    fn ($round) => $round->only(self::ROUND_COLUMNS),
                 )->all();
             }
 

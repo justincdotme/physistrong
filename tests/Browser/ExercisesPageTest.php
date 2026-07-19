@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
-use App\Models\Exercise;
-use App\Models\Workout;
 use App\Enums\ExerciseType;
+use App\Models\Exercise;
+use App\Models\User;
+use App\Models\Workout;
 use Laravel\Dusk\Browser;
 
-it('renders the exercises page and displays system exercises', function () {
+it('renders the exercises page and displays system exercises', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/exercises')
@@ -26,10 +26,10 @@ it('renders the exercises page and displays system exercises', function () {
     });
 });
 
-it('exercises page renders at tablet width', function () {
+it('exercises page renders at tablet width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/exercises')
@@ -41,10 +41,10 @@ it('exercises page renders at tablet width', function () {
     });
 });
 
-it('exercises page renders at phone width', function () {
+it('exercises page renders at phone width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/exercises')
@@ -55,10 +55,10 @@ it('exercises page renders at phone width', function () {
     });
 });
 
-it('search filters exercises by name', function () {
+it('search filters exercises by name', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('@exercise-list')
@@ -69,10 +69,10 @@ it('search filters exercises by name', function () {
     });
 });
 
-it('navigates to exercise detail page', function () {
+it('navigates to exercise detail page', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
@@ -84,10 +84,10 @@ it('navigates to exercise detail page', function () {
     });
 });
 
-it('exercise detail displays at desktop width', function () {
+it('exercise detail displays at desktop width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(1920, 1080)
             ->visit('/exercises')
@@ -101,10 +101,10 @@ it('exercise detail displays at desktop width', function () {
     });
 });
 
-it('exercise detail displays at tablet width', function () {
+it('exercise detail displays at tablet width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(768, 1024)
             ->visit('/exercises')
@@ -117,14 +117,18 @@ it('exercise detail displays at tablet width', function () {
     });
 });
 
-it('exercise detail displays at phone width', function () {
+it('exercise detail displays at phone width', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->resize(375, 812)
             ->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
+            // The sticky header and fixed bottom nav can both overlap the
+            // card's click point at phone height; center it between them.
+            ->script("document.querySelector('[dusk=\"exercise-list\"] > *:first-child').scrollIntoView({block: 'center'})");
+        $browser->pause(300)
             ->click('[dusk="exercise-list"] > *:first-child')
             ->waitFor('@exercise-detail-page')
             ->assertVisible('@exercise-name')
@@ -134,10 +138,10 @@ it('exercise detail displays at phone width', function () {
     });
 });
 
-it('shows progress link on exercise detail', function () {
+it('shows progress link on exercise detail', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
@@ -148,10 +152,10 @@ it('shows progress link on exercise detail', function () {
     });
 });
 
-it('hides delete button on system exercise', function () {
+it('hides delete button on system exercise', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
@@ -161,10 +165,10 @@ it('hides delete button on system exercise', function () {
     });
 });
 
-it('does not show distance unit selector when creating a distance exercise', function () {
+it('does not show distance unit selector when creating a distance exercise', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('@exercises-page')
@@ -178,10 +182,10 @@ it('does not show distance unit selector when creating a distance exercise', fun
     });
 });
 
-it('shows system badge on system exercise detail', function () {
+it('shows system badge on system exercise detail', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('[dusk="exercise-list"] > *:first-child')
@@ -194,24 +198,24 @@ it('shows system badge on system exercise detail', function () {
     });
 });
 
-it('disables exercise delete button when exercise is in use', function () {
+it('disables exercise delete button when exercise is in use', function (): void {
     $user = User::factory()->create();
 
     $exercise = Exercise::create([
-        'name' => 'Test Custom Exercise',
-        'type' => ExerciseType::Resistance,
+        'name'    => 'Test Custom Exercise',
+        'type'    => ExerciseType::Resistance,
         'user_id' => $user->id,
     ]);
     $exercise->resistance()->create([
-        'bodyweight_base' => false,
+        'bodyweight_base'     => false,
         'allows_added_weight' => true,
-        'bilateral' => true,
+        'bilateral'           => true,
     ]);
 
     $workout = Workout::factory()->create(['user_id' => $user->id]);
     $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('@exercises-page')
@@ -225,21 +229,21 @@ it('disables exercise delete button when exercise is in use', function () {
     });
 });
 
-it('enables exercise delete button when exercise is not in use', function () {
+it('enables exercise delete button when exercise is not in use', function (): void {
     $user = User::factory()->create();
 
     $exercise = Exercise::create([
-        'name' => 'Unused Custom Exercise',
-        'type' => ExerciseType::Resistance,
+        'name'    => 'Unused Custom Exercise',
+        'type'    => ExerciseType::Resistance,
         'user_id' => $user->id,
     ]);
     $exercise->resistance()->create([
-        'bodyweight_base' => false,
+        'bodyweight_base'     => false,
         'allows_added_weight' => true,
-        'bilateral' => true,
+        'bilateral'           => true,
     ]);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/exercises')
             ->waitFor('@exercises-page')

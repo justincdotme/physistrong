@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Api\V1\Auth;
 
 use App\Models\User;
-use App\Services\AuthTokenCookie;
+use App\Services\AuthTokenCookieService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\CreatesPassportToken;
 use Tests\TestCase;
@@ -23,11 +23,11 @@ class CookieAuthenticationTest extends TestCase
 
     public function test_authenticates_with_only_the_token_cookie(): void
     {
-        $user = User::factory()->create();
+        $user  = User::factory()->create();
         $token = $user->createToken('auth')->accessToken;
 
         $this->withCredentials()
-            ->withUnencryptedCookie(AuthTokenCookie::NAME, $token)
+            ->withUnencryptedCookie(AuthTokenCookieService::NAME, $token)
             ->getJson('/api/v1/user')
             ->assertOk()
             ->assertJsonPath('data.email', $user->email);
@@ -43,7 +43,7 @@ class CookieAuthenticationTest extends TestCase
 
         $this->withCredentials()
             ->withToken($headerToken)
-            ->withUnencryptedCookie(AuthTokenCookie::NAME, $cookieToken)
+            ->withUnencryptedCookie(AuthTokenCookieService::NAME, $cookieToken)
             ->getJson('/api/v1/user')
             ->assertOk()
             ->assertJsonPath('data.email', 'header@example.com');
@@ -54,7 +54,7 @@ class CookieAuthenticationTest extends TestCase
         User::factory()->create();
 
         $this->withCredentials()
-            ->withUnencryptedCookie(AuthTokenCookie::NAME, 'not-a-jwt')
+            ->withUnencryptedCookie(AuthTokenCookieService::NAME, 'not-a-jwt')
             ->getJson('/api/v1/user')
             ->assertStatus(401);
     }
@@ -62,24 +62,24 @@ class CookieAuthenticationTest extends TestCase
     public function test_logout_expires_the_cookie_and_rejects_the_replayed_token(): void
     {
         User::factory()->create([
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
 
         $token = $this->loginAndReadTokenCookie('user@example.com', 'secret123');
 
         $this->withCredentials()
-            ->withUnencryptedCookie(AuthTokenCookie::NAME, $token)
+            ->withUnencryptedCookie(AuthTokenCookieService::NAME, $token)
             ->postJson('/api/v1/logout')
             ->assertNoContent()
-            ->assertCookieExpired(AuthTokenCookie::NAME);
+            ->assertCookieExpired(AuthTokenCookieService::NAME);
 
         // In-process test requests share one guard instance; drop it when
         // re-presenting the same token the way a real per-request process would.
         $this->app['auth']->forgetGuards();
 
         $this->withCredentials()
-            ->withUnencryptedCookie(AuthTokenCookie::NAME, $token)
+            ->withUnencryptedCookie(AuthTokenCookieService::NAME, $token)
             ->getJson('/api/v1/user')
             ->assertStatus(401);
     }

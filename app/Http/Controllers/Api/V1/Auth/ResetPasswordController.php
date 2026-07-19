@@ -14,6 +14,11 @@ use Illuminate\Validation\ValidationException;
 
 class ResetPasswordController extends Controller
 {
+    /**
+     * @param ResetPasswordRequest $request
+     *
+     * @return JsonResponse
+     */
     public function __invoke(ResetPasswordRequest $request): JsonResponse
     {
         $status = Password::reset(

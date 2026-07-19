@@ -7,5 +7,5 @@ namespace App\Enums;
 enum MeasurementSystem: string
 {
     case Imperial = 'imperial';
-    case Metric = 'metric';
+    case Metric   = 'metric';
 }

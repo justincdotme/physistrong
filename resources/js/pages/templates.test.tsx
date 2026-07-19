@@ -11,10 +11,8 @@ describe('TemplatesPage', () => {
     it('displays templates from the fixture with correct count in subtitle', async () => {
       renderWithProviders(<TemplatesPage />)
 
-      // Wait for a template from the fixture to appear
-      await screen.findByText('Capture Test Template 1782864881129')
+      await screen.findByText('Capture Test Template')
 
-      // Assert subtitle shows the count
       const templateCount = fixtureList.data.length
       expect(screen.getByText(`${templateCount} saved`)).toBeInTheDocument()
     })
@@ -46,27 +44,19 @@ describe('TemplatesPage', () => {
 
       renderWithProviders(<TemplatesPage />)
 
-      // Wait for templates to load
-      await screen.findByText('Capture Test Template 1782864881129')
+      await screen.findByText('Capture Test Template')
 
-      // Click the Create button in PageHeader
       const createButton = screen.getByRole('button', { name: 'Create' })
       await user.click(createButton)
 
-      // Type template name in the input
       const nameInput = screen.getByLabelText('Template name')
       await user.type(nameInput, 'Push Day')
 
-      // Click the Create button in Sheet footer - find by getting all "Create" buttons and using the last one
-      const allCreateButtons = screen.queryAllByRole('button', { name: 'Create' })
-      expect(allCreateButtons.length).toBeGreaterThan(1)
-      const submitButton = allCreateButtons[allCreateButtons.length - 1]
-      expect(submitButton).toBeDefined()
-      if (submitButton) {
-        await user.click(submitButton)
-      }
+      // The modal Sheet hides outside content from the a11y tree, so only
+      // the Sheet footer's Create button is visible to getByRole.
+      const submitButton = screen.getByRole('button', { name: 'Create' })
+      await user.click(submitButton)
 
-      // Wait for mutation to complete and verify payload
       await waitFor(
         () => {
           expect(capturedPayload).toEqual({
@@ -83,7 +73,6 @@ describe('TemplatesPage', () => {
       const user = userEvent.setup()
       let deleteWasCalled = false
 
-      // Override list to include a user-owned template
       const userTemplate: WorkoutTemplateListItem = {
         id: '999',
         name: 'Test Template',
@@ -107,17 +96,13 @@ describe('TemplatesPage', () => {
 
       renderWithProviders(<TemplatesPage />)
 
-      // Wait for the user template to appear
       await screen.findByText('Test Template')
 
-      // Click the delete button for the user template
       const deleteButton = screen.getByLabelText('Delete Test Template')
       await user.click(deleteButton)
 
-      // Wait for the confirmation dialog to appear
       await screen.findByText(/Test Template.*will be removed from your templates/)
 
-      // Find and click the Delete button in the confirmation dialog
       const allDeleteButtons = screen.queryAllByRole('button', { name: 'Delete' })
       expect(allDeleteButtons.length).toBeGreaterThan(0)
       const confirmButton = allDeleteButtons[allDeleteButtons.length - 1]
@@ -126,7 +111,6 @@ describe('TemplatesPage', () => {
         await user.click(confirmButton)
       }
 
-      // Wait for the delete API to be called
       await waitFor(
         () => {
           expect(deleteWasCalled).toBe(true)

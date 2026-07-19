@@ -20,10 +20,17 @@ describe('ExercisesPage', () => {
 
   describe('Create flow', () => {
     it('posts the correct payload when creating an exercise', async () => {
-      const user = userEvent.setup()
+      // No inter-key delay: each keystroke re-renders the whole page, which
+      // overruns the test timeout on a loaded host.
+      const user = userEvent.setup({ delay: null })
       let capturedPayload: Record<string, unknown> | null = null
 
       server.use(
+        // A five-row list keeps interaction re-renders cheap; the full
+        // 900-row fixture is the list-render test's contract, not this one's.
+        http.get('/api/v1/exercises', () =>
+          HttpResponse.json({ data: fixtureList.data.slice(0, 5) })
+        ),
         http.post('/api/v1/exercises', async ({ request }) => {
           capturedPayload = (await request.json()) as Record<string, unknown>
           return HttpResponse.json(
@@ -90,7 +97,6 @@ describe('ExercisesPage', () => {
       const user = userEvent.setup()
       let deleteCalled = false
 
-      // Override list to include a user-owned, not-in-use exercise
       const userExercise: Exercise = {
         id: '999',
         name: 'Test User Exercise',
@@ -108,7 +114,7 @@ describe('ExercisesPage', () => {
       server.use(
         http.get('/api/v1/exercises', () =>
           HttpResponse.json({
-            data: [...fixtureList.data, userExercise],
+            data: [...fixtureList.data.slice(0, 5), userExercise],
           })
         ),
         http.delete('/api/v1/exercises/:id', ({ params }) => {

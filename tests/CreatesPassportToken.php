@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Services\AuthTokenCookie;
+use App\Services\AuthTokenCookieService;
 use Illuminate\Testing\TestResponse;
 use Laravel\Passport\ClientRepository;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -19,9 +19,9 @@ trait CreatesPassportToken
     protected function loginAndReadTokenCookie(string $email, string $password): string
     {
         $cookie = $this->postJson('/api/v1/login', [
-            'email' => $email,
+            'email'    => $email,
             'password' => $password,
-        ])->getCookie(AuthTokenCookie::NAME, decrypt: false);
+        ])->getCookie(AuthTokenCookieService::NAME, decrypt: false);
 
         $this->assertNotNull($cookie, 'Login response did not set the auth token cookie.');
 
@@ -30,7 +30,7 @@ trait CreatesPassportToken
 
     protected function assertIssuesAuthTokenCookie(TestResponse $response): void
     {
-        $cookie = $response->getCookie(AuthTokenCookie::NAME, decrypt: false);
+        $cookie = $response->getCookie(AuthTokenCookieService::NAME, decrypt: false);
 
         $this->assertNotNull($cookie, 'Response did not set the auth token cookie.');
         $this->assertNotSame('', $cookie->getValue());

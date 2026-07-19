@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'
+import { useMutation } from '@tanstack/react-query'
 import { LogOut } from 'lucide-react'
+import { extractFieldErrors } from '@/api/errors'
 import { PageHeader } from '@/components/ui/page-header'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
@@ -35,73 +37,75 @@ export function ProfilePage() {
   const [last, setLast] = useState(user?.lastName ?? '')
   const [email, setEmail] = useState(user?.email ?? '')
   const [password, setPassword] = useState({ current: '', next: '', confirm: '' })
-  const [saving, setSaving] = useState(false)
   const [passwordError, setPasswordError] = useState('')
+
+  const infoMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: updated => {
+      setUser(updated)
+      toast('Profile saved.')
+    },
+    onError: (err: unknown) => {
+      const fieldErrors = extractFieldErrors(err)
+      const msg = Object.values(fieldErrors)[0]
+      if (msg) {
+        toast(msg, 'error')
+      } else if (isAxiosError(err) && err.response?.status === 422) {
+        toast('Could not save.', 'error')
+      } else {
+        toast('Could not save. Try again.', 'error')
+      }
+    },
+  })
+
+  const passwordMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      setPassword({ current: '', next: '', confirm: '' })
+      toast('Password changed.')
+    },
+    onError: (err: unknown) => {
+      if (isAxiosError(err) && err.response?.status === 422) {
+        const m = extractFieldErrors(err)
+        setPasswordError(m.current_password ?? m.password ?? 'Could not change password.')
+      } else {
+        setPasswordError('Could not change password. Try again.')
+      }
+    },
+  })
+
+  const preferenceMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: (updated, variables) => {
+      setUser(updated)
+      toast(variables.theme !== undefined ? 'Theme updated.' : 'Measurement system updated.')
+    },
+    onError: () => {
+      toast('Could not save preference. Try again.', 'error')
+    },
+  })
 
   if (!user) return null
 
   const isDirty = first !== user.firstName || last !== user.lastName || email !== user.email
 
-  const handleSaveInfo = async () => {
-    setSaving(true)
-    try {
-      const updated = await updateProfile({
-        first_name: first,
-        last_name: last,
-        email,
-      })
-      setUser(updated)
-      toast('Profile saved.')
-    } catch (err) {
-      if (isAxiosError(err) && err.response?.status === 422) {
-        const fieldErrors = err.response.data?.errors as Record<string, string[]> | undefined
-        const msg = fieldErrors ? Object.values(fieldErrors).flat()[0] : 'Could not save.'
-        toast(msg ?? 'Could not save.', 'error')
-      } else {
-        toast('Could not save. Try again.', 'error')
-      }
-    } finally {
-      setSaving(false)
-    }
+  const handleSaveInfo = () => {
+    infoMutation.mutate({ first_name: first, last_name: last, email })
   }
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = () => {
     if (!password.current || !password.next || password.next !== password.confirm) return
     setPasswordError('')
-    setSaving(true)
-    try {
-      await updateProfile({
-        current_password: password.current,
-        password: password.next,
-        password_confirmation: password.confirm,
-      })
-      setPassword({ current: '', next: '', confirm: '' })
-      toast('Password changed.')
-    } catch (err) {
-      if (isAxiosError(err) && err.response?.status === 422) {
-        const fieldErrors = err.response.data?.errors as Record<string, string[]> | undefined
-        setPasswordError(
-          fieldErrors?.current_password?.[0] ??
-            fieldErrors?.password?.[0] ??
-            'Could not change password.'
-        )
-      } else {
-        setPasswordError('Could not change password. Try again.')
-      }
-    } finally {
-      setSaving(false)
-    }
+    passwordMutation.mutate({
+      current_password: password.current,
+      password: password.next,
+      password_confirmation: password.confirm,
+    })
   }
 
-  const handlePreferenceChange = async (field: string, value: string) => {
+  const handlePreferenceChange = (field: string, value: string) => {
     if (field === 'theme') applyTheme(value)
-    try {
-      const updated = await updateProfile({ [field]: value })
-      setUser(updated)
-      toast(field === 'theme' ? 'Theme updated.' : 'Measurement system updated.')
-    } catch {
-      toast('Could not save preference. Try again.', 'error')
-    }
+    preferenceMutation.mutate({ [field]: value })
   }
 
   const fullName = `${user.firstName} ${user.lastName}`
@@ -144,7 +148,7 @@ export function ProfilePage() {
         </Row>
         {isDirty && (
           <div className="py-3">
-            <Button size="sm" onClick={handleSaveInfo} disabled={saving}>
+            <Button size="sm" onClick={handleSaveInfo} disabled={infoMutation.isPending}>
               Save Changes
             </Button>
           </div>
@@ -212,7 +216,7 @@ export function ProfilePage() {
           <Button
             size="sm"
             variant="secondary"
-            disabled={!canChangePassword || saving}
+            disabled={!canChangePassword || passwordMutation.isPending}
             onClick={handleChangePassword}
           >
             Change Password

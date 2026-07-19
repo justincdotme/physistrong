@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (amended 2026-07-02 with PS-90 implementation notes, 2026-07-03 with PS-91 cookie delivery)
+Accepted (amended 2026-07-02 with PS-90 implementation notes, 2026-07-03 with PS-91 cookie delivery, 2026-07-13 with PS-124 blacklist rebuild)
 
 ## Date
 
@@ -20,7 +20,7 @@ Physistrong is being rebuilt as a self-hosted fitness tracking app on Laravel 13
 
 The legacy application used a development branch of tymon/jwt-auth, which lacked proper OAuth2 client management and refresh token handling. The new architecture must support:
 
-- Token revocation without database lookups per request
+- Token revocation without database lookups per request (deferred, not yet the runtime behavior; see Implementation Notes below)
 - Portable tokens suitable for mobile clients
 - Payload claims for authorization decisions
 - Separate delivery mechanisms optimized for browser and mobile security models
@@ -45,7 +45,7 @@ We will use Laravel Passport with OAuth2 + JWT for authentication.
 The JTI blacklist is implemented behind Laravel's cache layer rather
 than raw Redis commands:
 
-- `App\Services\TokenBlacklist` writes `auth:revoked-jti:{jti}`
+- `App\Services\TokenBlacklistService` writes `auth:revoked-jti:{jti}`
   entries through the default cache store with the entry expiry set
   to the token's `expires_at`. The deployed stack sets
   `CACHE_STORE=redis` (cache connection, Redis database 1), so
@@ -63,6 +63,20 @@ than raw Redis commands:
 - A Redis flush does not resurrect logged-out tokens today because
   the database `revoked` flag still rejects them.
 
+## Implementation Notes (2026-07-13, PS-124)
+
+The blacklist is rebuildable from the database:
+
+- `php artisan auth:rebuild-token-blacklist` scans `oauth_access_tokens`
+  for revoked, unexpired rows and re-adds each JTI through
+  `App\Services\TokenBlacklistService`, deriving each entry's TTL from the
+  token's remaining lifetime. The command is idempotent.
+- Run it after any Redis restart, flush, or cache-database wipe. It is
+  also scheduled hourly (`routes/console.php`) as self-healing, so a
+  missed manual run heals within the hour.
+- This closes the prerequisite for removing Passport's per-request
+  database lookup; that removal remains future work.
+
 ## Implementation Notes (2026-07-03, PS-91)
 
 Web delivery is cookie-only as of PS-91:
@@ -71,7 +85,7 @@ Web delivery is cookie-only as of PS-91:
   `ps_token` cookie flagged `HttpOnly`, `Secure`, and `SameSite=Lax`,
   path-scoped to `/api/v1`, with the cookie lifetime matching the token
   lifetime. The token no longer appears in any response body.
-  `App\Services\AuthTokenCookie` is the single source for the name,
+  `App\Services\AuthTokenCookieService` is the single source for the name,
   path, and flags; `App\Http\Responses\AuthTokenResponse` builds the
   login and register responses.
 - `App\Http\Middleware\AuthenticateViaTokenCookie` (prepended to the
@@ -127,7 +141,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 ## Pros
 
 - Stateless authentication reduces session storage overhead and enables horizontal scaling without sticky sessions
-- JTI-based blacklist provides efficient token revocation without requiring a database lookup per request
+- JTI-based blacklist provides efficient token revocation without requiring a database lookup per request (for the blacklist check itself; Passport's separate DB revocation check still runs per request, see Implementation Notes below)
 - Redis-backed TTL management prevents unbounded blacklist growth; entries automatically expire matching token lifetime
 - Dual delivery mechanism (HTTP-only cookie for web, response body for mobile) optimizes security for each client type
 - Adds OAuth2 client management and scope-based access control out of the box, supporting future mobile clients and third-party integrations
@@ -146,7 +160,7 @@ A lightweight JWT library without additional OAuth2 infrastructure.
 
 ### Positive
 
-- Token payload can carry authorization claims (roles, permissions, user metadata), enabling faster authorization decisions without additional database queries
+- Token payload can carry authorization claims (roles, permissions, user metadata), enabling faster authorization decisions without additional database queries (for permission lookups specifically; the revocation check still queries the database per request, see Implementation Notes below)
 - Mobile clients can securely store JWTs on device and reuse them across app sessions without server-side session state
 - API can be scaled horizontally without sticky sessions or distributed session caching
 - Future Android/React Native client and third-party OAuth2 clients can reuse the same authentication infrastructure

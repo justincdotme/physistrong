@@ -1,3 +1,4 @@
+import { queryOptions, infiniteQueryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import {
   toWorkoutListItem,
@@ -8,6 +9,37 @@ import {
   type RawWorkoutEntry,
 } from './transformers'
 import type { Workout, WorkoutEntry, WorkoutListItem } from './types'
+
+/**
+ * Cache-update strategy per mutation: prefer writing the server response
+ * into cache when the endpoint returns the full resource. Use optimistic
+ * writes that reconcile on success for latency-sensitive updates. Fall
+ * back to invalidation for void-response operations, but flush pending
+ * debounced entry updates first so the refetch does not overwrite
+ * optimistic state. Anything that changes list membership invalidates
+ * the base ['workouts'] key.
+ */
+export const workoutQueries = {
+  base: ['workouts'] as const,
+  lists: ['workouts', 'list'] as const,
+  list: () =>
+    infiniteQueryOptions({
+      queryKey: ['workouts', 'list'] as const,
+      queryFn: ({ pageParam }) => listWorkouts(pageParam),
+      getNextPageParam: (last: PaginatedResponse) => last.nextPage,
+      initialPageParam: 1,
+    }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: ['workouts', id] as const,
+      queryFn: () => getWorkout(id),
+    }),
+  picker: () =>
+    queryOptions({
+      queryKey: ['workouts', 'list', 'picker'] as const,
+      queryFn: () => listWorkouts(1),
+    }),
+}
 
 export interface CreateWorkoutPayload {
   name: string
@@ -141,8 +173,13 @@ export async function createGroup(
   return toWorkout(data.data as RawWorkout)
 }
 
-export async function deleteGroup(workoutId: string, groupId: string): Promise<void> {
-  await api.delete(`/workouts/${workoutId}/groups/${groupId}`)
+export async function deleteGroup(
+  workoutId: string,
+  groupId: string,
+  opts?: { deleteEntries?: boolean }
+): Promise<void> {
+  const params = opts?.deleteEntries ? '?delete_entries=1' : ''
+  await api.delete(`/workouts/${workoutId}/groups/${groupId}${params}`)
 }
 
 export async function assignEntries(

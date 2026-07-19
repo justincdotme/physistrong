@@ -10,6 +10,42 @@ use Illuminate\Validation\Validator;
 
 trait ValidatesEntryMetrics
 {
+    /**
+     * @param Validator $validator
+     *
+     * @return void
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            // Enforce only on otherwise-valid requests; a failed exercise_id
+            // must not leak another user's exercise type through the message.
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $type = $this->metricExerciseType();
+
+            if ($type === null) {
+                return;
+            }
+
+            $allowed = $type->allowedMetrics();
+
+            foreach (array_keys((array) $this->input('metrics', [])) as $key) {
+                $dimension = MetricDimension::tryFrom((string) $key);
+
+                if ($dimension === null || ! in_array($dimension, $allowed, true)) {
+                    $validator->errors()->add(
+                        "metrics.{$key}",
+                        "The {$key} metric is not allowed for {$type->value} exercises.",
+                    );
+                }
+            }
+        });
+    }
+
+    /** @return ExerciseType|null */
     abstract protected function metricExerciseType(): ?ExerciseType;
 
     /** @return array<string, mixed> */
@@ -26,34 +62,5 @@ trait ValidatesEntryMetrics
         }
 
         return $rules;
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $validator) {
-            // Enforce only on otherwise-valid requests; a failed exercise_id
-            // must not leak another user's exercise type through the message.
-            if ($validator->errors()->isNotEmpty()) {
-                return;
-            }
-
-            $type = $this->metricExerciseType();
-            if ($type === null) {
-                return;
-            }
-
-            $allowed = $type->allowedMetrics();
-
-            foreach (array_keys((array) $this->input('metrics', [])) as $key) {
-                $dimension = MetricDimension::tryFrom((string) $key);
-
-                if ($dimension === null || ! in_array($dimension, $allowed, true)) {
-                    $validator->errors()->add(
-                        "metrics.{$key}",
-                        "The {$key} metric is not allowed for {$type->value} exercises."
-                    );
-                }
-            }
-        });
     }
 }

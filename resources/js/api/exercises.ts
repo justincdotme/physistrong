@@ -1,6 +1,28 @@
+import { queryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import { toExercise, type RawExercise } from './transformers'
 import type { Exercise, ExerciseType } from './types'
+import type { RawProgressResponse, RawRecordsResponse } from './progress'
+
+export const exerciseQueries = {
+  base: ['exercises'] as const,
+  list: () => queryOptions({ queryKey: ['exercises'] as const, queryFn: listExercises }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: ['exercises', id] as const,
+      queryFn: () => getExercise(id),
+    }),
+  records: (id: string) =>
+    queryOptions({
+      queryKey: ['exercises', id, 'records'] as const,
+      queryFn: () => fetchRecords(id),
+    }),
+  progress: (id: string, range: string) =>
+    queryOptions({
+      queryKey: ['exercises', id, 'progress', range] as const,
+      queryFn: () => fetchProgress(id, range),
+    }),
+}
 
 export interface CreateExercisePayload {
   name: string
@@ -42,4 +64,20 @@ export async function updateExercise(
 
 export async function deleteExercise(id: string): Promise<void> {
   await api.delete(`/exercises/${id}`)
+}
+
+export async function fetchProgress(
+  exerciseId: string,
+  range: string
+): Promise<RawProgressResponse> {
+  const apiRange = range.toLowerCase()
+  const { data } = await api.get(`/exercises/${exerciseId}/progress`, {
+    params: { range: apiRange },
+  })
+  return data.data as RawProgressResponse
+}
+
+export async function fetchRecords(exerciseId: string): Promise<RawRecordsResponse> {
+  const { data } = await api.get(`/exercises/${exerciseId}/records`)
+  return data.data as RawRecordsResponse
 }

@@ -217,6 +217,16 @@
   text-transform: uppercase;
 }
 
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.375rem;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -229,16 +239,32 @@
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
+@keyframes ps-sheet-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
 @keyframes ps-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes ps-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
-.ps-sheet {
+/* Radix keeps closing dialogs mounted only while the data-state element
+   itself is animating, so these hooks live on Overlay/Content. */
+.ps-sheet[data-state='open'] {
   animation: ps-sheet-up 0.15s ease-out;
 }
-.ps-backdrop {
+.ps-sheet[data-state='closed'] {
+  animation: ps-sheet-down 0.1s ease-in;
+}
+.ps-backdrop[data-state='open'] {
   animation: ps-fade-in 0.1s ease-out;
+}
+.ps-backdrop[data-state='closed'] {
+  animation: ps-fade-out 0.1s ease-in;
 }
 .ps-page {
   animation: ps-fade-in 0.09s ease-out;

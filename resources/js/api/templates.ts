@@ -1,3 +1,4 @@
+import { queryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import {
   toWorkoutTemplate,
@@ -8,6 +9,20 @@ import {
   type RawWorkout,
 } from './transformers'
 import type { Workout, WorkoutTemplate, WorkoutTemplateListItem } from './types'
+
+export const templateQueries = {
+  base: ['templates'] as const,
+  list: () =>
+    queryOptions({
+      queryKey: ['templates'] as const,
+      queryFn: listTemplates,
+    }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: ['templates', id] as const,
+      queryFn: () => getTemplate(id),
+    }),
+}
 
 export interface CreateTemplatePayload {
   name: string

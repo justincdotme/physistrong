@@ -21,6 +21,12 @@ class TemplateExerciseController extends Controller
 
     private const SHOW_EAGER_LOAD = ['exercises', 'groups'];
 
+    /**
+     * @param AttachExerciseRequest $request
+     * @param WorkoutTemplate       $template
+     *
+     * @return JsonResponse
+     */
     public function attach(AttachExerciseRequest $request, WorkoutTemplate $template): JsonResponse
     {
         $this->authorize('update', $template);
@@ -28,9 +34,7 @@ class TemplateExerciseController extends Controller
         $exerciseId = $request->validated('exercise_id');
 
         $attached = DB::transaction(function () use ($template, $exerciseId): bool {
-            // Discarded read: holding the parent row serializes concurrent
-            // attach/reorder so two attaches cannot compute the same max order.
-            WorkoutTemplate::whereKey($template->id)->lockForUpdate()->first();
+            WorkoutTemplate::whereKeyLocked($template->id)->first();
 
             if ($template->exercises()->where('exercises.id', $exerciseId)->exists()) {
                 return false;
@@ -57,6 +61,12 @@ class TemplateExerciseController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @param WorkoutTemplate $template
+     * @param Exercise        $exercise
+     *
+     * @return Response
+     */
     public function detach(WorkoutTemplate $template, Exercise $exercise): Response
     {
         $this->authorize('update', $template);
@@ -66,15 +76,22 @@ class TemplateExerciseController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * @param ReorderTemplateExercisesRequest $request
+     * @param WorkoutTemplate                 $template
+     *
+     * @return WorkoutTemplateResource
+     */
     public function reorder(ReorderTemplateExercisesRequest $request, WorkoutTemplate $template): WorkoutTemplateResource
     {
         $this->authorize('update', $template);
 
-        DB::transaction(function () use ($request, $template) {
-            WorkoutTemplate::whereKey($template->id)->lockForUpdate()->first();
+        DB::transaction(function () use ($request, $template): void {
+            WorkoutTemplate::whereKeyLocked($template->id)->first();
 
             /** @var array<int, int> $ids */
             $ids = $request->validated('ids');
+
             foreach ($ids as $index => $id) {
                 $template->exercises()->updateExistingPivot($id, ['exercise_order' => $index]);
             }

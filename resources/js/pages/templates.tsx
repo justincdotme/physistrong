@@ -3,9 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus, Trash2, Layers } from 'lucide-react'
 import type { WorkoutTemplateListItem } from '@/api/types'
-import { listTemplates, createTemplate, deleteTemplate } from '@/api/templates'
+import { templateQueries, createTemplate, deleteTemplate } from '@/api/templates'
+import { useDeleteConfirm } from '@/hooks/use-delete-confirm'
 import { useApp } from '@/lib/use-app'
-import { PageHeader, EmptyState, Button, Card, Sheet, ConfirmDialog } from '@/components/ui'
+import { PageHeader } from '@/components/ui/page-header'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Sheet } from '@/components/ui/sheet'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 export function TemplatesPage() {
   const navigate = useNavigate()
@@ -14,17 +20,13 @@ export function TemplatesPage() {
 
   const [createOpen, setCreateOpen] = useState(false)
   const [name, setName] = useState('')
-  const [deleting, setDeleting] = useState<WorkoutTemplateListItem | null>(null)
 
-  const { data: templates = [], isLoading } = useQuery({
-    queryKey: ['templates'],
-    queryFn: listTemplates,
-  })
+  const { data: templates = [], isLoading } = useQuery(templateQueries.list())
 
   const createMutation = useMutation({
     mutationFn: (n: string) => createTemplate({ name: n }),
     onSuccess: tpl => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
       setCreateOpen(false)
       setName('')
       toast('Template created.')
@@ -36,11 +38,15 @@ export function TemplatesPage() {
   const deleteMutation = useMutation({
     mutationFn: deleteTemplate,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] })
+      queryClient.invalidateQueries({ queryKey: templateQueries.base })
       toast('Template deleted.')
     },
     onError: () => toast('Could not delete template. Try again.', 'error'),
   })
+
+  const deleteConfirm = useDeleteConfirm<WorkoutTemplateListItem>(tpl =>
+    deleteMutation.mutate(tpl.id)
+  )
 
   if (isLoading) {
     return (
@@ -96,7 +102,7 @@ export function TemplatesPage() {
               <button
                 onClick={e => {
                   e.stopPropagation()
-                  setDeleting(tpl)
+                  deleteConfirm.request(tpl)
                 }}
                 aria-label={`Delete ${tpl.name}`}
                 title="Delete template"
@@ -140,10 +146,7 @@ export function TemplatesPage() {
         }
       >
         <div>
-          <label
-            htmlFor="template-name-input"
-            className="label-caps text-text-secondary block mb-1.5"
-          >
+          <label htmlFor="template-name-input" className="form-label">
             Template name
           </label>
           <input
@@ -157,16 +160,13 @@ export function TemplatesPage() {
       </Sheet>
 
       <ConfirmDialog
-        open={!!deleting}
+        {...deleteConfirm.dialogProps}
         title="Delete template?"
-        message={deleting ? `"${deleting.name}" will be removed from your templates.` : ''}
-        onCancel={() => setDeleting(null)}
-        onConfirm={() => {
-          if (deleting) {
-            deleteMutation.mutate(deleting.id)
-            setDeleting(null)
-          }
-        }}
+        message={
+          deleteConfirm.target
+            ? `"${deleteConfirm.target.name}" will be removed from your templates.`
+            : ''
+        }
       />
     </div>
   )

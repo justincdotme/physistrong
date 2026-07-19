@@ -57,10 +57,6 @@ WORKDIR /var/www/html
 
 COPY --chown=laravel:laravel . .
 
-RUN if [ "$BUILD_ENV" = "production" ]; then \
-    composer install --no-dev --optimize-autoloader; \
-  fi
-
 USER laravel
 
 EXPOSE 9000

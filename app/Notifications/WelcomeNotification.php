@@ -13,16 +13,26 @@ class WelcomeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * @param object $notifiable
+     *
+     * @return list<string>
+     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
+    /**
+     * @param object $notifiable
+     *
+     * @return MailMessage
+     */
     public function toMail(object $notifiable): MailMessage
     {
         $name = $notifiable->first_name ?? 'there';
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject('Welcome to Physistrong')
             ->greeting("Hey {$name},")
             ->line('Your Physistrong account is ready. Start tracking your workouts today.')

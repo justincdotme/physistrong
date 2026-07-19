@@ -1,142 +1,97 @@
 {
   "data": [
     {
-      "id": 18,
-      "name": "Throwaway 10 1782864860716",
-      "date": "2026-01-12",
+      "id": 7,
+      "name": "Test with Entries 4",
+      "date": "2026-06-16",
       "exhaustion": null,
       "soreness": null,
       "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "entries_count": 1,
+      "completed_entries_count": 1,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     },
     {
-      "id": 17,
-      "name": "Throwaway 9 1782864860707",
-      "date": "2026-01-11",
+      "id": 6,
+      "name": "Test with Entries 3",
+      "date": "2026-06-16",
       "exhaustion": null,
       "soreness": null,
       "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "entries_count": 1,
+      "completed_entries_count": 1,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     },
     {
-      "id": 16,
-      "name": "Throwaway 8 1782864860698",
-      "date": "2026-01-10",
+      "id": 5,
+      "name": "Test with Entries 2",
+      "date": "2026-06-16",
       "exhaustion": null,
       "soreness": null,
       "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "entries_count": 1,
+      "completed_entries_count": 1,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     },
     {
-      "id": 15,
-      "name": "Throwaway 7 1782864860689",
-      "date": "2026-01-09",
+      "id": 4,
+      "name": "Test with Entries 1",
+      "date": "2026-06-16",
       "exhaustion": null,
       "soreness": null,
       "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "entries_count": 1,
+      "completed_entries_count": 1,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     },
     {
-      "id": 14,
-      "name": "Throwaway 6 1782864860681",
-      "date": "2026-01-08",
+      "id": 1,
+      "name": "Capture Test Workout",
+      "date": "2026-06-15",
       "exhaustion": null,
       "soreness": null,
       "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "entries_count": 4,
+      "completed_entries_count": 4,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     },
     {
-      "id": 13,
-      "name": "Throwaway 5 1782864860672",
-      "date": "2026-01-07",
+      "id": 2,
+      "name": "Capture Test Show Workout",
+      "date": "2026-06-01",
       "exhaustion": null,
       "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z"
-    },
-    {
-      "id": 12,
-      "name": "Throwaway 4 1782864860663",
-      "date": "2026-01-06",
-      "exhaustion": null,
-      "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z"
-    },
-    {
-      "id": 11,
-      "name": "Throwaway 3 1782864860654",
-      "date": "2026-01-05",
-      "exhaustion": null,
-      "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z"
-    },
-    {
-      "id": 10,
-      "name": "Throwaway 2 1782864860645",
-      "date": "2026-01-04",
-      "exhaustion": null,
-      "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z"
-    },
-    {
-      "id": 9,
-      "name": "Throwaway 1 1782864860636",
-      "date": "2026-01-03",
-      "exhaustion": null,
-      "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z"
-    },
-    {
-      "id": 8,
-      "name": "Throwaway 0 1782864860627",
-      "date": "2026-01-02",
-      "exhaustion": null,
-      "soreness": null,
-      "exercises": [],
-      "entries_count": 0,
-      "completed_entries_count": 0,
+      "exercises": [
+        {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33,
+          "exercise_order": 0
+        },
+        {
+          "id": 882,
+          "name": "Capture Test Interval",
+          "type": "interval",
+          "equipment_type_id": 33,
+          "exercise_order": 1
+        }
+      ],
+      "entries_count": 3,
+      "completed_entries_count": 3,
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z"
     }
   ],
   "links": {
-    "first": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
-    "last": "https://physistrong.justinc.srv/api/v1/workouts?page=2",
-    "prev": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+    "first": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+    "last": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+    "prev": "http://127.0.0.1:32770/api/v1/workouts?page=1",
     "next": null
   },
   "meta": {
@@ -145,19 +100,19 @@
     "last_page": 2,
     "links": [
       {
-        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=1",
         "label": "&laquo; Previous",
         "page": 1,
         "active": false
       },
       {
-        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=1",
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=1",
         "label": "1",
         "page": 1,
         "active": false
       },
       {
-        "url": "https://physistrong.justinc.srv/api/v1/workouts?page=2",
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=2",
         "label": "2",
         "page": 2,
         "active": true
@@ -169,9 +124,9 @@
         "active": false
       }
     ],
-    "path": "https://physistrong.justinc.srv/api/v1/workouts",
+    "path": "http://127.0.0.1:32770/api/v1/workouts",
     "per_page": 15,
-    "to": 26,
-    "total": 26
+    "to": 21,
+    "total": 21
   }
 }

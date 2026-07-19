@@ -1,8 +1,8 @@
 {
-  "message": "The email field must be a valid email address.",
+  "message": "The selected measurement system is invalid.",
   "errors": {
-    "email": [
-      "The email field must be a valid email address."
+    "measurement_system": [
+      "The selected measurement system is invalid."
     ]
   }
 }

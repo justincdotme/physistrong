@@ -15,8 +15,8 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
+      "usage_count": 0,
+      "has_logged_data": false
     },
     {
       "id": 2,
@@ -57,8 +57,8 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
+      "usage_count": 0,
+      "has_logged_data": false
     },
     {
       "id": 4,
@@ -66,8 +66,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 18,
+      "equipment_type": {
+        "id": 18,
+        "name": "ab roller",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -141,7 +149,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
+      "usage_count": 0,
       "has_logged_data": false
     },
     {
@@ -367,7 +375,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
+      "usage_count": 0,
       "has_logged_data": false
     },
     {
@@ -614,8 +622,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 19,
+      "equipment_type": {
+        "id": 19,
+        "name": "atlas stone",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -632,8 +648,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 19,
+      "equipment_type": {
+        "id": 19,
+        "name": "atlas stone",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -650,8 +674,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 24,
+      "equipment_type": {
+        "id": 24,
+        "name": "log bar",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -738,8 +770,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 20,
+      "equipment_type": {
+        "id": 20,
+        "name": "balance board",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -1007,7 +1047,7 @@
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
+      "usage_count": 0,
       "has_logged_data": false
     },
     {
@@ -1614,8 +1654,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 21,
+      "equipment_type": {
+        "id": 21,
+        "name": "battle rope",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -1632,8 +1680,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -3367,17 +3423,17 @@
       "has_logged_data": false
     },
     {
-      "id": 885,
-      "name": "Capture Test Distance 1782864760496",
+      "id": 881,
+      "name": "Capture Test Distance",
       "type": "distance",
       "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 22,
+      "user_id": 1,
+      "equipment_type_id": 33,
       "equipment_type": {
-        "id": 22,
-        "name": "Capture Test Equipment 1782864760486",
+        "id": 33,
+        "name": "Capture Test Equipment",
         "is_system": false,
-        "user_id": 3,
+        "user_id": 1,
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z",
         "usage_count": 0
@@ -3391,71 +3447,23 @@
       "has_logged_data": false
     },
     {
-      "id": 889,
-      "name": "Capture Test Distance 1782864843587",
-      "type": "distance",
+      "id": 880,
+      "name": "Capture Test Hold",
+      "type": "timed_hold",
       "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 23,
+      "user_id": 1,
+      "equipment_type_id": 33,
       "equipment_type": {
-        "id": 23,
-        "name": "Capture Test Equipment 1782864843578",
+        "id": 33,
+        "name": "Capture Test Equipment",
         "is_system": false,
-        "user_id": 3,
+        "user_id": 1,
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z",
         "usage_count": 0
       },
       "type_attributes": {
-        "tracks_elevation": true
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 893,
-      "name": "Capture Test Distance 1782864860115",
-      "type": "distance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 24,
-      "equipment_type": {
-        "id": 24,
-        "name": "Capture Test Equipment 1782864860106",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "tracks_elevation": true
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 918,
-      "name": "Capture Test Distance 1783106255973",
-      "type": "distance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 28,
-      "equipment_type": {
-        "id": 28,
-        "name": "Capture Test Equipment 1783106255958",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "tracks_elevation": true
+        "target_duration_seconds": 60
       },
       "created_at": "2026-01-01T00:00:00.000000Z",
       "updated_at": "2026-01-01T00:00:00.000000Z",
@@ -3464,136 +3472,16 @@
     },
     {
       "id": 882,
-      "name": "Capture Test Hold 1782864734463",
-      "type": "timed_hold",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 21,
-      "equipment_type": {
-        "id": 21,
-        "name": "Capture Test Equipment 1782864734455",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "target_duration_seconds": 60
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 884,
-      "name": "Capture Test Hold 1782864760496",
-      "type": "timed_hold",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 22,
-      "equipment_type": {
-        "id": 22,
-        "name": "Capture Test Equipment 1782864760486",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "target_duration_seconds": 60
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 888,
-      "name": "Capture Test Hold 1782864843587",
-      "type": "timed_hold",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 23,
-      "equipment_type": {
-        "id": 23,
-        "name": "Capture Test Equipment 1782864843578",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "target_duration_seconds": 60
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 892,
-      "name": "Capture Test Hold 1782864860115",
-      "type": "timed_hold",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 24,
-      "equipment_type": {
-        "id": 24,
-        "name": "Capture Test Equipment 1782864860106",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "target_duration_seconds": 60
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 917,
-      "name": "Capture Test Hold 1783106255973",
-      "type": "timed_hold",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 28,
-      "equipment_type": {
-        "id": 28,
-        "name": "Capture Test Equipment 1783106255958",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "target_duration_seconds": 60
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 886,
-      "name": "Capture Test Interval 1782864760496",
+      "name": "Capture Test Interval",
       "type": "interval",
       "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 22,
+      "user_id": 1,
+      "equipment_type_id": 33,
       "equipment_type": {
-        "id": 22,
-        "name": "Capture Test Equipment 1782864760486",
+        "id": 33,
+        "name": "Capture Test Equipment",
         "is_system": false,
-        "user_id": 3,
+        "user_id": 1,
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z",
         "usage_count": 0
@@ -3609,95 +3497,17 @@
       "has_logged_data": false
     },
     {
-      "id": 890,
-      "name": "Capture Test Interval 1782864843587",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 23,
-      "equipment_type": {
-        "id": 23,
-        "name": "Capture Test Equipment 1782864843578",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 20,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 894,
-      "name": "Capture Test Interval 1782864860115",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 24,
-      "equipment_type": {
-        "id": 24,
-        "name": "Capture Test Equipment 1782864860106",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 20,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 919,
-      "name": "Capture Test Interval 1783106255973",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 28,
-      "equipment_type": {
-        "id": 28,
-        "name": "Capture Test Equipment 1783106255958",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 20,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 881,
-      "name": "Capture Test Resistance 1782864734463",
+      "id": 879,
+      "name": "Capture Test Resistance",
       "type": "resistance",
       "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 21,
+      "user_id": 1,
+      "equipment_type_id": 33,
       "equipment_type": {
-        "id": 21,
-        "name": "Capture Test Equipment 1782864734455",
+        "id": 33,
+        "name": "Capture Test Equipment",
         "is_system": false,
-        "user_id": 3,
+        "user_id": 1,
         "created_at": "2026-01-01T00:00:00.000000Z",
         "updated_at": "2026-01-01T00:00:00.000000Z",
         "usage_count": 0
@@ -3711,218 +3521,6 @@
       "updated_at": "2026-01-01T00:00:00.000000Z",
       "usage_count": 0,
       "has_logged_data": false
-    },
-    {
-      "id": 883,
-      "name": "Capture Test Resistance 1782864760496",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 22,
-      "equipment_type": {
-        "id": 22,
-        "name": "Capture Test Equipment 1782864760486",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "bodyweight_base": true,
-        "allows_added_weight": true,
-        "bilateral": false
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 887,
-      "name": "Capture Test Resistance 1782864843587",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 23,
-      "equipment_type": {
-        "id": 23,
-        "name": "Capture Test Equipment 1782864843578",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "bodyweight_base": true,
-        "allows_added_weight": true,
-        "bilateral": false
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 891,
-      "name": "Capture Test Resistance 1782864860115",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 24,
-      "equipment_type": {
-        "id": 24,
-        "name": "Capture Test Equipment 1782864860106",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "bodyweight_base": true,
-        "allows_added_weight": true,
-        "bilateral": false
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": true
-    },
-    {
-      "id": 916,
-      "name": "Capture Test Resistance 1783106255973",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 28,
-      "equipment_type": {
-        "id": 28,
-        "name": "Capture Test Equipment 1783106255958",
-        "is_system": false,
-        "user_id": 3,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "bodyweight_base": true,
-        "allows_added_weight": true,
-        "bilateral": false
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
-      "id": 900,
-      "name": "Capture Test Show Bench",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "bodyweight_base": false,
-        "allows_added_weight": true,
-        "bilateral": true
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
-    },
-    {
-      "id": 902,
-      "name": "Capture Test Show Bench 1782865696160",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "bodyweight_base": false,
-        "allows_added_weight": true,
-        "bilateral": true
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
-    },
-    {
-      "id": 904,
-      "name": "Capture Test Show Bench 1782865708716",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "bodyweight_base": false,
-        "allows_added_weight": true,
-        "bilateral": true
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
-    },
-    {
-      "id": 901,
-      "name": "Capture Test Show Intervals",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 15,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
-    },
-    {
-      "id": 903,
-      "name": "Capture Test Show Intervals 1782865696160",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 15,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
-    },
-    {
-      "id": 905,
-      "name": "Capture Test Show Intervals 1782865708716",
-      "type": "interval",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": null,
-      "equipment_type": null,
-      "type_attributes": {
-        "default_work_seconds": 30,
-        "default_rest_seconds": 15,
-        "default_rounds": 4
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 1,
-      "has_logged_data": true
     },
     {
       "id": 142,
@@ -5438,8 +5036,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 22,
+      "equipment_type": {
+        "id": 22,
+        "name": "dip station",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": true,
@@ -5456,8 +5062,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 22,
+      "equipment_type": {
+        "id": 22,
+        "name": "dip station",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": true,
         "allows_added_weight": true,
@@ -9186,8 +8800,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 23,
+      "equipment_type": {
+        "id": 23,
+        "name": "keg",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -9662,8 +9284,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 25,
+      "equipment_type": {
+        "id": 25,
+        "name": "parallel bars",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -10434,8 +10064,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 24,
+      "equipment_type": {
+        "id": 24,
+        "name": "log bar",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -12938,8 +12576,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 25,
+      "equipment_type": {
+        "id": 25,
+        "name": "parallel bars",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": true,
@@ -13516,8 +13162,16 @@
       "type": "distance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 26,
+      "equipment_type": {
+        "id": 26,
+        "name": "prowler sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "tracks_elevation": false
       },
@@ -14482,8 +14136,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 22,
+      "equipment_type": {
+        "id": 22,
+        "name": "dip station",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": true,
@@ -14622,8 +14284,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 27,
+      "equipment_type": {
+        "id": 27,
+        "name": "rope",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -14666,8 +14336,16 @@
       "type": "distance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 27,
+      "equipment_type": {
+        "id": 27,
+        "name": "rope",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "tracks_elevation": false
       },
@@ -14806,8 +14484,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 28,
+      "equipment_type": {
+        "id": 28,
+        "name": "sandbag",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16398,8 +16084,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16416,8 +16110,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16434,8 +16136,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16452,8 +16162,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16470,8 +16188,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16488,8 +16214,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -16506,8 +16240,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 29,
+      "equipment_type": {
+        "id": 29,
+        "name": "sled",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -19323,32 +19065,6 @@
       "has_logged_data": false
     },
     {
-      "id": 880,
-      "name": "Test Exercise",
-      "type": "resistance",
-      "notes": null,
-      "user_id": 3,
-      "equipment_type_id": 1,
-      "equipment_type": {
-        "id": 1,
-        "name": "barbell",
-        "is_system": true,
-        "user_id": null,
-        "created_at": "2026-01-01T00:00:00.000000Z",
-        "updated_at": "2026-01-01T00:00:00.000000Z",
-        "usage_count": 0
-      },
-      "type_attributes": {
-        "bodyweight_base": true,
-        "allows_added_weight": true,
-        "bilateral": false
-      },
-      "created_at": "2026-01-01T00:00:00.000000Z",
-      "updated_at": "2026-01-01T00:00:00.000000Z",
-      "usage_count": 0,
-      "has_logged_data": false
-    },
-    {
       "id": 814,
       "name": "The Straddle",
       "type": "timed_hold",
@@ -19422,8 +19138,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 30,
+      "equipment_type": {
+        "id": 30,
+        "name": "tire",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -20604,8 +20328,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 31,
+      "equipment_type": {
+        "id": 31,
+        "name": "wrist roller",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,
@@ -20648,8 +20380,16 @@
       "type": "resistance",
       "notes": null,
       "user_id": null,
-      "equipment_type_id": null,
-      "equipment_type": null,
+      "equipment_type_id": 32,
+      "equipment_type": {
+        "id": 32,
+        "name": "yoke",
+        "is_system": true,
+        "user_id": null,
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z",
+        "usage_count": 0
+      },
       "type_attributes": {
         "bodyweight_base": false,
         "allows_added_weight": false,

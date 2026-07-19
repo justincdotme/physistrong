@@ -15,7 +15,7 @@ class ReorderTemplateExercisesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ids' => ['required', 'array', 'min:1'],
+            'ids'   => ['required', 'array', 'min:1'],
             'ids.*' => [
                 'required',
                 'integer',
@@ -25,9 +25,14 @@ class ReorderTemplateExercisesRequest extends FormRequest
         ];
     }
 
+    /**
+     * @param Validator $validator
+     *
+     * @return void
+     */
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function (Validator $validator) {
+        $validator->after(function (Validator $validator): void {
             if ($validator->errors()->isNotEmpty()) {
                 return;
             }

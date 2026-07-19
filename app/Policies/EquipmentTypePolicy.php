@@ -10,21 +10,23 @@ use Illuminate\Auth\Access\Response;
 
 class EquipmentTypePolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
+    /**
+     * @param User          $user
+     * @param EquipmentType $equipmentType
+     *
+     * @return boolean
+     */
     public function view(User $user, EquipmentType $equipmentType): bool
     {
         return $equipmentType->isVisibleTo($user);
     }
 
-    public function create(User $user): bool
-    {
-        return true;
-    }
-
+    /**
+     * @param User          $user
+     * @param EquipmentType $equipmentType
+     *
+     * @return Response
+     */
     public function update(User $user, EquipmentType $equipmentType): Response
     {
         if ($equipmentType->is_system) {
@@ -36,6 +38,12 @@ class EquipmentTypePolicy
             : Response::deny();
     }
 
+    /**
+     * @param User          $user
+     * @param EquipmentType $equipmentType
+     *
+     * @return Response
+     */
     public function delete(User $user, EquipmentType $equipmentType): Response
     {
         if ($equipmentType->is_system) {

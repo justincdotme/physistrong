@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogIntensityMetric extends Model
 {
+    /** @var string */
     protected $table = 'log_intensity_metrics';
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'rpe',
-        'avg_hr',
-        'max_hr',
+        'heart_rate_avg',
+        'heart_rate_peak',
     ];
 
     /** @return BelongsTo<WorkoutEntry, $this> */

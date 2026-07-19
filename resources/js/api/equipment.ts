@@ -1,6 +1,12 @@
+import { queryOptions } from '@tanstack/react-query'
 import { api } from './client'
 import { toEquipmentType, type RawEquipmentType } from './transformers'
 import type { EquipmentType } from './types'
+
+export const equipmentQueries = {
+  base: ['equipment'] as const,
+  list: () => queryOptions({ queryKey: ['equipment'] as const, queryFn: listEquipment }),
+}
 
 export async function listEquipment(): Promise<EquipmentType[]> {
   const { data } = await api.get('/equipment-types')

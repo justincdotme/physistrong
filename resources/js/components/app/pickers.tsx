@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Search, Plus, ChevronRight, ChevronLeft, Grid, Copy } from 'lucide-react'
 import type { Exercise, EquipmentType, WorkoutListItem } from '@/api/types'
-import { listExercises } from '@/api/exercises'
-import { listEquipment } from '@/api/equipment'
-import { listTemplates, cloneTemplate } from '@/api/templates'
-import { listWorkouts, copyWorkout } from '@/api/workouts'
+import { exerciseQueries } from '@/api/exercises'
+import { equipmentQueries } from '@/api/equipment'
+import { templateQueries, cloneTemplate } from '@/api/templates'
+import { workoutQueries, copyWorkout } from '@/api/workouts'
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
+import { useApp } from '@/lib/use-app'
 import { todayISO, formatDate } from '@/lib/formatters'
 import { TYPE_OPTIONS } from '@/lib/exercise-types'
 
@@ -27,14 +28,8 @@ interface ExercisePickerProps {
 }
 
 export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps) {
-  const { data: exercises = [] } = useQuery({
-    queryKey: ['exercises'],
-    queryFn: listExercises,
-  })
-  const { data: equipment = [] } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: listEquipment,
-  })
+  const { data: exercises = [] } = useQuery(exerciseQueries.list())
+  const { data: equipment = [] } = useQuery(equipmentQueries.list())
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
 
@@ -105,6 +100,7 @@ export function NewWorkoutWizard({
   onCloneSuccess,
   onCopySuccess,
 }: NewWorkoutWizardProps) {
+  const { toast } = useApp()
   const [step, setStep] = useState<
     'method' | 'details' | 'template-picker' | 'template-date' | 'workout-picker' | 'workout-date'
   >('method')
@@ -113,14 +109,10 @@ export function NewWorkoutWizard({
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutListItem | null>(null)
 
-  const { data: templates = [] } = useQuery({
-    queryKey: ['templates'],
-    queryFn: listTemplates,
-  })
+  const { data: templates = [] } = useQuery(templateQueries.list())
 
   const { data: recentWorkouts } = useQuery({
-    queryKey: ['workouts', 'picker'],
-    queryFn: () => listWorkouts(1),
+    ...workoutQueries.picker(),
     enabled: step === 'workout-picker',
   })
 
@@ -131,6 +123,7 @@ export function NewWorkoutWizard({
       onClose()
       onCloneSuccess?.(workout.id)
     },
+    onError: () => toast('Could not create workout from template. Try again.', 'error'),
   })
 
   const copyMutation = useMutation({
@@ -140,6 +133,7 @@ export function NewWorkoutWizard({
       onClose()
       onCopySuccess?.(workout.id)
     },
+    onError: () => toast('Could not copy workout. Try again.', 'error'),
   })
 
   useEffect(() => {
@@ -333,7 +327,7 @@ export function NewWorkoutWizard({
       {step === 'template-date' && (
         <div className="flex flex-col gap-4">
           <div>
-            <label htmlFor="clone-name" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="clone-name" className="form-label">
               Workout name{' '}
               <span className="normal-case tracking-normal text-text-muted">
                 (optional override)
@@ -348,7 +342,7 @@ export function NewWorkoutWizard({
             />
           </div>
           <div>
-            <label htmlFor="clone-date" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="clone-date" className="form-label">
               Date
             </label>
             <input
@@ -394,7 +388,7 @@ export function NewWorkoutWizard({
       {step === 'workout-date' && (
         <div className="flex flex-col gap-4">
           <div>
-            <label htmlFor="copy-name" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="copy-name" className="form-label">
               Workout name{' '}
               <span className="normal-case tracking-normal text-text-muted">
                 (optional override)
@@ -409,7 +403,7 @@ export function NewWorkoutWizard({
             />
           </div>
           <div>
-            <label htmlFor="copy-date" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="copy-date" className="form-label">
               Date
             </label>
             <input
@@ -426,7 +420,7 @@ export function NewWorkoutWizard({
       {step === 'details' && (
         <div className="flex flex-col gap-4">
           <div>
-            <label htmlFor="workout-name" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="workout-name" className="form-label">
               Workout name
             </label>
             <input
@@ -438,7 +432,7 @@ export function NewWorkoutWizard({
             />
           </div>
           <div>
-            <label htmlFor="workout-date" className="label-caps text-text-secondary block mb-1.5">
+            <label htmlFor="workout-date" className="form-label">
               Date
             </label>
             <input
@@ -492,7 +486,7 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
   function NumInput({ label, value, set, suffix }: NumInputProps) {
     return (
       <div>
-        <label className="label-caps text-text-secondary block mb-1.5">{label}</label>
+        <label className="form-label">{label}</label>
         <div className="flex items-center gap-1">
           <input
             type="number"
@@ -533,7 +527,7 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
       </p>
       <div className="flex flex-col gap-4">
         <div>
-          <label className="label-caps text-text-secondary block mb-1.5">
+          <label className="form-label">
             Group name{' '}
             <span className="normal-case tracking-normal text-text-muted">(optional)</span>
           </label>

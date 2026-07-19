@@ -5,6 +5,7 @@ import { markAuthenticated } from '@/api/client'
 import { getProfile } from '@/api/user'
 import { logout as logoutApi } from '@/api/auth'
 import { AuthContext } from './auth-context'
+import { useApp } from './use-app'
 import type { User } from '@/api/types'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -14,6 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { toast } = useApp()
 
   useEffect(() => {
     getProfile()
@@ -45,11 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [theme])
 
   const handleLogout = useCallback(async () => {
-    await logoutApi()
+    try {
+      await logoutApi()
+    } catch {
+      toast('Could not log out. Try again.', 'error')
+      return
+    }
     setUser(null)
     queryClient.clear()
     navigate('/login')
-  }, [queryClient, navigate])
+  }, [queryClient, navigate, toast])
 
   return (
     <AuthContext.Provider value={{ user, isLoading, setUser, handleLogout }}>

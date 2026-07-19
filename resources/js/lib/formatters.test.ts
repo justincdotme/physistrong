@@ -1,11 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import {
-  formatDate,
-  formatDateShort,
-  formatDateCompact,
-  formatDuration,
-  todayISO,
-} from './formatters'
+import { formatDate, formatDateCompact, formatDuration, todayISO } from './formatters'
 
 describe('formatDuration', () => {
   it.each([
@@ -75,44 +69,6 @@ describe('formatDate', () => {
   })
 })
 
-describe('formatDateShort', () => {
-  it.each([['', '']])('returns empty string for empty input: "%s"', (input, expected) => {
-    expect(formatDateShort(input)).toBe(expected)
-  })
-
-  it.each([
-    ['2026-06-30', 'Jun 30'],
-    ['2026-01-01', 'Jan 1'],
-    ['2026-12-31', 'Dec 31'],
-    ['2025-02-14', 'Feb 14'],
-    ['2000-03-15', 'Mar 15'],
-    ['1999-11-09', 'Nov 9'],
-  ])('formats ISO date to "Mon DD": %s → %s', (input, expected) => {
-    expect(formatDateShort(input)).toBe(expected)
-  })
-
-  it('handles all 12 months', () => {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
-    months.forEach((month, index) => {
-      const result = formatDateShort(`2026-${String(index + 1).padStart(2, '0')}-15`)
-      expect(result).toBe(`${month} 15`)
-    })
-  })
-})
-
 describe('formatDateCompact', () => {
   it.each([['', '']])('returns empty string for empty input: "%s"', (input, expected) => {
     expect(formatDateCompact(input)).toBe(expected)
@@ -152,14 +108,13 @@ describe('todayISO', () => {
 
 describe('timezone safety - civil date formatters never shift dates', () => {
   it.each([
-    ['2026-01-01', 'Jan 1, 2026', 'Jan 1', '01/01'],
-    ['2026-07-03', 'Jul 3, 2026', 'Jul 3', '07/03'],
-    ['2026-12-31', 'Dec 31, 2026', 'Dec 31', '12/31'],
+    ['2026-01-01', 'Jan 1, 2026', '01/01'],
+    ['2026-07-03', 'Jul 3, 2026', '07/03'],
+    ['2026-12-31', 'Dec 31, 2026', '12/31'],
   ])(
     'preserves calendar day %s regardless of runtime timezone',
-    (iso, expectedFull, expectedShort, expectedCompact) => {
+    (iso, expectedFull, expectedCompact) => {
       expect(formatDate(iso)).toBe(expectedFull)
-      expect(formatDateShort(iso)).toBe(expectedShort)
       expect(formatDateCompact(iso)).toBe(expectedCompact)
     }
   )

@@ -15,39 +15,7 @@ class WorkoutTemplateTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createExercise(
-        ?User $user,
-        string $type = 'resistance',
-        array $overrides = [],
-    ): Exercise {
-        $exercise = Exercise::create(array_merge([
-            'name' => 'Test Exercise',
-            'type' => $type,
-            'user_id' => $user?->id,
-        ], $overrides));
-
-        $defaults = match ($type) {
-            'resistance' => [],
-            'timed_hold' => [],
-            'distance' => [],
-            'interval' => [],
-            default => [],
-        };
-
-        $childRelation = match ($type) {
-            'resistance' => 'resistance',
-            'timed_hold' => 'timedHold',
-            'distance' => 'distance',
-            'interval' => 'interval',
-            default => 'resistance',
-        };
-
-        $exercise->$childRelation()->create($defaults);
-
-        return $exercise;
-    }
-
-    // -- Store --
+    // Store
 
     public function test_creates_template(): void
     {
@@ -55,7 +23,7 @@ class WorkoutTemplateTest extends TestCase
         Passport::actingAs($user);
 
         $response = $this->postJson('/api/v1/templates', [
-            'name' => 'Push Day',
+            'name'  => 'Push Day',
             'notes' => 'Chest and shoulders',
         ]);
 
@@ -64,7 +32,7 @@ class WorkoutTemplateTest extends TestCase
             ->assertJsonPath('data.notes', 'Chest and shoulders');
 
         $this->assertDatabaseHas('workout_templates', [
-            'name' => 'Push Day',
+            'name'    => 'Push Day',
             'user_id' => $user->id,
         ]);
     }
@@ -93,11 +61,11 @@ class WorkoutTemplateTest extends TestCase
             ->assertJsonValidationErrors(['name']);
     }
 
-    // -- Index --
+    // Index
 
     public function test_lists_own_templates(): void
     {
-        $user = User::factory()->create();
+        $user  = User::factory()->create();
         $other = User::factory()->create();
 
         WorkoutTemplate::factory(3)->create(['user_id' => $user->id]);
@@ -111,12 +79,12 @@ class WorkoutTemplateTest extends TestCase
         $this->assertCount(3, $response->json('data'));
     }
 
-    // -- Show --
+    // Show
 
     public function test_shows_template_with_exercises(): void
     {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance', ['name' => 'Bench Press']);
+        $user     = User::factory()->create();
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id, 'name' => 'Bench Press']);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
 
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
@@ -134,8 +102,8 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_cannot_view_other_users_template(): void
     {
-        $owner = User::factory()->create();
-        $viewer = User::factory()->create();
+        $owner    = User::factory()->create();
+        $viewer   = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($viewer);
@@ -144,11 +112,11 @@ class WorkoutTemplateTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Update --
+    // Update
 
     public function test_updates_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Old Name']);
         Passport::actingAs($user);
 
@@ -159,8 +127,8 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_cannot_update_other_users_template(): void
     {
-        $owner = User::factory()->create();
-        $updater = User::factory()->create();
+        $owner    = User::factory()->create();
+        $updater  = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $owner->id]);
 
         Passport::actingAs($updater);
@@ -169,11 +137,11 @@ class WorkoutTemplateTest extends TestCase
             ->assertStatus(403);
     }
 
-    // -- Destroy --
+    // Destroy
 
     public function test_deletes_template(): void
     {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         Passport::actingAs($user);
 
@@ -185,12 +153,12 @@ class WorkoutTemplateTest extends TestCase
 
     public function test_delete_cascades_exercises_and_groups(): void
     {
-        $user = User::factory()->create();
-        $exercise = $this->createExercise($user, 'resistance');
+        $user     = User::factory()->create();
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => $user->id]);
         $template = WorkoutTemplate::factory()->create(['user_id' => $user->id]);
         $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
         $group = $template->groups()->create([
-            'name' => 'Superset',
+            'name'           => 'Superset',
             'planned_rounds' => 3,
         ]);
 
@@ -204,7 +172,7 @@ class WorkoutTemplateTest extends TestCase
         $this->assertDatabaseMissing('template_entry_groups', ['id' => $group->id]);
     }
 
-    // -- Auth --
+    // Auth
 
     public function test_unauthenticated_cannot_access_templates(): void
     {

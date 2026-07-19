@@ -1,26 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Seeds the system equipment-type catalog (ADR-004).
- *
- * System types carry a null user_id and is_system = true. Upsert keeps ids
- * stable so exercise foreign keys survive a re-seed.
- */
+/** Upserts system equipment types so ids stay stable across re-seeds. */
 class EquipmentTypeSeeder extends Seeder
 {
+    /** @return void */
     public function run(): void
     {
         $now = now();
 
         foreach ($this->catalog() as $name) {
+            $existing = DB::table('equipment_types')
+                ->where('name', $name)
+                ->whereNull('user_id')
+                ->exists();
+
+            $payload = ['is_system' => true, 'updated_at' => $now];
+
+            if (! $existing) {
+                $payload['created_at'] = $now;
+            }
+
             DB::table('equipment_types')->updateOrInsert(
                 ['name' => $name, 'user_id' => null],
-                ['is_system' => true, 'created_at' => $now, 'updated_at' => $now],
+                $payload,
             );
         }
     }
@@ -30,7 +39,7 @@ class EquipmentTypeSeeder extends Seeder
      */
     private function catalog(): array
     {
-        $path = database_path('seeders/data/equipment_types.json');
+        $path  = database_path('seeders/data/equipment_types.json');
         $names = json_decode((string) file_get_contents($path), true);
 
         if (! is_array($names)) {

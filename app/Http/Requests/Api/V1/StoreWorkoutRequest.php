@@ -12,10 +12,10 @@ class StoreWorkoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'date' => ['required', 'date'],
+            'name'       => ['required', 'string', 'max:255'],
+            'date'       => ['required', 'date'],
             'exhaustion' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
-            'soreness' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
+            'soreness'   => ['sometimes', 'nullable', 'integer', 'min:1', 'max:10'],
         ];
     }
 }

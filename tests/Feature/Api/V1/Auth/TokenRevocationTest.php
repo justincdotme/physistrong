@@ -29,14 +29,14 @@ class TokenRevocationTest extends TestCase
 
         $token = $this->login($this->createUser());
 
-        $dbToken = Token::query()->sole();
+        $dbToken   = Token::query()->sole();
         $expiresAt = $dbToken->expires_at;
 
         $this->travelTo(now()->addDays(10));
 
         $this->withToken($token)->postJson('/api/v1/logout')->assertNoContent();
 
-        $key = 'auth:revoked-jti:'.$dbToken->getKey();
+        $key = 'auth:revoked-jti:' . $dbToken->getKey();
 
         $this->assertTrue(Cache::has($key));
         $this->assertTrue($dbToken->fresh()->revoked);
@@ -65,7 +65,7 @@ class TokenRevocationTest extends TestCase
     {
         $user = $this->createUser();
 
-        $firstToken = $this->login($user);
+        $firstToken  = $this->login($user);
         $secondToken = $this->login($user);
 
         $this->withToken($firstToken)->postJson('/api/v1/logout')->assertNoContent();
@@ -85,7 +85,7 @@ class TokenRevocationTest extends TestCase
     private function createUser(): User
     {
         return User::factory()->create([
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
     }

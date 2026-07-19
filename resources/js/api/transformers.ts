@@ -184,7 +184,6 @@ export function toWorkoutListItem(raw: RawWorkoutListItem): WorkoutListItem {
 export function toWorkout(raw: RawWorkout): Workout {
   return {
     id: String(raw.id),
-    userId: '',
     name: raw.name,
     date: raw.date,
     exhaustion: raw.exhaustion,
@@ -280,8 +279,8 @@ export function toWorkoutEntry(raw: RawWorkoutEntry): WorkoutEntry {
   if (metrics.intensity) {
     entry.intensityMetric = {
       rpe: metrics.intensity.rpe as number | null,
-      avgHr: metrics.intensity.avg_hr as number | null,
-      maxHr: metrics.intensity.max_hr as number | null,
+      heartRateAvg: metrics.intensity.heart_rate_avg as number | null,
+      heartRatePeak: metrics.intensity.heart_rate_peak as number | null,
     }
   }
 
@@ -333,7 +332,6 @@ export interface RawWorkoutTemplateListItem {
 
 function toTemplateExercise(raw: RawTemplateExercise): TemplateExercise {
   return {
-    id: String(raw.id),
     exerciseId: String(raw.id),
     name: raw.name,
     type: raw.type as ExerciseType,
@@ -446,8 +444,8 @@ export function toMetricsPayload(entry: WorkoutEntry): Record<string, unknown> {
   if (entry.intensityMetric) {
     payload.intensity = {
       rpe: entry.intensityMetric.rpe,
-      avg_hr: entry.intensityMetric.avgHr,
-      max_hr: entry.intensityMetric.maxHr,
+      heart_rate_avg: entry.intensityMetric.heartRateAvg,
+      heart_rate_peak: entry.intensityMetric.heartRatePeak,
     }
   }
 

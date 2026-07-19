@@ -27,8 +27,8 @@ class UpdateExerciseRequest extends FormRequest
                     ->ignore($exercise),
             ],
             'equipment_type_id' => $this->equipmentTypeRule(),
-            'notes' => ['nullable', 'string'],
-            'type_attributes' => ['sometimes', 'array'],
+            'notes'             => ['nullable', 'string'],
+            'type_attributes'   => ['sometimes', 'array'],
         ], $this->typeRulesFor($exercise->type));
     }
 }

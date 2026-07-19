@@ -11,13 +11,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Exercise */
 class ExerciseSummaryResource extends JsonResource
 {
-    /** @return array<string, mixed> */
+    /**
+     * @param Request $request
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         $data = [
-            'id' => $this->id,
-            'name' => $this->name,
-            'type' => $this->type,
+            'id'                => $this->id,
+            'name'              => $this->name,
+            'type'              => $this->type,
             'equipment_type_id' => $this->equipment_type_id,
         ];
 

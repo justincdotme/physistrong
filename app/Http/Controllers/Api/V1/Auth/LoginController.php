@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class LoginController extends Controller
 {
+    /**
+     * @param LoginRequest $request
+     *
+     * @return JsonResponse
+     */
     public function __invoke(LoginRequest $request): JsonResponse
     {
-        $key = 'login:'.$request->ip();
+        $key = 'login:' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return response()->json([

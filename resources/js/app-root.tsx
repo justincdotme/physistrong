@@ -45,8 +45,8 @@ export function AppRoot() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <AppProvider>
+        <AppProvider>
+          <AuthProvider>
             <Routes>
               <Route
                 path="/login"
@@ -67,7 +67,6 @@ export function AppRoot() {
               <Route path="/password/reset" element={<PasswordResetRequestPage />} />
               <Route path="/password/reset/:token" element={<PasswordResetFormPage />} />
               <Route
-                path="/*"
                 element={
                   <AuthGate>
                     <Shell />
@@ -87,8 +86,8 @@ export function AppRoot() {
                 <Route path="*" element={<Navigate to="/workouts" replace />} />
               </Route>
             </Routes>
-          </AppProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </AppProvider>
       </BrowserRouter>
     </QueryClientProvider>
   )

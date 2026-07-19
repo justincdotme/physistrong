@@ -41,13 +41,13 @@ class PasswordResetTest extends TestCase
 
     public function test_resets_password_with_valid_token(): void
     {
-        $user = User::factory()->create(['email' => 'user@example.com']);
+        $user  = User::factory()->create(['email' => 'user@example.com']);
         $token = Password::createToken($user);
 
         $this->postJson('/api/v1/password/reset', [
-            'email' => 'user@example.com',
-            'token' => $token,
-            'password' => 'newpassword',
+            'email'                 => 'user@example.com',
+            'token'                 => $token,
+            'password'              => 'newpassword',
             'password_confirmation' => 'newpassword',
         ])->assertOk();
     }
@@ -57,22 +57,22 @@ class PasswordResetTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $this->postJson('/api/v1/password/reset', [
-            'email' => 'user@example.com',
-            'token' => 'bad-token',
-            'password' => 'newpassword',
+            'email'                 => 'user@example.com',
+            'token'                 => 'bad-token',
+            'password'              => 'newpassword',
             'password_confirmation' => 'newpassword',
         ])->assertStatus(422);
     }
 
     public function test_reset_validates_password_confirmation(): void
     {
-        $user = User::factory()->create(['email' => 'user@example.com']);
+        $user  = User::factory()->create(['email' => 'user@example.com']);
         $token = Password::createToken($user);
 
         $this->postJson('/api/v1/password/reset', [
-            'email' => 'user@example.com',
-            'token' => $token,
-            'password' => 'newpassword',
+            'email'                 => 'user@example.com',
+            'token'                 => $token,
+            'password'              => 'newpassword',
             'password_confirmation' => 'mismatch',
         ])->assertStatus(422)
             ->assertJsonValidationErrors('password');

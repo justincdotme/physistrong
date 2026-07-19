@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Enums\ExerciseType;
 use Closure;
+use Database\Factories\ExerciseFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,10 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property ExerciseType $type
- * @property mixed $pivot
+ * @property mixed        $pivot
  */
 class Exercise extends Model
 {
+    /** @use HasFactory<ExerciseFactory> */
+    use HasFactory;
+
     /** @var list<string> */
     protected $fillable = [
         'name',
@@ -28,12 +33,17 @@ class Exercise extends Model
         'notes',
     ];
 
-    /** @return array<string, string> */
-    protected function casts(): array
+    /**
+     * System rows (user_id null) visible to all; user rows only to their owner.
+     * Query closure and instance predicate must change together.
+     *
+     * @param User $user
+     *
+     * @return Closure
+     */
+    public static function visibilityConstraint(User $user): Closure
     {
-        return [
-            'type' => ExerciseType::class,
-        ];
+        return fn ($query) => $query->whereNull('user_id')->orWhere('user_id', $user->id);
     }
 
     /** @return BelongsTo<User, $this> */
@@ -95,7 +105,8 @@ class Exercise extends Model
      * usage_count sums workout and template references; entry-only usage
      * surfaces through has_logged_data.
      *
-     * @param  Builder<Exercise>  $query
+     * @param Builder<Exercise> $query
+     *
      * @return Builder<Exercise>
      */
     public function scopeWithUsage(Builder $query): Builder
@@ -105,6 +116,9 @@ class Exercise extends Model
             ->withExists(['entries as has_logged_data']);
     }
 
+    /**
+     * @return boolean
+     */
     public function isInUse(): bool
     {
         return $this->workouts()->exists()
@@ -113,16 +127,9 @@ class Exercise extends Model
     }
 
     /**
-     * System rows (user_id null) visible to all; user rows only to their owner.
-     * Query closure and instance predicate must change together.
-     */
-    public static function visibilityConstraint(User $user): Closure
-    {
-        return fn ($query) => $query->whereNull('user_id')->orWhere('user_id', $user->id);
-    }
-
-    /**
-     * @param  Builder<Exercise>  $query
+     * @param Builder<Exercise> $query
+     * @param User              $user
+     *
      * @return Builder<Exercise>
      */
     public function scopeVisibleTo(Builder $query, User $user): Builder
@@ -130,8 +137,21 @@ class Exercise extends Model
         return $query->where(static::visibilityConstraint($user));
     }
 
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
     public function isVisibleTo(User $user): bool
     {
         return $this->user_id === null || $this->user_id === $user->id;
+    }
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'type' => ExerciseType::class,
+        ];
     }
 }

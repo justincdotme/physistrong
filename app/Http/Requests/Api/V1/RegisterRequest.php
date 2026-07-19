@@ -14,11 +14,11 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'email'              => ['required', 'email', 'unique:users,email'],
+            'password'           => ['required', 'string', 'min:6', 'confirmed'],
             'measurement_system' => ['required', new Enum(MeasurementSystem::class)],
-            'first_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['nullable', 'string', 'max:255'],
+            'first_name'         => ['nullable', 'string', 'max:255'],
+            'last_name'          => ['nullable', 'string', 'max:255'],
         ];
     }
 }

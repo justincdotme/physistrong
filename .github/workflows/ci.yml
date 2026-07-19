@@ -27,6 +27,7 @@ jobs:
       - name: Generate test app key
         run: php artisan key:generate
       - run: vendor/bin/pint --test
+      - run: vendor/bin/phpcs
       - run: vendor/bin/phpstan analyse --memory-limit=1G
       - run: php artisan test
         env:

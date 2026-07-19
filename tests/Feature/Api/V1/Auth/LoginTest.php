@@ -23,17 +23,17 @@ class LoginTest extends TestCase
     public function test_logs_in_with_valid_credentials_and_sets_the_token_cookie(): void
     {
         User::factory()->create([
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
 
         $response = $this->postJson('/api/v1/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
 
         $response->assertOk()
-            ->assertJsonStructure(['user'])
+            ->assertJsonStructure(['data'])
             ->assertJsonMissingPath('token');
 
         $this->assertIssuesAuthTokenCookie($response);
@@ -42,12 +42,12 @@ class LoginTest extends TestCase
     public function test_rejects_wrong_password(): void
     {
         User::factory()->create([
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'secret123',
         ]);
 
         $this->postJson('/api/v1/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'wrong',
         ])->assertStatus(401);
     }
@@ -55,7 +55,7 @@ class LoginTest extends TestCase
     public function test_rejects_nonexistent_email(): void
     {
         $this->postJson('/api/v1/login', [
-            'email' => 'nobody@example.com',
+            'email'    => 'nobody@example.com',
             'password' => 'secret123',
         ])->assertStatus(401);
     }
@@ -73,13 +73,13 @@ class LoginTest extends TestCase
 
         for ($i = 0; $i < 5; $i++) {
             $this->postJson('/api/v1/login', [
-                'email' => 'user@example.com',
+                'email'    => 'user@example.com',
                 'password' => 'wrong',
             ]);
         }
 
         $this->postJson('/api/v1/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'wrong',
         ])->assertStatus(429);
     }

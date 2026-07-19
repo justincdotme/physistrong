@@ -6,10 +6,10 @@ use App\Models\User;
 use App\Models\WorkoutTemplate;
 use Laravel\Dusk\Browser;
 
-it('shows the empty state when the user has no templates', function () {
+it('shows the empty state when the user has no templates', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@templates-page')
@@ -18,12 +18,12 @@ it('shows the empty state when the user has no templates', function () {
     });
 });
 
-it('lists the user templates', function () {
+it('lists the user templates', function (): void {
     $user = User::factory()->create();
     WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Push Day']);
     WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Pull Day']);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@template-list')
@@ -33,11 +33,11 @@ it('lists the user templates', function () {
     });
 });
 
-it('navigates to the editor when a template is tapped', function () {
-    $user = User::factory()->create();
+it('navigates to the editor when a template is tapped', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Leg Day']);
 
-    $this->browse(function (Browser $browser) use ($user, $template) {
+    $this->browse(function (Browser $browser) use ($user, $template): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@template-list')
@@ -47,10 +47,10 @@ it('navigates to the editor when a template is tapped', function () {
     });
 });
 
-it('creates a template and opens the editor', function () {
+it('creates a template and opens the editor', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@templates-page')
@@ -64,15 +64,15 @@ it('creates a template and opens the editor', function () {
 
     $this->assertDatabaseHas('workout_templates', [
         'user_id' => $user->id,
-        'name' => 'Conditioning',
+        'name'    => 'Conditioning',
     ]);
 });
 
-it('deletes a template after confirmation', function () {
-    $user = User::factory()->create();
+it('deletes a template after confirmation', function (): void {
+    $user     = User::factory()->create();
     $template = WorkoutTemplate::factory()->create(['user_id' => $user->id, 'name' => 'Retired Day']);
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@template-list')
@@ -88,10 +88,10 @@ it('deletes a template after confirmation', function () {
     ]);
 });
 
-it('returns to the workouts page via the back button', function () {
+it('returns to the workouts page via the back button', function (): void {
     $user = User::factory()->create();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $this->loginAs($browser, $user);
         $browser->visit('/templates')
             ->waitFor('@templates-page')

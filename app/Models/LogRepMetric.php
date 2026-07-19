@@ -9,16 +9,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LogRepMetric extends Model
 {
+    /** @var string */
     protected $table = 'log_rep_metrics';
 
     /** @var list<string> */
     protected $fillable = [
-        'entry_id',
         'target_reps',
         'actual_reps',
         'to_failure',
         'failure_rep',
     ];
+
+    /** @return BelongsTo<WorkoutEntry, $this> */
+    public function entry(): BelongsTo
+    {
+        return $this->belongsTo(WorkoutEntry::class);
+    }
 
     /** @return array<string, string> */
     protected function casts(): array
@@ -26,11 +32,5 @@ class LogRepMetric extends Model
         return [
             'to_failure' => 'boolean',
         ];
-    }
-
-    /** @return BelongsTo<WorkoutEntry, $this> */
-    public function entry(): BelongsTo
-    {
-        return $this->belongsTo(WorkoutEntry::class);
     }
 }

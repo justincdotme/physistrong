@@ -17,18 +17,19 @@ class UpdateWorkoutEntryRequest extends FormRequest
     public function rules(): array
     {
         return array_merge([
-            'set_order' => ['sometimes', 'integer', 'min:0'],
-            'notes' => ['sometimes', 'nullable', 'string'],
+            'set_order'      => ['sometimes', 'integer', 'min:0'],
+            'notes'          => ['sometimes', 'nullable', 'string'],
             'entry_group_id' => [
                 'sometimes',
                 'nullable',
                 Rule::exists('entry_groups', 'id')->where('workout_id', $this->route('workout')->id),
             ],
             'group_round' => ['sometimes', 'nullable', 'integer', 'min:1'],
-            'metrics' => ['sometimes', 'array'],
+            'metrics'     => ['sometimes', 'array'],
         ], $this->metricRules());
     }
 
+    /** @return ExerciseType|null */
     protected function metricExerciseType(): ?ExerciseType
     {
         return $this->route('entry')->exercise->type;

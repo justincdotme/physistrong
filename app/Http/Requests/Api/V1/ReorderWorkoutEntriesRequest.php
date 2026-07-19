@@ -9,13 +9,13 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class ReorderEntriesRequest extends FormRequest
+class ReorderWorkoutEntriesRequest extends FormRequest
 {
     /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
-            'ids' => ['required', 'array', 'min:1'],
+            'ids'   => ['required', 'array', 'min:1'],
             'ids.*' => [
                 'required',
                 'integer',
@@ -25,9 +25,14 @@ class ReorderEntriesRequest extends FormRequest
         ];
     }
 
+    /**
+     * @param Validator $validator
+     *
+     * @return void
+     */
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function (Validator $validator) {
+        $validator->after(function (Validator $validator): void {
             if ($validator->errors()->isNotEmpty()) {
                 return;
             }

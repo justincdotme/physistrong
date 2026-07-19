@@ -7,13 +7,20 @@ namespace App\Enums;
 enum ExerciseType: string
 {
     case Resistance = 'resistance';
-    case TimedHold = 'timed_hold';
-    case Distance = 'distance';
-    case Interval = 'interval';
+    case TimedHold  = 'timed_hold';
+    case Distance   = 'distance';
+    case Interval   = 'interval';
+
+    /** @return list<string> */
+    public static function childRelations(): array
+    {
+        return array_map(fn (self $type) => $type->childRelation(), self::cases());
+    }
 
     /**
-     * Expected dimensions per ADR-006. Documented mapping only: presence is
-     * never enforced because ad-hoc and template entries carry partial sets.
+     * Expected metric dimensions for each exercise type. Documented mapping
+     * only: presence is never enforced because ad-hoc and template entries
+     * carry partial sets.
      *
      * @return list<MetricDimension>
      */
@@ -21,9 +28,9 @@ enum ExerciseType: string
     {
         return match ($this) {
             self::Resistance => [MetricDimension::Load, MetricDimension::Reps],
-            self::TimedHold => [MetricDimension::Duration],
-            self::Distance => [MetricDimension::Distance],
-            self::Interval => [MetricDimension::IntervalHeader],
+            self::TimedHold  => [MetricDimension::Duration],
+            self::Distance   => [MetricDimension::Distance],
+            self::Interval   => [MetricDimension::IntervalHeader],
         };
     }
 
@@ -32,28 +39,33 @@ enum ExerciseType: string
     {
         $optional = match ($this) {
             self::Resistance => [MetricDimension::Intensity],
-            self::TimedHold => [MetricDimension::Load, MetricDimension::Intensity],
-            self::Distance => [MetricDimension::Duration, MetricDimension::CardioSettings, MetricDimension::Intensity],
-            self::Interval => [MetricDimension::CardioSettings, MetricDimension::Distance, MetricDimension::Intensity],
+            self::TimedHold  => [MetricDimension::Load, MetricDimension::Intensity],
+            self::Distance   => [MetricDimension::Duration, MetricDimension::CardioSettings, MetricDimension::Intensity],
+            self::Interval   => [MetricDimension::CardioSettings, MetricDimension::Distance, MetricDimension::Intensity],
         };
 
         return [...$this->requiredMetrics(), ...$optional];
     }
 
-    /** The CTI child relation name on the Exercise model. */
+    /** @return string */
     public function childRelation(): string
     {
         return match ($this) {
             self::Resistance => 'resistance',
-            self::TimedHold => 'timedHold',
-            self::Distance => 'distance',
-            self::Interval => 'interval',
+            self::TimedHold  => 'timedHold',
+            self::Distance   => 'distance',
+            self::Interval   => 'interval',
         };
     }
 
     /** @return list<string> */
-    public static function childRelations(): array
+    public function childColumns(): array
     {
-        return array_map(fn (self $type) => $type->childRelation(), self::cases());
+        return match ($this) {
+            self::Resistance => ['bodyweight_base', 'allows_added_weight', 'bilateral'],
+            self::TimedHold  => ['target_duration_seconds'],
+            self::Distance   => ['tracks_elevation'],
+            self::Interval   => ['default_work_seconds', 'default_rest_seconds', 'default_rounds'],
+        };
     }
 }

@@ -64,14 +64,18 @@ already carries equipment context. No `equipment_id` on `workout_entries`.
 ### Subjective metrics at workout level
 
 Subjective metrics (exhaustion, soreness) are recorded at the workout level,
-not per-entry. Per-entry intensity tracking (RPE, heart rate) is deferred.
+not per-entry. Per-entry intensity tracking (RPE, heart rate) was
+deferred at this decision's original scope; it shipped later, see
+Amendment below.
 
 ---
 
 ## Metric Dimension Mapping
 
-Which metrics attach to which exercise types. Enforced in the application
-layer (config registry), not the schema.
+Which metrics attach to which exercise types. The application layer
+(config registry) enforces an **allowed** set per exercise type, not
+the schema. The required column below documents an expectation only;
+presence is not enforced, see Amendment below.
 
 | Exercise type | Required metrics | Optional metrics |
 |--------------|-----------------|-----------------|
@@ -79,6 +83,9 @@ layer (config registry), not the schema.
 | Timed hold | duration | load (weighted holds) |
 | Distance/time | distance | duration, cardio settings |
 | Interval | interval header + rounds | cardio settings, distance |
+
+Intensity (RPE, heart rate) is now optional for all four exercise
+types, see Amendment below.
 
 ---
 
@@ -209,6 +216,29 @@ Clean, indexable, no JSON parsing or polymorphic type resolution.
 
 ---
 
+## Amendment: Intensity Metrics Shipped
+
+**Date:** 2026-07-17
+
+**Amended by:** PS-156 (documentation drift found during a codebase audit)
+
+Per-entry intensity tracking shipped: `log_intensity_metrics` attaches to
+`workout_entries` via `entry_id`, same as the other metric tables. Unlike
+the rest, it has no target/actual split (`rpe`, `heart_rate_avg`,
+`heart_rate_peak` only): intensity records how a set felt, not what was
+planned. It is optional for all four exercise types
+(`ExerciseType::allowedMetrics()`), bringing the metric table count to
+8 plus the 1 child table.
+
+The "Required metrics" column above documents an expectation; it was
+never enforced. `ExerciseType::requiredMetrics()` exists for
+documentation only. Validation checks submitted metrics against
+`allowedMetrics()` (required plus optional) and rejects anything
+outside that set, so ad-hoc entries and template-derived targets can
+stay partial.
+
+---
+
 ## Consequences
 
 ### Positive
@@ -221,7 +251,7 @@ Clean, indexable, no JSON parsing or polymorphic type resolution.
 ### Negative
 - Loading a full workout requires joining multiple metric tables (mitigated
   by knowing which tables to join from exercise type)
-- More tables than a single-table approach (7 metric tables + 1 child)
+- More tables than a single-table approach (8 metric tables + 1 child; intensity added, see Amendment below)
 - Adding a new metric dimension requires a new table and migration
 
 ---
