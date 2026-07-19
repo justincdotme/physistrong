@@ -113,10 +113,12 @@ class WorkoutCloneService
     }
 
     /**
+     * Clone groups onto the workout, mapping source group id to clone id.
+     *
      * @param Collection<int, EntryGroup>|Collection<int, TemplateEntryGroup> $groups
      * @param Workout                                                         $workout
      *
-     * @return array<int, int> source group id mapped to cloned group id
+     * @return array<int, int>
      */
     private function cloneGroups(Collection $groups, Workout $workout): array
     {
