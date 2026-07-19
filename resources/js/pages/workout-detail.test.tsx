@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { http, HttpResponse } from 'msw'
 import { QueryClient, QueryClientProvider, useInfiniteQuery } from '@tanstack/react-query'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 import { screen, renderWithProviders, userEvent, waitFor, testUser } from '@/test/render'
 import { server } from '@/test/server'
 import { AppProvider } from '@/lib/store'
@@ -368,43 +368,59 @@ describe('entry update error handling', () => {
   )
 
   it('respects the debounce interval before firing entry updates', { timeout: 15000 }, async () => {
+    let putCount = 0
+    server.use(
+      http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
+      http.put('/api/v1/workouts/:id/entries/:entryId', () => {
+        putCount++
+        return HttpResponse.json({ data: twoExerciseWorkout.data.entries[1] })
+      })
+    )
+
+    renderWithProviders(<WorkoutDetailPage />, {
+      path: 'workouts/:id',
+      route: '/workouts/43',
+    })
+
+    // Settle the initial load on real timers; findAllBy* is act-aware, so
+    // mount-time updates (query data, Radix, dnd-kit) flush inside the test
+    await screen.findAllByDisplayValue('10')
+
+    // Reset after initial render so we only count PUTs from the change
+    putCount = 0
+
+    // Fake timers only for the debounce window itself
     vi.useFakeTimers()
     try {
-      let putCount = 0
-      server.use(
-        http.get('/api/v1/workouts/:id', () => HttpResponse.json(twoExerciseWorkout)),
-        http.put('/api/v1/workouts/:id/entries/:entryId', () => {
-          putCount++
-          return HttpResponse.json({ data: twoExerciseWorkout.data.entries[1] })
-        })
-      )
-
-      renderWithProviders(<WorkoutDetailPage />, {
-        path: 'workouts/:id',
-        route: '/workouts/43',
-      })
-
-      await vi.waitFor(() => {
-        expect(screen.getAllByDisplayValue('10').length).toBeGreaterThan(0)
-      })
-
-      // Reset after initial render so we only count PUTs from the change
-      putCount = 0
-
       const repsInput = screen.getAllByDisplayValue('10')[0]
       if (!repsInput) throw new Error('Reps input not found')
       fireEvent.change(repsInput, { target: { value: '15' } })
 
       // Well under the 800ms debounce: no PUT should have fired
-      await vi.advanceTimersByTimeAsync(400)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(400)
+      })
       expect(putCount).toBe(0)
 
       // Past the 800ms debounce: exactly one PUT
-      await vi.advanceTimersByTimeAsync(401)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(401)
+      })
       expect(putCount).toBe(1)
+
+      // Drain the PUT response so the onSuccess cache write lands inside the test
+      await act(async () => {
+        await vi.runAllTimersAsync()
+      })
     } finally {
       vi.useRealTimers()
     }
+
+    // Settled end state: the echoed server entry (reps 10) has replaced the
+    // optimistic 15 in the cache, so nothing is left in flight after the test
+    await waitFor(() => {
+      expect(screen.queryByDisplayValue('15')).not.toBeInTheDocument()
+    })
   })
 })
 
