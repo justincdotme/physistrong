@@ -466,10 +466,17 @@ describe('groupRoundProgress', () => {
     expect(result.displayRound).toBe(3)
   })
 
-  it('handles empty array with plannedRounds', () => {
+  it('does not mark empty rounds as complete', () => {
     const result = groupRoundProgress([], 3)
     expect(result.rounds).toBe(3)
-    expect(result.completedRounds).toEqual([1, 2, 3])
-    expect(result.displayRound).toBe(3)
+    expect(result.completedRounds).toEqual([])
+    expect(result.displayRound).toBe(1)
+  })
+
+  it('only marks rounds that have entries with actuals as complete', () => {
+    const entries: WorkoutEntry[] = [complete(1), complete(1)]
+    const result = groupRoundProgress(entries, 3)
+    expect(result.completedRounds).toEqual([1])
+    expect(result.displayRound).toBe(2)
   })
 })

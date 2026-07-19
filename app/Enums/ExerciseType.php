@@ -47,11 +47,7 @@ enum ExerciseType: string
         return [...$this->requiredMetrics(), ...$optional];
     }
 
-    /**
-     * The CTI child relation name on the Exercise model.
-     *
-     * @return string
-     */
+    /** @return string */
     public function childRelation(): string
     {
         return match ($this) {

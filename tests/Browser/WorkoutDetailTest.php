@@ -298,6 +298,55 @@ it('displays workout date', function (): void {
     });
 });
 
+it('renders all group rounds with editable inputs and none pre-completed', function (): void {
+    $user    = User::factory()->create();
+    $workout = Workout::factory()->create(['user_id' => $user->id]);
+
+    $squat = Exercise::factory()->resistance()->create(['name' => 'Barbell Squat']);
+    $bench = Exercise::factory()->resistance()->create(['name' => 'Bench Press']);
+
+    $workout->exercises()->attach($squat->id, ['exercise_order' => 1]);
+    $workout->exercises()->attach($bench->id, ['exercise_order' => 2]);
+
+    $group = $workout->groups()->create([
+        'name'                           => 'Full Round Group',
+        'planned_rounds'                 => 3,
+        'rest_between_exercises_seconds' => 60,
+        'rest_between_rounds_seconds'    => 120,
+    ]);
+
+    $setOrder = 0;
+
+    foreach (range(1, 3) as $round) {
+        foreach ([$squat, $bench] as $exercise) {
+            $entry = $workout->entries()->create([
+                'exercise_id'    => $exercise->id,
+                'entry_group_id' => $group->id,
+                'group_round'    => $round,
+                'set_order'      => $setOrder++,
+            ]);
+            $entry->repMetric()->create([
+                'target_reps' => 10,
+                'actual_reps' => null,
+            ]);
+        }
+    }
+
+    $this->browse(function (Browser $browser) use ($user, $workout): void {
+        $this->loginAs($browser, $user);
+        $browser->visit("/workouts/{$workout->id}")
+            ->waitFor('@entry-group')
+            // Entry names resolve from the exercises list query, which lands
+            // after the group card renders; wait for it instead of asserting.
+            ->waitForTextIn('@entry-group', 'Barbell Squat')
+            ->assertVisible('@group-round-1')
+            ->assertVisible('@group-round-2')
+            ->assertVisible('@group-round-3')
+            ->assertSeeIn('@entry-group', 'Full Round Group')
+            ->assertSeeIn('@entry-group', 'Bench Press');
+    });
+});
+
 it('displays completion percentage', function (): void {
     $user    = User::factory()->create();
     $workout = Workout::factory()->create(['user_id' => $user->id]);

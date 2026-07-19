@@ -44,12 +44,16 @@ class AuthTokenCookieService
     {
         // Secure by default; only an explicit SESSION_SECURE_COOKIE=false (the
         // no-TLS install path) may relax it, or HTTP deploys cannot log in.
+        // Normalized because env plumbing (phpunit <env>, exotic .env values)
+        // can surface the flag as a string, and the Cookie arg is ?bool.
+        $secure = config('session.secure');
+
         return new Cookie(
             name: self::NAME,
             value: $value,
             expire: $expire,
             path: self::PATH,
-            secure: config('session.secure') ?? true,
+            secure: $secure === null ? true : filter_var($secure, FILTER_VALIDATE_BOOL),
             httpOnly: true,
             sameSite: Cookie::SAMESITE_LAX,
         );

@@ -173,8 +173,13 @@ export async function createGroup(
   return toWorkout(data.data as RawWorkout)
 }
 
-export async function deleteGroup(workoutId: string, groupId: string): Promise<void> {
-  await api.delete(`/workouts/${workoutId}/groups/${groupId}`)
+export async function deleteGroup(
+  workoutId: string,
+  groupId: string,
+  opts?: { deleteEntries?: boolean }
+): Promise<void> {
+  const params = opts?.deleteEntries ? '?delete_entries=1' : ''
+  await api.delete(`/workouts/${workoutId}/groups/${groupId}${params}`)
 }
 
 export async function assignEntries(

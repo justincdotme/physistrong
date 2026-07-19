@@ -71,6 +71,32 @@ class WorkoutCloneService
     }
 
     /**
+     * @param WorkoutEntry $source
+     * @param WorkoutEntry $target
+     *
+     * @return void
+     */
+    public function cloneMetrics(WorkoutEntry $source, WorkoutEntry $target): void
+    {
+        foreach (MetricDimension::cases() as $dimension) {
+            // Intensity records how a past performance felt; a fresh copy
+            // never inherits it. Pinned by feature test.
+            if ($dimension === MetricDimension::Intensity) {
+                continue;
+            }
+
+            $relation = $dimension->relation();
+            $metric   = $source->$relation;
+
+            if ($metric === null) {
+                continue;
+            }
+
+            $target->$relation()->create($metric->only($dimension->cloneableColumns()));
+        }
+    }
+
+    /**
      * @param User                 $user
      * @param array<string, mixed> $attributes
      * @param string               $fallbackName
@@ -191,32 +217,6 @@ class WorkoutCloneService
             ]);
 
             $this->cloneMetrics($entry, $clone);
-        }
-    }
-
-    /**
-     * @param WorkoutEntry $source
-     * @param WorkoutEntry $target
-     *
-     * @return void
-     */
-    private function cloneMetrics(WorkoutEntry $source, WorkoutEntry $target): void
-    {
-        foreach (MetricDimension::cases() as $dimension) {
-            // Intensity records how a past performance felt; a fresh copy
-            // never inherits it. Pinned by feature test.
-            if ($dimension === MetricDimension::Intensity) {
-                continue;
-            }
-
-            $relation = $dimension->relation();
-            $metric   = $source->$relation;
-
-            if ($metric === null) {
-                continue;
-            }
-
-            $target->$relation()->create($metric->only($dimension->cloneableColumns()));
         }
     }
 }

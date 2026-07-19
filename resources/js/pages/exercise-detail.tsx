@@ -35,10 +35,11 @@ export function ExerciseDetailPage() {
   const queryClient = useQueryClient()
   const { toast } = useApp()
   const [deleting, setDeleting] = useState(false)
+  const [deleted, setDeleted] = useState(false)
 
   const { data: ex, isLoading } = useQuery({
     ...exerciseQueries.detail(id ?? ''),
-    enabled: !!id,
+    enabled: !!id && !deleted,
   })
 
   const { data: equipment = [] } = useQuery(equipmentQueries.list())
@@ -64,6 +65,8 @@ export function ExerciseDetailPage() {
       return deleteExerciseApi(id)
     },
     onSuccess: () => {
+      setDeleted(true)
+      queryClient.removeQueries({ queryKey: exerciseQueries.detail(id ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
       queryClient.invalidateQueries({ queryKey: equipmentQueries.base })
       toast('Exercise deleted.')

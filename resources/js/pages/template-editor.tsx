@@ -66,10 +66,11 @@ export function TemplateEditorPage() {
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
+  const [deleted, setDeleted] = useState(false)
 
   const { data: tpl, isLoading } = useQuery({
     ...templateQueries.detail(templateId ?? ''),
-    enabled: !!templateId,
+    enabled: !!templateId && !deleted,
   })
 
   const { data: equipment = [] } = useQuery(equipmentQueries.list())
@@ -86,6 +87,8 @@ export function TemplateEditorPage() {
   const deleteMutation = useMutation({
     mutationFn: () => deleteTemplateApi(templateId ?? ''),
     onSuccess: () => {
+      setDeleted(true)
+      queryClient.removeQueries({ queryKey: templateQueries.detail(templateId ?? '').queryKey })
       queryClient.invalidateQueries({ queryKey: templateQueries.base })
       toast('Template deleted.')
       navigate('/workouts')

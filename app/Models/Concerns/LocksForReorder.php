@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait LocksForReorder
 {
     /**
-     * Lock the parent row for reordering child collections.
-     *
-     * Discarded read: holding the parent row serializes concurrent
-     * attach/reorder so two attaches cannot compute the same max order.
+     * Serializes concurrent reorders so two requests cannot compute the same max order.
      *
      * @param Builder<static> $query
      * @param integer|string  $id

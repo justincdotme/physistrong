@@ -143,6 +143,51 @@ describe('ExerciseDetailPage', () => {
       expect(deleteButton).toBeDisabled()
     })
 
+    it('does not refetch the deleted exercise after a confirmed delete', async () => {
+      const user = userEvent.setup()
+      let deleteWasCalled = false
+      let deleted = false
+      let postDeleteGetCount = 0
+
+      server.use(
+        http.get(`/api/v1/exercises/${exerciseId}`, () => {
+          if (deleted) {
+            postDeleteGetCount++
+            return HttpResponse.json({ message: 'Exercise not found.' }, { status: 404 })
+          }
+          return HttpResponse.json(fixtureShowResistance)
+        }),
+        http.delete(`/api/v1/exercises/${exerciseId}`, () => {
+          deleted = true
+          deleteWasCalled = true
+          return new HttpResponse(null, { status: 204 })
+        })
+      )
+
+      renderWithProviders(<ExerciseDetailPage />, {
+        path: 'exercises/:id',
+        route: `/exercises/${exerciseId}`,
+        additionalRoutes: [{ path: 'exercises', element: <div>Exercises list</div> }],
+      })
+
+      await screen.findByText(exerciseName)
+
+      const deleteButtons = screen.getAllByRole('button', { name: /delete/i })
+      const deleteButton = deleteButtons[0]
+      if (!deleteButton) throw new Error('Delete button not found')
+      await user.click(deleteButton)
+
+      const confirmButton = screen.getByRole('button', { name: /delete/i })
+      await user.click(confirmButton)
+
+      await waitFor(() => {
+        expect(deleteWasCalled).toBe(true)
+      })
+      await screen.findByText('Exercises list')
+
+      expect(postDeleteGetCount).toBe(0)
+    })
+
     it('disables delete for an exercise with logged data but no workout/template usage', async () => {
       const entryOnlyId = '9003'
 

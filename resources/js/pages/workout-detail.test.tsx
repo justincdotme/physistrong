@@ -26,6 +26,29 @@ describe('WorkoutDetailPage', () => {
     expect(roundIndicator).toBeInTheDocument()
   })
 
+  it('does not mark rounds without entries as completed', async () => {
+    renderWithProviders(<WorkoutDetailPage />, {
+      path: 'workouts/:id',
+      route: '/workouts/43',
+    })
+
+    const groupBlock = await screen.findByText('Superset A')
+    const groupCard = groupBlock.closest('[dusk="entry-group"]')
+    expect(groupCard).toBeTruthy()
+
+    // The fixture has planned_rounds=3 but only a round-1 entry with actuals.
+    // Rounds 2 and 3 have no entries and must not render as completed.
+    const round2Label = screen.getByText('Round 2')
+    const round2Section = round2Label.closest('div')
+    expect(round2Section).toBeTruthy()
+    expect(round2Section?.querySelector('svg')).toBeNull()
+
+    const round3Label = screen.getByText('Round 3')
+    const round3Section = round3Label.closest('div')
+    expect(round3Section).toBeTruthy()
+    expect(round3Section?.querySelector('svg')).toBeNull()
+  })
+
   it('displays date picker and completion status', async () => {
     renderWithProviders(<WorkoutDetailPage />, {
       path: 'workouts/:id',
@@ -567,6 +590,95 @@ describe('delete workout dialog', () => {
       await waitFor(() => {
         expect(deleteCount).toBe(1)
       })
+    }
+  )
+})
+
+describe('delete workout does not refetch detail', () => {
+  it(
+    'removes the detail query before invalidating so no 404 GET fires',
+    { timeout: 15000 },
+    async () => {
+      let deleted = false
+      let postDeleteGetCount = 0
+      server.use(
+        http.get('/api/v1/workouts/:id', () => {
+          if (deleted) {
+            postDeleteGetCount++
+            return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+          }
+          return HttpResponse.json(twoExerciseWorkout)
+        }),
+        http.delete('/api/v1/workouts/:id', () => {
+          deleted = true
+          return new HttpResponse(null, { status: 204 })
+        })
+      )
+      renderWithProviders(<WorkoutDetailPage />, {
+        path: 'workouts/:id',
+        route: '/workouts/43',
+        additionalRoutes: [{ path: 'workouts', element: <div>Workouts list</div> }],
+      })
+
+      await screen.findByText('Test Workout')
+
+      const deleteBtn = await screen.findByRole('button', { name: 'Delete workout' })
+      await userEvent.click(deleteBtn)
+
+      const confirmBtn = await screen.findByRole('button', { name: 'Delete' })
+      await userEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(screen.getByText('Workouts list')).toBeInTheDocument()
+      })
+
+      expect(postDeleteGetCount).toBe(0)
+    }
+  )
+})
+
+describe('remove group', () => {
+  it(
+    'sends DELETE with delete_entries and closes dialog on confirm',
+    { timeout: 15000 },
+    async () => {
+      let deletedUrl: string | null = null
+      let deleteCount = 0
+      server.use(
+        http.delete('/api/v1/workouts/:id/groups/:groupId', ({ request }) => {
+          const url = new URL(request.url)
+          deletedUrl = url.pathname + url.search
+          deleteCount++
+          return new HttpResponse(null, { status: 204 })
+        })
+      )
+
+      renderWithProviders(<WorkoutDetailPage />, {
+        path: 'workouts/:id',
+        route: '/workouts/43',
+      })
+
+      const removeGroupBtn = await screen.findByRole('button', { name: 'Remove group' })
+      await userEvent.click(removeGroupBtn)
+
+      expect(
+        await screen.findByText(
+          'All exercises and logged sets in this group will be removed from this workout.'
+        )
+      ).toBeInTheDocument()
+
+      const confirmBtn = await screen.findByRole('button', { name: 'Remove' })
+      await userEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Remove superset?')).not.toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(deletedUrl).toBe('/api/v1/workouts/43/groups/1?delete_entries=1')
+      })
+
+      expect(deleteCount).toBe(1)
     }
   )
 })

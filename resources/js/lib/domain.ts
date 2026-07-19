@@ -19,7 +19,8 @@ export function groupRoundProgress(
   const rounds = plannedRounds || Math.max(1, ...entries.map(e => e.groupRound || 1))
   const completedRounds: number[] = []
   for (let r = 1; r <= rounds; r++) {
-    if (entries.filter(e => e.groupRound === r).every(e => entryHasActual(e))) {
+    const roundEntries = entries.filter(e => e.groupRound === r)
+    if (roundEntries.length > 0 && roundEntries.every(e => entryHasActual(e))) {
       completedRounds.push(r)
     }
   }

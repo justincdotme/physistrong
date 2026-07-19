@@ -115,6 +115,51 @@ describe('TemplateEditorPage', () => {
     })
   })
 
+  describe('Delete flow', () => {
+    it('does not refetch the deleted template after a confirmed delete', async () => {
+      const user = userEvent.setup()
+      let deleteWasCalled = false
+      let deleted = false
+      let postDeleteGetCount = 0
+
+      server.use(
+        http.get('/api/v1/templates/:id', () => {
+          if (deleted) {
+            postDeleteGetCount++
+            return HttpResponse.json({ message: 'Template not found.' }, { status: 404 })
+          }
+          return HttpResponse.json({ data: rawTemplateWithExercises })
+        }),
+        http.delete('/api/v1/templates/:id', () => {
+          deleted = true
+          deleteWasCalled = true
+          return new HttpResponse(null, { status: 204 })
+        })
+      )
+
+      renderWithProviders(<TemplateEditorPage />, {
+        path: 'templates/:id',
+        route: '/templates/2',
+        additionalRoutes: [{ path: 'workouts', element: <div>Workouts list</div> }],
+      })
+
+      await screen.findByText('Capture Test Template 1782864881129')
+
+      const deleteButton = screen.getByLabelText('Delete template')
+      await user.click(deleteButton)
+
+      const confirmButton = screen.getByRole('button', { name: /delete/i })
+      await user.click(confirmButton)
+
+      await waitFor(() => {
+        expect(deleteWasCalled).toBe(true)
+      })
+      await screen.findByText('Workouts list')
+
+      expect(postDeleteGetCount).toBe(0)
+    })
+  })
+
   describe('list cache invalidation', () => {
     it(
       'invalidates the templates list after detaching an exercise',

@@ -181,6 +181,7 @@ function GroupBlockCard({
   controls,
   onPatchEntry,
   onUngroup,
+  onRemoveGroup,
 }: {
   block: Block
   exercises: Exercise[]
@@ -189,6 +190,7 @@ function GroupBlockCard({
   controls: React.ReactNode
   onPatchEntry: (entryId: string, patch: Partial<WorkoutEntry>) => void
   onUngroup: (groupId: string) => void
+  onRemoveGroup: (groupId: string) => void
 }) {
   const g = block.group
   const { rounds, completedRounds, displayRound } = groupRoundProgress(
@@ -226,18 +228,29 @@ function GroupBlockCard({
             </div>
           </div>
           {block.gid && (
-            <button
-              onClick={() => onUngroup(block.gid as string)}
-              className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
-            >
-              Ungroup
-            </button>
+            <>
+              <button
+                onClick={() => onUngroup(block.gid as string)}
+                className="text-[12px] font-semibold text-text-secondary hover:text-destructive px-2 h-9 rounded-lg hover:bg-surface-muted"
+              >
+                Ungroup
+              </button>
+              <button
+                dusk="remove-group"
+                onClick={() => onRemoveGroup(block.gid as string)}
+                aria-label="Remove group"
+                title="Remove group"
+                className="h-10 w-10 flex items-center justify-center rounded-lg text-text-muted hover:text-destructive hover:bg-surface-muted"
+              >
+                <Trash2 size={17} />
+              </button>
+            </>
           )}
           {controls}
         </div>
         <div className="flex flex-col gap-4">
           {Array.from({ length: rounds }, (_, ri) => ri + 1).map(r => (
-            <div key={r}>
+            <div key={r} dusk={`group-round-${r}`}>
               <div className="flex items-center gap-2 mb-2">
                 <span className="label-caps text-text-muted">Round {r}</span>
                 <span className="h-px flex-1" style={{ background: 'var(--color-border)' }} />
@@ -442,6 +455,7 @@ export function WorkoutDetailPage() {
   const [exercisePickerOpen, setExercisePickerOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [confirmRemoveExerciseId, setConfirmRemoveExerciseId] = useState<string | null>(null)
+  const [confirmRemoveGroupId, setConfirmRemoveGroupId] = useState<string | null>(null)
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [groupSheetOpen, setGroupSheetOpen] = useState(false)
@@ -471,9 +485,9 @@ export function WorkoutDetailPage() {
   const deleteWorkoutMutation = useMutation({
     mutationFn: () => deleteWorkoutApi(workoutId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: workoutQueries.base })
       toast('Workout deleted.')
       navigate('/workouts')
+      queryClient.invalidateQueries({ queryKey: workoutQueries.lists })
     },
     onError: () => toast('Could not delete. Try again.', 'error'),
   })
@@ -646,6 +660,17 @@ export function WorkoutDetailPage() {
       toast('Group removed.')
     },
     onError: () => toast('Could not ungroup. Try again.', 'error'),
+  })
+
+  const removeGroupMutation = useMutation({
+    mutationFn: (groupId: string) => deleteGroup(workoutId, groupId, { deleteEntries: true }),
+    onSuccess: () => {
+      invalidateWorkout()
+      invalidateWorkoutList()
+      queryClient.invalidateQueries({ queryKey: exerciseQueries.base })
+      toast('Superset removed.')
+    },
+    onError: () => toast('Could not remove superset. Try again.', 'error'),
   })
 
   const debouncedEntryUpdate = useCallback(
@@ -885,6 +910,7 @@ export function WorkoutDetailPage() {
                   controls={controls}
                   onPatchEntry={patchEntry}
                   onUngroup={gid => ungroupMutation.mutate(gid)}
+                  onRemoveGroup={gid => setConfirmRemoveGroupId(gid)}
                 />
               )
             }
@@ -993,6 +1019,19 @@ export function WorkoutDetailPage() {
             detachExerciseMutation.mutate(confirmRemoveExerciseId)
           }
           setConfirmRemoveExerciseId(null)
+        }}
+      />
+      <ConfirmDialog
+        open={confirmRemoveGroupId !== null}
+        title="Remove superset?"
+        message="All exercises and logged sets in this group will be removed from this workout."
+        confirmLabel="Remove"
+        onCancel={() => setConfirmRemoveGroupId(null)}
+        onConfirm={() => {
+          if (confirmRemoveGroupId) {
+            removeGroupMutation.mutate(confirmRemoveGroupId)
+          }
+          setConfirmRemoveGroupId(null)
         }}
       />
     </div>
