@@ -39,6 +39,7 @@ Thumbs.db
 /temp
 .codex/
 AGENTS.md
+claude-markdown/
 
 # Linked git worktrees
 .worktrees/
