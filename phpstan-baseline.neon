@@ -1,0 +1,151 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 8
+			path: tests/Browser/AuthTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Browser/AuthTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:assertNotEmpty\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Browser/EquipmentPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Browser/EquipmentPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Browser/EquipmentPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 14
+			path: tests/Browser/ExercisesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 14
+			path: tests/Browser/ExercisesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 19
+			path: tests/Browser/NavigationTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 19
+			path: tests/Browser/NavigationTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Browser/ProfilePageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Browser/ProfilePageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 9
+			path: tests/Browser/ProgressTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 9
+			path: tests/Browser/ProgressTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Browser/SmokeTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Browser/SmokeTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Browser/TemplateEditorTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Browser/TemplateEditorTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Browser/TemplatesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:assertDatabaseMissing\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Browser/TemplatesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Browser/TemplatesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Browser/TemplatesPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 15
+			path: tests/Browser/WorkoutDetailTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 15
+			path: tests/Browser/WorkoutDetailTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
+			identifier: method.notFound
+			count: 17
+			path: tests/Browser/WorkoutsPageTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
+			identifier: method.notFound
+			count: 16
+			path: tests/Browser/WorkoutsPageTest.php

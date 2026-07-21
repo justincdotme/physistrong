@@ -1,0 +1,10 @@
+docker/data
+docker/nginx/certs
+.git
+.github
+.claude
+.superpowers
+.worktrees
+docs
+temp
+node_modules

@@ -1,0 +1,123 @@
+{
+  "data": {
+    "id": 1,
+    "name": "Capture Test Workout",
+    "date": "2026-06-15",
+    "exhaustion": null,
+    "soreness": null,
+    "exercises": [],
+    "groups": [],
+    "entries": [
+      {
+        "id": 1,
+        "workout_id": 1,
+        "exercise_id": 879,
+        "set_order": 1,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": "First set",
+        "exercise": {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "load": {
+            "target_weight": "135.00",
+            "actual_weight": "130.00",
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 8,
+            "actual_reps": 8,
+            "to_failure": false,
+            "failure_rep": null
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 2,
+        "workout_id": 1,
+        "exercise_id": 879,
+        "set_order": 2,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": "Second set",
+        "exercise": {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "load": {
+            "target_weight": "135.00",
+            "actual_weight": "135.00",
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 8,
+            "actual_reps": 7,
+            "to_failure": false,
+            "failure_rep": null
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 3,
+        "workout_id": 1,
+        "exercise_id": 880,
+        "set_order": 3,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 880,
+          "name": "Capture Test Hold",
+          "type": "timed_hold",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "duration": {
+            "target_duration_seconds": 60,
+            "actual_duration_seconds": 55
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 4,
+        "workout_id": 1,
+        "exercise_id": 881,
+        "set_order": 4,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 881,
+          "name": "Capture Test Distance",
+          "type": "distance",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "distance": {
+            "target_distance": "5.00",
+            "actual_distance": "4.80",
+            "lap_count": null,
+            "stroke_count": null
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      }
+    ],
+    "created_at": "2026-01-01T00:00:00.000000Z",
+    "updated_at": "2026-01-01T00:00:00.000000Z"
+  }
+}

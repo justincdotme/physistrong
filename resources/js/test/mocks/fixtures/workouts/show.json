@@ -1,0 +1,158 @@
+{
+  "data": {
+    "id": 2,
+    "name": "Capture Test Show Workout",
+    "date": "2026-06-01",
+    "exhaustion": null,
+    "soreness": null,
+    "exercises": [
+      {
+        "id": 879,
+        "name": "Capture Test Resistance",
+        "type": "resistance",
+        "equipment_type_id": 33,
+        "exercise_order": 0
+      },
+      {
+        "id": 882,
+        "name": "Capture Test Interval",
+        "type": "interval",
+        "equipment_type_id": 33,
+        "exercise_order": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 1,
+        "name": "Superset A",
+        "planned_rounds": 3,
+        "rest_between_exercises_seconds": 30,
+        "rest_between_rounds_seconds": 90
+      }
+    ],
+    "entries": [
+      {
+        "id": 5,
+        "workout_id": 2,
+        "exercise_id": 879,
+        "set_order": 0,
+        "entry_group_id": 1,
+        "group_round": 1,
+        "notes": null,
+        "exercise": {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "load": {
+            "target_weight": "135.00",
+            "actual_weight": "130.00",
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 8,
+            "actual_reps": 8,
+            "to_failure": false,
+            "failure_rep": null
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 6,
+        "workout_id": 2,
+        "exercise_id": 882,
+        "set_order": 1,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 882,
+          "name": "Capture Test Interval",
+          "type": "interval",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "interval_header": {
+            "programmed_rounds": 4,
+            "completed_rounds": 4,
+            "target_work_seconds": 30,
+            "target_rest_seconds": 15,
+            "rounds": [
+              {
+                "round_number": 1,
+                "actual_work_seconds": 30,
+                "actual_rest_seconds": 15,
+                "heart_rate_avg": null,
+                "heart_rate_peak": null
+              },
+              {
+                "round_number": 2,
+                "actual_work_seconds": 31,
+                "actual_rest_seconds": 14,
+                "heart_rate_avg": null,
+                "heart_rate_peak": null
+              },
+              {
+                "round_number": 3,
+                "actual_work_seconds": 30,
+                "actual_rest_seconds": 15,
+                "heart_rate_avg": null,
+                "heart_rate_peak": null
+              },
+              {
+                "round_number": 4,
+                "actual_work_seconds": 29,
+                "actual_rest_seconds": 16,
+                "heart_rate_avg": null,
+                "heart_rate_peak": null
+              }
+            ]
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      },
+      {
+        "id": 7,
+        "workout_id": 2,
+        "exercise_id": 879,
+        "set_order": 2,
+        "entry_group_id": null,
+        "group_round": null,
+        "notes": null,
+        "exercise": {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33
+        },
+        "metrics": {
+          "load": {
+            "target_weight": "185.00",
+            "actual_weight": "180.00",
+            "bodyweight_only": false
+          },
+          "reps": {
+            "target_reps": 5,
+            "actual_reps": 5,
+            "to_failure": false,
+            "failure_rep": null
+          },
+          "intensity": {
+            "rpe": 8,
+            "heart_rate_avg": null,
+            "heart_rate_peak": null
+          }
+        },
+        "created_at": "2026-01-01T00:00:00.000000Z",
+        "updated_at": "2026-01-01T00:00:00.000000Z"
+      }
+    ],
+    "created_at": "2026-01-01T00:00:00.000000Z",
+    "updated_at": "2026-01-01T00:00:00.000000Z"
+  }
+}

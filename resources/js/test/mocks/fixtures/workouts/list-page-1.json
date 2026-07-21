@@ -1,0 +1,225 @@
+{
+  "data": [
+    {
+      "id": 3,
+      "name": "Capture Test Workout",
+      "date": "2026-06-20",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 4,
+      "completed_entries_count": 0,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 11,
+      "name": "Test with Entries 8",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 21,
+      "name": "Test with Entries 18",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 20,
+      "name": "Test with Entries 17",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 19,
+      "name": "Test with Entries 16",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 18,
+      "name": "Test with Entries 15",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 17,
+      "name": "Test with Entries 14",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 16,
+      "name": "Test with Entries 13",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 15,
+      "name": "Test with Entries 12",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 14,
+      "name": "Test with Entries 11",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 13,
+      "name": "Test with Entries 10",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 12,
+      "name": "Test with Entries 9",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 10,
+      "name": "Test with Entries 7",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 9,
+      "name": "Test with Entries 6",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 8,
+      "name": "Test with Entries 5",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    }
+  ],
+  "links": {
+    "first": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+    "last": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+    "prev": null,
+    "next": "http://127.0.0.1:32770/api/v1/workouts?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 2,
+    "links": [
+      {
+        "url": null,
+        "label": "&laquo; Previous",
+        "page": null,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+        "label": "1",
+        "page": 1,
+        "active": true
+      },
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+        "label": "2",
+        "page": 2,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+        "label": "Next &raquo;",
+        "page": 2,
+        "active": false
+      }
+    ],
+    "path": "http://127.0.0.1:32770/api/v1/workouts",
+    "per_page": 15,
+    "to": 15,
+    "total": 21
+  }
+}

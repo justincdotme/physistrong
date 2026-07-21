@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<ruleset name="Physistrong">
+    <description>Physistrong coding standard</description>
+
+    <file>app</file>
+    <file>database</file>
+    <file>routes</file>
+    <file>tests</file>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>bootstrap/cache/*</exclude-pattern>
+    <exclude-pattern>*.blade.php</exclude-pattern>
+    <exclude-pattern>database/migrations/*</exclude-pattern>
+
+    <rule ref="PSR12">
+        <!-- Pint handles all formatting; suppress PSR-12 rules that conflict -->
+        <exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
+        <exclude name="PSR12.Classes.AnonClassDeclaration.SpaceAfterKeyword"/>
+        <!-- Pint controls line length via its own rules -->
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+
+    <!-- Pest test files inherently mix declarations with side effects -->
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Pint owns brace and whitespace formatting -->
+    <rule ref="Squiz.WhiteSpace.ScopeClosingBrace">
+        <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+    </rule>
+    <rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
+    </rule>
+
+    <!-- Docblock enforcement: methods. Tests are exempt: test names already
+         describe intent, and foliotrak's Pest closures carry no docblocks
+         either, so parity means no docblock tax on test methods. -->
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude-pattern>tests/*</exclude-pattern>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
+        <!-- PHP cannot express generics in native type hints, so @param Collection<int, X>
+             always mismatches the native Collection hint. Slevomat's
+             MissingTraversableTypeHintSpecification already enforces generic annotations. -->
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+        <!-- Generator functions legitimately use bare return to stop yielding. -->
+        <exclude name="Squiz.Commenting.FunctionComment.InvalidReturnNotVoid"/>
+    </rule>
+
+    <!-- Docblock enforcement: properties (tests exempt, as above) -->
+    <rule ref="Squiz.Commenting.VariableComment">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Naming: camelCase methods, but allow test_ prefix in test files -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Naming: camelCase variables, but allow snake_case on Eloquent attributes -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude name="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/>
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
+
+    <!-- Naming: PascalCase classes -->
+    <rule ref="Squiz.Classes.ValidClassName"/>
+
+    <!-- Type hints (exclude UselessAnnotation since we require full @param/@return tags) -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
+        <properties>
+            <property name="enableMixedTypeHint" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
+        <properties>
+            <property name="enableMixedTypeHint" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.UselessAnnotation"/>
+        <properties>
+            <property name="enableMixedTypeHint" value="true"/>
+        </properties>
+    </rule>
+
+    <!-- Eloquent $table/$timestamps/$incrementing/$primaryKey/$keyType and Command
+         $signature/$description inherit untyped from their parent classes -->
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint">
+        <exclude-pattern>app/Models/*</exclude-pattern>
+        <exclude-pattern>app/Console/Commands/*</exclude-pattern>
+    </rule>
+
+    <!-- Strict types -->
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <properties>
+            <property name="spacesCountAroundEqualsSign" value="0"/>
+        </properties>
+    </rule>
+
+    <!-- Code quality -->
+    <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction"/>
+    <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+</ruleset>

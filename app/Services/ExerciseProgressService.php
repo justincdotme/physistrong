@@ -1,0 +1,350 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\Enums\ExerciseType;
+use App\Models\Exercise;
+use App\Models\User;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+use stdClass;
+
+class ExerciseProgressService
+{
+    /** @var array<string, array{table: string, column: string, cast: string}> */
+    private const METRIC_MAP = [
+        'weight'           => ['table' => 'log_load_metrics', 'column' => 'actual_weight', 'cast' => 'float'],
+        'reps'             => ['table' => 'log_rep_metrics', 'column' => 'actual_reps', 'cast' => 'int'],
+        'duration'         => ['table' => 'log_duration_metrics', 'column' => 'actual_duration_seconds', 'cast' => 'int'],
+        'distance'         => ['table' => 'log_distance_metrics', 'column' => 'actual_distance', 'cast' => 'float'],
+        'completed_rounds' => ['table' => 'log_interval_headers', 'column' => 'completed_rounds', 'cast' => 'int'],
+    ];
+
+    /**
+     * @param Exercise $exercise
+     * @param User     $user
+     * @param string   $range
+     *
+     * @return array<string, mixed>
+     */
+    public function getProgressData(Exercise $exercise, User $user, string $range): array
+    {
+        $primaryMetric = $this->resolvePrimaryMetric($exercise);
+        $startDate     = $this->resolveStartDate($range);
+
+        $allEntries = $this->queryDataPoints($exercise, $user, $primaryMetric);
+        $prEntryIds = $this->detectPRs($allEntries);
+
+        $rangeEntries = $startDate
+            ? $allEntries->filter(fn ($row) => $row->date >= $startDate->toDateString())
+            : $allEntries;
+
+        $dataPoints = $rangeEntries->map(fn ($row) => [
+            'entry_id' => (int) $row->entry_id,
+            'date'     => $row->date,
+            'value'    => $this->castValue($row->value, $primaryMetric),
+            'is_pr'    => in_array((int) $row->entry_id, $prEntryIds, true),
+        ])->values()->all();
+
+        $result = [
+            'exercise_id'    => $exercise->id,
+            'exercise_type'  => $exercise->type->value,
+            'range'          => $range,
+            'primary_metric' => $primaryMetric,
+            'data_points'    => $dataPoints,
+        ];
+
+        if ($exercise->type === ExerciseType::Resistance) {
+            $result['volume'] = $this->queryVolumeData($exercise, $user, $startDate);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @param User     $user
+     *
+     * @return array<string, mixed>
+     */
+    public function getPersonalRecords(Exercise $exercise, User $user): array
+    {
+        $records = [];
+
+        if ($exercise->type === ExerciseType::Resistance) {
+            $primaryMetric = $this->resolvePrimaryMetric($exercise);
+
+            if ($primaryMetric === 'weight') {
+                $best = $this->findBest($exercise, $user, 'weight');
+
+                if ($best) {
+                    $records['weight'] = $best;
+                }
+            }
+
+            $best = $this->findBest($exercise, $user, 'reps');
+
+            if ($best) {
+                $records['reps'] = $best;
+            }
+
+            $best = $this->findBestSetVolume($exercise, $user);
+
+            if ($best) {
+                $records['volume'] = $best;
+            }
+        }
+
+        if ($exercise->type === ExerciseType::TimedHold) {
+            $best = $this->findBest($exercise, $user, 'duration');
+
+            if ($best) {
+                $records['duration'] = $best;
+            }
+        }
+
+        if ($exercise->type === ExerciseType::Distance) {
+            $best = $this->findBest($exercise, $user, 'distance');
+
+            if ($best) {
+                $records['distance'] = $best;
+            }
+        }
+
+        if ($exercise->type === ExerciseType::Interval) {
+            $best = $this->findBest($exercise, $user, 'completed_rounds');
+
+            if ($best) {
+                $records['completed_rounds'] = $best;
+            }
+        }
+
+        return [
+            'exercise_id'   => $exercise->id,
+            'exercise_type' => $exercise->type->value,
+            'records'       => $records,
+        ];
+    }
+
+    /**
+     * @param Exercise $exercise
+     *
+     * @return string
+     */
+    public function resolvePrimaryMetric(Exercise $exercise): string
+    {
+        if ($exercise->type === ExerciseType::Resistance) {
+            $resistance = $exercise->resistance;
+
+            if ($resistance && $resistance->bodyweight_base && ! $resistance->allows_added_weight) {
+                return 'reps';
+            }
+
+            return 'weight';
+        }
+
+        return match ($exercise->type) {
+            ExerciseType::TimedHold => 'duration',
+            ExerciseType::Distance  => 'distance',
+            ExerciseType::Interval  => 'completed_rounds',
+        };
+    }
+
+    /**
+     * @param string $metric
+     *
+     * @return array{table: string, column: string, cast: string}
+     */
+    protected function metricConfig(string $metric): array
+    {
+        return self::METRIC_MAP[$metric] ?? throw new InvalidArgumentException("Unknown metric: {$metric}");
+    }
+
+    /**
+     * @param string $range
+     *
+     * @return Carbon|null
+     */
+    private function resolveStartDate(string $range): ?Carbon
+    {
+        return match ($range) {
+            '1m'    => Carbon::now()->subMonth(),
+            '3m'    => Carbon::now()->subMonths(3),
+            '6m'    => Carbon::now()->subMonths(6),
+            '1y'    => Carbon::now()->subYear(),
+            default => null,
+        };
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @param User     $user
+     * @param string   $primaryMetric
+     *
+     * @return Collection<int, stdClass>
+     */
+    private function queryDataPoints(
+        Exercise $exercise,
+        User $user,
+        string $primaryMetric,
+    ): Collection {
+        $config = $this->metricConfig($primaryMetric);
+
+        return DB::table('workout_entries')
+            ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
+            ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
+            ->where('workout_entries.exercise_id', $exercise->id)
+            ->where('workouts.user_id', $user->id)
+            ->whereNotNull("{$config['table']}.{$config['column']}")
+            ->select([
+                'workout_entries.id as entry_id',
+                'workouts.date',
+                "{$config['table']}.{$config['column']} as value",
+            ])
+            ->orderBy('workouts.date')
+            ->orderBy('workout_entries.set_order')
+            ->get()->map(function (stdClass $row): stdClass {
+                $row->date = Carbon::parse($row->date)->toDateString();
+
+                return $row;
+            });
+    }
+
+    /**
+     * @param Collection<int, stdClass> $entries
+     *
+     * @return list<int>
+     */
+    private function detectPRs(Collection $entries): array
+    {
+        $prEntryIds = [];
+        $runningMax = null;
+
+        foreach ($entries as $entry) {
+            $value = (float) $entry->value;
+
+            if ($runningMax === null || $value > $runningMax) {
+                $runningMax   = $value;
+                $prEntryIds[] = (int) $entry->entry_id;
+            }
+        }
+
+        return $prEntryIds;
+    }
+
+    /**
+     * @param Exercise    $exercise
+     * @param User        $user
+     * @param Carbon|null $startDate
+     *
+     * @return list<array{workout_id: int, date: string, total_volume: float}>
+     */
+    private function queryVolumeData(Exercise $exercise, User $user, ?Carbon $startDate): array
+    {
+        $query = DB::table('workout_entries')
+            ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
+            ->join('log_load_metrics', 'log_load_metrics.entry_id', '=', 'workout_entries.id')
+            ->join('log_rep_metrics', 'log_rep_metrics.entry_id', '=', 'workout_entries.id')
+            ->where('workout_entries.exercise_id', $exercise->id)
+            ->where('workouts.user_id', $user->id)
+            ->whereNotNull('log_load_metrics.actual_weight')
+            ->whereNotNull('log_rep_metrics.actual_reps')
+            ->selectRaw('workouts.id as workout_id, workouts.date, SUM(log_load_metrics.actual_weight * log_rep_metrics.actual_reps) as total_volume')
+            ->groupBy('workouts.id', 'workouts.date')
+            ->orderBy('workouts.date');
+
+        if ($startDate) {
+            $query->where('workouts.date', '>=', $startDate->toDateString());
+        }
+
+        return $query->get()->map(fn ($row) => [
+            'workout_id'   => (int) $row->workout_id,
+            'date'         => Carbon::parse($row->date)->toDateString(),
+            'total_volume' => round((float) $row->total_volume, 2),
+        ])->all();
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @param User     $user
+     * @param string   $metric
+     *
+     * @return array{value: float|integer, entry_id: integer, date: string}|null
+     */
+    private function findBest(Exercise $exercise, User $user, string $metric): ?array
+    {
+        $config = $this->metricConfig($metric);
+
+        $result = DB::table('workout_entries')
+            ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
+            ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
+            ->where('workout_entries.exercise_id', $exercise->id)
+            ->where('workouts.user_id', $user->id)
+            ->whereNotNull("{$config['table']}.{$config['column']}")
+            ->select([
+                'workout_entries.id as entry_id',
+                'workouts.date',
+                "{$config['table']}.{$config['column']} as value",
+            ])
+            ->orderByDesc("{$config['table']}.{$config['column']}")
+            ->orderBy('workouts.date')
+            ->first();
+
+        if (! $result) {
+            return null;
+        }
+
+        return [
+            'value'    => $this->castValue($result->value, $metric),
+            'entry_id' => (int) $result->entry_id,
+            'date'     => Carbon::parse($result->date)->toDateString(),
+        ];
+    }
+
+    /**
+     * @param Exercise $exercise
+     * @param User     $user
+     *
+     * @return array{value: float, entry_id: integer, date: string}|null
+     */
+    private function findBestSetVolume(Exercise $exercise, User $user): ?array
+    {
+        $result = DB::table('workout_entries')
+            ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
+            ->join('log_load_metrics', 'log_load_metrics.entry_id', '=', 'workout_entries.id')
+            ->join('log_rep_metrics', 'log_rep_metrics.entry_id', '=', 'workout_entries.id')
+            ->where('workout_entries.exercise_id', $exercise->id)
+            ->where('workouts.user_id', $user->id)
+            ->whereNotNull('log_load_metrics.actual_weight')
+            ->whereNotNull('log_rep_metrics.actual_reps')
+            ->selectRaw('workout_entries.id as entry_id, workouts.date, (log_load_metrics.actual_weight * log_rep_metrics.actual_reps) as volume')
+            ->orderByDesc('volume')
+            ->orderBy('workouts.date')
+            ->first();
+
+        if (! $result) {
+            return null;
+        }
+
+        return [
+            'value'    => round((float) $result->volume, 2),
+            'entry_id' => (int) $result->entry_id,
+            'date'     => Carbon::parse($result->date)->toDateString(),
+        ];
+    }
+
+    /**
+     * @param mixed  $value
+     * @param string $metric
+     *
+     * @return float|integer
+     */
+    private function castValue(mixed $value, string $metric): float|int
+    {
+        return $this->metricConfig($metric)['cast'] === 'float' ? (float) $value : (int) $value;
+    }
+}

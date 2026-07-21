@@ -1,0 +1,8508 @@
+[
+  {
+    "name": "3/4 Sit-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "90/90 Hamstring",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Ab Crunch Machine",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Ab Roller",
+    "type": "resistance",
+    "equipment": "ab roller",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Adductor",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Adductor/Groin",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Advanced Kettlebell Windmill",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Air Bike",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "All Fours Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Alternate Hammer Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternate Heel Touchers",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternate Incline Dumbbell Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternate Leg Diagonal Bound",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Cable Shoulder Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Deltoid Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Floor Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Hang Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Kettlebell Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Kettlebell Row",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Alternating Renegade Row",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Ankle Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Ankle On The Knee",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Anterior Tibialis-SMR",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Anti-Gravity Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Arm Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Arnold Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Around The Worlds",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Atlas Stone Trainer",
+    "type": "resistance",
+    "equipment": "atlas stone",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Atlas Stones",
+    "type": "resistance",
+    "equipment": "atlas stone",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Axle Deadlift",
+    "type": "resistance",
+    "equipment": "log bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Back Flyes - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Backward Drag",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Backward Medicine Ball Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Balance Board",
+    "type": "resistance",
+    "equipment": "balance board",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Ball Leg Curl",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Assisted Pull-Up",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Good Morning",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Good Morning (Pull Through)",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Hip Adductions",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Pull Apart",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Band Skull Crusher",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Ab Rollout",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Ab Rollout - On Knees",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Bench Press - Medium Grip",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Curls Lying Against An Incline",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Full Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Glute Bridge",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Guillotine Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Hack Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Hip Thrust",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Incline Bench Press - Medium Grip",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Incline Shoulder Raise",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Lunge",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Rear Delt Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Rollout from Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Seated Calf Raise",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Shoulder Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Shrug",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Shrug Behind The Back",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Side Bend",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Side Split Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Squat To A Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Step Ups",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Barbell Walking Lunge",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Battling Ropes",
+    "type": "resistance",
+    "equipment": "battle rope",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bear Crawl Sled Drags",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Behind Head Chest Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Bench Dips",
+    "type": "resistance",
+    "equipment": "bench",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bench Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bench Press - Powerlifting",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bench Press - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bench Press with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bench Sprint",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent-Arm Barbell Pullover",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent-Arm Dumbbell Pullover",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent-Knee Hip Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over Barbell Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over Dumbbell Rear Delt Raise With Head On Bench",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over Low-Pulley Side Lateral",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over One-Arm Long Bar Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Bent Over Two-Arm Long Bar Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over Two-Dumbbell Row",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Over Two-Dumbbell Row With Palms In",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bent Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bicycling",
+    "type": "distance",
+    "equipment": null,
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Bicycling, Stationary",
+    "type": "distance",
+    "equipment": "stationary bike",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Board Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Body-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Body Tricep Press",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bodyweight Flyes",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bodyweight Mid Row",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bodyweight Squat",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bodyweight Walking Lunge",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bosu Ball Cable Crunch With Side Bends",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bottoms-Up Clean From The Hang Position",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Bottoms Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Box Jump (Multiple Response)",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Box Skip",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Box Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Box Squat with Bands",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Box Squat with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Brachialis-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Bradford/Rocky Presses",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Butt-Ups",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Butt Lift (Bridge)",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Butterfly",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Chest Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Crossover",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Crunch",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Deadlifts",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Hammer Curls - Rope Attachment",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Hip Adduction",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Incline Pushdown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Incline Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Internal Rotation",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Iron Cross",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Judo Flip",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Lying Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable One Arm Tricep Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Cable Preacher Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Rear Delt Fly",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Reverse Crunch",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Rope Overhead Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Rope Rear-Delt Rows",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Russian Twists",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Seated Crunch",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Seated Lateral Raise",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Shoulder Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Shrugs",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cable Wrist Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf-Machine Shoulder Shrug",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf Press On The Leg Press Machine",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf Raise On A Dumbbell",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf Raises - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Calf Stretch Elbows Against Wall",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Calf Stretch Hands Against Wall",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Calves-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Car Deadlift",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Car Drivers",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Carioca Quick Step",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cat Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Catch and Overhead Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chain Handle Extension",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chain Press",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chair Leg Extended Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Chair Lower Back Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Chair Squat",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chair Upper Body Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Chest And Front Of Shoulder Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Chest Push from 3 point stance",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chest Push (multiple response)",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chest Push (single response)",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chest Push with Run Release",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chest Stretch on Stability Ball",
+    "type": "timed_hold",
+    "equipment": "exercise ball",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Child's Pose",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Chin-Up",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Chin To Chest Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Circus Bell",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean Pull",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean Shrug",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean and Jerk",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean and Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clean from Blocks",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Clock Push-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip Barbell Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip EZ-Bar Curl with Band",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip EZ-Bar Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip EZ Bar Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip Front Lat Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip Push-Up off of a Dumbbell",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Close-Grip Standing Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cocoons",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Conan's Wheel",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Concentration Curls",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cross-Body Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cross Body Hammer Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cross Over - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Crossover Reverse Lunge",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Crucifix",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Crunch - Hands Overhead",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Crunch - Legs On Exercise Ball",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Crunches",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Cuban Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dancer's Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Dead Bug",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Deadlift with Bands",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Deadlift with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Barbell Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Close-Grip Bench To Skull Crusher",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Dumbbell Bench Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Dumbbell Flyes",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline EZ Bar Triceps Extension",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Oblique Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Push-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Reverse Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Decline Smith Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Deficit Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Depth Jump Leap",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dip Machine",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dips - Chest Version",
+    "type": "resistance",
+    "equipment": "dip station",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dips - Triceps Version",
+    "type": "resistance",
+    "equipment": "dip station",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Donkey Calf Raises",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Kettlebell Alternating Hang Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Kettlebell Jerk",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Kettlebell Push Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Kettlebell Snatch",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Kettlebell Windmill",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Double Leg Butt Kick",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Downward Facing Balance",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Drag Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Drop Push",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Alternate Bicep Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Bench Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Bench Press with Neutral Grip",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Bicep Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Clean",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Floor Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Flyes",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Incline Row",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Incline Shoulder Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Lunges",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Lying One-Arm Rear Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Dumbbell Lying Pronation",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Lying Rear Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Lying Supination",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell One-Arm Shoulder Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Dumbbell One-Arm Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Dumbbell One-Arm Upright Row",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Dumbbell Prone Incline Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Rear Lunge",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Scaption",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Seated Box Jump",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Seated One-Leg Calf Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Dumbbell Shoulder Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Shrug",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Side Bend",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Squat",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Squat To A Bench",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Step Ups",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dumbbell Tricep Extension -Pronated Grip",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Dynamic Back Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Dynamic Chest Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "EZ-Bar Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "EZ-Bar Skullcrusher",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Elbow Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Elbow to Knee",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Elbows Back",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Elevated Back Lunge",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Elevated Cable Rows",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Elliptical Trainer",
+    "type": "distance",
+    "equipment": "elliptical",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Exercise Ball Crunch",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Exercise Ball Pull-In",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Extended Range One-Arm Kettlebell Floor Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "External Rotation",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "External Rotation with Band",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "External Rotation with Cable",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Face Pull",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Farmer's Walk",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Fast Skipping",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Finger Curls",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Flat Bench Cable Flyes",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Flat Bench Leg Pull-In",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Flat Bench Lying Leg Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Flexor Incline Dumbbell Curls",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Floor Glute-Ham Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Floor Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Floor Press with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Flutter Kicks",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Foot-SMR",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Forward Drag with Press",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Frankenstein Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Freehand Jump Squat",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Frog Hops",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Frog Sit-Ups",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Barbell Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Barbell Squat To A Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Box Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Cable Raise",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Cone Hops (or hurdle hops)",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Dumbbell Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Incline Dumbbell Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Leg Raises",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Front Plate Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Raise And Pullover",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Squat (Clean Grip)",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Squats With Two Kettlebells",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Front Two-Dumbbell Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Full Range-Of-Motion Lat Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Gironda Sternum Chins",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Glute Ham Raise",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Glute Kickback",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Goblet Squat",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Good Morning",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Good Morning off Pins",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Gorilla Chin/Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Groin and Back Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Groiners",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Hack Squat",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hammer Curls",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hammer Grip Incline DB Bench Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hamstring-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Hamstring Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Handstand Push-Ups",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hang Clean",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hang Clean - Below the Knees",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hang Snatch",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hang Snatch - Below Knees",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hanging Bar Good Morning",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hanging Leg Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hanging Pike",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Heaving Snatch Balance",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Heavy Bag Thrust",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "High Cable Curls",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hip Circles (prone)",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Hip Extension with Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hip Flexion with Band",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hip Lift with Band",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hug A Ball",
+    "type": "timed_hold",
+    "equipment": "exercise ball",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Hug Knees To Chest",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Hurdle Hops",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hyperextensions (Back Extensions)",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Hyperextensions With No Hyperextension Bench",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "IT Band and Glute Stretch",
+    "type": "timed_hold",
+    "equipment": "resistance band",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Iliotibial Tract-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Inchworm",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Incline Barbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Bench Pull",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Cable Chest Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Cable Flye",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Dumbbell Bench With Palms Facing In",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Dumbbell Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Dumbbell Flyes",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Dumbbell Flyes - With A Twist",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Hammer Curls",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Inner Biceps Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up Close-Grip",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up Depth Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up Medium",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up Reverse Grip",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Incline Push-Up Wide",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Intermediate Groin Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Intermediate Hip Flexor and Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Internal Rotation with Band",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Inverted Row",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Inverted Row with Straps",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Iron Cross",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Iron Crosses (stretch)",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Isometric Chest Squeezes",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Isometric Neck Exercise - Front And Back",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Isometric Neck Exercise - Sides",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Isometric Wipers",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "JM Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Jackknife Sit-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Janda Sit-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Jefferson Squats",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Jerk Balance",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Jerk Dip Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Jogging, Treadmill",
+    "type": "distance",
+    "equipment": "treadmill",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Keg Load",
+    "type": "resistance",
+    "equipment": "keg",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Arnold Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Dead Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Figure 8",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Hang Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell One-Legged Deadlift",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Kettlebell Pass Between The Legs",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Pirate Ships",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Pistol Squat",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Seated Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Seesaw Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Sumo High Pull",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Thruster",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Turkish Get-Up (Lunge style)",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Turkish Get-Up (Squat style)",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kettlebell Windmill",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kipping Muscle Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Knee Across The Body",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Knee Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Knee/Hip Raise On Parallel Bars",
+    "type": "resistance",
+    "equipment": "parallel bars",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Knee Tuck Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Arm Drill",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Cable Crunch With Alternating Oblique Twists",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Cable Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Forearm Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Kneeling High Pulley Row",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Hip Flexor",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Kneeling Jump Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Kneeling Single-Arm High Pulley Row",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Kneeling Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Landmine 180's",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Landmine Linear Jammer",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lateral Bound",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lateral Box Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lateral Cone Hops",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lateral Raise - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Latissimus Dorsi-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Leg-Over Floor Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leg-Up Hamstring Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Leg Extensions",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leg Lift",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leg Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leg Pull-In",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Chest Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Deadlift",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Decline Chest Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage High Row",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Incline Chest Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Iso Row",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Shoulder Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Leverage Shrug",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Linear 3-Part Start Technique",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Linear Acceleration Wall Drill",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Linear Depth Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Log Lift",
+    "type": "resistance",
+    "equipment": "log bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "London Bridges",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Looking At Ceiling",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Low Cable Crossover",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Low Cable Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Low Pulley Row To Neck",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lower Back-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lower Back Curl",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lunge Pass Through",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lunge Sprint",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Bent Leg Groin",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lying Cable Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Cambered Barbell Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Close-Grip Bar Curl On High Pulley",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Close-Grip Barbell Triceps Extension Behind The Head",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Close-Grip Barbell Triceps Press To Chin",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Crossover",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lying Dumbbell Tricep Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Face Down Plate Neck Resistance",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Face Up Plate Neck Resistance",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Glute",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lying Hamstring",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lying High Bench Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Leg Curls",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Machine Squat",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying One-Arm Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Lying Prone Quadriceps",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Lying Rear Delt Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Supine Dumbbell Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying T-Bar Row",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Lying Triceps Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Machine Bench Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Machine Bicep Curl",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Machine Preacher Curls",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Machine Shoulder (Military) Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Machine Triceps Extension",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Medicine Ball Chest Pass",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Medicine Ball Full Twist",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Medicine Ball Scoop Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Middle Back Shrug",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Middle Back Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Mixed Grip Chin",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Monster Walk",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Mountain Climbers",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Moving Claw Series",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Muscle Snatch",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Muscle Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Narrow Stance Hack Squats",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Narrow Stance Leg Press",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Narrow Stance Squats",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Natural Glute Ham Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Neck-SMR",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Neck Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Oblique Crunches",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Oblique Crunches - On The Floor",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Olympic Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "On-Your-Back Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "On Your Side Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "One-Arm Dumbbell Row",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Flat Bench Dumbbell Flye",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm High-Pulley Cable Side Bends",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Incline Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Clean and Jerk",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Floor Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Jerk",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Military Press To The Side",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Para Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Push Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Row",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Snatch",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Split Jerk",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Split Snatch",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Kettlebell Swings",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Long Bar Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Medicine Ball Slam",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Open Palm Kettlebell Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Overhead Kettlebell Squats",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Side Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Arm Side Laterals",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One-Legged Cable Kickback",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Against Wall",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "One Arm Chin-Up",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Dumbbell Bench Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Dumbbell Preacher Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Floor Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Lat Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Pronated Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Arm Supinated Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "One Half Locust",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "One Handed Hang",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "One Knee To Chest",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "One Leg Barbell Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Open Palm Kettlebell Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Otis-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Overhead Cable Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Overhead Lat",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Overhead Slam",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Overhead Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Overhead Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Overhead Triceps",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Pallof Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pallof Press With Rotation",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Palms-Down Dumbbell Wrist Curl Over A Bench",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Palms-Down Wrist Curl Over A Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Palms-Up Barbell Wrist Curl Over A Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Palms-Up Dumbbell Wrist Curl Over A Bench",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Parallel Bar Dip",
+    "type": "resistance",
+    "equipment": "parallel bars",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pelvic Tilt Into Bridge",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Peroneals-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Peroneals Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Physioball Hip Bridge",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pin Presses",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Piriformis-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Plank",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Plate Pinch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Plate Twist",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Platform Hamstring Slides",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Plie Dumbbell Squat",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Plyo Kettlebell Pushups",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Plyo Push-up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Posterior Tibialis Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Power Clean",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Clean from Blocks",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Jerk",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Partials",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Snatch",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Snatch from Blocks",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Power Stairs",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Preacher Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Preacher Hammer Dumbbell Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Press Sit-Up",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Prone Manual Hamstring",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Prowler Sprint",
+    "type": "distance",
+    "equipment": "prowler sled",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Pull Through",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pullups",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push-Up Wide",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push-Ups - Close Triceps Position",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push-Ups With Feet Elevated",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push-Ups With Feet On An Exercise Ball",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push Press - Behind the Neck",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Push Up to Side Plank",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pushups",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pushups (Close and Wide Hand Positions)",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Pyramid",
+    "type": "timed_hold",
+    "equipment": "exercise ball",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Quadriceps-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Quick Leap",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rack Delivery",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rack Pull with Bands",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rack Pulls",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rear Leg Raises",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Recumbent Bike",
+    "type": "distance",
+    "equipment": "stationary bike",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Return Push from Stance",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Band Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Band Box Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Band Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Band Power Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Band Sumo Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Barbell Preacher Curls",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Cable Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Flyes",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Flyes With External Rotation",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Grip Bent-Over Rows",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Grip Triceps Pushdown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Hyperextension",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Machine Flyes",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Plate Curls",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Reverse Triceps Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rhomboids-SMR",
+    "type": "timed_hold",
+    "equipment": "foam roller",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Rickshaw Carry",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rickshaw Deadlift",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Ring Dips",
+    "type": "resistance",
+    "equipment": "dip station",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rocket Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rocking Standing Calf Raise",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rocky Pull-Ups/Pulldowns",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Romanian Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Romanian Deadlift from Deficit",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rope Climb",
+    "type": "resistance",
+    "equipment": "rope",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rope Crunch",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Rope Jumping",
+    "type": "distance",
+    "equipment": "rope",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Rope Straight-Arm Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Round The World Shoulder Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Rowing, Stationary",
+    "type": "distance",
+    "equipment": "rowing machine",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Runner's Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Running, Treadmill",
+    "type": "distance",
+    "equipment": "treadmill",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Russian Twist",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sandbag Load",
+    "type": "resistance",
+    "equipment": "sandbag",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Scapular Pull-Up",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Scissor Kick",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Scissors Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Band Hamstring Curl",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Barbell Military Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Barbell Twist",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Bent-Over One-Arm Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Seated Bent-Over Rear Delt Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Bent-Over Two-Arm Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Biceps",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Cable Rows",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Cable Shoulder Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Calf Raise",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Calf Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Close-Grip Concentration Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Dumbbell Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Dumbbell Inner Biceps Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Dumbbell Palms-Down Wrist Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Dumbbell Palms-Up Wrist Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Flat Bench Leg Pull-In",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Floor Hamstring Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Front Deltoid",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Glute",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Good Mornings",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Hamstring",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Hamstring and Calf Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Head Harness Neck Resistance",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Leg Curl",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Leg Tucks",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated One-Arm Dumbbell Palms-Down Wrist Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Seated One-Arm Dumbbell Palms-Up Wrist Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Seated One-arm Cable Pulley Rows",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Seated Overhead Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Seated Palm-Up Barbell Wrist Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Palms-Down Barbell Wrist Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Side Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Triceps Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Seated Two-Arm Palms-Up Low-Pulley Wrist Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "See-Saw Press (Alternating Side Press)",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Shotgun Row",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Shoulder Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Shoulder Press - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Shoulder Raise",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Shoulder Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side-Lying Floor Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side Bridge",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Hop-Sprint",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Jackknife",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Lateral Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Laterals to Front Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Leg Raises",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side Lying Groin Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side Neck Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side Standing Long Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side To Side Chins",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Side Wrist Pull",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Side to Side Box Shuffle",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Single-Arm Cable Crossover",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Arm Linear Jammer",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Arm Push-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Cone Sprint Drill",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Single-Leg High Box Squat",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Leg Hop Progression",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Leg Lateral Hop",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Leg Leg Extension",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single-Leg Stride Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single Dumbbell Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Single Leg Butt Kick",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single Leg Glute Bridge",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Single Leg Push-off",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Sit-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sit Squats",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Skating",
+    "type": "distance",
+    "equipment": null,
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Sled Drag - Harness",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sled Overhead Backward Walk",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sled Overhead Triceps Extension",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sled Push",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sled Reverse Flye",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sled Row",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sledgehammer Swings",
+    "type": "resistance",
+    "equipment": "sled",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Incline Shoulder Raise",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Behind the Back Shrug",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Bench Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Bent Over Row",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Calf Raise",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Close-Grip Bench Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Decline Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Hang Power Clean",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Hip Raise",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Incline Bench Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Leg Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine One-Arm Upright Row",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Smith Machine Overhead Shoulder Press",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Pistol Squat",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Reverse Calf Raises",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Squat",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Stiff-Legged Deadlift",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Machine Upright Row",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Smith Single-Leg Split Squat",
+    "type": "resistance",
+    "equipment": "smith machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Snatch",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Snatch Balance",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Snatch Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Snatch Pull",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Snatch Shrug",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Snatch from Blocks",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Speed Band Overhead Triceps",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Speed Box Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Speed Squats",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Spell Caster",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Spider Crawl",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Spider Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Spinal Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Split Clean",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Split Jerk",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Split Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Split Snatch",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Split Squat with Dumbbells",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Split Squats",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Squat Jerk",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Squat with Bands",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Squat with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Squat with Plate Movers",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Squats - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Stairmaster",
+    "type": "distance",
+    "equipment": "stair climber",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Standing Alternating Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Barbell Calf Raise",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Barbell Press Behind Neck",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Bent-Over One-Arm Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing Bent-Over Two-Arm Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Biceps Cable Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Biceps Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Bradford Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Cable Chest Press",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Cable Lift",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Cable Wood Chop",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Calf Raises",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Concentration Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Calf Raise",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Reverse Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Straight-Arm Front Delt Raise Above Head",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Dumbbell Upright Row",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Elevated Quad Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Front Barbell Raise Over Head",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Gastrocnemius Calf Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Hamstring and Calf Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Hip Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Hip Flexors",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Inner-Biceps Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Lateral Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Leg Curl",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Long Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Low-Pulley Deltoid Raise",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Low-Pulley One-Arm Triceps Extension",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing Military Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Olympic Plate Hand Squeeze",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing One-Arm Cable Curl",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing One-Arm Dumbbell Curl Over Incline Bench",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing One-Arm Dumbbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing Overhead Barbell Triceps Extension",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Palm-In One-Arm Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Standing Palms-In Dumbbell Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Palms-Up Barbell Behind The Back Wrist Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Pelvic Tilt",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Rope Crunch",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Soleus And Achilles Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Toe Touches",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Standing Towel Triceps Extension",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Standing Two-Arm Overhead Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Star Jump",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Step-up with Knee Raise",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Step Mill",
+    "type": "distance",
+    "equipment": "stair climber",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Stiff-Legged Barbell Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Stiff-Legged Dumbbell Deadlift",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Stiff Leg Barbell Good Morning",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Stomach Vacuum",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Straight-Arm Dumbbell Pullover",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Straight-Arm Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Straight Bar Bench Mid Rows",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Straight Raises on Incline Bench",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Stride Jump Crossover",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sumo Deadlift",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sumo Deadlift with Bands",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Sumo Deadlift with Chains",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Superman",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Supine Chest Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Supine One-Arm Overhead Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": false
+    }
+  },
+  {
+    "name": "Supine Two-Arm Overhead Throw",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Suspended Fallout",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Suspended Push-Up",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Suspended Reverse Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Suspended Row",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Suspended Split Squat",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Svend Press",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "T-Bar Row with Handle",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Tate Press",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "The Straddle",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Thigh Abductor",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Thigh Adductor",
+    "type": "resistance",
+    "equipment": "lever machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Tire Flip",
+    "type": "resistance",
+    "equipment": "tire",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Toe Touchers",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Torso Rotation",
+    "type": "timed_hold",
+    "equipment": "exercise ball",
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Trail Running/Walking",
+    "type": "distance",
+    "equipment": null,
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Trap Bar Deadlift",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Tricep Dumbbell Kickback",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Tricep Side Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Triceps Overhead Extension with Rope",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Triceps Pushdown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Triceps Pushdown - Rope Attachment",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Triceps Pushdown - V-Bar Attachment",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Triceps Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Tuck Crunch",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Two-Arm Dumbbell Preacher Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Two-Arm Kettlebell Clean",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Two-Arm Kettlebell Jerk",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Two-Arm Kettlebell Military Press",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Two-Arm Kettlebell Row",
+    "type": "resistance",
+    "equipment": "kettlebell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Underhand Cable Pulldowns",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Upper Back-Leg Grab",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Upper Back Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Upright Barbell Row",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Upright Cable Row",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Upright Row - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Upward Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "V-Bar Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "V-Bar Pullup",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Vertical Swing",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Walking, Treadmill",
+    "type": "distance",
+    "equipment": "treadmill",
+    "attributes": {
+      "tracks_elevation": false
+    }
+  },
+  {
+    "name": "Weighted Ball Hyperextension",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Ball Side Bend",
+    "type": "resistance",
+    "equipment": "exercise ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Bench Dip",
+    "type": "resistance",
+    "equipment": "bench",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Crunches",
+    "type": "resistance",
+    "equipment": "medicine ball",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Jump Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Pull Ups",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Sissy Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Sit-Ups - With Bands",
+    "type": "resistance",
+    "equipment": "resistance band",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Weighted Squat",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Barbell Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Decline Barbell Bench Press",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Decline Barbell Pullover",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Lat Pulldown",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Pulldown Behind The Neck",
+    "type": "resistance",
+    "equipment": "cable machine",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Rear Pull-Up",
+    "type": "resistance",
+    "equipment": "pull-up bar",
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": true,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide-Grip Standing Barbell Curl",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide Stance Barbell Squat",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wide Stance Stiff Legs",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wind Sprints",
+    "type": "resistance",
+    "equipment": null,
+    "attributes": {
+      "bodyweight_base": true,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Windmills",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "World's Greatest Stretch",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Wrist Circles",
+    "type": "timed_hold",
+    "equipment": null,
+    "attributes": {
+      "target_duration_seconds": null
+    }
+  },
+  {
+    "name": "Wrist Roller",
+    "type": "resistance",
+    "equipment": "wrist roller",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Wrist Rotations with Straight Bar",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Yoke Walk",
+    "type": "resistance",
+    "equipment": "yoke",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Zercher Squats",
+    "type": "resistance",
+    "equipment": "barbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Zottman Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Zottman Preacher Curl",
+    "type": "resistance",
+    "equipment": "dumbbell",
+    "attributes": {
+      "bodyweight_base": false,
+      "allows_added_weight": false,
+      "bilateral": true
+    }
+  },
+  {
+    "name": "Tabata Intervals",
+    "type": "interval",
+    "equipment": null,
+    "attributes": {
+      "default_work_seconds": 20,
+      "default_rest_seconds": 10,
+      "default_rounds": 8
+    }
+  },
+  {
+    "name": "EMOM (Every Minute on the Minute)",
+    "type": "interval",
+    "equipment": null,
+    "attributes": {
+      "default_work_seconds": 60,
+      "default_rest_seconds": 0,
+      "default_rounds": 10
+    }
+  },
+  {
+    "name": "AMRAP (As Many Rounds As Possible)",
+    "type": "interval",
+    "equipment": null,
+    "attributes": {
+      "default_work_seconds": 1200,
+      "default_rest_seconds": 0,
+      "default_rounds": 1
+    }
+  },
+  {
+    "name": "HIIT Sprint Intervals",
+    "type": "interval",
+    "equipment": "treadmill",
+    "attributes": {
+      "default_work_seconds": 30,
+      "default_rest_seconds": 90,
+      "default_rounds": 8
+    }
+  },
+  {
+    "name": "Circuit Training",
+    "type": "interval",
+    "equipment": null,
+    "attributes": {
+      "default_work_seconds": 45,
+      "default_rest_seconds": 15,
+      "default_rounds": 3
+    }
+  }
+]

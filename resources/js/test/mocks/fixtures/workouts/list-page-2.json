@@ -1,0 +1,132 @@
+{
+  "data": [
+    {
+      "id": 7,
+      "name": "Test with Entries 4",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 6,
+      "name": "Test with Entries 3",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 5,
+      "name": "Test with Entries 2",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 4,
+      "name": "Test with Entries 1",
+      "date": "2026-06-16",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 1,
+      "completed_entries_count": 1,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 1,
+      "name": "Capture Test Workout",
+      "date": "2026-06-15",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [],
+      "entries_count": 4,
+      "completed_entries_count": 4,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    },
+    {
+      "id": 2,
+      "name": "Capture Test Show Workout",
+      "date": "2026-06-01",
+      "exhaustion": null,
+      "soreness": null,
+      "exercises": [
+        {
+          "id": 879,
+          "name": "Capture Test Resistance",
+          "type": "resistance",
+          "equipment_type_id": 33,
+          "exercise_order": 0
+        },
+        {
+          "id": 882,
+          "name": "Capture Test Interval",
+          "type": "interval",
+          "equipment_type_id": 33,
+          "exercise_order": 1
+        }
+      ],
+      "entries_count": 3,
+      "completed_entries_count": 3,
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "updated_at": "2026-01-01T00:00:00.000000Z"
+    }
+  ],
+  "links": {
+    "first": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+    "last": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+    "prev": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+    "next": null
+  },
+  "meta": {
+    "current_page": 2,
+    "from": 16,
+    "last_page": 2,
+    "links": [
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+        "label": "&laquo; Previous",
+        "page": 1,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=1",
+        "label": "1",
+        "page": 1,
+        "active": false
+      },
+      {
+        "url": "http://127.0.0.1:32770/api/v1/workouts?page=2",
+        "label": "2",
+        "page": 2,
+        "active": true
+      },
+      {
+        "url": null,
+        "label": "Next &raquo;",
+        "page": null,
+        "active": false
+      }
+    ],
+    "path": "http://127.0.0.1:32770/api/v1/workouts",
+    "per_page": 15,
+    "to": 21,
+    "total": 21
+  }
+}
