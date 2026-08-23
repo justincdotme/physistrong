@@ -1,0 +1,18 @@
+{
+  "data": {
+    "exercise_id": 881,
+    "exercise_type": "distance",
+    "records": {
+      "distance": {
+        "value": 4.8,
+        "entry_id": 4,
+        "date": "2026-06-15"
+      },
+      "duration": {
+        "value": 2400,
+        "entry_id": 36,
+        "date": "2026-06-10"
+      }
+    }
+  }
+}

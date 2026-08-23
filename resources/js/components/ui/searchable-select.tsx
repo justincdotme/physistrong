@@ -63,13 +63,17 @@ export function SearchableSelect({
         </button>
       </Popover.Trigger>
       <Popover.Portal>
+        {/* The mobile keyboard shrinks the viewport and Radix flips the panel
+            above the trigger, where an unclamped list runs off the top. */}
         <Popover.Content
-          className="bg-surface-card rounded-lg shadow-xl border border-border z-50 w-[var(--radix-popover-trigger-width)]"
+          className="bg-surface-card rounded-lg shadow-xl border border-border z-50 flex flex-col overflow-hidden w-[var(--radix-popover-trigger-width)] max-h-[var(--radix-popover-content-available-height)]"
           sideOffset={4}
           align="start"
+          collisionPadding={8}
           onOpenAutoFocus={e => e.preventDefault()}
+          dusk="searchable-select-content"
         >
-          <div className="p-2 border-b border-border">
+          <div className="p-2 border-b border-border shrink-0">
             <div className="relative">
               <Search
                 size={16}
@@ -86,7 +90,7 @@ export function SearchableSelect({
               />
             </div>
           </div>
-          <div className="max-h-60 overflow-y-auto p-1">
+          <div className="max-h-60 flex-1 min-h-0 overflow-y-auto overscroll-contain p-1">
             {filtered.length === 0 ? (
               <div className="py-3 px-2 text-sm text-text-muted text-center">{emptyMessage}</div>
             ) : (

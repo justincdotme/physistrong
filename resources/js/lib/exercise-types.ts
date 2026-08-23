@@ -1,4 +1,4 @@
-import type { Exercise, ExerciseType, PrimaryMetric } from '@/api/types'
+import type { Exercise, ExerciseType, ProgressMetric } from '@/api/types'
 import type { CreateEntryPayload } from '@/api/workouts'
 import type { MeasurementSystem } from '@/lib/units'
 import { unitLabel } from '@/lib/units'
@@ -93,28 +93,36 @@ export const TYPE_OPTIONS: Array<{ value: ExerciseType; label: string }> = (
   ['resistance', 'timed_hold', 'distance', 'interval'] as const
 ).map(t => ({ value: t, label: EXERCISE_TYPES[t].label }))
 
-// Keyed by the API's per-exercise primary_metric rather than by exercise type,
-// so bodyweight-only lifts plot reps while weighted lifts plot weight.
+// Keyed by chart metric rather than by exercise type, so bodyweight-only lifts
+// plot reps while weighted lifts plot weight. Charting a new dimension means
+// adding an entry here and a case in the API's ProgressMetric enum.
 export const METRIC_DISPLAY: Record<
-  PrimaryMetric,
+  ProgressMetric,
   {
+    tabLabel: string
     yLabel: (system: MeasurementSystem) => string
     unit: (system: MeasurementSystem) => string
     valueFormatter?: (v: number) => string
   }
 > = {
-  weight: { yLabel: s => `Top set (${unitLabel(s, 'weight')})`, unit: s => unitLabel(s, 'weight') },
-  reps: { yLabel: () => 'Top set (reps)', unit: () => 'reps' },
+  weight: {
+    tabLabel: 'Weight',
+    yLabel: s => `Top set (${unitLabel(s, 'weight')})`,
+    unit: s => unitLabel(s, 'weight'),
+  },
+  reps: { tabLabel: 'Reps', yLabel: () => 'Top set (reps)', unit: () => 'reps' },
   duration: {
+    tabLabel: 'Duration',
     yLabel: () => 'Duration',
     unit: () => '',
     valueFormatter: v => formatDuration(Math.round(v)),
   },
   distance: {
+    tabLabel: 'Distance',
     yLabel: s => `Distance (${unitLabel(s, 'distance')})`,
     unit: s => unitLabel(s, 'distance'),
   },
-  completed_rounds: { yLabel: () => 'Rounds', unit: () => 'rounds' },
+  completed_rounds: { tabLabel: 'Rounds', yLabel: () => 'Rounds', unit: () => 'rounds' },
 }
 
 interface TypeAttributesFormState {

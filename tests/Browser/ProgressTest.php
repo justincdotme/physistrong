@@ -171,3 +171,64 @@ it('shows the time range label on the exercise progress page', function (): void
             ->screenshot('exercise-progress-time-range-label');
     });
 });
+
+it('keeps the exercise dropdown inside the viewport when it opens upward', function (): void {
+    $user = User::factory()->create();
+
+    $this->browse(function (Browser $browser) use ($user): void {
+        $this->loginAs($browser, $user);
+        $browser->resize(375, 520)
+            ->visit('/progress')
+            ->waitFor('@progress-page')
+            ->waitFor('@searchable-select-trigger')
+            ->click('@searchable-select-trigger')
+            ->waitFor('@searchable-select-content')
+            ->pause(500);
+
+        $rect = $browser->script(<<<'JS'
+            const el = document.querySelector('[dusk="searchable-select-content"]');
+            const r = el.getBoundingClientRect();
+            return { top: r.top, bottom: r.bottom, side: el.getAttribute('data-side'), viewport: window.innerHeight };
+        JS)[0];
+
+        $browser->screenshot('progress-picker-upward');
+
+        expect($rect['side'])->toBe('top');
+        expect($rect['top'])->toBeGreaterThanOrEqual(0);
+        expect($rect['bottom'])->toBeLessThanOrEqual($rect['viewport']);
+    });
+});
+
+it('charts time for a stationary bike logged without a distance', function (): void {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::where('name', 'Bicycling, Stationary')->whereNull('user_id')->first();
+
+    $workout = Workout::create([
+        'user_id' => $user->id,
+        'name'    => 'Cardio',
+        'date'    => '2026-06-20',
+    ]);
+    $workout->exercises()->attach($exercise->id, ['exercise_order' => 1]);
+    $entry = $workout->entries()->create([
+        'exercise_id' => $exercise->id,
+        'set_order'   => 0,
+    ]);
+    $entry->durationMetric()->create(['actual_duration_seconds' => 2400]);
+    $entry->distanceMetric()->create(['actual_distance' => null]);
+
+    $this->browse(function (Browser $browser) use ($user, $exercise): void {
+        $this->loginAs($browser, $user);
+        $browser->visit("/exercises/{$exercise->id}/progress")
+            ->waitFor('@exercise-progress-page')
+            ->waitFor('@metric-selector')
+            ->assertSeeIn('@metric-selector', 'Distance')
+            ->assertSeeIn('@metric-selector', 'Duration')
+            ->waitFor('@progress-chart')
+            ->assertDontSee('No logged sets for this exercise yet')
+            ->waitFor('@personal-records')
+            ->assertSeeIn('@personal-records', 'LONGEST TIME')
+            ->assertSeeIn('@personal-records', '40:00')
+            ->screenshot('exercise-progress-distance-duration');
+    });
+});

@@ -6,7 +6,7 @@ import type { ExerciseProgressData } from '@/api/types'
 import type { TimeRange } from '@/api/types'
 
 const EMPTY: ExerciseProgressData = {
-  points: [],
+  series: [],
   volume: [],
   records: [],
   type: 'resistance',

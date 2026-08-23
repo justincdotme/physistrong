@@ -69,13 +69,13 @@ parameters:
 		-
 			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:browse\(\)\.$#'
 			identifier: method.notFound
-			count: 9
+			count: 11
 			path: tests/Browser/ProgressTest.php
 
 		-
 			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:loginAs\(\)\.$#'
 			identifier: method.notFound
-			count: 9
+			count: 11
 			path: tests/Browser/ProgressTest.php
 
 		-

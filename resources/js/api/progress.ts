@@ -1,9 +1,9 @@
 import type {
   ExerciseProgressData,
   ExerciseType,
-  ProgressPoint,
+  ProgressMetric,
   ProgressRecord,
-  PrimaryMetric,
+  ProgressSeries,
 } from './types'
 import { EXERCISE_TYPES } from '@/lib/exercise-types'
 import { formatDuration } from '@/lib/duration'
@@ -23,12 +23,18 @@ export interface RawVolumePoint {
   total_volume: number
 }
 
+export interface RawMetricSeries {
+  metric: ProgressMetric
+  has_data: boolean
+  data_points: RawDataPoint[]
+}
+
 export interface RawProgressResponse {
   exercise_id: number
   exercise_type: ExerciseType
   range: string
-  primary_metric: string
-  data_points: RawDataPoint[]
+  primary_metric: ProgressMetric
+  metrics: RawMetricSeries[]
   volume?: RawVolumePoint[]
 }
 
@@ -44,17 +50,36 @@ export interface RawRecordsResponse {
   records: Record<string, RawRecordEntry>
 }
 
+const RECORD_LABELS: Record<string, string> = {
+  weight: 'Heaviest',
+  reps: 'Most reps',
+  volume: 'Top set volume',
+  duration: 'Longest time',
+  distance: 'Farthest',
+  completed_rounds: 'Most rounds',
+}
+
+// A plank's best is a hold; a bike ride's is time on the machine.
+function recordLabel(key: string, type: ExerciseType): string {
+  if (key === 'duration' && type === 'timed_hold') return 'Longest hold'
+  return RECORD_LABELS[key] ?? key
+}
+
 export function transformProgressData(
   progress: RawProgressResponse,
   records: RawRecordsResponse,
   measurementSystem: MeasurementSystem
 ): ExerciseProgressData {
-  const points: ProgressPoint[] = progress.data_points.map(dp => ({
-    date: dp.date,
-    value: dp.value,
-    reps: null,
-    entryId: String(dp.entry_id),
-    isPR: dp.is_pr,
+  const series: ProgressSeries[] = progress.metrics.map(s => ({
+    metric: s.metric,
+    hasData: s.has_data,
+    points: s.data_points.map(dp => ({
+      date: dp.date,
+      value: dp.value,
+      reps: null,
+      entryId: String(dp.entry_id),
+      isPR: dp.is_pr,
+    })),
   }))
 
   const volume = (progress.volume ?? []).map(v => ({
@@ -63,14 +88,6 @@ export function transformProgressData(
   }))
 
   const recordsList: ProgressRecord[] = []
-  const recordLabels: Record<string, string> = {
-    weight: 'Heaviest',
-    reps: 'Most reps',
-    volume: 'Top set volume',
-    duration: 'Longest hold',
-    distance: 'Farthest',
-    completed_rounds: 'Most rounds',
-  }
 
   Object.entries(records.records).forEach(([key, record]) => {
     if (record.value === null) return
@@ -87,7 +104,7 @@ export function transformProgressData(
     }
 
     recordsList.push({
-      label: recordLabels[key] ?? key,
+      label: recordLabel(key, progress.exercise_type),
       value: displayValue,
       unit,
       sub: null,
@@ -95,11 +112,11 @@ export function transformProgressData(
   })
 
   return {
-    points,
+    series,
     volume,
     records: recordsList,
     type: progress.exercise_type,
-    primaryMetric: progress.primary_metric as PrimaryMetric,
+    primaryMetric: progress.primary_metric,
   }
 }
 
