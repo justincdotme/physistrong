@@ -33,6 +33,7 @@ interface ProgressLineChartProps {
   unit: string
   height?: number
   valueFormatter?: (value: number) => string
+  emptyMessage?: string
 }
 
 interface VolumeBarChartProps {
@@ -86,13 +87,12 @@ export function ProgressLineChart({
   unit,
   height = 220,
   valueFormatter,
+  emptyMessage = 'No data in this range yet.',
 }: ProgressLineChartProps) {
   const fmt = valueFormatter || ((v: number) => Math.round(v).toString())
 
   if (!points.length) {
-    return (
-      <div className="text-text-muted text-sm py-10 text-center">No data in this range yet.</div>
-    )
+    return <div className="text-text-muted text-sm py-10 text-center">{emptyMessage}</div>
   }
 
   return (

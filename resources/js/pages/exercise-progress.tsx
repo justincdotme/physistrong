@@ -9,7 +9,7 @@ import { useExerciseProgress } from '@/hooks/use-exercise-progress'
 import { useAuth } from '@/hooks/use-auth'
 import { METRIC_DISPLAY } from '@/lib/exercise-types'
 import { exerciseQueries } from '@/api/exercises'
-import type { TimeRange } from '@/api/types'
+import type { ProgressMetric, TimeRange } from '@/api/types'
 
 const RANGES: Array<{ value: TimeRange; label: string }> = [
   { value: '1M', label: '1M' },
@@ -26,17 +26,49 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
   })
   const { data, isLoading } = useExerciseProgress(exerciseId, range)
   const { user } = useAuth()
+  const [metric, setMetric] = useState<ProgressMetric | null>(null)
 
   if (!ex || !user || isLoading) return null
 
-  const isResistance = ex.type === 'resistance'
-  const display = METRIC_DISPLAY[data.primaryMetric]
+  // Land on whichever metric actually has history, so a bike logged only as
+  // time opens on time rather than on an empty distance chart.
+  const active =
+    data.series.find(s => s.metric === metric) ??
+    data.series.find(s => s.metric === data.primaryMetric && s.hasData) ??
+    data.series.find(s => s.hasData) ??
+    data.series.find(s => s.metric === data.primaryMetric) ??
+    data.series[0]
+
+  if (!active) {
+    return (
+      <div className="ps-card p-8 text-center text-text-secondary text-sm">
+        No logged sets for this exercise yet. Progress appears as you train.
+      </div>
+    )
+  }
+
+  const display = METRIC_DISPLAY[active.metric]
   const yLabel = display.yLabel(user.measurementSystem)
   const unit = display.unit(user.measurementSystem)
   const valueFormatter = display.valueFormatter
+  const latest = active.points[active.points.length - 1]
 
   return (
     <>
+      {data.series.length > 1 && (
+        <div className="mb-3" dusk="metric-selector">
+          <SegmentedControl
+            size="sm"
+            value={active.metric}
+            onChange={v => setMetric(v as ProgressMetric)}
+            options={data.series.map(s => ({
+              value: s.metric,
+              label: METRIC_DISPLAY[s.metric].tabLabel,
+            }))}
+          />
+        </div>
+      )}
+
       <div className="ps-card p-4 mb-4" dusk="progress-chart">
         <div className="flex items-center justify-between mb-3">
           <span className="label-caps text-text-secondary">{yLabel} over time</span>
@@ -48,20 +80,25 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
             PR
           </span>
         </div>
-        <ProgressLineChart points={data.points} valueFormatter={valueFormatter} unit={unit} />
-        {data.points.length > 0 &&
-          (() => {
-            const latest = data.points[data.points.length - 1]
-            return latest ? (
-              <p className="sr-only">
-                {data.points.length} data points. Latest{' '}
-                {valueFormatter ? valueFormatter(latest.value) : latest.value} {unit}.
-              </p>
-            ) : null
-          })()}
+        <ProgressLineChart
+          points={active.points}
+          valueFormatter={valueFormatter}
+          unit={unit}
+          emptyMessage={
+            active.hasData
+              ? undefined
+              : `No ${display.tabLabel.toLowerCase()} logged for this exercise yet.`
+          }
+        />
+        {latest && (
+          <p className="sr-only">
+            {active.points.length} data points. Latest{' '}
+            {valueFormatter ? valueFormatter(latest.value) : latest.value} {unit}.
+          </p>
+        )}
       </div>
 
-      {isResistance && (
+      {ex.type === 'resistance' && (
         <div className="ps-card p-4 mb-4">
           <span className="label-caps text-text-secondary block mb-3">
             Volume per workout (weight × reps)
@@ -102,7 +139,7 @@ export function ProgressPanel({ exerciseId, range }: { exerciseId: string; range
         </section>
       )}
 
-      {data.points.length === 0 && !isLoading && (
+      {data.series.every(s => !s.hasData) && (
         <div className="ps-card p-8 text-center text-text-secondary text-sm">
           No logged sets for this exercise yet. Progress appears as you train.
         </div>

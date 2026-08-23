@@ -46,6 +46,37 @@ class Exercise extends Model
         return fn ($query) => $query->whereNull('user_id')->orWhere('user_id', $user->id);
     }
 
+    /**
+     * @param User $user
+     *
+     * @return array<string, Closure>
+     */
+    private static function usageCounts(User $user): array
+    {
+        return [
+            'workouts'  => fn (Builder $query) => $query->where('workouts.user_id', $user->id),
+            'templates' => fn (Builder $query) => $query->where('workout_templates.user_id', $user->id),
+        ];
+    }
+
+    /**
+     * Entries carry no owner of their own, so ownership is read off the parent
+     * workout.
+     *
+     * @param User $user
+     *
+     * @return array<string, Closure>
+     */
+    private static function loggedDataExists(User $user): array
+    {
+        return [
+            'entries as has_logged_data' => fn (Builder $query) => $query->whereHas(
+                'workout',
+                fn (Builder $workout) => $workout->where('workouts.user_id', $user->id),
+            ),
+        ];
+    }
+
     /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
@@ -101,19 +132,31 @@ class Exercise extends Model
     }
 
     /**
-     * Usage annotations read by ExerciseResource and the delete guard.
-     * usage_count sums workout and template references; entry-only usage
-     * surfaces through has_logged_data.
+     * Scoped to one user so a system exercise never reports somebody else's
+     * workouts, templates, or logged entries.
      *
      * @param Builder<Exercise> $query
+     * @param User              $user
      *
      * @return Builder<Exercise>
      */
-    public function scopeWithUsage(Builder $query): Builder
+    public function scopeWithUsage(Builder $query, User $user): Builder
     {
         return $query
-            ->withCount(['workouts', 'templates'])
-            ->withExists(['entries as has_logged_data']);
+            ->withCount(self::usageCounts($user))
+            ->withExists(self::loggedDataExists($user));
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return static
+     */
+    public function loadUsage(User $user): static
+    {
+        return $this
+            ->loadCount(self::usageCounts($user))
+            ->loadExists(self::loggedDataExists($user));
     }
 
     /**

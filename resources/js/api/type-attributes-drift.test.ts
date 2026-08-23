@@ -48,9 +48,9 @@ describe('type_attributes consumer manifest drift', () => {
   it('buildTypeAttributes produces keys that are in the manifest', () => {
     const forms: Record<ExerciseType, Record<string, unknown>> = {
       resistance: { bodyweight: true, addedWeight: true, bilateral: false },
-      timed_hold: { targetDurationSeconds: '60' },
+      timed_hold: { targetDurationSeconds: 60 },
       distance: {},
-      interval: { defaultWorkSeconds: '45', defaultRestSeconds: '15', defaultRounds: '8' },
+      interval: { defaultWorkSeconds: 45, defaultRestSeconds: 15, defaultRounds: 8 },
     }
 
     for (const type of ['resistance', 'timed_hold', 'distance', 'interval'] as ExerciseType[]) {
@@ -58,10 +58,10 @@ describe('type_attributes consumer manifest drift', () => {
         bodyweight: (forms[type].bodyweight as boolean) ?? false,
         addedWeight: (forms[type].addedWeight as boolean) ?? false,
         bilateral: (forms[type].bilateral as boolean) ?? false,
-        targetDurationSeconds: (forms[type].targetDurationSeconds as string) ?? '',
-        defaultWorkSeconds: (forms[type].defaultWorkSeconds as string) ?? '',
-        defaultRestSeconds: (forms[type].defaultRestSeconds as string) ?? '',
-        defaultRounds: (forms[type].defaultRounds as string) ?? '',
+        targetDurationSeconds: (forms[type].targetDurationSeconds as number | null) ?? null,
+        defaultWorkSeconds: (forms[type].defaultWorkSeconds as number | null) ?? null,
+        defaultRestSeconds: (forms[type].defaultRestSeconds as number | null) ?? null,
+        defaultRounds: (forms[type].defaultRounds as number | null) ?? null,
       }
       const built = buildTypeAttributes(type, formState)
       const manifest = EXERCISE_TYPES[type].attributeKeys

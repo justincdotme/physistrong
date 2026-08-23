@@ -517,7 +517,7 @@ async function captureTemplates() {
   writeFixture('templates/cloned.json', sanitize(cloned.json))
 }
 
-async function captureProgress(exerciseId) {
+async function captureProgress(resistanceId, distanceId) {
   console.log('\n--- Progress fixtures ---')
 
   const progressData = [
@@ -533,7 +533,7 @@ async function captureProgress(exerciseId) {
       date: p.date,
     })
     await api('POST', `/workouts/${w.json.data.id}/entries`, {
-      exercise_id: exerciseId,
+      exercise_id: resistanceId,
       set_order: 0,
       metrics: {
         load: { target_weight: String(p.weight), actual_weight: String(p.weight), bodyweight_only: false },
@@ -542,11 +542,38 @@ async function captureProgress(exerciseId) {
     })
   }
 
-  const progress = await api('GET', `/exercises/${exerciseId}/progress`)
+  const progress = await api('GET', `/exercises/${resistanceId}/progress`)
   writeFixture('progress/progress-resistance.json', sanitize(progress.json))
 
-  const records = await api('GET', `/exercises/${exerciseId}/records`)
+  const records = await api('GET', `/exercises/${resistanceId}/records`)
   writeFixture('progress/records-resistance.json', sanitize(records.json))
+
+  // Time-only cardio gives the distance exercise a second populated series.
+  const cardioData = [
+    { date: '2026-04-10', seconds: 1500 },
+    { date: '2026-05-10', seconds: 2100 },
+    { date: '2026-06-10', seconds: 2400 },
+  ]
+
+  for (const c of cardioData) {
+    const w = await api('POST', '/workouts', {
+      name: 'Cardio Session',
+      date: c.date,
+    })
+    await api('POST', `/workouts/${w.json.data.id}/entries`, {
+      exercise_id: distanceId,
+      set_order: 0,
+      metrics: {
+        duration: { target_duration_seconds: null, actual_duration_seconds: c.seconds },
+      },
+    })
+  }
+
+  const distanceProgress = await api('GET', `/exercises/${distanceId}/progress`)
+  writeFixture('progress/progress-distance.json', sanitize(distanceProgress.json))
+
+  const distanceRecords = await api('GET', `/exercises/${distanceId}/records`)
+  writeFixture('progress/records-distance.json', sanitize(distanceRecords.json))
 }
 
 async function main() {
@@ -567,7 +594,7 @@ async function main() {
     const exerciseIds = await captureExercises(equipmentTypeId)
     await captureWorkouts(exerciseIds)
     await captureTemplates()
-    await captureProgress(exerciseIds.resistanceId)
+    await captureProgress(exerciseIds.resistanceId, exerciseIds.distanceId)
 
     console.log('\nCapture complete. Review fixtures in resources/js/test/mocks/fixtures/')
   } finally {

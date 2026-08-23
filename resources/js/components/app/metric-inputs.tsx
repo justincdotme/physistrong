@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/use-auth'
 import { cn, assertNever } from '@/lib/utils'
 import { unitLabel } from '@/lib/units'
 import { Badge } from '@/components/ui/badge'
-import { formatDuration } from '@/lib/formatters'
+import { formatDuration } from '@/lib/duration'
+import { DurationInput } from '@/components/ui/duration-input'
 
 interface MetricFieldProps {
   label: string
@@ -15,6 +16,7 @@ interface MetricFieldProps {
   placeholder?: string
   big?: boolean
   disabled?: boolean
+  duration?: boolean
 }
 
 function MetricField({
@@ -26,9 +28,21 @@ function MetricField({
   placeholder = '0',
   big = true,
   disabled,
+  duration,
 }: MetricFieldProps) {
+  const numberStyle = {
+    fontSize: big ? 20 : 16,
+    fontWeight: 700,
+    letterSpacing: '-0.5px',
+    color: 'var(--color-text-primary)',
+  }
+
+  // One <label> cannot own three segment inputs, so the duration card drops to
+  // a plain container and DurationInput names each segment itself.
+  const Shell = duration ? 'div' : 'label'
+
   return (
-    <label
+    <Shell
       className={cn(
         'ps-metric flex flex-col items-center justify-center px-3 py-2 min-h-[64px] flex-1',
         disabled && 'opacity-60'
@@ -36,27 +50,34 @@ function MetricField({
     >
       <span className="label-caps text-text-muted mb-0.5">{label}</span>
       {target != null && (
-        <span className="text-[11px] text-text-muted -mt-0.5 mb-0.5">target {target}</span>
+        <span className="text-[11px] text-text-muted -mt-0.5 mb-0.5">
+          target {duration ? formatDuration(target) : target}
+        </span>
       )}
       <span className="flex items-baseline gap-1">
-        <input
-          type="number"
-          inputMode="decimal"
-          disabled={disabled}
-          value={value == null ? '' : value}
-          placeholder={placeholder}
-          onChange={e => onChange(e.target.value === '' ? null : Number(e.target.value))}
-          className="bg-transparent text-center outline-none w-[3.5ch] tabular-nums"
-          style={{
-            fontSize: big ? 20 : 16,
-            fontWeight: 700,
-            letterSpacing: '-0.5px',
-            color: 'var(--color-text-primary)',
-          }}
-        />
+        {duration ? (
+          <DurationInput
+            value={value}
+            onChange={onChange}
+            label={label}
+            disabled={disabled}
+            style={numberStyle}
+          />
+        ) : (
+          <input
+            type="number"
+            inputMode="decimal"
+            disabled={disabled}
+            value={value == null ? '' : value}
+            placeholder={placeholder}
+            onChange={e => onChange(e.target.value === '' ? null : Number(e.target.value))}
+            className="bg-transparent text-center outline-none w-[3.5ch] tabular-nums"
+            style={numberStyle}
+          />
+        )}
         {unit && <span className="text-text-secondary text-xs font-medium">{unit}</span>}
       </span>
-    </label>
+    </Shell>
   )
 }
 
@@ -164,13 +185,13 @@ export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMe
           <div className="flex items-stretch gap-2">
             <MetricField
               label="Target"
-              unit="sec"
+              duration
               value={dm.targetDurationSeconds}
               onChange={v => onChange({ durationMetric: { ...dm, targetDurationSeconds: v } })}
             />
             <MetricField
               label="Hold"
-              unit="sec"
+              duration
               value={dm.actualDurationSeconds}
               onChange={v => onChange({ durationMetric: { ...dm, actualDurationSeconds: v } })}
             />
@@ -218,7 +239,7 @@ export function EntryMetrics({ entry, exercise, allTimeBest, onChange }: EntryMe
             />
             <MetricField
               label="Time"
-              unit="sec"
+              duration
               value={dur.actualDurationSeconds}
               onChange={v => onChange({ durationMetric: { ...dur, actualDurationSeconds: v } })}
             />
