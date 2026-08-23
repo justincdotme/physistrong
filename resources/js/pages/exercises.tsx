@@ -16,6 +16,7 @@ import { useDeleteConfirm } from '@/hooks/use-delete-confirm'
 import { useApp } from '@/lib/use-app'
 import { equipmentName } from '@/lib/domain'
 import { assertNever } from '@/lib/utils'
+import { DurationInput } from '@/components/ui/duration-input'
 import { TYPE_OPTIONS, buildTypeAttributes } from '@/lib/exercise-types'
 import {
   exerciseQueries,
@@ -42,10 +43,10 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
   const [bodyweight, setBodyweight] = useState(false)
   const [addedWeight, setAddedWeight] = useState(true)
   const [bilateral, setBilateral] = useState(true)
-  const [targetDurationSeconds, setTargetDurationSeconds] = useState('')
-  const [defaultWorkSeconds, setDefaultWorkSeconds] = useState('')
-  const [defaultRestSeconds, setDefaultRestSeconds] = useState('')
-  const [defaultRounds, setDefaultRounds] = useState('')
+  const [targetDurationSeconds, setTargetDurationSeconds] = useState<number | null>(null)
+  const [defaultWorkSeconds, setDefaultWorkSeconds] = useState<number | null>(null)
+  const [defaultRestSeconds, setDefaultRestSeconds] = useState<number | null>(null)
+  const [defaultRounds, setDefaultRounds] = useState<number | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const createMutation = useMutation({
@@ -116,15 +117,14 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
           <div className="ps-metric p-3 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <label htmlFor="target-duration" className="text-sm">
-                Target duration (seconds, optional)
+                Target duration (optional)
               </label>
-              <input
+              <DurationInput
                 id="target-duration"
-                type="number"
+                label="Target duration"
                 value={targetDurationSeconds}
-                onChange={e => setTargetDurationSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
+                onChange={setTargetDurationSeconds}
+                className="ps-input px-2 py-1.5 text-sm"
               />
             </div>
           </div>
@@ -136,28 +136,26 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
           <div className="ps-metric p-3 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <label htmlFor="default-work" className="text-sm">
-                Work seconds (optional)
+                Work (optional)
               </label>
-              <input
+              <DurationInput
                 id="default-work"
-                type="number"
+                label="Work"
                 value={defaultWorkSeconds}
-                onChange={e => setDefaultWorkSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
+                onChange={setDefaultWorkSeconds}
+                className="ps-input px-2 py-1.5 text-sm"
               />
             </div>
             <div className="flex items-center justify-between">
               <label htmlFor="default-rest" className="text-sm">
-                Rest seconds (optional)
+                Rest (optional)
               </label>
-              <input
+              <DurationInput
                 id="default-rest"
-                type="number"
+                label="Rest"
                 value={defaultRestSeconds}
-                onChange={e => setDefaultRestSeconds(e.target.value)}
-                className="ps-input w-20 px-2 py-1.5 text-sm"
-                min="1"
+                onChange={setDefaultRestSeconds}
+                className="ps-input px-2 py-1.5 text-sm"
               />
             </div>
             <div className="flex items-center justify-between">
@@ -167,8 +165,10 @@ function CreateExerciseSheet({ onClose }: { onClose: () => void }) {
               <input
                 id="default-rounds"
                 type="number"
-                value={defaultRounds}
-                onChange={e => setDefaultRounds(e.target.value)}
+                value={defaultRounds ?? ''}
+                onChange={e =>
+                  setDefaultRounds(e.target.value === '' ? null : Number(e.target.value))
+                }
                 className="ps-input w-20 px-2 py-1.5 text-sm"
                 min="1"
               />

@@ -2,7 +2,7 @@ import type { Exercise, ExerciseType, PrimaryMetric } from '@/api/types'
 import type { CreateEntryPayload } from '@/api/workouts'
 import type { MeasurementSystem } from '@/lib/units'
 import { unitLabel } from '@/lib/units'
-import { formatDuration } from '@/lib/formatters'
+import { formatDuration } from '@/lib/duration'
 import { assertNever } from '@/lib/utils'
 
 type EntryMetrics = CreateEntryPayload['metrics']
@@ -121,10 +121,10 @@ interface TypeAttributesFormState {
   bodyweight: boolean
   addedWeight: boolean
   bilateral: boolean
-  targetDurationSeconds: string
-  defaultWorkSeconds: string
-  defaultRestSeconds: string
-  defaultRounds: string
+  targetDurationSeconds: number | null
+  defaultWorkSeconds: number | null
+  defaultRestSeconds: number | null
+  defaultRounds: number | null
 }
 
 export function buildTypeAttributes(
@@ -140,21 +140,21 @@ export function buildTypeAttributes(
       attrs.bilateral = form.bilateral
       break
     case 'timed_hold':
-      if (form.targetDurationSeconds) {
-        attrs.target_duration_seconds = parseInt(form.targetDurationSeconds)
+      if (form.targetDurationSeconds != null) {
+        attrs.target_duration_seconds = form.targetDurationSeconds
       }
       break
     case 'distance':
       break
     case 'interval':
-      if (form.defaultWorkSeconds) {
-        attrs.default_work_seconds = parseInt(form.defaultWorkSeconds)
+      if (form.defaultWorkSeconds != null) {
+        attrs.default_work_seconds = form.defaultWorkSeconds
       }
-      if (form.defaultRestSeconds) {
-        attrs.default_rest_seconds = parseInt(form.defaultRestSeconds)
+      if (form.defaultRestSeconds != null) {
+        attrs.default_rest_seconds = form.defaultRestSeconds
       }
-      if (form.defaultRounds) {
-        attrs.default_rounds = parseInt(form.defaultRounds)
+      if (form.defaultRounds != null) {
+        attrs.default_rounds = form.defaultRounds
       }
       break
     default:

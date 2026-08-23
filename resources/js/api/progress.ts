@@ -6,7 +6,7 @@ import type {
   PrimaryMetric,
 } from './types'
 import { EXERCISE_TYPES } from '@/lib/exercise-types'
-import { formatDuration } from '@/lib/formatters'
+import { formatDuration } from '@/lib/duration'
 import { unitLabel } from '@/lib/units'
 import type { MeasurementSystem } from '@/lib/units'
 

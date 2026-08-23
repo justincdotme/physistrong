@@ -24,11 +24,3 @@ export function todayISO(): string {
   const n = new Date()
   return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`
 }
-
-export function formatDuration(s: number | null | undefined): string {
-  if (s == null) return ''
-  if (s < 60) return `${s}s`
-  const m = Math.floor(s / 60)
-  const r = s % 60
-  return `${m}:${String(r).padStart(2, '0')}`
-}

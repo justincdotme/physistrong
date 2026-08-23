@@ -201,7 +201,7 @@ describe('transformProgressData', () => {
     expect(result.records).toHaveLength(1)
     expect(result.records[0]).toEqual({
       label: 'Longest hold',
-      value: '2:05',
+      value: '02:05',
       unit: '',
       sub: null,
     })

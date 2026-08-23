@@ -10,6 +10,7 @@ import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { TypeBadge } from '@/components/ui/type-badge'
 import { SegmentedControl } from '@/components/ui/segmented-control'
+import { DurationInput } from '@/components/ui/duration-input'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/lib/use-app'
 import { todayISO, formatDate } from '@/lib/formatters'
@@ -461,6 +462,30 @@ interface GroupConfigSheetProps {
   }) => void
 }
 
+interface NumInputProps {
+  label: string
+  value: number
+  set: (value: number) => void
+  suffix?: string
+}
+
+function NumInput({ label, value, set, suffix }: NumInputProps) {
+  return (
+    <div>
+      <label className="form-label">{label}</label>
+      <div className="flex items-center gap-1">
+        <input
+          type="number"
+          value={value}
+          onChange={e => set(Number(e.target.value))}
+          className="ps-input w-full px-3 py-2.5 text-sm tabular-nums"
+        />
+        {suffix && <span className="text-text-muted text-sm w-6">{suffix}</span>}
+      </div>
+    </div>
+  )
+}
+
 export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfigSheetProps) {
   const [name, setName] = useState('')
   const [rounds, setRounds] = useState(3)
@@ -475,30 +500,6 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
       setRestRound(90)
     }
   }, [open])
-
-  interface NumInputProps {
-    label: string
-    value: number
-    set: (value: number) => void
-    suffix?: string
-  }
-
-  function NumInput({ label, value, set, suffix }: NumInputProps) {
-    return (
-      <div>
-        <label className="form-label">{label}</label>
-        <div className="flex items-center gap-1">
-          <input
-            type="number"
-            value={value}
-            onChange={e => set(Number(e.target.value))}
-            className="ps-input w-full px-3 py-2.5 text-sm tabular-nums"
-          />
-          {suffix && <span className="text-text-muted text-sm w-6">{suffix}</span>}
-        </div>
-      </div>
-    )
-  }
 
   return (
     <Sheet
@@ -540,8 +541,24 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
         </div>
         <NumInput label="Rounds" value={rounds} set={setRounds} />
         <div className="grid grid-cols-2 gap-3">
-          <NumInput label="Rest between" value={restEx} set={setRestEx} suffix="s" />
-          <NumInput label="Rest / round" value={restRound} set={setRestRound} suffix="s" />
+          <div>
+            <span className="form-label">Rest between</span>
+            <DurationInput
+              label="Rest between"
+              value={restEx}
+              onChange={seconds => setRestEx(seconds ?? 0)}
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
+          <div>
+            <span className="form-label">Rest / round</span>
+            <DurationInput
+              label="Rest per round"
+              value={restRound}
+              onChange={seconds => setRestRound(seconds ?? 0)}
+              className="ps-input w-full px-3 py-2.5 text-sm"
+            />
+          </div>
         </div>
       </div>
     </Sheet>

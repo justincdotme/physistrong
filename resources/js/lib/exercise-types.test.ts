@@ -20,10 +20,10 @@ interface CreateFormState {
   bodyweight: boolean
   addedWeight: boolean
   bilateral: boolean
-  targetDurationSeconds: string
-  defaultWorkSeconds: string
-  defaultRestSeconds: string
-  defaultRounds: string
+  targetDurationSeconds: number | null
+  defaultWorkSeconds: number | null
+  defaultRestSeconds: number | null
+  defaultRounds: number | null
 }
 
 describe('buildTypeAttributes', () => {
@@ -33,10 +33,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: true,
       addedWeight: false,
       bilateral: true,
-      targetDurationSeconds: '',
-      defaultWorkSeconds: '',
-      defaultRestSeconds: '',
-      defaultRounds: '',
+      targetDurationSeconds: null,
+      defaultWorkSeconds: null,
+      defaultRestSeconds: null,
+      defaultRounds: null,
     }
     const result = buildTypeAttributes('resistance', form)
     expect(result).toEqual({
@@ -52,10 +52,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: false,
       addedWeight: true,
       bilateral: true,
-      targetDurationSeconds: '90',
-      defaultWorkSeconds: '',
-      defaultRestSeconds: '',
-      defaultRounds: '',
+      targetDurationSeconds: 90,
+      defaultWorkSeconds: null,
+      defaultRestSeconds: null,
+      defaultRounds: null,
     }
     const result = buildTypeAttributes('timed_hold', form)
     expect(result).toEqual({ target_duration_seconds: 90 })
@@ -67,10 +67,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: false,
       addedWeight: true,
       bilateral: true,
-      targetDurationSeconds: '',
-      defaultWorkSeconds: '',
-      defaultRestSeconds: '',
-      defaultRounds: '',
+      targetDurationSeconds: null,
+      defaultWorkSeconds: null,
+      defaultRestSeconds: null,
+      defaultRounds: null,
     }
     const result = buildTypeAttributes('timed_hold', form)
     expect(result).toEqual({})
@@ -82,10 +82,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: false,
       addedWeight: true,
       bilateral: true,
-      targetDurationSeconds: '',
-      defaultWorkSeconds: '',
-      defaultRestSeconds: '',
-      defaultRounds: '',
+      targetDurationSeconds: null,
+      defaultWorkSeconds: null,
+      defaultRestSeconds: null,
+      defaultRounds: null,
     }
     const result = buildTypeAttributes('distance', form)
     expect(result).toEqual({})
@@ -97,10 +97,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: false,
       addedWeight: true,
       bilateral: true,
-      targetDurationSeconds: '',
-      defaultWorkSeconds: '45',
-      defaultRestSeconds: '15',
-      defaultRounds: '10',
+      targetDurationSeconds: null,
+      defaultWorkSeconds: 45,
+      defaultRestSeconds: 15,
+      defaultRounds: 10,
     }
     const result = buildTypeAttributes('interval', form)
     expect(result).toEqual({
@@ -116,10 +116,10 @@ describe('buildTypeAttributes', () => {
       bodyweight: false,
       addedWeight: true,
       bilateral: true,
-      targetDurationSeconds: '',
-      defaultWorkSeconds: '30',
-      defaultRestSeconds: '',
-      defaultRounds: '',
+      targetDurationSeconds: null,
+      defaultWorkSeconds: 30,
+      defaultRestSeconds: null,
+      defaultRounds: null,
     }
     const result = buildTypeAttributes('interval', form)
     expect(result).toEqual({ default_work_seconds: 30 })
