@@ -1,0 +1,46 @@
+{
+  "data": {
+    "exercise_id": 881,
+    "exercise_type": "distance",
+    "range": "all",
+    "primary_metric": "distance",
+    "metrics": [
+      {
+        "metric": "distance",
+        "has_data": true,
+        "data_points": [
+          {
+            "entry_id": 4,
+            "date": "2026-06-15",
+            "value": 4.8,
+            "is_pr": true
+          }
+        ]
+      },
+      {
+        "metric": "duration",
+        "has_data": true,
+        "data_points": [
+          {
+            "entry_id": 34,
+            "date": "2026-04-10",
+            "value": 1500,
+            "is_pr": true
+          },
+          {
+            "entry_id": 35,
+            "date": "2026-05-10",
+            "value": 2100,
+            "is_pr": true
+          },
+          {
+            "entry_id": 36,
+            "date": "2026-06-10",
+            "value": 2400,
+            "is_pr": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,6 +4,8 @@ import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render'
 import { server } from '@/test/server'
 import { ExerciseProgressPage } from './exercise-progress'
 import progressResistance from '@/test/mocks/fixtures/progress/progress-resistance.json'
+import progressDistance from '@/test/mocks/fixtures/progress/progress-distance.json'
+import exerciseDistance from '@/test/mocks/fixtures/exercises/show-distance.json'
 
 describe('ExerciseProgressPage', () => {
   describe('Record cards render real data', () => {
@@ -13,18 +15,14 @@ describe('ExerciseProgressPage', () => {
         route: '/exercises/895/progress',
       })
 
-      // Wait for the page to fully load (exercise name appears)
       await screen.findByText('Capture Test Resistance')
 
-      // Find the "Heaviest" label (weight record)
       const heaviestLabel = await screen.findByText('Heaviest')
 
-      // Verify the weight value "180" appears in the same record card
       const recordCard = heaviestLabel.closest('.ps-card')
       expect(recordCard).toBeInTheDocument()
       expect(recordCard).toHaveTextContent('180')
 
-      // Verify the unit label "lb" appears in this card
       expect(recordCard).toHaveTextContent('lb')
     })
 
@@ -34,13 +32,10 @@ describe('ExerciseProgressPage', () => {
         route: '/exercises/895/progress',
       })
 
-      // Wait for the page to load
       await screen.findByText('Capture Test Resistance')
 
-      // Wait for records to load by checking for a specific record value
       await screen.findByText('180')
 
-      // Verify all three record types are displayed by checking for their values
       expect(screen.getByText('180')).toBeInTheDocument() // weight: 180 (Heaviest)
       expect(screen.getByText('10')).toBeInTheDocument() // reps: 10 (Most reps)
       expect(screen.getByText('1040')).toBeInTheDocument() // volume: 1040 (Top set volume)
@@ -52,7 +47,6 @@ describe('ExerciseProgressPage', () => {
       const user = userEvent.setup()
       let capturedRangeParam: string | null = null
 
-      // Intercept the progress endpoint to capture the range query param
       server.use(
         http.get('/api/v1/exercises/:id/progress', ({ request }) => {
           const url = new URL(request.url)
@@ -66,15 +60,12 @@ describe('ExerciseProgressPage', () => {
         route: '/exercises/895/progress',
       })
 
-      // Wait for page to load and records to appear
       await screen.findByText('Capture Test Resistance')
       await screen.findByText('180')
 
-      // Find and click the "3M" button in the TimeRange control (using tab role)
       const threeMonthButton = screen.getByRole('tab', { name: '3M' })
       await user.click(threeMonthButton)
 
-      // Wait for the new query to be captured and verify the range param
       await waitFor(() => {
         expect(capturedRangeParam).toBe('3m')
       })
@@ -84,7 +75,6 @@ describe('ExerciseProgressPage', () => {
       const user = userEvent.setup()
       const capturedParams: string[] = []
 
-      // Intercept to capture all range params
       server.use(
         http.get('/api/v1/exercises/:id/progress', ({ request }) => {
           const url = new URL(request.url)
@@ -101,30 +91,75 @@ describe('ExerciseProgressPage', () => {
         route: '/exercises/895/progress',
       })
 
-      // Wait for initial load (default is '6M', so should be '6m' in lowercase)
+      // The 6M default is lowercased to 6m on the wire.
       await screen.findByText('Capture Test Resistance')
       await screen.findByText('180')
 
-      // Initial request should have captured the default range
       expect(capturedParams).toContain('6m')
 
-      // Click "1Y" option (using tab role)
       const oneYearButton = screen.getByRole('tab', { name: '1Y' })
       await user.click(oneYearButton)
 
-      // Verify the new range param was captured
       await waitFor(() => {
         expect(capturedParams).toContain('1y')
       })
 
-      // Click "All" option (using tab role)
       const allButton = screen.getByRole('tab', { name: 'All' })
       await user.click(allButton)
 
-      // Verify the new range param
       await waitFor(() => {
         expect(capturedParams).toContain('all')
       })
     })
+  })
+})
+
+describe('Distance exercises chart time as well as distance', () => {
+  const distanceRoute = `/exercises/${exerciseDistance.data.id}/progress`
+
+  it('offers both metrics and charts the duration series when selected', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<ExerciseProgressPage />, {
+      path: 'exercises/:id/progress',
+      route: distanceRoute,
+    })
+
+    await screen.findByText(exerciseDistance.data.name)
+
+    expect(await screen.findByRole('tab', { name: 'Distance' })).toBeInTheDocument()
+    const durationTab = screen.getByRole('tab', { name: 'Duration' })
+
+    await user.click(durationTab)
+
+    await waitFor(() => expect(durationTab).toHaveAttribute('aria-selected', 'true'))
+    expect(screen.getByText(/Duration over time/i)).toBeInTheDocument()
+  })
+
+  it('says nothing was logged for a metric with no all-time data', async () => {
+    const user = userEvent.setup()
+    const durationSeries = progressDistance.data.metrics.filter(m => m.metric === 'duration')
+
+    server.use(
+      http.get('/api/v1/exercises/:id/progress', () =>
+        HttpResponse.json({
+          data: {
+            ...progressDistance.data,
+            metrics: [{ metric: 'distance', has_data: false, data_points: [] }, ...durationSeries],
+          },
+        })
+      )
+    )
+
+    renderWithProviders(<ExerciseProgressPage />, {
+      path: 'exercises/:id/progress',
+      route: distanceRoute,
+    })
+
+    await screen.findByText(exerciseDistance.data.name)
+    await user.click(await screen.findByRole('tab', { name: 'Distance' }))
+
+    expect(await screen.findByText(/No distance logged for this exercise yet/i)).toBeInTheDocument()
+    expect(screen.queryByText(/No logged sets for this exercise yet/i)).not.toBeInTheDocument()
   })
 })

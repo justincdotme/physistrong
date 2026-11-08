@@ -42,12 +42,12 @@ class ExerciseProgressTest extends TestCase
             ->assertJsonPath('data.exercise_type', 'resistance')
             ->assertJsonPath('data.range', 'all')
             ->assertJsonPath('data.primary_metric', 'weight')
-            ->assertJsonCount(2, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.entry_id', $r1['entry']->id)
-            ->assertJsonPath('data.data_points.0.date', '2026-05-01')
-            ->assertJsonPath('data.data_points.0.value', 135.0)
-            ->assertJsonPath('data.data_points.1.entry_id', $r2['entry']->id)
-            ->assertJsonPath('data.data_points.1.value', 145.0);
+            ->assertJsonCount(2, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.entry_id', $r1['entry']->id)
+            ->assertJsonPath('data.metrics.0.data_points.0.date', '2026-05-01')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 135.0)
+            ->assertJsonPath('data.metrics.0.data_points.1.entry_id', $r2['entry']->id)
+            ->assertJsonPath('data.metrics.0.data_points.1.value', 145.0);
     }
 
     // Progress: Timed Hold
@@ -70,9 +70,9 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.primary_metric', 'duration')
-            ->assertJsonCount(2, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.value', 60)
-            ->assertJsonPath('data.data_points.1.value', 90);
+            ->assertJsonCount(2, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 60)
+            ->assertJsonPath('data.metrics.0.data_points.1.value', 90);
     }
 
     // Progress: Distance
@@ -95,9 +95,9 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.primary_metric', 'distance')
-            ->assertJsonCount(2, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.value', 3.1)
-            ->assertJsonPath('data.data_points.1.value', 5.0);
+            ->assertJsonCount(2, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 3.1)
+            ->assertJsonPath('data.metrics.0.data_points.1.value', 5.0);
     }
 
     // Progress: Interval
@@ -120,9 +120,9 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.primary_metric', 'completed_rounds')
-            ->assertJsonCount(2, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.value', 6)
-            ->assertJsonPath('data.data_points.1.value', 8);
+            ->assertJsonCount(2, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 6)
+            ->assertJsonPath('data.metrics.0.data_points.1.value', 8);
     }
 
     // Progress: No volume key for non-resistance
@@ -173,10 +173,10 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
 
         $response->assertOk()
-            ->assertJsonPath('data.data_points.0.is_pr', true)
-            ->assertJsonPath('data.data_points.1.is_pr', true)
-            ->assertJsonPath('data.data_points.2.is_pr', false)
-            ->assertJsonPath('data.data_points.3.is_pr', true);
+            ->assertJsonPath('data.metrics.0.data_points.0.is_pr', true)
+            ->assertJsonPath('data.metrics.0.data_points.1.is_pr', true)
+            ->assertJsonPath('data.metrics.0.data_points.2.is_pr', false)
+            ->assertJsonPath('data.metrics.0.data_points.3.is_pr', true);
     }
 
     public function test_pr_detection_uses_all_time_history_not_just_range(): void
@@ -214,9 +214,9 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=1m");
 
         $response->assertOk()
-            ->assertJsonCount(2, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.is_pr', false)
-            ->assertJsonPath('data.data_points.1.is_pr', true);
+            ->assertJsonCount(2, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.is_pr', false)
+            ->assertJsonPath('data.metrics.0.data_points.1.is_pr', true);
     }
 
     // Time Range Filtering
@@ -245,8 +245,8 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=1m");
 
         $response->assertOk()
-            ->assertJsonCount(1, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.value', 25.0);
+            ->assertJsonCount(1, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 25.0);
     }
 
     public function test_progress_returns_all_data_for_all_range(): void
@@ -272,7 +272,7 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
 
         $response->assertOk()
-            ->assertJsonCount(2, 'data.data_points');
+            ->assertJsonCount(2, 'data.metrics.0.data_points');
     }
 
     public function test_progress_defaults_to_all_when_range_omitted(): void
@@ -293,7 +293,7 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.range', 'all')
-            ->assertJsonCount(1, 'data.data_points');
+            ->assertJsonCount(1, 'data.metrics.0.data_points');
     }
 
     // Volume
@@ -460,9 +460,9 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.primary_metric', 'reps')
-            ->assertJsonPath('data.data_points.0.value', 20)
-            ->assertJsonPath('data.data_points.1.value', 30)
-            ->assertJsonPath('data.data_points.1.is_pr', true);
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 20)
+            ->assertJsonPath('data.metrics.0.data_points.1.value', 30)
+            ->assertJsonPath('data.metrics.0.data_points.1.is_pr', true);
     }
 
     public function test_progress_uses_weight_for_weighted_bodyweight_exercise(): void
@@ -483,7 +483,7 @@ class ExerciseProgressTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.primary_metric', 'weight')
-            ->assertJsonPath('data.data_points.0.value', 25.0);
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 25.0);
     }
 
     public function test_records_omits_weight_record_for_bodyweight_only(): void
@@ -552,8 +552,8 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
 
         $response->assertOk()
-            ->assertJsonCount(1, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.value', 135.0);
+            ->assertJsonCount(1, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.value', 135.0);
     }
 
     public function test_records_returns_403_for_other_users_exercise(): void
@@ -580,7 +580,7 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
 
         $response->assertOk()
-            ->assertJsonCount(0, 'data.data_points');
+            ->assertJsonCount(0, 'data.metrics.0.data_points');
     }
 
     public function test_progress_excludes_entries_with_null_actuals(): void
@@ -606,8 +606,8 @@ class ExerciseProgressTest extends TestCase
         $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
 
         $response->assertOk()
-            ->assertJsonCount(1, 'data.data_points')
-            ->assertJsonPath('data.data_points.0.entry_id', $r2['entry']->id);
+            ->assertJsonCount(1, 'data.metrics.0.data_points')
+            ->assertJsonPath('data.metrics.0.data_points.0.entry_id', $r2['entry']->id);
     }
 
     public function test_records_returns_empty_for_no_entries(): void
@@ -633,6 +633,76 @@ class ExerciseProgressTest extends TestCase
         $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=invalid")
             ->assertStatus(422)
             ->assertJsonValidationErrors('range');
+    }
+
+    // Progress: Cardio logged as time only
+
+    public function test_progress_returns_a_duration_series_for_a_distance_exercise_logged_without_distance(): void
+    {
+        $user     = User::factory()->create();
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id, 'name' => 'Bicycling, Stationary']);
+
+        $ride = $this->createEntryWithMetrics($user, $exercise, '2026-08-22', [
+            'duration' => ['actual_duration_seconds' => 2400],
+            'distance' => ['actual_distance' => null],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=all");
+
+        $response->assertOk()
+            ->assertJsonPath('data.primary_metric', 'distance');
+
+        $metrics = collect($response->json('data.metrics'))->keyBy('metric');
+
+        $this->assertSame(['distance', 'duration'], $metrics->keys()->all());
+        $this->assertFalse($metrics['distance']['has_data']);
+        $this->assertSame([], $metrics['distance']['data_points']);
+        $this->assertTrue($metrics['duration']['has_data']);
+        $this->assertCount(1, $metrics['duration']['data_points']);
+        $this->assertSame($ride['entry']->id, $metrics['duration']['data_points'][0]['entry_id']);
+        $this->assertSame(2400, $metrics['duration']['data_points'][0]['value']);
+        $this->assertTrue($metrics['duration']['data_points'][0]['is_pr']);
+    }
+
+    public function test_progress_has_data_reflects_all_time_history_not_the_selected_range(): void
+    {
+        $user     = User::factory()->create();
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id]);
+
+        $this->createEntryWithMetrics($user, $exercise, Carbon::now()->subMonths(6)->toDateString(), [
+            'duration' => ['actual_duration_seconds' => 1800],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson("/api/v1/exercises/{$exercise->id}/progress?range=1m");
+
+        $duration = collect($response->json('data.metrics'))->firstWhere('metric', 'duration');
+
+        $this->assertTrue($duration['has_data']);
+        $this->assertSame([], $duration['data_points']);
+    }
+
+    public function test_records_returns_a_duration_record_for_a_distance_exercise_logged_without_distance(): void
+    {
+        $user     = User::factory()->create();
+        $exercise = Exercise::factory()->distance()->create(['user_id' => $user->id]);
+
+        $this->createEntryWithMetrics($user, $exercise, '2026-08-22', [
+            'duration' => ['actual_duration_seconds' => 2400],
+        ]);
+
+        Passport::actingAs($user);
+
+        $response = $this->getJson("/api/v1/exercises/{$exercise->id}/records");
+
+        $response->assertOk()
+            ->assertJsonPath('data.records.duration.value', 2400)
+            ->assertJsonPath('data.records.duration.date', '2026-08-22');
+
+        $this->assertArrayNotHasKey('distance', $response->json('data.records'));
     }
 
     /**

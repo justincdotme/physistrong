@@ -1,35 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { formatDate, formatDateCompact, formatDuration, todayISO } from './formatters'
-
-describe('formatDuration', () => {
-  it.each([
-    [null, ''],
-    [undefined, ''],
-  ])('returns empty string for null/undefined: %s', (input, expected) => {
-    expect(formatDuration(input as number | null | undefined)).toBe(expected)
-  })
-
-  it.each([
-    [0, '0s'],
-    [1, '1s'],
-    [45, '45s'],
-    [59, '59s'],
-  ])('formats seconds under 60: %d → %s', (input, expected) => {
-    expect(formatDuration(input)).toBe(expected)
-  })
-
-  it.each([
-    [60, '1:00'],
-    [61, '1:01'],
-    [120, '2:00'],
-    [125, '2:05'],
-    [599, '9:59'],
-    [600, '10:00'],
-    [3661, '61:01'],
-  ])('formats minutes with zero-padded seconds: %d → %s', (input, expected) => {
-    expect(formatDuration(input)).toBe(expected)
-  })
-})
+import { formatDate, formatDateCompact, todayISO } from './formatters'
 
 describe('formatDate', () => {
   it.each([['', '']])('returns empty string for empty input: "%s"', (input, expected) => {

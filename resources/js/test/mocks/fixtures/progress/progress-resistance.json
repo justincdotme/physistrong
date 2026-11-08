@@ -4,162 +4,330 @@
     "exercise_type": "resistance",
     "range": "all",
     "primary_metric": "weight",
-    "data_points": [
+    "metrics": [
       {
-        "entry_id": 30,
-        "date": "2026-04-01",
-        "value": 95,
-        "is_pr": true
+        "metric": "weight",
+        "has_data": true,
+        "data_points": [
+          {
+            "entry_id": 30,
+            "date": "2026-04-01",
+            "value": 95,
+            "is_pr": true
+          },
+          {
+            "entry_id": 31,
+            "date": "2026-04-15",
+            "value": 100,
+            "is_pr": true
+          },
+          {
+            "entry_id": 32,
+            "date": "2026-05-01",
+            "value": 105,
+            "is_pr": true
+          },
+          {
+            "entry_id": 33,
+            "date": "2026-05-15",
+            "value": 102,
+            "is_pr": false
+          },
+          {
+            "entry_id": 5,
+            "date": "2026-06-01",
+            "value": 130,
+            "is_pr": true
+          },
+          {
+            "entry_id": 7,
+            "date": "2026-06-01",
+            "value": 180,
+            "is_pr": true
+          },
+          {
+            "entry_id": 1,
+            "date": "2026-06-15",
+            "value": 130,
+            "is_pr": false
+          },
+          {
+            "entry_id": 2,
+            "date": "2026-06-15",
+            "value": 135,
+            "is_pr": false
+          },
+          {
+            "entry_id": 25,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 12,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 13,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 14,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 15,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 29,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 28,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 27,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 26,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 16,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 24,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 23,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 22,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 21,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 20,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 19,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 18,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          },
+          {
+            "entry_id": 17,
+            "date": "2026-06-16",
+            "value": 95,
+            "is_pr": false
+          }
+        ]
       },
       {
-        "entry_id": 31,
-        "date": "2026-04-15",
-        "value": 100,
-        "is_pr": true
-      },
-      {
-        "entry_id": 32,
-        "date": "2026-05-01",
-        "value": 105,
-        "is_pr": true
-      },
-      {
-        "entry_id": 33,
-        "date": "2026-05-15",
-        "value": 102,
-        "is_pr": false
-      },
-      {
-        "entry_id": 5,
-        "date": "2026-06-01",
-        "value": 130,
-        "is_pr": true
-      },
-      {
-        "entry_id": 7,
-        "date": "2026-06-01",
-        "value": 180,
-        "is_pr": true
-      },
-      {
-        "entry_id": 1,
-        "date": "2026-06-15",
-        "value": 130,
-        "is_pr": false
-      },
-      {
-        "entry_id": 2,
-        "date": "2026-06-15",
-        "value": 135,
-        "is_pr": false
-      },
-      {
-        "entry_id": 25,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 12,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 13,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 14,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 15,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 29,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 28,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 27,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 26,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 16,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 24,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 23,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 22,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 21,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 20,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 19,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 18,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
-      },
-      {
-        "entry_id": 17,
-        "date": "2026-06-16",
-        "value": 95,
-        "is_pr": false
+        "metric": "reps",
+        "has_data": true,
+        "data_points": [
+          {
+            "entry_id": 30,
+            "date": "2026-04-01",
+            "value": 10,
+            "is_pr": true
+          },
+          {
+            "entry_id": 31,
+            "date": "2026-04-15",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 32,
+            "date": "2026-05-01",
+            "value": 8,
+            "is_pr": false
+          },
+          {
+            "entry_id": 33,
+            "date": "2026-05-15",
+            "value": 8,
+            "is_pr": false
+          },
+          {
+            "entry_id": 5,
+            "date": "2026-06-01",
+            "value": 8,
+            "is_pr": false
+          },
+          {
+            "entry_id": 7,
+            "date": "2026-06-01",
+            "value": 5,
+            "is_pr": false
+          },
+          {
+            "entry_id": 1,
+            "date": "2026-06-15",
+            "value": 8,
+            "is_pr": false
+          },
+          {
+            "entry_id": 2,
+            "date": "2026-06-15",
+            "value": 7,
+            "is_pr": false
+          },
+          {
+            "entry_id": 25,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 12,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 13,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 14,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 15,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 29,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 28,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 27,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 26,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 16,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 24,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 23,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 22,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 21,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 20,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 19,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 18,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          },
+          {
+            "entry_id": 17,
+            "date": "2026-06-16",
+            "value": 10,
+            "is_pr": false
+          }
+        ]
       }
     ],
     "volume": [

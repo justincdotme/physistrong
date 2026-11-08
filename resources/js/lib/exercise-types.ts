@@ -1,8 +1,8 @@
-import type { Exercise, ExerciseType, PrimaryMetric } from '@/api/types'
+import type { Exercise, ExerciseType, ProgressMetric } from '@/api/types'
 import type { CreateEntryPayload } from '@/api/workouts'
 import type { MeasurementSystem } from '@/lib/units'
 import { unitLabel } from '@/lib/units'
-import { formatDuration } from '@/lib/formatters'
+import { formatDuration } from '@/lib/duration'
 import { assertNever } from '@/lib/utils'
 
 type EntryMetrics = CreateEntryPayload['metrics']
@@ -93,38 +93,46 @@ export const TYPE_OPTIONS: Array<{ value: ExerciseType; label: string }> = (
   ['resistance', 'timed_hold', 'distance', 'interval'] as const
 ).map(t => ({ value: t, label: EXERCISE_TYPES[t].label }))
 
-// Keyed by the API's per-exercise primary_metric rather than by exercise type,
-// so bodyweight-only lifts plot reps while weighted lifts plot weight.
+// Keyed by chart metric rather than by exercise type, so bodyweight-only lifts
+// plot reps while weighted lifts plot weight. Charting a new dimension means
+// adding an entry here and a case in the API's ProgressMetric enum.
 export const METRIC_DISPLAY: Record<
-  PrimaryMetric,
+  ProgressMetric,
   {
+    tabLabel: string
     yLabel: (system: MeasurementSystem) => string
     unit: (system: MeasurementSystem) => string
     valueFormatter?: (v: number) => string
   }
 > = {
-  weight: { yLabel: s => `Top set (${unitLabel(s, 'weight')})`, unit: s => unitLabel(s, 'weight') },
-  reps: { yLabel: () => 'Top set (reps)', unit: () => 'reps' },
+  weight: {
+    tabLabel: 'Weight',
+    yLabel: s => `Top set (${unitLabel(s, 'weight')})`,
+    unit: s => unitLabel(s, 'weight'),
+  },
+  reps: { tabLabel: 'Reps', yLabel: () => 'Top set (reps)', unit: () => 'reps' },
   duration: {
+    tabLabel: 'Duration',
     yLabel: () => 'Duration',
     unit: () => '',
     valueFormatter: v => formatDuration(Math.round(v)),
   },
   distance: {
+    tabLabel: 'Distance',
     yLabel: s => `Distance (${unitLabel(s, 'distance')})`,
     unit: s => unitLabel(s, 'distance'),
   },
-  completed_rounds: { yLabel: () => 'Rounds', unit: () => 'rounds' },
+  completed_rounds: { tabLabel: 'Rounds', yLabel: () => 'Rounds', unit: () => 'rounds' },
 }
 
 interface TypeAttributesFormState {
   bodyweight: boolean
   addedWeight: boolean
   bilateral: boolean
-  targetDurationSeconds: string
-  defaultWorkSeconds: string
-  defaultRestSeconds: string
-  defaultRounds: string
+  targetDurationSeconds: number | null
+  defaultWorkSeconds: number | null
+  defaultRestSeconds: number | null
+  defaultRounds: number | null
 }
 
 export function buildTypeAttributes(
@@ -140,21 +148,21 @@ export function buildTypeAttributes(
       attrs.bilateral = form.bilateral
       break
     case 'timed_hold':
-      if (form.targetDurationSeconds) {
-        attrs.target_duration_seconds = parseInt(form.targetDurationSeconds)
+      if (form.targetDurationSeconds != null) {
+        attrs.target_duration_seconds = form.targetDurationSeconds
       }
       break
     case 'distance':
       break
     case 'interval':
-      if (form.defaultWorkSeconds) {
-        attrs.default_work_seconds = parseInt(form.defaultWorkSeconds)
+      if (form.defaultWorkSeconds != null) {
+        attrs.default_work_seconds = form.defaultWorkSeconds
       }
-      if (form.defaultRestSeconds) {
-        attrs.default_rest_seconds = parseInt(form.defaultRestSeconds)
+      if (form.defaultRestSeconds != null) {
+        attrs.default_rest_seconds = form.defaultRestSeconds
       }
-      if (form.defaultRounds) {
-        attrs.default_rounds = parseInt(form.defaultRounds)
+      if (form.defaultRounds != null) {
+        attrs.default_rounds = form.defaultRounds
       }
       break
     default:

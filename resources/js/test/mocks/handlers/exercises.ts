@@ -10,9 +10,15 @@ import createdDistance from '../fixtures/exercises/created-distance.json'
 import createdInterval from '../fixtures/exercises/created-interval.json'
 import progressResistance from '../fixtures/progress/progress-resistance.json'
 import recordsResistance from '../fixtures/progress/records-resistance.json'
+import progressDistance from '../fixtures/progress/progress-distance.json'
+import recordsDistance from '../fixtures/progress/records-distance.json'
+import exerciseDistance from '../fixtures/exercises/show-distance.json'
 
 const FORBIDDEN_ID = '9001'
 const IN_USE_ID = '9002'
+
+// Derived from the fixture so a recapture cannot desynchronize the routing.
+const DISTANCE_ID = String(exerciseDistance.data.id)
 
 export const exerciseHandlers = [
   http.get('/api/v1/exercises', () => HttpResponse.json(exerciseList)),
@@ -20,6 +26,9 @@ export const exerciseHandlers = [
   http.get('/api/v1/exercises/:id', ({ params }) => {
     if (params.id === FORBIDDEN_ID) {
       return HttpResponse.json(exerciseForbidden, { status: 403 })
+    }
+    if (params.id === DISTANCE_ID) {
+      return HttpResponse.json(exerciseDistance)
     }
     return HttpResponse.json(exerciseResistance)
   }),
@@ -56,11 +65,11 @@ export const exerciseHandlers = [
     return new HttpResponse(null, { status: 204 })
   }),
 
-  http.get('/api/v1/exercises/:id/progress', () => {
-    return HttpResponse.json(progressResistance)
+  http.get('/api/v1/exercises/:id/progress', ({ params }) => {
+    return HttpResponse.json(params.id === DISTANCE_ID ? progressDistance : progressResistance)
   }),
 
-  http.get('/api/v1/exercises/:id/records', () => {
-    return HttpResponse.json(recordsResistance)
+  http.get('/api/v1/exercises/:id/records', ({ params }) => {
+    return HttpResponse.json(params.id === DISTANCE_ID ? recordsDistance : recordsResistance)
   }),
 ]
