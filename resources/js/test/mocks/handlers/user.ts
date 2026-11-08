@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import userProfile from '../fixtures/user/profile.json'
 import userProfileUpdated from '../fixtures/user/profile-updated.json'
 import validationError from '../fixtures/user/validation-error.json'

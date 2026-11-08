@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Search, Plus, ChevronRight, ChevronLeft, Grid, Copy } from 'lucide-react'
 import type { Exercise, EquipmentType, WorkoutListItem } from '@/api/types'
@@ -86,6 +86,50 @@ export function ExercisePicker({ open, onClose, onSelect }: ExercisePickerProps)
   )
 }
 
+interface MethodButtonProps {
+  icon: React.ReactNode
+  label: string
+  sub: string
+  onClick?: () => void
+  disabled?: boolean
+  badge?: string
+}
+
+function MethodButton({ icon, label, sub, onClick, disabled, badge }: MethodButtonProps) {
+  return (
+    <button
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      className={cn(
+        'ps-card w-full p-4 flex items-center gap-3 text-left min-h-[68px]',
+        disabled ? 'opacity-60 cursor-not-allowed' : 'hover:bg-surface-muted'
+      )}
+    >
+      <span
+        className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
+        style={{
+          background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
+          color: 'var(--color-primary)',
+        }}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="font-semibold text-sm">{label}</span>
+          {badge && (
+            <span className="label-caps px-2 py-0.5 rounded-full bg-surface-muted text-text-secondary">
+              {badge}
+            </span>
+          )}
+        </span>
+        <span className="block text-[12px] text-text-secondary">{sub}</span>
+      </span>
+      {!disabled && <ChevronRight size={18} className="text-text-muted shrink-0" />}
+    </button>
+  )
+}
+
 interface NewWorkoutWizardProps {
   open: boolean
   onClose: () => void
@@ -137,7 +181,10 @@ export function NewWorkoutWizard({
     onError: () => toast('Could not copy workout. Try again.', 'error'),
   })
 
-  useEffect(() => {
+  // Resetting during render keeps the previous session's values from painting on reopen.
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
     if (open) {
       setStep('method')
       setName('')
@@ -145,7 +192,7 @@ export function NewWorkoutWizard({
       setSelectedTemplate(null)
       setSelectedWorkout(null)
     }
-  }, [open])
+  }
 
   const title =
     step === 'method'
@@ -217,50 +264,6 @@ export function NewWorkoutWizard({
         {copyMutation.isPending ? 'Copying...' : 'Start Workout'}
       </Button>
     ) : null
-
-  interface MethodButtonProps {
-    icon: React.ReactNode
-    label: string
-    sub: string
-    onClick?: () => void
-    disabled?: boolean
-    badge?: string
-  }
-
-  function MethodButton({ icon, label, sub, onClick, disabled, badge }: MethodButtonProps) {
-    return (
-      <button
-        onClick={disabled ? undefined : onClick}
-        disabled={disabled}
-        className={cn(
-          'ps-card w-full p-4 flex items-center gap-3 text-left min-h-[68px]',
-          disabled ? 'opacity-60 cursor-not-allowed' : 'hover:bg-surface-muted'
-        )}
-      >
-        <span
-          className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
-          style={{
-            background: 'color-mix(in srgb, var(--color-primary) 12%, transparent)',
-            color: 'var(--color-primary)',
-          }}
-        >
-          {icon}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2">
-            <span className="font-semibold text-sm">{label}</span>
-            {badge && (
-              <span className="label-caps px-2 py-0.5 rounded-full bg-surface-muted text-text-secondary">
-                {badge}
-              </span>
-            )}
-          </span>
-          <span className="block text-[12px] text-text-secondary">{sub}</span>
-        </span>
-        {!disabled && <ChevronRight size={18} className="text-text-muted shrink-0" />}
-      </button>
-    )
-  }
 
   return (
     <Sheet open={open} onClose={onClose} title={title} footer={footer}>
@@ -492,14 +495,16 @@ export function GroupConfigSheet({ open, onClose, count, onConfirm }: GroupConfi
   const [restEx, setRestEx] = useState(30)
   const [restRound, setRestRound] = useState(90)
 
-  useEffect(() => {
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
     if (open) {
       setName('')
       setRounds(3)
       setRestEx(30)
       setRestRound(90)
     }
-  }, [open])
+  }
 
   return (
     <Sheet

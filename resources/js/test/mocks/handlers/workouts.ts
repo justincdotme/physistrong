@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import listPage1 from '../fixtures/workouts/list-page-1.json'
 import listPage2 from '../fixtures/workouts/list-page-2.json'
 import show from '../fixtures/workouts/show.json'

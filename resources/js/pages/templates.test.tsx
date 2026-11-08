@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render'
 import { server } from '@/test/server'
 import { TemplatesPage } from './templates'

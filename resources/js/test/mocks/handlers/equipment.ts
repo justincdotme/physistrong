@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import listResponse from '../fixtures/equipment/list.json'
 import createdResponse from '../fixtures/equipment/created.json'
 import inUseError from '../fixtures/equipment/in-use-error.json'

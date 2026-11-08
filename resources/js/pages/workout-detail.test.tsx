@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { QueryClient, QueryClientProvider, useInfiniteQuery } from '@tanstack/react-query'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { render, fireEvent, act } from '@testing-library/react'
