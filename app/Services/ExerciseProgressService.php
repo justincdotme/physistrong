@@ -5,25 +5,16 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\ExerciseType;
+use App\Enums\ProgressMetric;
 use App\Models\Exercise;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use stdClass;
 
 class ExerciseProgressService
 {
-    /** @var array<string, array{table: string, column: string, cast: string}> */
-    private const METRIC_MAP = [
-        'weight'           => ['table' => 'log_load_metrics', 'column' => 'actual_weight', 'cast' => 'float'],
-        'reps'             => ['table' => 'log_rep_metrics', 'column' => 'actual_reps', 'cast' => 'int'],
-        'duration'         => ['table' => 'log_duration_metrics', 'column' => 'actual_duration_seconds', 'cast' => 'int'],
-        'distance'         => ['table' => 'log_distance_metrics', 'column' => 'actual_distance', 'cast' => 'float'],
-        'completed_rounds' => ['table' => 'log_interval_headers', 'column' => 'completed_rounds', 'cast' => 'int'],
-    ];
-
     /**
      * @param Exercise $exercise
      * @param User     $user
@@ -33,29 +24,17 @@ class ExerciseProgressService
      */
     public function getProgressData(Exercise $exercise, User $user, string $range): array
     {
-        $primaryMetric = $this->resolvePrimaryMetric($exercise);
-        $startDate     = $this->resolveStartDate($range);
-
-        $allEntries = $this->queryDataPoints($exercise, $user, $primaryMetric);
-        $prEntryIds = $this->detectPRs($allEntries);
-
-        $rangeEntries = $startDate
-            ? $allEntries->filter(fn ($row) => $row->date >= $startDate->toDateString())
-            : $allEntries;
-
-        $dataPoints = $rangeEntries->map(fn ($row) => [
-            'entry_id' => (int) $row->entry_id,
-            'date'     => $row->date,
-            'value'    => $this->castValue($row->value, $primaryMetric),
-            'is_pr'    => in_array((int) $row->entry_id, $prEntryIds, true),
-        ])->values()->all();
+        $startDate = $this->resolveStartDate($range);
 
         $result = [
             'exercise_id'    => $exercise->id,
             'exercise_type'  => $exercise->type->value,
             'range'          => $range,
-            'primary_metric' => $primaryMetric,
-            'data_points'    => $dataPoints,
+            'primary_metric' => ProgressMetric::primaryFor($exercise)->value,
+            'metrics'        => array_map(
+                fn (ProgressMetric $metric): array => $this->buildSeries($exercise, $user, $metric, $startDate),
+                ProgressMetric::forExercise($exercise),
+            ),
         ];
 
         if ($exercise->type === ExerciseType::Resistance) {
@@ -75,51 +54,19 @@ class ExerciseProgressService
     {
         $records = [];
 
-        if ($exercise->type === ExerciseType::Resistance) {
-            $primaryMetric = $this->resolvePrimaryMetric($exercise);
-
-            if ($primaryMetric === 'weight') {
-                $best = $this->findBest($exercise, $user, 'weight');
-
-                if ($best) {
-                    $records['weight'] = $best;
-                }
-            }
-
-            $best = $this->findBest($exercise, $user, 'reps');
+        foreach (ProgressMetric::forExercise($exercise) as $metric) {
+            $best = $this->findBest($exercise, $user, $metric);
 
             if ($best) {
-                $records['reps'] = $best;
+                $records[$metric->value] = $best;
             }
+        }
 
+        if ($exercise->type === ExerciseType::Resistance) {
             $best = $this->findBestSetVolume($exercise, $user);
 
             if ($best) {
                 $records['volume'] = $best;
-            }
-        }
-
-        if ($exercise->type === ExerciseType::TimedHold) {
-            $best = $this->findBest($exercise, $user, 'duration');
-
-            if ($best) {
-                $records['duration'] = $best;
-            }
-        }
-
-        if ($exercise->type === ExerciseType::Distance) {
-            $best = $this->findBest($exercise, $user, 'distance');
-
-            if ($best) {
-                $records['distance'] = $best;
-            }
-        }
-
-        if ($exercise->type === ExerciseType::Interval) {
-            $best = $this->findBest($exercise, $user, 'completed_rounds');
-
-            if ($best) {
-                $records['completed_rounds'] = $best;
             }
         }
 
@@ -128,40 +75,6 @@ class ExerciseProgressService
             'exercise_type' => $exercise->type->value,
             'records'       => $records,
         ];
-    }
-
-    /**
-     * @param Exercise $exercise
-     *
-     * @return string
-     */
-    public function resolvePrimaryMetric(Exercise $exercise): string
-    {
-        if ($exercise->type === ExerciseType::Resistance) {
-            $resistance = $exercise->resistance;
-
-            if ($resistance && $resistance->bodyweight_base && ! $resistance->allows_added_weight) {
-                return 'reps';
-            }
-
-            return 'weight';
-        }
-
-        return match ($exercise->type) {
-            ExerciseType::TimedHold => 'duration',
-            ExerciseType::Distance  => 'distance',
-            ExerciseType::Interval  => 'completed_rounds',
-        };
-    }
-
-    /**
-     * @param string $metric
-     *
-     * @return array{table: string, column: string, cast: string}
-     */
-    protected function metricConfig(string $metric): array
-    {
-        return self::METRIC_MAP[$metric] ?? throw new InvalidArgumentException("Unknown metric: {$metric}");
     }
 
     /**
@@ -181,29 +94,66 @@ class ExerciseProgressService
     }
 
     /**
-     * @param Exercise $exercise
-     * @param User     $user
-     * @param string   $primaryMetric
+     * PRs are detected across all-time history before the range filter, so a
+     * short window still marks the points that were records when they landed.
+     *
+     * @param Exercise       $exercise
+     * @param User           $user
+     * @param ProgressMetric $metric
+     * @param Carbon|null    $startDate
+     *
+     * @return array<string, mixed>
+     */
+    private function buildSeries(
+        Exercise $exercise,
+        User $user,
+        ProgressMetric $metric,
+        ?Carbon $startDate,
+    ): array {
+        $allEntries = $this->queryDataPoints($exercise, $user, $metric);
+        $prEntryIds = $this->detectPRs($allEntries);
+
+        $rangeEntries = $startDate
+            ? $allEntries->filter(fn ($row) => $row->date >= $startDate->toDateString())
+            : $allEntries;
+
+        return [
+            'metric'      => $metric->value,
+            'has_data'    => $allEntries->isNotEmpty(),
+            'data_points' => $rangeEntries->map(fn ($row) => [
+                'entry_id' => (int) $row->entry_id,
+                'date'     => $row->date,
+                'value'    => $metric->castValue($row->value),
+                'is_pr'    => in_array((int) $row->entry_id, $prEntryIds, true),
+            ])->values()->all(),
+        ];
+    }
+
+    /**
+     * @param Exercise       $exercise
+     * @param User           $user
+     * @param ProgressMetric $metric
      *
      * @return Collection<int, stdClass>
      */
     private function queryDataPoints(
         Exercise $exercise,
         User $user,
-        string $primaryMetric,
+        ProgressMetric $metric,
     ): Collection {
-        $config = $this->metricConfig($primaryMetric);
+        $table  = $metric->table();
+        $column = $metric->column();
 
         return DB::table('workout_entries')
             ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
-            ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
+            ->join($table, "{$table}.entry_id", '=', 'workout_entries.id')
             ->where('workout_entries.exercise_id', $exercise->id)
             ->where('workouts.user_id', $user->id)
-            ->whereNotNull("{$config['table']}.{$config['column']}")
+            ->whereNotNull("{$table}.{$column}")
             ->select([
                 'workout_entries.id as entry_id',
                 'workouts.date',
-                "{$config['table']}.{$config['column']} as value",
+                "{$table}.{$column} as value",
             ])
             ->orderBy('workouts.date')
             ->orderBy('workout_entries.set_order')
@@ -269,28 +219,29 @@ class ExerciseProgressService
     }
 
     /**
-     * @param Exercise $exercise
-     * @param User     $user
-     * @param string   $metric
+     * @param Exercise       $exercise
+     * @param User           $user
+     * @param ProgressMetric $metric
      *
      * @return array{value: float|integer, entry_id: integer, date: string}|null
      */
-    private function findBest(Exercise $exercise, User $user, string $metric): ?array
+    private function findBest(Exercise $exercise, User $user, ProgressMetric $metric): ?array
     {
-        $config = $this->metricConfig($metric);
+        $table  = $metric->table();
+        $column = $metric->column();
 
         $result = DB::table('workout_entries')
             ->join('workouts', 'workouts.id', '=', 'workout_entries.workout_id')
-            ->join($config['table'], "{$config['table']}.entry_id", '=', 'workout_entries.id')
+            ->join($table, "{$table}.entry_id", '=', 'workout_entries.id')
             ->where('workout_entries.exercise_id', $exercise->id)
             ->where('workouts.user_id', $user->id)
-            ->whereNotNull("{$config['table']}.{$config['column']}")
+            ->whereNotNull("{$table}.{$column}")
             ->select([
                 'workout_entries.id as entry_id',
                 'workouts.date',
-                "{$config['table']}.{$config['column']} as value",
+                "{$table}.{$column} as value",
             ])
-            ->orderByDesc("{$config['table']}.{$config['column']}")
+            ->orderByDesc("{$table}.{$column}")
             ->orderBy('workouts.date')
             ->first();
 
@@ -299,7 +250,7 @@ class ExerciseProgressService
         }
 
         return [
-            'value'    => $this->castValue($result->value, $metric),
+            'value'    => $metric->castValue($result->value),
             'entry_id' => (int) $result->entry_id,
             'date'     => Carbon::parse($result->date)->toDateString(),
         ];
@@ -335,16 +286,5 @@ class ExerciseProgressService
             'entry_id' => (int) $result->entry_id,
             'date'     => Carbon::parse($result->date)->toDateString(),
         ];
-    }
-
-    /**
-     * @param mixed  $value
-     * @param string $metric
-     *
-     * @return float|integer
-     */
-    private function castValue(mixed $value, string $metric): float|int
-    {
-        return $this->metricConfig($metric)['cast'] === 'float' ? (float) $value : (int) $value;
     }
 }

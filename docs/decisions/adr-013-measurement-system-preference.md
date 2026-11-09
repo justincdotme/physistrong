@@ -64,6 +64,12 @@ Dimensions with fixed units (no system preference needed): duration
 (seconds), reps (count), rounds (count), cadence (RPM), heart rate (BPM),
 incline (percentage), resistance level (unitless).
 
+> Amended 2026-08-23 (PS-164): duration keeps its fixed unit and is
+> still stored and transmitted as integer seconds, but it is never shown or
+> typed as a raw second count. `resources/js/lib/duration.ts` renders it as
+> `mm:ss`, widening to `hh:mm:ss` past an hour, and `DurationInput` accepts
+> it as three `hh`/`mm`/`ss` segments that normalize overflow on blur.
+
 ### Storage
 
 Values are stored as raw numbers. No canonical unit, no server-side

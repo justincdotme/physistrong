@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import templateList from '../fixtures/templates/list.json'
 import templateShow from '../fixtures/templates/show.json'
 import templateCreated from '../fixtures/templates/created.json'

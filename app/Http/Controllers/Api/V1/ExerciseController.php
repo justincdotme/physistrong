@@ -14,6 +14,7 @@ use App\Models\Exercise;
 use App\Repositories\ExerciseRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -31,7 +32,7 @@ class ExerciseController extends Controller
      */
     public function index(IndexExerciseRequest $request): AnonymousResourceCollection
     {
-        $query     = Exercise::visibleTo($request->user())->withUsage();
+        $query     = Exercise::visibleTo($request->user())->withUsage($request->user());
         $validated = $request->validated();
 
         if (isset($validated['type'])) {
@@ -67,17 +68,16 @@ class ExerciseController extends Controller
     }
 
     /**
+     * @param Request  $request
      * @param Exercise $exercise
      *
      * @return ExerciseResource
      */
-    public function show(Exercise $exercise): ExerciseResource
+    public function show(Request $request, Exercise $exercise): ExerciseResource
     {
         $this->authorize('view', $exercise);
 
-        $exercise->load($this->eagerLoad())
-            ->loadCount(['workouts', 'templates'])
-            ->loadExists(['entries as has_logged_data']);
+        $exercise->load($this->eagerLoad())->loadUsage($request->user());
 
         return new ExerciseResource($exercise);
     }
@@ -94,9 +94,7 @@ class ExerciseController extends Controller
 
         $this->exercises->update($exercise, $request->validated());
 
-        $exercise->load($this->eagerLoad())
-            ->loadCount(['workouts', 'templates'])
-            ->loadExists(['entries as has_logged_data']);
+        $exercise->load($this->eagerLoad())->loadUsage($request->user());
 
         return new ExerciseResource($exercise);
     }

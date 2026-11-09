@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { errorEnvelope } from './_helpers'
 import loginResponse from '../fixtures/auth/login.json'
 import registerResponse from '../fixtures/auth/register.json'

@@ -504,6 +504,37 @@ class ExerciseTest extends TestCase
         $this->assertDatabaseHas('exercises', ['id' => $exercise->id]);
     }
 
+    public function test_usage_annotations_are_scoped_to_the_requesting_user(): void
+    {
+        $owner    = User::factory()->create();
+        $other    = User::factory()->create();
+        $exercise = Exercise::factory()->resistance()->create(['user_id' => null]);
+
+        $workout = Workout::factory()->create(['user_id' => $other->id]);
+        $workout->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+        WorkoutEntry::create([
+            'workout_id'  => $workout->id,
+            'exercise_id' => $exercise->id,
+            'set_order'   => 0,
+        ]);
+
+        $template = WorkoutTemplate::factory()->create(['user_id' => $other->id]);
+        $template->exercises()->attach($exercise->id, ['exercise_order' => 0]);
+
+        Passport::actingAs($owner);
+
+        $row = collect($this->getJson('/api/v1/exercises')->assertOk()->json('data'))
+            ->firstWhere('id', $exercise->id);
+
+        $this->assertSame(0, $row['usage_count']);
+        $this->assertFalse($row['has_logged_data']);
+
+        $this->getJson("/api/v1/exercises/{$exercise->id}")
+            ->assertOk()
+            ->assertJsonPath('data.usage_count', 0)
+            ->assertJsonPath('data.has_logged_data', false);
+    }
+
     public function test_cannot_delete_exercise_referenced_by_template(): void
     {
         $user     = User::factory()->create();

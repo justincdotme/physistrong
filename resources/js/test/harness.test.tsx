@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { screen } from '@testing-library/react'
