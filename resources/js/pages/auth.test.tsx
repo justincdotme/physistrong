@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen, renderWithProviders, userEvent } from '@/test/render'
 import { server } from '@/test/server'
-import { http } from 'msw'
+import { http } from 'msw/http'
 import { errorEnvelope } from '@/test/mocks/handlers/_helpers'
 import { LoginPage, RegisterPage } from './auth'
 

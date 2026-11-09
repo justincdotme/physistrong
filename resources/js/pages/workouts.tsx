@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
@@ -70,13 +70,20 @@ export function WorkoutsPage() {
   const workouts = data?.pages?.flatMap(p => p.items) ?? []
   const total = data?.pages?.[0]?.total ?? 0
 
-  const listRef = useRef<HTMLDivElement>(null)
+  // The list mounts only after workouts load, so its offset is measured when the node attaches.
+  const [scrollMargin, setScrollMargin] = useState(0)
+  const measureList = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      setScrollMargin(node.offsetTop)
+    }
+  }, [])
+
   const virtualizer = useWindowVirtualizer({
     count: workouts.length,
     estimateSize: () => 90,
     overscan: 5,
     gap: 12,
-    scrollMargin: listRef.current?.offsetTop ?? 0,
+    scrollMargin,
   })
 
   const createMutation = useMutation({
@@ -140,7 +147,7 @@ export function WorkoutsPage() {
         {workouts.length ? (
           <>
             <div
-              ref={listRef}
+              ref={measureList}
               dusk="workout-history"
               style={{ height: virtualizer.getTotalSize(), position: 'relative' }}
             >

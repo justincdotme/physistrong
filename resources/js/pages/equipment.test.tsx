@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render'
 import { server } from '@/test/server'
 import { EquipmentPage } from './equipment'
@@ -10,11 +10,9 @@ describe('EquipmentPage', () => {
     it('displays equipment from the fixture', async () => {
       renderWithProviders(<EquipmentPage />)
 
-      // Wait for an equipment item from the fixture to appear
       const barbeElement = await screen.findByText('barbell')
       expect(barbeElement).toBeInTheDocument()
 
-      // Assert subtitle shows the count
       const equipmentCount = fixtureList.data.length
       expect(screen.getByText(`${equipmentCount} types`)).toBeInTheDocument()
     })
@@ -47,22 +45,17 @@ describe('EquipmentPage', () => {
 
       renderWithProviders(<EquipmentPage />)
 
-      // Wait for the list to load
       await screen.findByText('barbell')
 
-      // Click the Add button
       const addButton = screen.getByRole('button', { name: /^Add$/ })
       await user.click(addButton)
 
-      // Type in the equipment name input
       const nameInput = screen.getByLabelText(/^Name$/)
       await user.type(nameInput, 'Sled')
 
-      // Click Add Equipment button
       const addEquipmentButton = screen.getByRole('button', { name: /^Add Equipment$/ })
       await user.click(addEquipmentButton)
 
-      // Wait for the mutation to complete and verify the payload
       await waitFor(() => {
         expect(capturedPayload).toEqual({
           name: 'Sled',
@@ -76,7 +69,6 @@ describe('EquipmentPage', () => {
       const user = userEvent.setup()
       let capturedDeleteId: string | null = null
 
-      // Override list to include a custom equipment item and intercept delete with 409 response
       server.use(
         http.get('/api/v1/equipment-types', () =>
           HttpResponse.json({
@@ -110,14 +102,11 @@ describe('EquipmentPage', () => {
 
       renderWithProviders(<EquipmentPage />)
 
-      // Wait for the test equipment to appear
       await screen.findByText('Test Deletable Equipment')
 
-      // Click the delete button for the test equipment
       const deleteButton = screen.getByLabelText(/^Delete Test Deletable Equipment$/)
       await user.click(deleteButton)
 
-      // Confirm the deletion in the dialog
       const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
       const confirmButton = deleteButtons.find(btn => !btn.hasAttribute('disabled'))
       if (!confirmButton) {
@@ -125,12 +114,10 @@ describe('EquipmentPage', () => {
       }
       await user.click(confirmButton)
 
-      // Verify the confirm dialog closes (mutation was attempted)
       await waitFor(() => {
         expect(screen.queryByText('Delete equipment?')).not.toBeInTheDocument()
       })
 
-      // Verify the delete request was made with the correct ID
       await waitFor(() => {
         expect(capturedDeleteId).toBe('9002')
       })

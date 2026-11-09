@@ -39,13 +39,19 @@ export function SearchableSelect({
 
   useEffect(() => {
     if (open) {
-      setSearch('')
       requestAnimationFrame(() => inputRef.current?.focus())
     }
   }, [open])
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setSearch('')
+    }
+    setOpen(nextOpen)
+  }
+
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
+    <Popover.Root open={open} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild>
         <button
           type="button"

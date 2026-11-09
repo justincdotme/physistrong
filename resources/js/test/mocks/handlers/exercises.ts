@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import exerciseList from '../fixtures/exercises/list.json'
 import exerciseResistance from '../fixtures/exercises/show-resistance.json'
 import exerciseForbidden from '../fixtures/exercises/forbidden.json'
